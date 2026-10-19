@@ -78,7 +78,7 @@ import Foundation
         private var observerQueries: [HKObserverQuery] = []
         /// One sweep at a time per type, with exactly one trailing re-run — an
         /// observer burst is one pass, not one pass per callback.
-        private let coalescer = SweepCoalescer()
+        private let coalescer = SweepCoalescer(label: "heart-events")
         /// Owned observer work. `stop()` cancels every entry and waits for it,
         /// which is what makes the teardown a fact rather than a request.
         private var observerTasks: [UUID: Task<Void, Never>] = [:]

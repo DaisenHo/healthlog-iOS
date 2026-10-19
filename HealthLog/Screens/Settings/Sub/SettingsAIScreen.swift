@@ -90,6 +90,10 @@ struct SettingsAIScreen: View {
                 coachCard
             }
 
+            if backend.hasServer, let usage = appContainer?.aiCapabilityGate.account?.usage {
+                AIUsageCard(usage: usage) { level in try await AIUsageCard.choose(level, in: appContainer) }
+            }
+
             if backend.hasServer {
                 AIProviderSection()
             } else {
@@ -230,7 +234,7 @@ struct SettingsAIScreen: View {
         // surfaces stay hidden (the operator's "External AI selected but Coach
         // nowhere"). The shell already knows how to present + grant the
         // server-managed consent (`presentExplicitConsentIfNeeded` →
-        // `grantServerManaged()` + `syncServerAIConsentReceipt()`); it just was
+        // `grantServerManaged()` + `recordAcceptedAIConsent()`); it just was
         // never asked. Asking it here makes the pick actually reach
         // consent → receipt → `aiMode == .online`. Consent is NOT bypassed —
         // the user still accepts the sheet; this only opens it.

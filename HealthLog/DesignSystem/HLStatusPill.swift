@@ -14,6 +14,9 @@ import SwiftUI
 ///   foreground (mirrors web's `text-destructive`).
 /// - `.disconnected` — slash + label, neutral outline + `textSecondary`
 ///   foreground (mirrors web's bordered outline state).
+/// - `.warning` — clock + label, `statusWarn` fill at 15 % alpha. #139: a
+///   connection that works but is limited or delayed (`health.state`
+///   `limited` / `degraded`), which is neither healthy nor broken.
 ///
 /// Lives next to but distinct from `HLBadge`: the badge is a generic chip,
 /// the status pill is specifically the 3-state integration / configuration
@@ -24,6 +27,7 @@ public struct HLStatusPill: View {
         case error(label: String)
         case disconnected(label: String)
         case unknown(label: String)
+        case warning(label: String)
     }
 
     private let state: State
@@ -63,6 +67,7 @@ public struct HLStatusPill: View {
         case let .error(label): label
         case let .disconnected(label): label
         case let .unknown(label): label
+        case let .warning(label): label
         }
     }
 
@@ -72,6 +77,7 @@ public struct HLStatusPill: View {
         case .error: "exclamationmark.triangle.fill"
         case .disconnected: "circle.slash"
         case .unknown: "questionmark.circle"
+        case .warning: "clock.badge.exclamationmark"
         }
     }
 
@@ -81,6 +87,7 @@ public struct HLStatusPill: View {
         case .error: HLColor.statusBad
         case .disconnected: HLText.secondary
         case .unknown: HLText.tertiary
+        case .warning: HLColor.statusWarn
         }
     }
 
@@ -91,6 +98,7 @@ public struct HLStatusPill: View {
         case .error: Capsule().fill(HLColor.statusBad.opacity(0.15))
         case .disconnected: Capsule().fill(Color.clear)
         case .unknown: Capsule().fill(HLText.tertiary.opacity(0.1))
+        case .warning: Capsule().fill(HLColor.statusWarn.opacity(0.15))
         }
     }
 
@@ -111,6 +119,7 @@ public struct HLStatusPill: View {
         HLStatusPill(.error(label: "Token abgelaufen"))
         HLStatusPill(.disconnected(label: "Nicht verbunden"))
         HLStatusPill(.unknown(label: "Wird geprüft …"))
+        HLStatusPill(.warning(label: "Verzögert"))
     }
     .padding()
     .background(HLColor.background)

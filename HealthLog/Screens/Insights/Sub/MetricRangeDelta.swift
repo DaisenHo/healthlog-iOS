@@ -18,11 +18,11 @@ import SwiftUI
 /// **Sentiment — the server's, or none (#115 · 1.3).** The caption used to
 /// decide good or bad itself from a hard-coded per-metric polarity table
 /// (weight "lower is better" for everyone, pulse "lower is better", …). That is
-/// a clinical judgement the app does not own. The only verdict the server
-/// publishes today is the weight one (`tiles.weightTrend.direction`, judged
-/// against the person's own target); the weight page passes it, every other
-/// metric passes `nil` and the caption stays neutral — direction and size are
-/// shown, never tinted as good or bad. Colour stays signal-only (STANDARDS §7):
+/// a clinical judgement the app does not own. Since v1.43 (#135) the series
+/// route sends its own `direction` for every metric; on an older server only
+/// weight has one (`tiles.weightTrend.direction`), and every other metric
+/// passes `nil` and the caption stays neutral: direction and size are shown,
+/// never tinted as good or bad. Colour stays signal-only (STANDARDS §7):
 /// only an ADVERSE server verdict carries `HLColor.statusBad`.
 ///
 /// **Self-suppression (calm doctrine):** with no prior-window data — fewer than
@@ -79,7 +79,20 @@ struct MetricRangeDelta: View {
     }
 
     private func accessibilityText(_ result: Result) -> String {
-        "\(result.deltaText) \(priorLabel)"
+        Self.accessibilityText(result, priorLabel: priorLabel)
+    }
+
+    /// #135 — VoiceOver hears the verdict the tint shows ("a good direction
+    /// for you"), not only the number. Neutral adds nothing.
+    nonisolated static func accessibilityText(_ result: Result, priorLabel: String) -> String {
+        let spoken: TrendSentiment = switch result.sentiment {
+        case .favourable: .positive
+        case .adverse: .negative
+        case .neutral: .neutral
+        }
+        let base = "\(result.deltaText) \(priorLabel)"
+        guard let clause = spoken.spokenClause else { return base }
+        return "\(base), \(clause)"
     }
 
     // MARK: - Pure resolution

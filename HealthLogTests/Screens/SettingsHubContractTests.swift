@@ -103,7 +103,8 @@ struct SettingsHubContractTests {
             HLStatusPill.State.connected(label: "OK"),
             .error(label: "Fehler"),
             .disconnected(label: "Aus"),
-            .unknown(label: "?")
+            .unknown(label: "?"),
+            .warning(label: "!")
         ] {
             _ = HLStatusPill(state).body
         }

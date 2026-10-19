@@ -21,7 +21,8 @@ extension AppContainer {
         deletionReconciler: (any MeasurementDeletionReconciler)?,
         retryQueue: OutboxQueue,
         authenticatedSessionRegistry: AuthenticatedSessionLeaseRegistry,
-        aggregates: (hrBuckets: (any HealthKitHRBucketSyncing)?, dailyStats: (any HealthKitDailyStatsSyncing)?) = (nil, nil)
+        aggregates: (hrBuckets: (any HealthKitHRBucketSyncing)?, dailyStats: (any HealthKitDailyStatsSyncing)?) = (nil, nil),
+        serverFreshness: (@Sendable () async -> [MetricFreshness]?)? = nil
     ) {
         // v0.5.5 W-A3: hand the live FeatureFlagsServicing to HealthKitService
         // so it can honour the `enableDailyStats` gate. (The former Spezi-cutover
@@ -80,12 +81,13 @@ extension AppContainer {
             AppContainer.installAppOwnedHealthCollection(
                 keychain: keychainForSpezi,
                 registry: authenticatedSessionRegistry,
-                retryQueue: retryQueue,
                 uploader: uploader,
-                deliveryFollowUp: Self.deliveryFollowUp(aggregates)
+                deliveryFollowUp: Self.deliveryFollowUp(aggregates),
+                serverFreshness: serverFreshness
             )
         #else
             _ = aggregates
+            _ = serverFreshness
         #endif
     }
 

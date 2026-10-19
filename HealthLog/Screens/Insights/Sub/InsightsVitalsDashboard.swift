@@ -116,7 +116,7 @@ struct InsightsVitalsDashboard: View {
                         .font(.hlHeadline)
                         .foregroundStyle(HLText.primary)
                     Spacer(minLength: HLSpace.sm)
-                    TrendChip(trend: tile.trend, polarity: tile.polarity)
+                    TrendChip(trend: tile.trend, polarity: tile.polarity, mode: tile.mode)
                     Text(tile.valueText)
                         .font(.hlHeadline)
                         .monospacedDigit()
@@ -162,6 +162,8 @@ struct InsightsVitalsDashboard: View {
         let valueText: String
         let trend: TrendIndicator
         let polarity: MetricKindDescriptor.TrendPolarity
+        /// #135 — the server's verdict on this card's change, when it sends one.
+        var mode: TrendChip.Mode = .polarityAware
         let series: [Double]
         let accessibilityLabel: String
         var id: String {
@@ -200,8 +202,9 @@ struct InsightsVitalsDashboard: View {
                 valueText: valueText,
                 trend: metric.trend,
                 polarity: descriptor.trendPolarity,
+                mode: metric.verdictOrPolarityMode,
                 series: metric.sparkline,
-                accessibilityLabel: "\(title), \(valueText)"
+                accessibilityLabel: [title, valueText, metric.spokenTrendWithVerdict].compactMap(\.self).joined(separator: ", ")
             )
         }
     }

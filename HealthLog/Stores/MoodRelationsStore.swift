@@ -105,5 +105,54 @@ public final class MoodRelationsStore {
     public func clearOnLogout() {
         response = nil
         hasSettledOnce = false
+        stabilityByDays = [:]
+    }
+
+    // MARK: - #126 P2 — stability for the chosen period
+
+    /// The server's stability per period, as answered for `?days=`.
+    public private(set) var stabilityByDays: [Int: MoodRelationsResponse] = [:]
+
+    /// The periods the server cuts stability to.
+    public static let stabilityWindows: Set<Int> = [30, 90, 180, 365]
+
+    /// Reads stability for `days` once per period. A failure keeps what was
+    /// there (the gauge then follows the rule in ``stability(forDays:)``).
+    public func loadStability(days: Int) async {
+        guard Self.stabilityWindows.contains(days), stabilityByDays[days] == nil else { return }
+        if let answer = try? await repo.stability(days: days) {
+            stabilityByDays[days] = answer
+        }
+    }
+
+    /// The stability to show beside a period of `days`: only a value the
+    /// server computed for exactly that window. An older server (no
+    /// `stabilityWindowDays`) only ever has the year, which keeps showing as
+    /// before.
+    public func stability(forDays days: Int) -> MoodStability? {
+        if let answer = stabilityByDays[days], answer.stabilityWindowDays == days {
+            return answer.stability
+        }
+        guard let response else { return nil }
+        if let window = response.stabilityWindowDays {
+            return window == days ? response.stability : nil
+        }
+        return response.stability
+    }
+
+    /// INT-Q (#136 with #126 P2) — the server's mood patterns for a period of
+    /// `days`, by the same rule as ``stability(forDays:)``: since v1.43 the
+    /// server cuts `patterns` to the `?days` window, so only an answer for
+    /// exactly that window is shown. `nil` hides the section (older server,
+    /// or the period's answer has not arrived yet).
+    public func patterns(forDays days: Int) -> [MoodPattern]? {
+        if let answer = stabilityByDays[days], answer.stabilityWindowDays == days {
+            return answer.patterns
+        }
+        guard let response else { return nil }
+        if let window = response.stabilityWindowDays {
+            return window == days ? response.patterns : nil
+        }
+        return response.patterns
     }
 }

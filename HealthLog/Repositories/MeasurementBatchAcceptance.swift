@@ -68,6 +68,13 @@ public enum MeasurementBatchAcceptance {
         /// v1.37.12 — an earlier `stats:` row lost to a later row of the same
         /// stable identity in the same request.
         public static let supersededInBatch = "superseded_in_batch"
+        /// X4 (v1.43, #138) — an hourly `stats:` row whose `startDate` is
+        /// not the start of that local hour in the account's zone.
+        public static let hourBucketMisaligned = "hour_bucket_misaligned"
+        /// X4 — an hourly row for a type or source the hour form does not take.
+        public static let hourBucketUnsupportedType = "hour_bucket_unsupported_type"
+        /// X4 — an hourly row more than 400 days back.
+        public static let hourBucketTooOld = "hour_bucket_too_old"
     }
 
     /// The prefix of a mutable daily-statistics upsert identity
@@ -98,10 +105,18 @@ public enum MeasurementBatchAcceptance {
         /// complete, and the per-sample importers hold that single index
         /// separately (see `HealthSampleConsumption`), which keeps a page of 500
         /// from retrying because one row named a type the server cannot map yet.
+        ///
+        /// X4 (1.3) — the three hour-bucket reasons are deterministic refusals
+        /// of one row (the same row re-sent is skipped the same way), so they
+        /// are terminal too. Holding them would re-post a misaligned hour on
+        /// every sweep.
         public static let deployedMeasurementRoute = Policy(terminalSkipReasons: [
             Reason.unmappableIdentifier,
             Reason.valueOutOfRange,
-            Reason.unstableExternalId
+            Reason.unstableExternalId,
+            Reason.hourBucketMisaligned,
+            Reason.hourBucketUnsupportedType,
+            Reason.hourBucketTooOld
         ])
     }
 

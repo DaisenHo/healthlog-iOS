@@ -373,32 +373,75 @@ public extension AppContainer {
         ConsentReceiptRepository(api: api)
     }
 
-    /// Reconciles the SERVER-side AI consent receipt with the device grant.
+    /// #143 (server v1.43.2) — the launch / shell-mount / Coach pass. It
+    /// only READS the standing consent (`ai.consent` on `GET /api/auth/me`,
+    /// already loaded by ``ModuleGate``) and never sends a receipt.
     ///
-    /// **Why (RCA Bug 2, per-metric Einschätzung gone).** Server v1.12.1
-    /// enforcement (live since ~2026-06-05) requires an active
-    /// `ConsentReceipt` before any LLM egress on a server-managed provider
-    /// chain — and the default chain ends in the operator's global key, so the
-    /// per-metric `*-status` family fails closed to the no-key fallback for an
-    /// account with no receipt on file. The receipt API was built for the iOS
-    /// client to call, but no client ever minted one, so every metric sub-page
-    /// lost its Einschätzung prose (the overview Tagesbriefing survived via
-    /// the deterministic narrative fallback).
+    /// **Why.** Until 1.3.0 this pass minted `ai_full` on every shell mount
+    /// whenever the device held a grant. That re-created a consent the person
+    /// had withdrawn on the web, and turned a grant for their own provider into
+    /// consent for the operator's key. The server now refuses such a mint
+    /// (400 `consent.ai.confirmRequired`); a receipt comes only from the Accept
+    /// tap (``recordAcceptedAIConsent(repository:refresh:)``).
     ///
-    /// Called (a) right after a grant lands (the shell + Coach consent-sheet
-    /// accept paths) and (b) once per shell mount while a grant exists — the
-    /// launch pass heals installs whose grant predates this fix without any
-    /// re-consent dance (the device grant record IS the user's informed
-    /// consent act; the receipt re-asserts it server-side for the audit
-    /// trail). No-op when no device grant exists or no server is reachable
-    /// (best-effort; the next launch retries).
+    /// Local state follows the server: when it says `needed` while the device
+    /// still holds a server-route grant, the grant is dropped HERE ONLY (no
+    /// server revoke, there is nothing to revoke), the choice stays visible as
+    /// a pending online intent, and the shell asks once. A decline after that
+    /// is honoured like any other. `given`, `not_needed` and a server without
+    /// `ai.consent` change nothing. BYO-key grants (device to provider) are
+    /// never touched.
     ///
-    /// `repository` is a test seam only (J1): the container's own client
-    /// talks to the network, a test hands in one on the mock transport.
-    func syncServerAIConsentReceipt(repository: ConsentReceiptRepository? = nil) async {
-        guard aiConsentStore.isAnyProviderGranted() else { return }
+    /// Returns `true` when it dropped a local grant.
+    @discardableResult
+    func reconcileAIConsentWithServer() -> Bool {
+        guard aiCapabilityGate.standingConsent?.verdict == .needed,
+              aiConsentStore.isAnyProviderGranted() else { return false }
+        for provider in AIProvider.allCases where provider != .unconfigured {
+            aiConsentStore.revoke(for: provider)
+        }
+        aiConsentStore.revokeServerManaged()
+        aiConsentStore.setOnlineIntentPending(true)
+        HLLog.security.info("AI consent: server reports consent needed; local grant set aside, asking once")
+        return true
+    }
+
+    /// #143 — the server half of the person's **Accept tap** (shell sheet
+    /// and the Coach's nested sheet). The ONLY caller of
+    /// `POST /api/consent/ai`, which carries `confirm: true`, at most once per tap:
+    ///
+    /// - `ai.consent` says `not_needed` (own provider): nothing is sent.
+    /// - `given`: nothing is sent.
+    /// - `needed`: one POST.
+    /// - no `ai.consent` (server before v1.43.2): the older path, read
+    ///   `GET /api/consent/ai/latest` and POST only when no receipt is active.
+    ///
+    /// After a recorded receipt, or a 400 `consent.ai.confirmRequired`, the
+    /// standing state is re-read (`refresh`, default ``ModuleGate/load()``) so
+    /// the capabilities follow the server. Nothing here raises an error banner.
+    ///
+    /// `repository` and `refresh` are test seams only.
+    @discardableResult
+    func recordAcceptedAIConsent(
+        repository: ConsentReceiptRepository? = nil,
+        refresh: (@MainActor () async -> Void)? = nil
+    ) async -> AIConsentReceiptOutcome {
+        guard aiConsentStore.isAnyProviderGranted() else { return .noGrant }
+        let verdict = aiCapabilityGate.standingConsent?.verdict
+        switch verdict {
+        case .notNeeded: return .notNeeded
+        case .given: return .alreadyOnFile
+        case .needed, .unknown, nil: break
+        }
         let repo = repository ?? makeConsentReceiptRepository()
-        await repo.ensureFullConsentReceipt(artefact: aiConsentArtefact())
+        let outcome = await repo.recordAcceptedConsent(
+            artefact: aiConsentArtefact(),
+            checkExisting: verdict != .needed
+        )
+        if outcome == .recorded || outcome == .needsExplicitConsent {
+            if let refresh { await refresh() } else { await moduleGate.load() }
+        }
+        return outcome
     }
 
     /// J1 — the shell consent sheet's **Accept**, as one step instead of a
@@ -406,8 +449,8 @@ public extension AppContainer {
     ///
     /// The receipt is best-effort by design: a refused or failed
     /// `POST /api/consent/ai` (rate limit, a demo edge allowlist, offline)
-    /// leaves the device grant standing, so the sheet does not come back —
-    /// the next launch retries the receipt, never the question.
+    /// leaves the device grant standing. #143: nothing retries it silently;
+    /// the server's `ai.consent` decides whether the sheet asks again.
     ///
     /// Bug 2 (v0.14.8) — a stray `.unconfigured` never grants: the live config
     /// is re-read (it may have arrived since the sheet opened) and only a real
@@ -458,7 +501,7 @@ public extension AppContainer {
 
 /// J1 — what ``AppContainer/acceptAIConsent(_:)`` did.
 enum AIConsentAcceptOutcome: Equatable {
-    /// The grant is on file; the sheet closes and the receipt sync runs.
+    /// The grant is on file; the sheet closes and the tap's receipt is recorded.
     case granted
     /// The Keychain refused the write (logged by the store). The sheet closes
     /// like before; nothing leaves the device because no grant exists.

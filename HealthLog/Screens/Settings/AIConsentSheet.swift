@@ -22,6 +22,11 @@ struct AIConsentSheet: View {
     /// Defaults to `.serverMediated` because both current call sites (the shell
     /// gate + the Coach server-fallback) are server-mediated grants.
     var context: Context = .serverMediated
+    /// #143 — the operator-held services the server names in
+    /// `ai.consent.recipients` while it reports `needed` (`OpenAI`,
+    /// `Anthropic`, an endpoint host). When present, the server-mediated copy
+    /// names them as where the data goes instead of "its AI provider".
+    var recipients: [String] = []
     let onAccept: () -> Void
     let onDecline: () -> Void
 
@@ -193,6 +198,9 @@ struct AIConsentSheet: View {
     private var subProcessorDisclosure: String {
         switch context {
         case .serverMediated:
+            if let names = recipientList {
+                return String(format: String(localized: "consent.legal.subProcessor.userChosen"), names)
+            }
             return String(localized: "consent.legal.subProcessor.server")
         case .userChosen:
             let providerName = switch provider {
@@ -220,8 +228,20 @@ struct AIConsentSheet: View {
             String(
                 localized: "HealthLog sends excerpts of your health data — recent measurements, medications, sleep, and mood — to your server."
             )
-        let forwarded = String(localized: "Your server forwards them to its configured AI provider to generate personal insights.")
+        let forwarded = if let names = recipientList {
+            String(format: String(localized: "consent.recipients.forwarded"), names)
+        } else {
+            String(localized: "Your server forwards them to its configured AI provider to generate personal insights.")
+        }
         return sent + " " + forwarded
+    }
+
+    /// #143 — the server-named recipients as one locale-formatted list
+    /// ("OpenAI und Anthropic"), `nil` when the server named none.
+    private var recipientList: String? {
+        let names = recipients.filter { !$0.isEmpty }
+        guard !names.isEmpty else { return nil }
+        return names.formatted(.list(type: .and))
     }
 
     /// Bug 5 (v0.14.8) — the "who receives this data" bullet. Server-mediated
@@ -230,7 +250,11 @@ struct AIConsentSheet: View {
     private var recipientBulletText: String {
         switch context {
         case .serverMediated:
-            String(localized: "Your server receives this data and forwards it to its AI provider under that provider's privacy policy.")
+            if let names = recipientList {
+                String(format: String(localized: "consent.recipients.bullet"), names)
+            } else {
+                String(localized: "Your server receives this data and forwards it to its AI provider under that provider's privacy policy.")
+            }
         case .userChosen:
             String(localized: "Your provider receives this data and handles it under their own privacy policy.")
         }

@@ -54,6 +54,17 @@ public actor OAuthIntegrationRepository {
             case .fitbit: false
             }
         }
+
+        /// #139 — the route behind `health.action == "resume"`, or `nil` when
+        /// the provider has none. The server has one for Fitbit (and Google
+        /// Health, Withings, WHOOP); Oura, Polar and Strava have no resume
+        /// route, so a `resume` action from them shows no button.
+        var resumePath: String? {
+            switch self {
+            case .fitbit: "/api/integrations/fitbit/resume"
+            case .oura, .polar, .strava: nil
+            }
+        }
     }
 
     private let api: APIClientProtocol
@@ -104,6 +115,15 @@ public actor OAuthIntegrationRepository {
             maxRetries: 0
         )
         return try await api.send(req)
+    }
+
+    /// #139 — clear a parked connection (`POST /api/integrations/<provider>/resume`,
+    /// same contract as WHOOP's: no body, `{ resumed, wasParked }`). Only for a
+    /// provider with a ``Provider/resumePath``.
+    public func resume() async throws {
+        guard let path = provider.resumePath else { return }
+        let req: APIRequest<WhoopResumeResult> = try .post(path, body: EmptyBody())
+        _ = try await api.send(req)
     }
 
     // MARK: - BYO credentials (per-user OAuth client id/secret)

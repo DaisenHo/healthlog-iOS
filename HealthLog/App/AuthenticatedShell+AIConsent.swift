@@ -28,13 +28,23 @@ extension AuthenticatedShell {
         // Bug 2 (v0.14.8) — don't gate against a provider that isn't loaded yet
         // (`config == nil`); the shell `.task` loads it and the
         // `.onChange(of: config)` re-runs this once it arrives. The decision
-        // itself is `AIConsentRequest.pending(config:consent:honourDecline:)`
+        // itself is `AIConsentRequest.pending(config:consent:honourDecline:standing:)`
         // (J1 — pure, so the relaunch round trip is testable).
         pendingConsentProvider = AIConsentRequest.pending(
             config: container.aiProviderStore.config,
             consent: container.aiConsentStore,
-            honourDecline: true
+            honourDecline: true,
+            standing: container.aiCapabilityGate.standingConsent
         )
+    }
+
+    /// #143 — the shell mount and every change of the server's
+    /// `ai.consent`: local consent follows the server (read-only, never sends a
+    /// receipt; see `AppContainer.reconcileAIConsentWithServer()`), then the
+    /// automatic gate decides whether to ask.
+    func reconcileConsentWithServer() {
+        container?.reconcileAIConsentWithServer()
+        evaluateConsentGate()
     }
 
     /// Explicit-CTA re-prompt path — fired when the user opted into the
@@ -69,7 +79,8 @@ extension AuthenticatedShell {
         pendingConsentProvider = AIConsentRequest.pending(
             config: container.aiProviderStore.config,
             consent: container.aiConsentStore,
-            honourDecline: false
+            honourDecline: false,
+            standing: container.aiCapabilityGate.standingConsent
         )
     }
 }
@@ -87,6 +98,10 @@ struct AIConsentRequest: Identifiable, Hashable {
     /// scope instead of a concrete provider, and the sheet uses the
     /// provider-agnostic `.serverMediated` copy.
     var serverManaged: Bool = false
+    /// #143 — the operator-held services the server named in
+    /// `ai.consent.recipients` while it reported `needed`; the sheet names
+    /// them as where the data goes. Empty otherwise.
+    var recipients: [String] = []
     var id: String {
         serverManaged ? "__server_managed__" : provider.rawValue
     }
@@ -104,21 +119,30 @@ extension AIConsentRequest {
     ///
     /// A grant already on file always wins: this is what keeps the sheet from
     /// coming back on the next launch once Accept landed.
+    ///
+    /// #143 — `standing` is the server's `ai.consent` (v1.43.2, `nil`
+    /// before). `not_needed` never raises the sheet by itself (the explicit
+    /// prompt still does, for the device-side disclosure); `needed` names its
+    /// recipients. A local grant the server no longer backs is set aside by
+    /// `AppContainer.reconcileAIConsentWithServer()` before this runs.
     @MainActor
     static func pending(
         config: AIProviderConfig?,
         consent: AIConsentStore,
-        honourDecline: Bool
+        honourDecline: Bool,
+        standing: AIStandingConsent? = nil
     ) -> AIConsentRequest? {
         guard let config else { return nil }
+        if honourDecline, standing?.verdict == .notNeeded { return nil }
+        let recipients = standing?.verdict == .needed ? standing?.recipientNames ?? [] : []
         if config.usesProviderOpaqueAIConsent {
             guard !consent.hasServerManagedConsent() else { return nil }
             if honourDecline, consent.wasServerManagedDeclined() { return nil }
-            return AIConsentRequest(provider: .unconfigured, serverManaged: true)
+            return AIConsentRequest(provider: .unconfigured, serverManaged: true, recipients: recipients)
         }
         guard case let .provider(provider) = config.aiConsentTarget else { return nil }
         guard !consent.hasConsent(for: provider) else { return nil }
         if honourDecline, consent.wasDeclined(for: provider) { return nil }
-        return AIConsentRequest(provider: provider)
+        return AIConsentRequest(provider: provider, recipients: recipients)
     }
 }

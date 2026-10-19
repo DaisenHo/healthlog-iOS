@@ -277,9 +277,13 @@ struct LabsScreen: View {
             // `BiomarkerDetailScreen`. The named-analyte buckets are the index;
             // the blank-analyte bucket (legacy free-text rows with no analyte)
             // still renders its readings inline since they have no detail page.
+            //
+            // #130 — the index rows come from `markerIndex`: the server's
+            // per-marker overview (whole history, never cut at a page size),
+            // or the grouped `labs` page against an older server.
             Section {
-                ForEach(store.groupedByAnalyte.filter { $0.analyte != nil }) { group in
-                    biomarkerIndexRow(group, store: store)
+                ForEach(store.markerIndex) { entry in
+                    biomarkerIndexRow(entry, store: store)
                 }
             }
             if let blank = store.groupedByAnalyte.first(where: { $0.analyte == nil }) {
@@ -361,27 +365,19 @@ struct LabsScreen: View {
     /// matching catalog ``BiomarkerDTO`` (if the group's rows are linked) is
     /// passed through so the detail page can drive the editor gear + explainer.
     @ViewBuilder
-    private func biomarkerIndexRow(_ group: LabsStore.AnalyteGroup, store: LabsStore) -> some View {
-        let analyte = group.analyte ?? ""
-        let marker = linkedBiomarker(for: group, store: store)
+    private func biomarkerIndexRow(_ entry: LabsStore.MarkerIndexEntry, store: LabsStore) -> some View {
+        let marker = entry.biomarkerId.flatMap { id in store.biomarkers.first { $0.id == id } }
         NavigationLink {
-            BiomarkerDetailScreen(store: store, analyte: analyte, biomarker: marker)
-        } label: {
-            BiomarkerIndexRow(
-                name: marker?.name ?? analyte,
-                latest: group.rows.first,
-                count: group.rows.count
+            BiomarkerDetailScreen(
+                store: store,
+                analyte: entry.analyte,
+                biomarker: marker,
+                overviewLatest: entry.latest
             )
+        } label: {
+            BiomarkerIndexRow(name: entry.name, latest: entry.latest, count: entry.count)
         }
         .accessibilityIdentifier("labs.byType.item")
-    }
-
-    /// Resolve the catalog biomarker for an analyte group: the first row's
-    /// `biomarkerId` resolved against the loaded catalog. `nil` for free-text
-    /// (unlinked) analytes — the detail page falls back to the analyte name.
-    private func linkedBiomarker(for group: LabsStore.AnalyteGroup, store: LabsStore) -> BiomarkerDTO? {
-        guard let id = group.rows.first(where: { $0.biomarkerId != nil })?.biomarkerId else { return nil }
-        return store.biomarkers.first { $0.id == id }
     }
 
     private func deleteRow(_ row: LabResultDTO, store: LabsStore) async {
@@ -506,6 +502,7 @@ struct LabResultRow: View {
                 Text(LabsDateFormat.mediumDate(row.takenAt))
                     .font(.hlSubhead)
                     .foregroundStyle(HLText.secondary)
+                LabConversionNote(conversion: LabConversion(row)) // #126 3.5
             }
             Spacer(minLength: HLSpace.sm)
             VStack(alignment: .trailing, spacing: HLSpace.xxs) {

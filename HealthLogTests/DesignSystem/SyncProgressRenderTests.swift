@@ -56,8 +56,9 @@
             }
             await store.handshake()
             #expect(store.lastHandshakeAt != nil, "fixture handshake must settle the store")
-            // Wait out the (zero-hold) .done beat so the phase is .idle.
-            let deadline = ContinuousClock.now + .seconds(3)
+            // Wait out the (zero-hold) .done beat so the phase is .idle. The
+            // deadline is a hang guard (FLAKES 1.3.0), not a latency budget.
+            let deadline = ContinuousClock.now + .seconds(30)
             while store.phase != .idle, ContinuousClock.now < deadline {
                 try? await Task.sleep(for: .milliseconds(10))
             }

@@ -16,13 +16,17 @@ struct SyncTriggerContextTests {
         #expect(context.current == .foreground)
     }
 
-    @Test("Ein offenes Fenster gewinnt; nach dem Schließen fällt es auf `foreground` zurück")
+    /// W5 (1.3, #126 1.2) — until 1.2 the closed window fell back to
+    /// `foreground`; with the app state unknown it now keeps the word of the
+    /// window that just closed (the server log showed a `foreground` batch
+    /// seconds after nearly every `background` group).
+    @Test("Ein offenes Fenster gewinnt; nach dem Schließen gilt bei unbekanntem App-Zustand sein Wort")
     func scopeWinsAndUnwinds() {
         let context = SyncTriggerContext()
         context.begin(.background)
         #expect(context.current == .background)
         context.end(.background)
-        #expect(context.current == .foreground)
+        #expect(context.current == .background)
         #expect(context.openScopeCount == 0)
     }
 
@@ -37,7 +41,8 @@ struct SyncTriggerContextTests {
         // mit abräumen.
         #expect(context.current == .background)
         context.end(.background)
-        #expect(context.current == .foreground)
+        // W5 — the closed window keeps its word while the app state is unknown.
+        #expect(context.current == .background)
     }
 
     @Test("`end` räumt gezielt das eigene Fenster ab, nicht blind das letzte")
@@ -60,15 +65,21 @@ struct SyncTriggerContextTests {
                 throw Boom()
             }
         }
-        #expect(context.current == .foreground)
+        // W5 — closed (the count says so), and no longer `foreground` after it.
+        #expect(context.current == .background)
         #expect(context.openScopeCount == 0)
     }
 
     /// V1 (1.2) — `manual` kam mit Server v1.42.0 (#123). Der Vertrag bleibt
-    /// geschlossen: genau die vier Wörter, die die Batch-Route kennt.
-    @Test("Genau die vier Vertragswerte existieren (manual seit Server v1.42)")
+    /// geschlossen: genau die Wörter, die die Batch-Route kennt.
+    /// X4 (1.3) — `backfill` kam mit Server v1.43.0 (#138), hinter
+    /// `features.syncTriggerBackfill`.
+    @Test("Genau die fünf Vertragswerte existieren (manual seit v1.42, backfill seit v1.43)")
     func wireVocabularyIsClosed() {
-        #expect(SyncTrigger.allCases.map(\.rawValue).sorted() == ["background", "foreground", "manual", "push"])
+        #expect(
+            SyncTrigger.allCases.map(\.rawValue).sorted()
+                == ["backfill", "background", "foreground", "manual", "push"]
+        )
     }
 
     @Test("V1: `manual` geht nur an einen Server ≥ 1.42 auf den Draht, sonst als `foreground`")
@@ -145,10 +156,11 @@ struct SyncTriggerContextTests {
                 return context.current
             }
         }
-        // Das Fenster ist zu; ohne Bindung wäre die Antwort `foreground`.
+        // Das Fenster ist zu; die Bindung trägt den Auslöser weiter.
         #expect(context.openScopeCount == 0)
         #expect(await late.value == .background)
-        #expect(context.current == .foreground)
+        // W5 — unbound work after the window: its word, not `foreground`.
+        #expect(context.current == .background)
     }
 
     @Test("V1: eine Bindung färbt keine gleichzeitige, fremde Arbeit ein")
@@ -177,5 +189,57 @@ struct SyncTriggerContextTests {
             #expect(first.current == .push)
             #expect(second.current == .foreground)
         }
+    }
+
+    // MARK: - W5 (1.3, #126 1.2): no `foreground` after a closed window
+
+    @Test("W5: nach einem Hintergrund-Fenster ohne gemeldeten App-Zustand geht `background` auf den Draht")
+    func closedBackgroundWindowStaysBackground() {
+        let context = SyncTriggerContext()
+        context.begin(.background)
+        context.end(.background)
+        #expect(context.current == .background)
+        #expect(context.wireValue == .background)
+    }
+
+    @Test("W5: im Hintergrund bleibt die Nacharbeit eines Push-Wakes `push`")
+    func pushWorkAfterItsWindowStaysPush() {
+        let context = SyncTriggerContext()
+        context.noteApplicationState(backgrounded: true)
+        context.begin(.push)
+        context.end(.push)
+        #expect(context.current == .push)
+        // A later state report outranks the old push window.
+        context.noteApplicationState(backgrounded: true)
+        #expect(context.current == .background)
+    }
+
+    @Test("W5: ein Push-Fenster, das vor dem Wechsel in den Hintergrund zuging, färbt nichts")
+    func pushWindowBeforeBackgroundingIsBackground() {
+        let context = SyncTriggerContext()
+        context.begin(.push)
+        context.end(.push)
+        context.noteApplicationState(backgrounded: true)
+        #expect(context.current == .background)
+    }
+
+    @Test("W5: `foreground` nur, wenn die App nachweislich vorne ist")
+    func foregroundOnlyWhenTheAppIsInFront() {
+        let context = SyncTriggerContext()
+        context.noteApplicationState(backgrounded: false)
+        context.begin(.background)
+        context.end(.background)
+        #expect(context.current == .foreground)
+        context.noteApplicationState(backgrounded: true)
+        #expect(context.current == .background)
+    }
+
+    @Test("W5: kein Fenster und kein Zustand bleibt die alte Restmenge `foreground`")
+    func noWindowNoStateIsForeground() {
+        let context = SyncTriggerContext()
+        #expect(context.current == .foreground)
+        context.begin(.manual)
+        context.end(.manual)
+        #expect(context.current == .manual)
     }
 }

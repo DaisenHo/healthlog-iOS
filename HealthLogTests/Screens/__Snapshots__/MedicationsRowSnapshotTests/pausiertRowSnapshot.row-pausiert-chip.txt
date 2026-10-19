@@ -6,6 +6,7 @@
     - treatmentClass: nil
     - category: nil
     - categoryLabel: nil
+    - remindersActive: nil
     - dosesPerUnit: nil
     - unitsPerDose: nil
     ▿ schedule: HealthLog.MedicationSchedule

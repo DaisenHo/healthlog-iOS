@@ -16,9 +16,11 @@ import Foundation
 /// Tagesbriefing survived only because it falls back to the deterministic
 /// period narrative).
 ///
-/// This repo is the thin wire wrapper; `AppContainer.syncServerAIConsentReceipt`
-/// drives WHEN a receipt is minted (on grant + once per launch while granted,
-/// healing existing granted installs) and revoked (explicit master-off).
+/// This repo is the thin wire wrapper. #143 (server v1.43.2): a receipt is
+/// minted ONLY from the person's Accept tap (`AppContainer.recordAcceptedAIConsent`,
+/// body `confirm: true`); launch, shell mount and the Coach read the standing
+/// state from `ai.consent` on `GET /api/auth/me` and never mint. Revoked on the
+/// explicit master-off.
 public actor ConsentReceiptRepository {
     private let api: APIClientProtocol
 
@@ -46,9 +48,15 @@ public actor ConsentReceiptRepository {
     /// Mints a fresh `ai_full` receipt documenting the in-app informed-consent
     /// acceptance. `artefact` is opaque to the server (audit-trail storage);
     /// we send a small JSON record of the consent act.
+    ///
+    /// #143 (server v1.43.2) — the body carries `confirm: true`, so this is
+    /// the person's own consent act. Call it ONLY from an Accept tap (through
+    /// ``recordAcceptedConsent(artefact:checkExisting:)``), never from a launch,
+    /// mount or sync path.
     public func mintFullConsentReceipt(artefact: String, signedAt: Date = .now) async throws {
         let body = ConsentReceiptPostBody(
             kind: Self.fullConsentKind,
+            confirm: true,
             artefact: artefact,
             signedAt: Self.isoTimestamp(signedAt)
         )
@@ -56,23 +64,39 @@ public actor ConsentReceiptRepository {
         _ = try await api.send(req)
     }
 
-    /// Idempotent ensure: GET the latest receipts; mint the master receipt only
-    /// when none is active. Returns `true` when an active receipt exists after
-    /// the call (pre-existing or freshly minted). Best-effort — any transport
-    /// failure is logged and reported as `false`; callers never surface it
-    /// (the next launch retries).
-    @discardableResult
-    public func ensureFullConsentReceipt(artefact: String) async -> Bool {
+    /// #143 — the server half of ONE Accept tap. `checkExisting` reads
+    /// `GET /api/consent/ai/latest` first and sends nothing when an active
+    /// `ai_full` receipt is already on file (a server without `ai.consent`);
+    /// a server that said `needed` skips that read. At most one
+    /// `POST /api/consent/ai` per call. Best-effort: a failure is logged and
+    /// reported, never thrown, and never shown as an error banner.
+    public func recordAcceptedConsent(artefact: String, checkExisting: Bool) async -> AIConsentReceiptOutcome {
         do {
-            if try await hasActiveFullConsentReceipt() { return true }
+            if checkExisting, try await hasActiveFullConsentReceipt() { return .alreadyOnFile }
             try await mintFullConsentReceipt(artefact: artefact)
-            HLLog.api.info("AI consent receipt minted server-side (ai_full)")
-            return true
+            HLLog.api.info("AI consent receipt recorded from the Accept tap (ai_full)")
+            return .recorded
+        } catch let error as HLError where Self.isConfirmRequired(error) {
+            // Not a failure to surface: the server asks for the person's own
+            // confirmation. The standing state comes from `ai.consent`.
+            HLLog.api.info("AI consent receipt refused: explicit confirmation required")
+            return .needsExplicitConsent
         } catch {
             let detail = LogSanitizer.redact(String(describing: error))
-            HLLog.api.warning("AI consent receipt sync failed: \(detail)")
-            return false
+            HLLog.api.warning("AI consent receipt not recorded: \(detail)")
+            return .failed
         }
+    }
+
+    /// The v1.43.2 wire code for "consent is recorded only from an explicit
+    /// confirmation" (400, nothing written).
+    public static let confirmRequiredErrorCode = "consent.ai.confirmRequired"
+
+    static func isConfirmRequired(_ error: HLError) -> Bool {
+        if case let .server(status, code, _) = error, status == 400, code == confirmRequiredErrorCode {
+            return true
+        }
+        return false
     }
 
     /// Master revoke — `DELETE /api/consent/ai/latest` (no `kind` query)
@@ -108,9 +132,11 @@ public actor ConsentReceiptRepository {
 // MARK: - Wire shapes (server v1.4.40 SB-10)
 
 /// POST body for `/api/consent/ai` — `consentPostBody` zod schema:
-/// `{ kind, artefact (non-empty, ≤64 KB UTF-8), signedAt (ISO-8601 + offset) }`.
+/// `{ kind, confirm, artefact (non-empty, ≤64 KB UTF-8), signedAt (ISO-8601 + offset) }`.
+/// `confirm` must be `true` since v1.43.2 (else 400 `consent.ai.confirmRequired`).
 struct ConsentReceiptPostBody: Encodable {
     let kind: String
+    let confirm: Bool
     let artefact: String
     let signedAt: String
 }
@@ -142,4 +168,21 @@ public struct ConsentReceiptsByKindDTO: Decodable, Sendable {
 struct ConsentReceiptMintedDTO: Decodable {
     let id: String
     let receipt: ConsentReceiptDTO
+}
+
+/// #143 — what one Accept tap did on the server.
+public enum AIConsentReceiptOutcome: Equatable, Sendable {
+    /// `POST /api/consent/ai` with `confirm: true` minted a receipt.
+    case recorded
+    /// An active `ai_full` receipt was already on file; nothing was sent.
+    case alreadyOnFile
+    /// The server reported no operator-held recipient (`not_needed`); nothing was sent.
+    case notNeeded
+    /// No device grant to back a receipt (the Keychain refused it); nothing was sent.
+    case noGrant
+    /// 400 `consent.ai.confirmRequired`: the server wants the person's explicit
+    /// consent. Not an error banner.
+    case needsExplicitConsent
+    /// Transport failure or another refusal (logged).
+    case failed
 }

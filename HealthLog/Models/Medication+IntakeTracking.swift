@@ -42,8 +42,13 @@ public extension Medication {
     /// **E1** — whether the server behind `medications` knows `trackIntake`
     /// (v1.39.1+): any row it served carries the field. The add sheet offers
     /// the switch only then; with no row to tell, it does not guess.
-    static func serverKnowsTrackIntake(_ medications: [Medication]) -> Bool {
-        medications.contains { $0.trackIntake != nil }
+    /// #126 P2 (v1.42.0) — on an account with no medication yet the server's
+    /// own `features.trackIntake` tells.
+    static func serverKnowsTrackIntake(
+        _ medications: [Medication],
+        features: ServerFeatures? = ServerFeatureMirror.shared.current
+    ) -> Bool {
+        features?.trackIntake == true || medications.contains { $0.trackIntake != nil }
     }
 
     /// **v1.39.1 (#1033)** — this medication with ``schedule`` swapped for
@@ -56,6 +61,14 @@ public extension Medication {
     func carryingCategoryLabel(_ label: String?) -> Medication {
         var copy = self
         copy.categoryLabel = label
+        return copy
+    }
+
+    /// v1.42.2: a field-by-field copy keeps the server's reminder decision
+    /// (``remindersActive`` is not part of the memberwise initialiser either).
+    func carryingRemindersActive(_ value: Bool?) -> Medication {
+        var copy = self
+        copy.remindersActive = value
         return copy
     }
 
@@ -95,7 +108,7 @@ public extension Medication {
             runwayDays: runwayDays,
             courseStatus: courseStatus,
             intakeActionable: intakeActionable
-        ).carryingCategoryLabel(categoryLabel)
+        ).carryingCategoryLabel(categoryLabel).carryingRemindersActive(remindersActive)
     }
 }
 

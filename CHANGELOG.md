@@ -2,6 +2,26 @@
 
 > This changelog resumes at v0.6.2; earlier detailed release notes are not included in this repository.
 
+## 1.3.0 (296) - 2026-10-19
+
+HealthLog Companion App 1.3.0 is available on the [App Store](https://apps.apple.com/app/id6769501341). This source release corresponds to the published build. It reads the HealthLog server v1.43 contract and keeps working with v1.42 servers.
+
+- New data goes first. On every sync each Apple Health type sends the last two days before it works backwards through its history in date windows, so years of history no longer hold back new nights and readings. Settings, Apple Health has "Sync everything now" for the whole history in one go, and Sync Diagnostics shows how far back each type has reached (#25).
+- "Entries waiting for a connection" counts only entries that will still be sent. Entries held back show their reason in Sync Diagnostics with "Send again", and uploads cut off by a network drop, a timeout or the end of a background window are sent again on their own.
+- Medications and doses logged in Apple Health are imported in the background, from background refresh, silent push and Apple Health delivery, not only on "Sync all". Supplements the server marks as taken no longer get a local reminder.
+- With a v1.43 server, steps, active energy, distance and flights also go up hour by hour for today and yesterday, and the last 30 days follow once. Daily totals are unchanged.
+- Sync Diagnostics names the source of every card (your server, this iPhone across launches, this iPhone since launch) and says whether a time is the last check or the last new value. The last background delivery stays visible after opening the app, medication doses have their own row, and "Copy report" puts a plain text summary without readings on the clipboard.
+- AI consent is given only by tapping Accept. Opening the app or the Coach only reads the consent the server has, so a consent withdrawn on the web stays withdrawn, and the consent sheet names the recipients the server reports.
+- A server error or an unreadable answer shows a short error ID under the message that you can copy. Settings, About, "Copy support info" copies the app, iOS and server version and the last five error IDs of the session, kept in memory only.
+- Dashboard tiles, the vitals overview and the range comparison color their trend arrow from the server's judgement, detail charts draw the server's reference lines, and personal records show the server's benchmark band with its source.
+- Mood patterns are back, computed by the server for the chosen period, and mood stability follows the period too.
+- The cycle calendar says when the server merged a new cycle start into an earlier one or gave one back after an edit.
+- A notification that carries a link opens the matching screen. Settings has the AI usage level, "Notification content" with "Show health figures", and how far back the Coach reads.
+- Labs show readings entered in another unit with their conversion and explain when a unit is refused. Markers can be merged and their spellings edited, and the labs list also shows markers last measured years ago.
+- Connections show the server's status for each integration in one sentence with at most one button. The doctor report takes pulse days and adherence the way the server computes them.
+
+Not in 1.3.0: the additional Apple Health types from #13. The server does not accept them yet.
+
 ## 1.2.0 (293) - 2026-10-10
 
 HealthLog Companion App 1.2.0 is available on the [App Store](https://apps.apple.com/app/id6769501341). This source release corresponds to the published build. It reads the HealthLog server v1.42 contract and also contains the changes prepared for 1.1.1, which was not released on its own.

@@ -323,10 +323,12 @@ struct ChartCard: View {
         let plotted = store.plotPoints(units: units)
         if points.count >= 2 {
             Chart {
+                // #135 — the server's reference lines (v1.43) under the series.
                 MetricChartContent.marks(
                     for: kind,
                     points: plotted,
-                    emphasisTint: emphasisTint
+                    emphasisTint: emphasisTint,
+                    references: store.referenceLineMarks(units: units)
                 )
 
                 if let selectedDate, let selectedPoint = nearestPoint(to: selectedDate, in: points),
@@ -401,7 +403,7 @@ struct ChartCard: View {
             // crash the chart. Linear mode falls through to the chart's
             // default domain (no `.chartYScale` modifier on that branch).
             .chartYScale(
-                domain: MetricChartMath.logDomain(for: plotted),
+                domain: MetricChartMath.logDomain(for: plotted, including: store.plotReferenceLines(units: units)),
                 type: store.useLogScale ? .log : .linear
             )
             // T2-3 (Theme-2.0): axis grid + labels follow the Tonal-Mono

@@ -82,7 +82,12 @@ struct NightscoutIntegrationScreen: View {
     private var statusPill: some View {
         switch store.isConnected {
         case .some(true):
-            HLStatusPill(.connected(label: String(localized: "Connected")))
+            // #139 — the pill follows `health.state` when the server sends it.
+            if let health = store.status?.health {
+                HLStatusPill(ConnectionHealthPresentation(health: health).pill)
+            } else {
+                HLStatusPill(.connected(label: String(localized: "Connected")))
+            }
         case .some(false):
             HLStatusPill(.disconnected(label: String(localized: "Not connected")))
         case .none:
@@ -93,6 +98,12 @@ struct NightscoutIntegrationScreen: View {
     @ViewBuilder
     private var connectionBody: some View {
         if isConnected {
+            // #139 — the reason in one sentence. No button: Nightscout has no
+            // connect flow to re-run and no resume route; the person changes
+            // the URL or token by disconnecting and connecting again.
+            if let health = store.status?.health {
+                ConnectionHealthSection(health: health)
+            }
             // CU-35 (1) — `POST /api/nightscout/sync` (v1.32.28): pull
             // the recent SGV window now instead of waiting for the cron.
             HLButton(

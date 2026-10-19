@@ -53,6 +53,10 @@ public struct AppleHealthMedicationSyncSummary: Sendable, Equatable {
     /// **CU-10 / v1.32.37** — dose entries the bulk route skipped with
     /// `reason: "unstable_external_id"`. The rest of the batch landed.
     public var dosesSkippedUnstableExternalID: Int
+    /// **W3 (1.3)** — importable doses a short wake left for the next sweep
+    /// because its one-chunk budget was spent. They stay pending in the dose
+    /// ledger, so nothing is lost; the next sweep resumes at the oldest one.
+    public var dosesDeferredToNextSweep: Int
 
     public init(
         medicationsMirrored: Int = 0,
@@ -68,7 +72,8 @@ public struct AppleHealthMedicationSyncSummary: Sendable, Equatable {
         medicationsSkippedKnown: Int = 0,
         mirrorLimitRejections: Int = 0,
         unstableExternalIDRejections: Int = 0,
-        dosesSkippedUnstableExternalID: Int = 0
+        dosesSkippedUnstableExternalID: Int = 0,
+        dosesDeferredToNextSweep: Int = 0
     ) {
         self.medicationsMirrored = medicationsMirrored
         self.medicationsFailed = medicationsFailed
@@ -84,6 +89,7 @@ public struct AppleHealthMedicationSyncSummary: Sendable, Equatable {
         self.mirrorLimitRejections = mirrorLimitRejections
         self.unstableExternalIDRejections = unstableExternalIDRejections
         self.dosesSkippedUnstableExternalID = dosesSkippedUnstableExternalID
+        self.dosesDeferredToNextSweep = dosesDeferredToNextSweep
     }
 
     public static let zero = AppleHealthMedicationSyncSummary()

@@ -48,9 +48,31 @@ public actor MoodRelationsRepository {
         return try await networkFetch()
     }
 
-    /// Drops the persistent SWR cache row so a logout never lets the next user
+    /// #126 P2 (server v1.42.0) — `GET /api/mood/insights?days=N`: `stability`
+    /// (and since v1.43 `patterns`, #136) cut to the period the page shows
+    /// (30, 90, 180 or 365; any other value is a 422 server-side, so it is
+    /// never sent). INT-Q: routed through its own SWR row per window
+    /// (``CacheKey/moodInsightsWindow(days:)``), never through `.moodInsights`,
+    /// so one window can never serve another window's answer.
+    public func stability(days: Int) async throws -> MoodRelationsResponse {
+        let api = api
+        @Sendable func networkFetch() async throws -> MoodRelationsResponse {
+            let req: APIRequest<MoodRelationsResponse> = .get("/api/mood/insights", query: [("days", String(days))])
+            return try await api.send(req)
+        }
+        if let swr {
+            return try await swr.fetchCachingFirst(
+                .moodInsightsWindow(days: days),
+                decoding: MoodRelationsResponse.self,
+                fetch: networkFetch
+            )
+        }
+        return try await networkFetch()
+    }
+
+    /// Drops the persistent SWR cache rows (the default and every period) so a logout never lets the next user
     /// paint the previous user's mood relations.
     public func invalidateCache() async {
-        await swr?.invalidate([.moodInsights])
+        await swr?.invalidate([.moodInsights] + [30, 90, 180, 365].map { CacheKey.moodInsightsWindow(days: $0) })
     }
 }

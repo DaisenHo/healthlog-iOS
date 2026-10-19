@@ -55,6 +55,11 @@ public final class OAuthIntegrationCore {
         provider.supportsConnectionTest
     }
 
+    /// #139 — whether this provider has a resume route for `action: resume`.
+    public var supportsResume: Bool {
+        provider.resumePath != nil
+    }
+
     /// Whether the user has stored their own OAuth credentials. `nil` until the
     /// first credentials load.
     public var hasOwnCredentials: Bool? {
@@ -106,6 +111,22 @@ public final class OAuthIntegrationCore {
                 // the failure is recorded there, so a status re-read shows it.
                 await loadStatus()
             }
+        }
+    }
+
+    /// #139 — `health.action == "resume"`: clear the park, then re-read status.
+    public func resume() async {
+        guard supportsResume else { return }
+        isWorking = true
+        error = nil
+        defer { isWorking = false }
+        do {
+            try await repo.resume()
+            await loadStatus()
+        } catch let err as HLError {
+            error = err
+        } catch {
+            self.error = .unknown(String(describing: error))
         }
     }
 
@@ -226,10 +247,13 @@ public protocol OAuthIntegrationStoreProtocol: AnyObject {
     var provider: OAuthIntegrationRepository.Provider { get }
     var supportsManualSync: Bool { get }
     var supportsConnectionTest: Bool { get }
+    /// #139 — whether `health.action == "resume"` can be carried out here.
+    var supportsResume: Bool { get }
     var isConnected: Bool? { get }
     var hasOwnCredentials: Bool? { get }
     func loadStatus() async
     func syncNow() async
+    func resume() async
     func disconnect() async
     func loadCredentialsStatus() async
     @discardableResult
@@ -284,6 +308,10 @@ public extension OAuthIntegrationStoreProtocol where Self: OAuthIntegrationStore
         core.supportsConnectionTest
     }
 
+    var supportsResume: Bool {
+        core.supportsResume
+    }
+
     var isConnected: Bool? {
         core.isConnected
     }
@@ -298,6 +326,10 @@ public extension OAuthIntegrationStoreProtocol where Self: OAuthIntegrationStore
 
     func syncNow() async {
         await core.syncNow()
+    }
+
+    func resume() async {
+        await core.resume()
     }
 
     func disconnect() async {

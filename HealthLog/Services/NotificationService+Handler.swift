@@ -247,8 +247,8 @@ import Foundation
                     // keeps log lines truthful ("ID rejected" vs.
                     // "route became unknown").
                     deepLinks.handle(url)
-                } else if let url = payload?.deepLink {
-                    deepLinks.handle(url)
+                } else if let payload {
+                    routeBodyTap(payload)
                 }
             }
             await topUpAfterReminderAction(actionID)

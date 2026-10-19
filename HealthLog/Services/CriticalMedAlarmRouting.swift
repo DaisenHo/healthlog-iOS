@@ -74,6 +74,9 @@ enum CriticalMedAlarmRouting {
     ) -> Bool {
         guard osAvailable, authorized else { return false }
         guard medication.active, medication.notificationsEnabled else { return false }
+        // v1.42.2 — the server's reminder decision (`remindersActive`) wins: an
+        // auto-recorded supplement or an ended course never alarms either.
+        guard medication.remindersActive != false else { return false }
         // v1.39.1 (#1033) — a medication kept as a record never alarms; leaving
         // it out of the alarm set cancels any alarm armed before the switch.
         guard medication.tracksIntake else { return false }

@@ -35,6 +35,7 @@ extension SettingsHKSyncDiagnosticsScreen {
             subtitle: "settings.hkdiag.hrbuckets.subtitle"
         ) {
             VStack(alignment: .leading, spacing: HLSpace.md) {
+                HKSyncDiagnosticsSourceTag(source: .deviceStored)
                 statRow(label: "settings.hkdiag.hrbuckets.cutover", value: hrBucketCutoverLabel)
                 statRow(
                     label: "settings.hkdiag.hrbuckets.last_accepted",

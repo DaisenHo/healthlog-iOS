@@ -112,6 +112,64 @@ public extension LabsStore {
         return named + [AnalyteGroup(analyte: nil, rows: noAnalyte)]
     }
 
+    /// #130 — one row of the "by type" marker list.
+    struct MarkerIndexEntry: Identifiable, Sendable, Equatable {
+        /// Overview `key` (`bm:<id>` / `analyte:<name>`), or the lower-cased
+        /// analyte on the fallback path.
+        public let id: String
+        /// The analyte the detail page filters by.
+        public let analyte: String
+        /// Catalog name when the marker is linked, else the analyte.
+        public let name: String
+        public let biomarkerId: String?
+        public let latest: LabResultDTO
+        /// Every live reading of the marker, as the server counts them.
+        public let count: Int
+    }
+
+    /// #130 — the marker list. From the server's overview when there is one
+    /// (every marker over the whole history, count and newest reading as
+    /// delivered); otherwise, against a server before v1.42.4, from grouping the
+    /// loaded ``labs`` page as before. Named markers only, alphabetical; the
+    /// blank-analyte rows stay in their own inline section.
+    var markerIndex: [MarkerIndexEntry] {
+        let catalogName: (String?) -> String? = { id in
+            guard let id else { return nil }
+            return self.biomarkers.first { $0.id == id }?.name
+        }
+        let entries: [MarkerIndexEntry] = if let overview = markerOverview {
+            overview.markers.compactMap { marker in
+                let analyte = marker.latest.analyte
+                guard !analyte.isEmpty else { return nil }
+                let biomarkerId = marker.biomarkerId ?? marker.latest.biomarkerId
+                let name = catalogName(biomarkerId).flatMap { $0.isEmpty ? nil : $0 } ?? analyte
+                return MarkerIndexEntry(
+                    id: marker.key,
+                    analyte: analyte,
+                    name: name,
+                    biomarkerId: biomarkerId,
+                    latest: marker.latest,
+                    count: marker.count
+                )
+            }
+        } else {
+            groupedByAnalyte.compactMap { group in
+                guard let analyte = group.analyte, let latest = group.rows.first else { return nil }
+                let biomarkerId = group.rows.first(where: { $0.biomarkerId != nil })?.biomarkerId
+                let name = catalogName(biomarkerId).flatMap { $0.isEmpty ? nil : $0 } ?? analyte
+                return MarkerIndexEntry(
+                    id: analyte.lowercased(),
+                    analyte: analyte,
+                    name: name,
+                    biomarkerId: biomarkerId,
+                    latest: latest,
+                    count: group.rows.count
+                )
+            }
+        }
+        return entries.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+    }
+
     /// All labs in a single flat list sorted by collection date, newest-first —
     /// the "chronological" sort axis. `takenAt` is an ISO-8601 wire string that
     /// sorts lexicographically (zero-padded fields, fixed `Z` offset), so the

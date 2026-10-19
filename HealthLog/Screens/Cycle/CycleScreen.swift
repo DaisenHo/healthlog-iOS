@@ -275,6 +275,10 @@ struct CycleScreen: View {
         let suppress = suppressFertility(store: store)
         return HLSettingsCard(icon: "calendar", title: "cycle.calendar.title") {
             VStack(alignment: .leading, spacing: HLSpace.lg) {
+                // #137 — the server merged or gave back a start (v1.43).
+                if let notice = store.startNotice {
+                    CycleStartNoticeRow(notice: notice) { store.dismissStartNotice() }
+                }
                 monthHeader
                 CycleCalendarGrid(
                     days: store.calendar?.days ?? [],

@@ -111,7 +111,7 @@ struct MeasurementsRepositorySWRTests {
         #expect(calls == 1, "measurementsRecent within its 45s TTL must serve cache")
     }
 
-    private func makeRepo(cache: SWRCache, online: Bool) throws -> MeasurementsRepository {
+    private func makeRepo(cache: SWRCache, online: Bool) throws -> (MeasurementsRepository, SWRCoordinator) {
         let env = AppEnvironment(
             baseURL: URL(string: "https://test.healthlog.local")!,
             bundleID: "dev.healthlog.app",
@@ -121,14 +121,14 @@ struct MeasurementsRepositorySWRTests {
         let kc = InMemoryKeychain()
         let api = APIClient(environment: env, keychain: kc, sessionConfiguration: .mock())
         let swr = SWRCoordinator(cache: cache, reachability: StubReach(online: online))
-        return try MeasurementsRepository(api: api, outbox: OutboxQueue(inMemory: true), swr: swr)
+        return try (MeasurementsRepository(api: api, outbox: OutboxQueue(inMemory: true), swr: swr), swr)
     }
 
     @Test("recent — offline + warm cache serves cache (no network)")
     func recentOfflineServesCache() async throws {
         let cache = try SWRCache(modelContainer: SWRCache.makeInMemory())
         // Pre-warm cache by going online first…
-        let onlineRepo = try makeRepo(cache: cache, online: true)
+        let (onlineRepo, onlineSWR) = try makeRepo(cache: cache, online: true)
         nonisolated(unsafe) var calls = 0
         MockURLProtocol.install { req in
             // CU-07: count only the recent-list GET — a request from a suite
@@ -138,9 +138,12 @@ struct MeasurementsRepositorySWRTests {
         }
         _ = try await onlineRepo.recent(limit: 50)
         #expect(calls == 1)
+        // The write-through persists on a detached utility task; on a loaded
+        // machine it can still be queued when the offline read runs.
+        await onlineSWR.drainPendingWrites()
         // …then re-issue offline. Cache row exists; the offline branch
         // returns cached without firing network regardless of the TTL.
-        let offlineRepo = try makeRepo(cache: cache, online: false)
+        let (offlineRepo, _) = try makeRepo(cache: cache, online: false)
         _ = try await offlineRepo.recent(limit: 50)
         #expect(calls == 1, "offline serve must skip network")
     }

@@ -164,22 +164,29 @@ final class AuthJourneyUITest: XCTestCase {
             _ = waitUntilOnboardingControlHittable(healthKitStep, app: app)
             healthKitStep.tap()
             let notifications = app.buttons["onboarding.notifications.skip"]
-            if notifications.waitForExistence(timeout: 25) {
+            if SystemSheetDismissal.awaitSuccessor(
+                timeout: 25,
+                in: app,
+                retap: { retapIfStillOnStep(healthKitStep, app: app) },
+                until: { notifications.exists }
+            ) {
                 _ = waitUntilOnboardingControlHittable(notifications, app: app)
                 notifications.tap()
             }
         }
 
+        // Same race as before; the sheet can also land on the notifications
+        // tap, so a dismissed sheet re-taps that step before racing on.
         let accountLevelTail = app.buttons["onboarding.aiSource.skip"]
-        let deadline = Date().addingTimeInterval(30)
-        var replayedSetup = false
-        var reachedShell = false
-        while Date() < deadline {
-            replayedSetup = accountLevelTail.exists
-            reachedShell = homeTab.exists
-            if replayedSetup || reachedShell { break }
-            usleep(200_000)
-        }
+        let notificationsStep = app.buttons["onboarding.notifications.skip"]
+        _ = SystemSheetDismissal.awaitSuccessor(
+            timeout: 30,
+            in: app,
+            retap: { retapIfStillOnStep(notificationsStep, app: app) },
+            until: { accountLevelTail.exists || homeTab.exists }
+        )
+        let replayedSetup = accountLevelTail.exists
+        let reachedShell = homeTab.exists
 
         if replayedSetup { attachFailureDiagnostics(app: app, label: "completed-account-replayed-setup") }
         XCTAssertFalse(
@@ -218,7 +225,12 @@ final class AuthJourneyUITest: XCTestCase {
 
         element.tap()
 
-        let advanced = nextElement.waitForExistence(timeout: timeout)
+        let advanced = SystemSheetDismissal.awaitSuccessor(
+            timeout: timeout,
+            in: app,
+            retap: { retapIfStillOnStep(element, app: app) },
+            until: { nextElement.exists }
+        )
         if !advanced { attachFailureDiagnostics(app: app, label: "onboarding-tail-did-not-advance") }
         XCTAssertTrue(advanced, "Onboarding step did not advance after tapping its skip affordance", file: file, line: line)
     }
@@ -238,6 +250,14 @@ final class AuthJourneyUITest: XCTestCase {
     @MainActor
     private func dismissPasswordSaveSheetIfPresent(_ app: XCUIApplication) -> Bool {
         SystemSheetDismissal.dismissIfPresent(in: app)
+    }
+
+    /// A sheet was dismissed after the tap: tap again only if the step is
+    /// demonstrably still on screen and sheet-free hittable.
+    @MainActor
+    private func retapIfStillOnStep(_ element: XCUIElement, app: XCUIApplication) {
+        guard element.exists, waitUntilOnboardingControlHittable(element, app: app) else { return }
+        element.tap()
     }
 
     @MainActor

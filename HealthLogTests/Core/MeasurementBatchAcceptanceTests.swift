@@ -80,10 +80,14 @@ struct MeasurementBatchAcceptanceTests {
     @Test("every documented skip reason is terminal")
     func allowlistedSkipReasonsAreTerminal() {
         let allowlist = MeasurementBatchAcceptance.Policy.deployedMeasurementRoute.terminalSkipReasons
+        // X4 (1.3) — plus the three hour-bucket reasons of server v1.43.
         #expect(allowlist == [
             MeasurementBatchAcceptance.Reason.unmappableIdentifier,
             MeasurementBatchAcceptance.Reason.valueOutOfRange,
-            MeasurementBatchAcceptance.Reason.unstableExternalId
+            MeasurementBatchAcceptance.Reason.unstableExternalId,
+            MeasurementBatchAcceptance.Reason.hourBucketMisaligned,
+            MeasurementBatchAcceptance.Reason.hourBucketUnsupportedType,
+            MeasurementBatchAcceptance.Reason.hourBucketTooOld
         ])
         for reason in allowlist {
             #expect(

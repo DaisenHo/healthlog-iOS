@@ -29,6 +29,9 @@ public enum MoodEntrySource: String, Codable, Sendable, CaseIterable, Identifiab
     case web = "WEB"
     case telegram = "TELEGRAM"
     case daylio = "DAYLIO"
+    /// #126 P2 (server v1.42.2) — an entry answered from a mood reminder
+    /// notification's quick action.
+    case notification = "NOTIFICATION"
 
     public var id: String {
         rawValue

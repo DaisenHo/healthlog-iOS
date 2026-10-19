@@ -64,14 +64,6 @@ struct PersonalRecordsScreen: View {
     /// to surface.
     @State private var selectedBenchmark: BenchmarkSelection?
 
-    /// v0.5.5.7 RECONCILE-COMPARE — provider for the comparison-band
-    /// section. Held in `@State` (not env) because the live impl is
-    /// stateless + value-type; lift to env in a future refactor if
-    /// the screen ever needs to swap providers at runtime (e.g. for
-    /// snapshot tests). Initialiser path:
-    /// `LiveClinicalBenchmarkProvider()` ships with zero deps.
-    @State private var benchmarkProvider: any ClinicalBenchmarkProvider = LiveClinicalBenchmarkProvider()
-
     var body: some View {
         Group {
             if !backend.canShowPersonalRecords {
@@ -127,7 +119,7 @@ struct PersonalRecordsScreen: View {
             BenchmarkSourceSheet(
                 metricLabel: selection.metricLabel,
                 kind: selection.record.kind ?? .unknown,
-                benchmark: selection.benchmark
+                band: selection.band
             ) {
                 selectedBenchmark = nil
             }
@@ -187,11 +179,10 @@ struct PersonalRecordsScreen: View {
         }
     }
 
-    /// v0.5.5.7 RECONCILE-COMPARE — comparison-band section. Renders
-    /// one `ComparisonBand` per visible record whose `kind` the
-    /// provider carries benchmark data for. Deduplicated by `kind`
-    /// so multiple records of the same kind only surface a single
-    /// band (the highest-impressiveness representative).
+    /// v0.5.5.7 RECONCILE-COMPARE — comparison-band section. #135 —
+    /// renders one `ComparisonBand` per visible record whose row carries the
+    /// server's `benchmark` (v1.43). Deduplicated by `kind` so several records
+    /// of the same kind surface a single band. Nothing on an older server.
     @ViewBuilder
     private var comparisonSection: some View {
         let pairs = comparisonPairs
@@ -201,14 +192,8 @@ struct PersonalRecordsScreen: View {
                     .padding(.horizontal, HLSpace.lg)
                 VStack(spacing: HLSpace.sm) {
                     ForEach(pairs, id: \.record.id) { pair in
-                        ComparisonBand(
-                            record: pair.record,
-                            benchmark: pair.benchmark
-                        ) {
-                            selectedBenchmark = BenchmarkSelection(
-                                record: pair.record,
-                                benchmark: pair.benchmark
-                            )
+                        ComparisonBand(record: pair.record, band: pair.band) {
+                            selectedBenchmark = BenchmarkSelection(record: pair.record, band: pair.band)
                         }
                     }
                 }
@@ -217,17 +202,25 @@ struct PersonalRecordsScreen: View {
         }
     }
 
-    /// Returns the unique-by-kind `(record, benchmark)` pairs for the
-    /// comparison section. Order matches `store.visibleRecords` so the
-    /// section feels stable across re-renders.
-    private var comparisonPairs: [(record: PersonalRecord, benchmark: ClinicalBenchmark)] {
+    /// Returns the unique-by-kind `(record, band)` pairs for the comparison
+    /// section. Order matches `store.visibleRecords` so the section feels
+    /// stable across re-renders.
+    private var comparisonPairs: [(record: PersonalRecord, band: RecordBenchmarkBand)] {
+        Self.comparisonPairs(store.visibleRecords, units: unitPreferences)
+    }
+
+    /// Pure: the first record per kind whose server benchmark the app can draw.
+    static func comparisonPairs(
+        _ records: [PersonalRecord],
+        units: UnitPreferences
+    ) -> [(record: PersonalRecord, band: RecordBenchmarkBand)] {
         var seenKinds: Set<MetricKind> = []
-        var out: [(record: PersonalRecord, benchmark: ClinicalBenchmark)] = []
-        for record in store.visibleRecords {
+        var out: [(record: PersonalRecord, band: RecordBenchmarkBand)] = []
+        for record in records {
             guard let kind = record.kind, !seenKinds.contains(kind) else { continue }
-            guard let benchmark = benchmarkProvider.benchmark(for: kind) else { continue }
+            guard let band = RecordBenchmarkBand(record: record.base, units: units) else { continue }
             seenKinds.insert(kind)
-            out.append((record, benchmark))
+            out.append((record, band))
         }
         return out
     }
@@ -327,7 +320,7 @@ extension PersonalRecordsScreen {
 /// deterministically.
 private struct BenchmarkSelection: Identifiable, Equatable {
     let record: PersonalRecord
-    let benchmark: ClinicalBenchmark
+    let band: RecordBenchmarkBand
 
     var id: String {
         record.id

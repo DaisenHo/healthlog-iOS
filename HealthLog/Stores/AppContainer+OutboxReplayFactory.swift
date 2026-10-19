@@ -90,7 +90,10 @@ extension AppContainer {
             customMetricsRepo: customMetricsRepo, // replay offline custom-metric writes
             nutrientReadRepo: nutrientReadRepo, // Build 7.6 (GH #48) — replay offline water quick-adds
             // audit-v0162 H1 (Opt 3) — degraded-server attempt-suppression.
-            serverHealthDegraded: { await serverHealth.isKnownDegraded }
+            serverHealthDegraded: { await serverHealth.isKnownDegraded },
+            // W1 (1.3.0) — rows a timeout pushed over budget under 1.2.0 are
+            // re-queued once after the update.
+            updatePathDefaults: { .standard }
         )
     }
 }

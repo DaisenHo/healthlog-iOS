@@ -23,7 +23,12 @@ public struct HealthKitSyncConfig: Codable, Sendable, Equatable {
     /// ausgelöst hat. Das ist der harte Beleg für „dieses Telefon liefert
     /// selbstständig".
     public let lastBackgroundSyncAt: Date?
+    /// **Legacy, fallback only (#139).** Deprecated in server v1.43, removed in
+    /// v1.44. Read only when ``health`` is absent (a server before v1.42.4).
     public let syncHealth: HealthKitSyncHealth?
+    /// #139 — the server's unified connection state for Apple Health (v1.42.4+,
+    /// GET only). Null until the phone has delivered anything.
+    public let health: ConnectionHealth?
     /// Nur Typen, die tatsächlich geliefert haben. `nil` = der Server kennt das
     /// Feld nicht (älterer Server); `[]` = er kennt es, aber noch kein Typ hat
     /// geliefert. Der Unterschied ist für die Fläche relevant, deshalb optional.
@@ -41,7 +46,8 @@ public struct HealthKitSyncConfig: Codable, Sendable, Equatable {
         lastSyncTrigger: String? = nil,
         lastBackgroundSyncAt: Date? = nil,
         syncHealth: HealthKitSyncHealth? = nil,
-        metricFreshness: [MetricFreshness]? = nil
+        metricFreshness: [MetricFreshness]? = nil,
+        health: ConnectionHealth? = nil
     ) {
         self.entries = entries
         self.lastSyncedAt = lastSyncedAt
@@ -49,10 +55,11 @@ public struct HealthKitSyncConfig: Codable, Sendable, Equatable {
         self.lastBackgroundSyncAt = lastBackgroundSyncAt
         self.syncHealth = syncHealth
         self.metricFreshness = metricFreshness
+        self.health = health
     }
 
     private enum CodingKeys: String, CodingKey {
-        case entries, lastSyncedAt, lastSyncTrigger, lastBackgroundSyncAt, syncHealth, metricFreshness
+        case entries, lastSyncedAt, lastSyncTrigger, lastBackgroundSyncAt, syncHealth, metricFreshness, health
     }
 
     public init(from decoder: any Decoder) throws {
@@ -61,8 +68,10 @@ public struct HealthKitSyncConfig: Codable, Sendable, Equatable {
         lastSyncedAt = try c.decodeIfPresent(Date.self, forKey: .lastSyncedAt)
         lastSyncTrigger = try c.decodeIfPresent(String.self, forKey: .lastSyncTrigger)
         lastBackgroundSyncAt = try c.decodeIfPresent(Date.self, forKey: .lastBackgroundSyncAt)
-        syncHealth = try c.decodeIfPresent(HealthKitSyncHealth.self, forKey: .syncHealth)
+        // Fallback field: once v1.44 drops it, absence is the normal case.
+        syncHealth = try? c.decodeIfPresent(HealthKitSyncHealth.self, forKey: .syncHealth)
         metricFreshness = try c.decodeIfPresent([MetricFreshness].self, forKey: .metricFreshness)
+        health = ConnectionHealth.tolerant(from: c, forKey: .health)
     }
 
     /// #10 — das PATCH-Echo mit den Lesefeldern des vorigen GET.
@@ -82,7 +91,8 @@ public struct HealthKitSyncConfig: Codable, Sendable, Equatable {
             lastSyncTrigger: lastSyncTrigger ?? previous.lastSyncTrigger,
             lastBackgroundSyncAt: lastBackgroundSyncAt ?? previous.lastBackgroundSyncAt,
             syncHealth: syncHealth ?? previous.syncHealth,
-            metricFreshness: metricFreshness ?? previous.metricFreshness
+            metricFreshness: metricFreshness ?? previous.metricFreshness,
+            health: health ?? previous.health
         )
     }
 

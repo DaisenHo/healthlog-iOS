@@ -9,7 +9,8 @@ import Foundation
 /// Everything here stays dormant behind `FeatureFlag.cycleTracking` (the store +
 /// gate above it never call into the repo while the flag is off). No UI yet.
 public actor CycleRepository {
-    private let api: APIClientProtocol
+    /// Module-internal so the split-out `CycleRepository+StartChanges` can send.
+    let api: APIClientProtocol
     private let outbox: OutboxQueue
     private let encoder: JSONEncoder
     private let swr: SWRCoordinator?
@@ -176,6 +177,12 @@ public actor CycleRepository {
     /// Retriable failures preserve that exact PATCH shape in the Outbox.
     @discardableResult
     public func updateDayLog(id: String, patch: CycleDayLogPatch) async throws -> CycleDayLogDTO {
+        try await updateDayLogReportingStarts(id: id, patch: patch).dayLog
+    }
+
+    /// ``updateDayLog(id:patch:)`` with what the server reports beyond the row
+    /// (#137, v1.43): the cycle starts the edit gave back (`restored`).
+    public func updateDayLogReportingStarts(id: String, patch: CycleDayLogPatch) async throws -> CycleDayLogPatchResult {
         let idempotencyKey = IdempotencyKey()
         do {
             return try await patchDayLog(id: id, patch: patch, idempotencyKey: idempotencyKey)
@@ -190,11 +197,15 @@ public actor CycleRepository {
     }
 
     /// `DELETE /api/cycle/day-logs/{id}` (soft). On retriable failure enqueue.
-    public func deleteDayLog(id: String) async throws {
+    /// #137 — returns what the delete changed (v1.43); ``CycleDeleteOutcome/unchanged``
+    /// on an older server's 204.
+    @discardableResult
+    public func deleteDayLog(id: String) async throws -> CycleDeleteOutcome {
         let idempotencyKey = IdempotencyKey()
         do {
-            try await deleteDayLogRequest(id: id, idempotencyKey: idempotencyKey)
+            let outcome = try await deleteDayLogRequest(id: id, idempotencyKey: idempotencyKey)
             await invalidateTimeline()
+            return outcome
         } catch let err as HLError where err.shouldPersistToOutbox {
             try await enqueue(.deleteCycleDayLog, OutboxQueue.Payloads.DeleteCycleDayLog(id: id), idempotencyKey)
             throw err
@@ -202,25 +213,30 @@ public actor CycleRepository {
     }
 
     /// `DELETE /api/cycle/cycles/{id}` (soft). 204 with no body, also for a
-    /// cycle that is already deleted (v1.39): `sendVoid`, because `send`
-    /// cannot decode an empty body.
-    public func deleteCycle(id: String) async throws {
-        let req: APIRequest<EmptyPayload> = .delete("/api/cycle/cycles/\(id)")
-        try await api.sendVoid(req)
+    /// cycle that is already deleted (v1.39). #137 — asks for the outcome with
+    /// `Prefer: return=representation` (v1.43 answers 200 with the starts the
+    /// delete gave back); 200 and 204 are both a successful delete.
+    @discardableResult
+    public func deleteCycle(id: String) async throws -> CycleDeleteOutcome {
+        let outcome = try await deleteReportingStarts("/api/cycle/cycles/\(id)", idempotencyKey: IdempotencyKey())
         await invalidateTimeline()
+        return outcome
     }
 
     /// One-tap `POST /api/cycle/period`. On retriable failure enqueue.
-    public func period(_ request: CyclePeriodRequest) async throws {
+    /// #137 — returns the answer's `absorbed` start (v1.43; `nil` before).
+    @discardableResult
+    public func period(_ request: CyclePeriodRequest) async throws -> CyclePeriodOutcome {
         let idempotencyKey = IdempotencyKey()
         do {
-            let req: APIRequest<EmptyResponse> = try .post(
+            let req: APIRequest<CyclePeriodOutcome> = try .post(
                 "/api/cycle/period",
                 body: request,
                 idempotencyKey: idempotencyKey
             )
-            _ = try await api.send(req)
+            let outcome = try await api.send(req)
             await invalidateTimeline()
+            return outcome
         } catch let err as HLError where err.shouldPersistToOutbox {
             try await enqueue(.cyclePeriod, OutboxQueue.Payloads.CyclePeriod(request: request), idempotencyKey)
             throw err
@@ -358,11 +374,11 @@ public actor CycleRepository {
 
     @discardableResult
     public func replayUpdateDayLog(id: String, patch: CycleDayLogPatch, idempotencyKey: String) async throws -> CycleDayLogDTO {
-        try await patchDayLog(id: id, patch: patch, idempotencyKey: IdempotencyKey(raw: idempotencyKey))
+        try await patchDayLog(id: id, patch: patch, idempotencyKey: IdempotencyKey(raw: idempotencyKey)).dayLog
     }
 
     public func replayDeleteDayLog(id: String, idempotencyKey: String) async throws {
-        try await deleteDayLogRequest(id: id, idempotencyKey: IdempotencyKey(raw: idempotencyKey))
+        _ = try await deleteDayLogRequest(id: id, idempotencyKey: IdempotencyKey(raw: idempotencyKey))
     }
 
     public func replayPeriod(request: CyclePeriodRequest, idempotencyKey: String) async throws {
@@ -413,8 +429,8 @@ public actor CycleRepository {
 
     // MARK: - Private request helpers
 
-    private func patchDayLog(id: String, patch: CycleDayLogPatch, idempotencyKey: IdempotencyKey) async throws -> CycleDayLogDTO {
-        let req: APIRequest<CycleDayLogDTO> = try .patch(
+    private func patchDayLog(id: String, patch: CycleDayLogPatch, idempotencyKey: IdempotencyKey) async throws -> CycleDayLogPatchResult {
+        let req: APIRequest<CycleDayLogPatchResult> = try .patch(
             "/api/cycle/day-logs/\(id)",
             body: patch,
             idempotencyKey: idempotencyKey
@@ -424,14 +440,12 @@ public actor CycleRepository {
         return result
     }
 
-    private func deleteDayLogRequest(id: String, idempotencyKey: IdempotencyKey) async throws {
-        // 204, no body (day-logs/[id] at v1.39.0).
-        let req: APIRequest<EmptyPayload> = .delete(
-            "/api/cycle/day-logs/\(id)",
-            idempotencyKey: idempotencyKey
-        )
-        try await api.sendVoid(req)
+    private func deleteDayLogRequest(id: String, idempotencyKey: IdempotencyKey) async throws -> CycleDeleteOutcome {
+        // 204, no body (day-logs/[id] at v1.39.0); 200 with the outcome under
+        // `Prefer: return=representation` (v1.43, #137).
+        let outcome = try await deleteReportingStarts("/api/cycle/day-logs/\(id)", idempotencyKey: idempotencyKey)
         await invalidateTimeline()
+        return outcome
     }
 
     /// **Phase 07 / plan 07-06 — the durable landing place for an imported

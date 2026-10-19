@@ -29,4 +29,11 @@ enum SettingsRoute: Hashable {
     /// hand over the upload switch itself instead of describing where it lives
     /// (UI-Standard R4 — Wegweiser werden Absprünge).
     case appleHealthDetail
+    /// #141 — Settings → Sicherheit, the push path `/settings/security` of a
+    /// security alert. Pushed by ``AppRouter/applyMoreStackRoute(_:)``.
+    case security
+    /// #141 — Vorsorge (`/checkups`), pushed straight onto the More stack.
+    case checkups
+    /// #141 — the cycle home (`/cycle`), pushed straight onto the More stack.
+    case cycle
 }

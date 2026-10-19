@@ -59,6 +59,15 @@
 
             let run = Task { await background.runBGSync(on: task) }
             await entered.wait()
+            // `runBGSync` starts the pass before it registers the expiration
+            // handler, so on a loaded machine the route can be entered first.
+            // Fire only once the handler is in place (the bound is a hang
+            // guard, not a latency budget).
+            let deadline = Date().addingTimeInterval(30)
+            while !task.hasExpirationHandler, Date() < deadline {
+                try? await Task.sleep(nanoseconds: 1_000_000)
+            }
+            #expect(task.hasExpirationHandler)
             task.fireExpiration()
             release.set()
             await run.value
@@ -106,6 +115,10 @@
 
         var lastSuccess: Bool? {
             lock.withLock { success }
+        }
+
+        var hasExpirationHandler: Bool {
+            lock.withLock { expirationHandler != nil }
         }
 
         func setExpirationHandler(_ handler: @escaping @Sendable () -> Void) {

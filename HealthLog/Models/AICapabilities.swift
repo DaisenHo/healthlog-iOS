@@ -41,6 +41,9 @@ public enum AICapabilityKey: String, Sendable, CaseIterable, Hashable {
     case labsOcr
     /// Turning a typed medication description into a schedule.
     case medicationExtract
+    /// #129 (v1.43) — reading a supplement's label photo. Not offered on the
+    /// `frugal` usage level (reason `usage_level`).
+    case supplementLabel
 
     /// The operator sub-switch covering this capability (server
     /// `AI_CAPABILITIES[key].operatorSwitch`).
@@ -49,7 +52,7 @@ public enum AICapabilityKey: String, Sendable, CaseIterable, Hashable {
         case .coach, .aboutMeQuestions: "coach"
         case .briefing, .periodNarrative: "briefing"
         case .statusText, .workoutInsights, .reactionLines: "insightStatus"
-        case .documentAi, .labsOcr, .medicationExtract: "documentAi"
+        case .documentAi, .labsOcr, .medicationExtract, .supplementLabel: "documentAi"
         }
     }
 
@@ -63,7 +66,7 @@ public enum AICapabilityKey: String, Sendable, CaseIterable, Hashable {
         case "coach": [.coach, .aboutMeQuestions]
         case "briefing": [.briefing, .periodNarrative]
         case "insightStatus": [.statusText, .workoutInsights, .reactionLines]
-        case "documentAi": [.documentAi, .labsOcr, .medicationExtract]
+        case "documentAi": [.documentAi, .labsOcr, .medicationExtract, .supplementLabel]
         default: []
         }
     }
@@ -80,6 +83,9 @@ public enum AIUnavailableReason: String, Codable, Sendable, Equatable, Hashable,
     case userDisabled = "user_disabled"
     case noProvider = "no_provider"
     case consentRequired = "consent_required"
+    /// #129 (v1.43) — the account's AI usage level is below what the
+    /// capability needs (`ai.usage.level`).
+    case usageLevel = "usage_level"
     /// Decode-only sentinel for a reason this build does not know. Treated as
     /// unavailable everywhere, on the device too.
     case unknown = "__UNKNOWN__"
@@ -194,14 +200,27 @@ public struct AIProviderState: Decodable, Sendable, Equatable {
 public struct AIAccountBlock: Decodable, Sendable, Equatable {
     public let capabilities: [AICapabilityKey: AICapabilityState]
     public let provider: AIProviderState?
+    /// #129 (v1.43) — the AI usage level; `nil` before v1.43 (the setting is
+    /// then hidden) and when the block cannot be read.
+    public let usage: AIUsageState?
+    /// #143 (v1.43.2) — the standing AI consent; `nil` before v1.43.2 and
+    /// when the block cannot be read (the older behaviour then applies).
+    public let consent: AIStandingConsent?
 
-    public init(capabilities: [AICapabilityKey: AICapabilityState], provider: AIProviderState? = nil) {
+    public init(
+        capabilities: [AICapabilityKey: AICapabilityState],
+        provider: AIProviderState? = nil,
+        usage: AIUsageState? = nil,
+        consent: AIStandingConsent? = nil
+    ) {
         self.capabilities = capabilities
         self.provider = provider
+        self.usage = usage
+        self.consent = consent
     }
 
     private enum CodingKeys: String, CodingKey {
-        case capabilities, provider
+        case capabilities, provider, usage, consent
     }
 
     /// Per-key tolerant: an unknown capability key is skipped (logged once),
@@ -226,10 +245,17 @@ public struct AIAccountBlock: Decodable, Sendable, Equatable {
         }
         capabilities = resolved
         provider = try? c.decodeIfPresent(AIProviderState.self, forKey: .provider)
+        usage = try? c.decodeIfPresent(AIUsageState.self, forKey: .usage)
+        consent = try? c.decodeIfPresent(AIStandingConsent.self, forKey: .consent)
+    }
+
+    /// This block with `usage` replaced by the answer of the usage PUT.
+    public func replacingUsage(_ next: AIUsageState) -> AIAccountBlock {
+        AIAccountBlock(capabilities: capabilities, provider: provider, usage: next, consent: consent)
     }
 
     /// The state of one capability. A key missing from a present block is
-    /// unavailable (the server always sends all ten).
+    /// unavailable (the server always sends every key it knows).
     public func state(_ key: AICapabilityKey) -> AICapabilityState {
         capabilities[key] ?? .absent
     }

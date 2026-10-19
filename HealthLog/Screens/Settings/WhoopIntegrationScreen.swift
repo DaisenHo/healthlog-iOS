@@ -95,7 +95,13 @@ struct WhoopIntegrationScreen: View {
         case .tokenExpired:
             HLStatusPill(.error(label: String(localized: "Reconnect needed")))
         case .connected:
-            HLStatusPill(.connected(label: String(localized: "Connected")))
+            // #139 — limited / degraded show as such; the plain "Connected"
+            // stays for a server without `health`.
+            if let health = store.status?.health {
+                HLStatusPill(ConnectionHealthPresentation(health: health).pill)
+            } else {
+                HLStatusPill(.connected(label: String(localized: "Connected")))
+            }
         }
     }
 
@@ -106,6 +112,12 @@ struct WhoopIntegrationScreen: View {
                     .font(.hlCaption)
                     .foregroundStyle(HLText.secondary)
                     .fixedSize(horizontal: false, vertical: true)
+            }
+            // #139 — the reason in one sentence. The one button for
+            // `health.action` is the reconnect / resume button of the stage
+            // content below, so the section itself carries none.
+            if store.stage == .connected, let health = store.status?.health {
+                ConnectionHealthSection(health: health)
             }
             stageContent
             if let error = store.error {
@@ -136,6 +148,10 @@ struct WhoopIntegrationScreen: View {
         case .needsConnect:
             return String(localized: "whoop.status.credentialsSaved")
         case .tokenExpired:
+            // #139 — the server's own reason when it sends one.
+            if let health = store.status?.health {
+                return ConnectionHealthPresentation(health: health).sentence
+            }
             return String(localized: "Your WHOOP authorization expired — sync is paused.")
         case .connected:
             let last = store.status?.lastSyncedAt?.formatted(.relative(presentation: .named)) ?? "—"
@@ -241,7 +257,7 @@ struct WhoopIntegrationScreen: View {
 
     private var connectedActions: some View {
         VStack(alignment: .leading, spacing: HLSpace.md) {
-            if store.status?.tokenExpired == true {
+            if store.status?.needsReconnect == true {
                 // Audit-Gruppe 4 — die Warnzeile „Deine WHOOP-Autorisierung ist
                 // abgelaufen. Verbinde neu, um weiter zu synchronisieren."
                 // stand hier zusätzlich zur Statuszeile der Karte („… – die
@@ -258,7 +274,10 @@ struct WhoopIntegrationScreen: View {
                 .accessibilityIdentifier("settings.whoop.reconnectButton")
             }
             if store.isRateLimitParked {
-                rateLimitedParkedNotice
+                // #139 — with `health` the section above already says why.
+                if store.status?.health == nil {
+                    rateLimitedParkedNotice
+                }
                 HLButton(
                     String(localized: "Resume sync"),
                     icon: "play.circle",

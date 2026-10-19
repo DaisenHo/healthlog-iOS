@@ -40,6 +40,14 @@ public enum DoctorReportSpecBuilder {
         /// standalone); the report then says adherence is unavailable.
         public let serverCompliance: [MedicationComplianceSummaryEntry]?
         public let moodEntries: [MoodEntry]
+        /// #126 P2 — the same read with its `meta`: the account figure and the
+        /// report window (`?days=` = the report period). `nil` = not asked or
+        /// an older answer; the adherence block then stays on `compliance30`.
+        public let serverComplianceReport: MedicationComplianceReport?
+        /// #119 — the server's daily pulse over the report window (series-batch,
+        /// v1.40.1 rule). `nil` = unavailable; the pulse row then applies the
+        /// same rule to the readings (``DoctorReportPulse``).
+        public let serverPulseDays: [DailyPulseValue]?
         /// #115 B5 — the account's glucose unit the PDF prints glucose in.
         public let glucoseUnit: GlucoseUnit
         /// #115 P2 — the account's unit system + weight unit the PDF prints in.
@@ -55,6 +63,8 @@ public enum DoctorReportSpecBuilder {
             measurements: [Measurement],
             medications: [Medication],
             serverCompliance: [MedicationComplianceSummaryEntry]? = nil,
+            serverComplianceReport: MedicationComplianceReport? = nil,
+            serverPulseDays: [DailyPulseValue]? = nil,
             moodEntries: [MoodEntry],
             glucoseUnit: GlucoseUnit = .mgdL,
             accountUnits: UnitPreferences = .standard
@@ -68,7 +78,9 @@ public enum DoctorReportSpecBuilder {
             self.appVersion = appVersion
             self.measurements = measurements
             self.medications = medications
-            self.serverCompliance = serverCompliance
+            self.serverCompliance = serverCompliance ?? serverComplianceReport?.entries
+            self.serverComplianceReport = serverComplianceReport
+            self.serverPulseDays = serverPulseDays
             self.moodEntries = moodEntries
             self.glucoseUnit = glucoseUnit
         }
@@ -109,7 +121,11 @@ public enum DoctorReportSpecBuilder {
         }
 
         let vitals = selection.vitals
-            ? makeVitalsSummary(measurements: measurementsInWindow)
+            ? makeVitalsSummary(
+                measurements: measurementsInWindow,
+                pulseDays: snapshot.serverPulseDays,
+                calendar: calendar
+            )
             : nil
         let charts = selection.charts
             ? makeCharts(measurements: measurementsInWindow)
@@ -125,7 +141,8 @@ public enum DoctorReportSpecBuilder {
                     [.day],
                     from: calendar.startOfDay(for: periodStart),
                     to: calendar.startOfDay(for: periodEnd)
-                ).day ?? 0
+                ).day ?? 0,
+                report: snapshot.serverComplianceReport
             )
             : nil
         let mood = selection.mood
@@ -154,7 +171,14 @@ public enum DoctorReportSpecBuilder {
     /// Mean/median/min/max per metric kind, only for kinds with ≥ 1 in-window
     /// sample. Blood-pressure carries `secondaryMean` for the diastolic
     /// component; every other metric leaves it `nil`.
-    static func makeVitalsSummary(measurements: [Measurement]) -> DoctorReportSpec.VitalsSummary? {
+    ///
+    /// #119 — pulse follows the server's v1.40.1 rule (``DoctorReportPulse``),
+    /// never a plain mean of the readings.
+    static func makeVitalsSummary(
+        measurements: [Measurement],
+        pulseDays: [DailyPulseValue]? = nil,
+        calendar: Calendar = .current
+    ) -> DoctorReportSpec.VitalsSummary? {
         let grouped: [MetricKind: [Measurement]] = Dictionary(grouping: measurements, by: \.kind)
         guard !grouped.isEmpty else { return nil }
 
@@ -165,6 +189,9 @@ public enum DoctorReportSpecBuilder {
             // no business in the one export a clinician reads.
             guard !kind.isUnknown else { return nil }
             guard let bucket = grouped[kind], !bucket.isEmpty else { return nil }
+            if kind == .pulse {
+                return DoctorReportPulse.row(serverDays: pulseDays, readings: bucket, calendar: calendar)
+            }
             let primaries = bucket.map(\.primaryValue)
             let mean = primaries.reduce(0, +) / Double(primaries.count)
             let median = Self.median(of: primaries)
@@ -274,11 +301,15 @@ public enum DoctorReportSpecBuilder {
     static func makeAdherenceBlock(
         medications: [Medication],
         serverCompliance: [MedicationComplianceSummaryEntry]?,
-        periodDays: Int
+        periodDays: Int,
+        report: MedicationComplianceReport? = nil
     ) -> DoctorReportSpec.AdherenceBlock? {
         let active = medications.filter(\.active)
         guard !active.isEmpty else { return nil }
-        let windowDays = 30
+        // #126 P2 — the report's own window when the server answered for it,
+        // else `compliance30` as before (the notes then say so).
+        let periodWindow = DoctorReportAdherenceWindow(report: report, periodDays: periodDays, medications: active)
+        let windowDays = periodWindow?.days ?? 30
         guard let serverCompliance else {
             return DoctorReportSpec.AdherenceBlock(
                 availability: .unavailable, windowDays: windowDays, periodDays: periodDays, perMedication: []
@@ -295,7 +326,7 @@ public enum DoctorReportSpecBuilder {
                     rate: nil, taken: nil, expected: nil
                 )
             }
-            let window = entry.compliance30
+            let window = periodWindow?.rows[med.id] ?? entry.compliance30
             return .init(
                 medicationId: med.id, medicationName: med.name, applicable: true,
                 rate: window.rate, taken: window.taken, expected: window.taken + window.missed
@@ -303,7 +334,8 @@ public enum DoctorReportSpecBuilder {
         }
         guard !rows.isEmpty else { return nil }
         return DoctorReportSpec.AdherenceBlock(
-            availability: .server, windowDays: windowDays, periodDays: periodDays, perMedication: rows
+            availability: .server, windowDays: windowDays, periodDays: periodDays, perMedication: rows,
+            account: DoctorReportAdherenceWindow.accountFigure(report?.aggregate, days: windowDays)
         )
     }
 

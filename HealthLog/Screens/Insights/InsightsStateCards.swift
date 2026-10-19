@@ -90,6 +90,8 @@ enum InsightsEmptyState: Equatable {
             String(localized: "insights.empty.ai.reason.consent")
         case .notPermittedForRecord:
             String(localized: "insights.empty.ai.reason.record")
+        case .usageLevel:
+            String(localized: "ai.reason.usageLevel")
         case .checkFailed, .unknown:
             String(localized: "insights.empty.ai.reason.unknown")
         }

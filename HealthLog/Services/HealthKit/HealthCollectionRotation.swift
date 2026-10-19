@@ -15,19 +15,21 @@ import Foundation
 /// nothing is read twice in one pass; only the starting point moves.
 enum HealthCollectionRotation {
     static let offsetKey = "hl.healthkit.collectionRotationOffset"
+    /// 1.3 (#127) — the history leg's own start, independent of the live one.
+    static let historyOffsetKey = "hl.healthkit.historyRotationOffset"
 
     /// `types` rotated to start at the persisted offset.
-    static func ordered(_ types: [String], defaults: UserDefaults) -> [String] {
+    static func ordered(_ types: [String], defaults: UserDefaults, key: String = offsetKey) -> [String] {
         guard !types.isEmpty else { return types }
-        let offset = max(0, defaults.integer(forKey: offsetKey)) % types.count
+        let offset = max(0, defaults.integer(forKey: key)) % types.count
         return Array(types[offset...] + types[..<offset])
     }
 
     /// Records how far a pass over `ordered` got. `finished` is the number of
     /// leading types that ran to an end; fewer than all moves the start there.
-    static func advance(finished: Int, of count: Int, defaults: UserDefaults) {
+    static func advance(finished: Int, of count: Int, defaults: UserDefaults, key: String = offsetKey) {
         guard count > 0, finished < count else { return }
-        let offset = max(0, defaults.integer(forKey: offsetKey)) % count
-        defaults.set((offset + max(0, finished)) % count, forKey: offsetKey)
+        let offset = max(0, defaults.integer(forKey: key)) % count
+        defaults.set((offset + max(0, finished)) % count, forKey: key)
     }
 }

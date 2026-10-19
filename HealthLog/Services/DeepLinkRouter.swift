@@ -44,6 +44,14 @@ enum DeepLinkRoute: Equatable {
     /// any log line, and `DeepLinkRouter.handle(_:)` never echoes a raw URL on
     /// the invite path.
     case invite(token: String)
+    /// #141 / #126 3.2 — screens only a push `url` opens
+    /// (``fromPushPath(_:)``): `/checkups` (Vorsorge), `/cycle`,
+    /// `/settings/security` and `/settings/integrations`. No custom-scheme
+    /// spelling; the router lands each on its More-stack screen.
+    case checkups
+    case cycle
+    case settingsSecurity
+    case settingsIntegrations
     case unknown(URL)
 
     /// Allowlist regex for server-generated entity IDs (medication, personal-

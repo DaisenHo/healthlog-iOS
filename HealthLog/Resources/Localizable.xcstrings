@@ -34618,40 +34618,6 @@
         }
       }
     },
-    "benchmark.source.clinicalCeiling": {
-      "extractionState": "manual",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Klinische Obergrenze:"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Clinical ceiling:"
-          }
-        }
-      }
-    },
-    "benchmark.source.clinicalFloor": {
-      "extractionState": "manual",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Klinische Untergrenze:"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Clinical floor:"
-          }
-        }
-      }
-    },
     "benchmark.source.eyebrow": {
       "extractionState": "manual",
       "localizations": {
@@ -34709,13 +34675,13 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Typischer Bereich (Ø ± 1σ):"
+            "value": "Typischer Bereich:"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Typical range (avg ± 1σ):"
+            "value": "Typical range:"
           }
         }
       }
@@ -59965,13 +59931,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Unit and reference range come from the linked biomarker."
+            "value": "Unit and reference range come from the linked biomarker. A value printed in another unit is converted by the server when it can."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Einheit und Referenzbereich stammen vom verknüpften Biomarker."
+            "value": "Einheit und Referenzbereich stammen vom verknüpften Biomarker. Einen Wert in anderer Einheit rechnet der Server um, wenn er kann."
           }
         }
       }
@@ -81543,13 +81509,13 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sortiert nach letzter Beobachtung."
+            "value": "Geprüft heißt, die App hat nachgesehen. Neuer Wert heißt, etwas Neues ging an den Server."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sorted by latest observation."
+            "value": "Checked means the app looked. New value means something new went to the server."
           }
         }
       }
@@ -93141,24 +93107,6 @@
         }
       }
     },
-    "settings.hkdiag.parked_count": {
-      "comment": "Sync Diagnostics: HealthKit readings the offline queue holds back until the server can take them (#115).",
-      "extractionState": "manual",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "In der Warteschlange geparkt"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Waiting in the queue"
-          }
-        }
-      }
-    },
     "settings.hkdiag.skipped_reason_not_confirmed": {
       "comment": "Sync Diagnostics refusal reason: a queued upload the server never confirmed within its retry budget (#115).",
       "extractionState": "manual",
@@ -94815,42 +94763,6 @@
         }
       }
     },
-    "records.comparison.belowBetter": {
-      "comment": "Personal records — comparison band summary, lower is better",
-      "extractionState": "manual",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dein Bestwert liegt unter dem Durchschnitt. Das ist günstig."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your best is below average. That's favourable."
-          }
-        }
-      }
-    },
-    "records.comparison.belowWorse": {
-      "comment": "Personal records — comparison band summary, higher is better",
-      "extractionState": "manual",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dein Bestwert liegt unter dem typischen Bereich."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your best is below the typical range."
-          }
-        }
-      }
-    },
     "records.comparison.belowCentered": {
       "comment": "Personal records — comparison band summary, centred metric",
       "extractionState": "manual",
@@ -94865,42 +94777,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Your best is below the typical range."
-          }
-        }
-      }
-    },
-    "records.comparison.aboveWorse": {
-      "comment": "Personal records — comparison band summary, lower is better",
-      "extractionState": "manual",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dein Bestwert liegt über dem typischen Bereich."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your best is above the typical range."
-          }
-        }
-      }
-    },
-    "records.comparison.aboveBetter": {
-      "comment": "Personal records — comparison band summary, higher is better",
-      "extractionState": "manual",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dein Bestwert liegt über dem Durchschnitt. Das ist günstig."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your best is above average. That's favourable."
           }
         }
       }
@@ -96976,13 +96852,13 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wann jeder Typ zuletzt bei deinem Server ankam und was den Upload ausgelöst hat. Bleibt über Neustarts erhalten. Ohne manuellen Sync sollten diese Zeiten im Lauf des Tages weiterlaufen: Hintergrund heißt, iOS hat die App geweckt, Vordergrund heißt, die App war offen, Manuell heißt, du hast auf „Jetzt syncen“ getippt."
+            "value": "Was dieses iPhone als Tageswert oder 10-Minuten-Puls gesendet hat. Eine Prüfung ohne Änderung sendet nichts, deshalb kann der letzte neue Wert älter sein als die letzte Prüfung. Die Zeile „Server“ ist, was dein Server für denselben Typ empfangen hat, auch wenn der Wert als Einzelmessung kam. Hintergrund heißt, iOS hat die App geweckt, Vordergrund heißt, die App war offen, Manuell heißt, du hast auf „Jetzt syncen“ getippt."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "When each type last reached your server and what started it. Kept across restarts. Without a manual sync these times should keep moving during the day: Background means iOS woke the app, Foreground means the app was open, Manual means you tapped \"Sync now\"."
+            "value": "What this iPhone sent as a day total or 10-minute pulse. A check that finds no change sends nothing, so the last new value can be older than the last check. The “Server” line is what your server received for the same type, even when the value came as single readings. Background means iOS woke the app, Foreground means the app was open, Manual means you tapped “Sync now”."
           }
         }
       }
@@ -96994,13 +96870,13 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Letzte Prüfung"
+            "value": "Zuletzt geprüft"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Last check"
+            "value": "Last checked"
           }
         }
       }
@@ -97012,13 +96888,13 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Empfangen %@"
+            "value": "Zuletzt geprüft %@"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Received %@"
+            "value": "Last checked %@"
           }
         }
       }
@@ -97030,13 +96906,13 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Empfangen %1$@ (%2$@)"
+            "value": "Zuletzt geprüft %1$@ (%2$@)"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Received %1$@ (%2$@)"
+            "value": "Last checked %1$@ (%2$@)"
           }
         }
       }
@@ -97199,6 +97075,2920 @@
           "stringUnit": {
             "state": "translated",
             "value": "The passkey's answer was incomplete. Please try again."
+          }
+        }
+      }
+    },
+    "settings.applehealth.history.title": {
+      "comment": "1.3 #127 — Apple Health settings: card title for the older history sync.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verlauf aus Apple Health"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "History from Apple Health"
+          }
+        }
+      }
+    },
+    "settings.applehealth.history.subtitle": {
+      "comment": "1.3 #127 — Apple Health settings: history card subtitle.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neue Werte gehen immer zuerst raus. Dein älterer Verlauf folgt von selbst im Hintergrund."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New readings always go first. Your older history follows on its own in the background."
+          }
+        }
+      }
+    },
+    "settings.applehealth.history.progress %lld %lld": {
+      "comment": "1.3 #127 — Apple Health settings: how many data types have their whole history on the server.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld von %2$lld Datentypen vollständig"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld data types complete"
+          }
+        }
+      }
+    },
+    "settings.applehealth.history.complete": {
+      "comment": "1.3 #127 — Apple Health settings: every type's history has been sent.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein ganzer Verlauf ist auf dem Server."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your whole history is on the server."
+          }
+        }
+      }
+    },
+    "settings.applehealth.history.unknown": {
+      "comment": "1.3 #127 — Apple Health settings: history state not known yet.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wird nach dem nächsten Sync angezeigt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shown after the next sync."
+          }
+        }
+      }
+    },
+    "settings.applehealth.history.note": {
+      "comment": "1.3 public #25 — Apple Health settings: what the full catch-up does and what it needs.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "„Alles jetzt synchronisieren“ sendet deinen ganzen Verlauf am Stück. Lass die App dabei offen und das iPhone am Ladegerät. Je nach Verlauf kann das eine Weile dauern und etwas Akku kosten. Du kannst jederzeit anhalten, es geht nichts verloren."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "\"Sync everything now\" sends your whole history in one go. Keep the app open and the iPhone on the charger. Depending on how much history you have, this can take a while and use some battery. You can stop at any time, nothing is lost."
+          }
+        }
+      }
+    },
+    "settings.applehealth.history.sync_all": {
+      "comment": "1.3 public #25 — Apple Health settings: button that sends the whole history in one go.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alles jetzt synchronisieren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sync everything now"
+          }
+        }
+      }
+    },
+    "settings.applehealth.history.stop": {
+      "comment": "1.3 public #25 — Apple Health settings: stops the running full catch-up.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anhalten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop"
+          }
+        }
+      }
+    },
+    "settings.applehealth.history.running": {
+      "comment": "1.3 public #25 — Apple Health settings: full catch-up in progress.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Läuft. Bitte lass die App offen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Running. Please keep the app open."
+          }
+        }
+      }
+    },
+    "settings.applehealth.history.stalled": {
+      "comment": "1.3 public #25 — Apple Health settings: full catch-up stopped after several rounds without progress.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pausiert, weil gerade nichts durchkommt. Versuch es später noch einmal."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paused because nothing is getting through right now. Try again later."
+          }
+        }
+      }
+    },
+    "settings.applehealth.history.cancelled": {
+      "comment": "1.3 public #25 — Apple Health settings: full catch-up stopped by the person or by iOS.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Angehalten. Beim nächsten Mal geht es dort weiter."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stopped. Next time it carries on from there."
+          }
+        }
+      }
+    },
+    "settings.hkdiag.history_title": {
+      "comment": "1.3 #127 — Sync Diagnostics: card title.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verlauf pro Typ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "History per type"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.history_subtitle": {
+      "comment": "1.3 #127 — Sync Diagnostics: card subtitle.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wie weit dein älterer Verlauf schon übertragen ist. Neue Werte laufen getrennt davon und gehen zuerst."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How far back your older history has been sent. New readings travel separately and go first."
+          }
+        }
+      }
+    },
+    "settings.hkdiag.history_complete": {
+      "comment": "1.3 #127 — Sync Diagnostics: this type's whole history has been sent.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vollständig"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Complete"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.history_finishing": {
+      "comment": "1.3 #128 — Sync Diagnostics: after an update, the oldest part of this type is still being sent.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Älterer Teil folgt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Older part following"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.history_hourly_title": {
+      "comment": "INT-Q 1.3 #138: Sync Diagnostics history card, row title for the hourly rows of steps, active energy, distance and flights sent for the last 30 days.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stundenwerte"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hourly values"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.history_hourly_days %lld %lld": {
+      "comment": "INT-Q 1.3 #138: Sync Diagnostics history card, hourly backfill progress: days already on the server of the days owed.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld von %2$lld Tagen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld days"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.history_pending": {
+      "comment": "1.3 #127 — Sync Diagnostics: the history walk has not started yet.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Startet mit dem nächsten Sync"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starts with the next sync"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.history_reached %@": {
+      "comment": "1.3 #127 — Sync Diagnostics: the history walk has reached back to this date (numeric date).",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bis %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Back to %@"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.held_title": {
+      "comment": "W1 (1.3.0) Sync Diagnostics card title: outbox rows the replay does not send on its own (parked or over the retry budget).",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zurückgehaltene Einträge"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entries held back"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.held_subtitle": {
+      "comment": "W1 (1.3.0) Sync Diagnostics card subtitle for held outbox rows.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese Einträge sendet die App nicht von selbst. Sie zählen nicht zu den Einträgen, die auf eine Verbindung warten."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The app doesn't send these on its own. They don't count as entries waiting for a connection."
+          }
+        }
+      }
+    },
+    "settings.hkdiag.held_reason_refused %lld": {
+      "comment": "W1 (1.3.0) reason for held outbox rows: the server answered with an HTTP 4xx. %lld = HTTP status.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vom Server abgelehnt (Status %lld)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refused by the server (status %lld)"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.held_reason_module %@": {
+      "comment": "W1 (1.3.0) reason for held outbox rows: the owning module is off. %@ = module identifier.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modul auf dem Server ausgeschaltet: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Module turned off on the server: %@"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.held_reason_unmappable": {
+      "comment": "W1 (1.3.0) reason for held outbox rows: unmappable_identifier.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Server kennt diesen Typ noch nicht"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The server doesn't know this type yet"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.held_reason_not_recorded": {
+      "comment": "W1 (1.3.0) reason for held outbox rows: refused rows could not be written into the skip register.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ablehnung konnte nicht gespeichert werden"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The refusal couldn't be saved on this device"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.held_reason_budget": {
+      "comment": "W1 (1.3.0) reason for held outbox rows: retry budget exhausted.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zu viele Fehlversuche"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Too many failed attempts"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.held_resend": {
+      "comment": "W1 (1.3.0) Sync Diagnostics action: send the held outbox rows again now.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erneut senden"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send again"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.held_resend_result %lld": {
+      "comment": "W1 (1.3.0) result line after 'Send again'. %lld = rows re-queued.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erneut eingereiht: %lld"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Queued again: %lld"
+          }
+        }
+      }
+    },
+    "integration.health.pill.limited": {
+      "comment": "#139 — status pill: connection works but some data types cannot be delivered (health.state limited).",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eingeschränkt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limited"
+          }
+        }
+      }
+    },
+    "integration.health.pill.degraded": {
+      "comment": "#139 — status pill: temporary provider trouble or unexpected silence (health.state degraded).",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verzögert"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delayed"
+          }
+        }
+      }
+    },
+    "integration.health.pill.actionRequired": {
+      "comment": "#139 — status pill: the person has to reconnect or resume (health.state action_required).",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Handeln nötig"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Action needed"
+          }
+        }
+      }
+    },
+    "integration.health.pill.unknown": {
+      "comment": "#139 — status pill: the server sent a state this build does not know.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Status unbekannt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Status unknown"
+          }
+        }
+      }
+    },
+    "integration.health.reason.dataArriving": {
+      "comment": "#139 — health.reason data_arriving.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Daten kommen an."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Data is arriving."
+          }
+        }
+      }
+    },
+    "integration.health.reason.firstSyncPending": {
+      "comment": "#139 — health.reason first_sync_pending.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verbunden. Der erste Abgleich steht noch aus."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connected. The first sync is still to come."
+          }
+        }
+      }
+    },
+    "integration.health.reason.planLimited": {
+      "comment": "#139 — health.reason plan_limited.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Läuft, aber dein Tarif beim Anbieter enthält nicht alle Datentypen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Works, but your plan with the provider does not include every data type."
+          }
+        }
+      }
+    },
+    "integration.health.reason.permissionLimited": {
+      "comment": "#139 — health.reason permission_limited.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Läuft, aber für einige Datentypen fehlt die Freigabe. Verbinde neu, um sie zu erteilen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Works, but some data types are not permitted. Reconnect to grant them."
+          }
+        }
+      }
+    },
+    "integration.health.reason.providerErrors": {
+      "comment": "#139 — health.reason provider_errors.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Anbieter hat gerade Probleme. HealthLog versucht es weiter."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The provider is having trouble right now. HealthLog keeps trying."
+          }
+        }
+      }
+    },
+    "integration.health.reason.syncStalled": {
+      "comment": "#139 — health.reason sync_stalled.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Abgleich stockt. HealthLog versucht es weiter."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Syncing has stalled. HealthLog keeps trying."
+          }
+        }
+      }
+    },
+    "integration.health.reason.noNewData": {
+      "comment": "#139 — health.reason no_new_data.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seit einiger Zeit sind keine neuen Daten angekommen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No new data has arrived for a while."
+          }
+        }
+      }
+    },
+    "integration.health.reason.unexpectedSilence": {
+      "comment": "#139 — health.reason unexpected_silence.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese Quelle liefert sonst jeden Tag, ist aber still geworden."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This source usually delivers every day, but it has gone quiet."
+          }
+        }
+      }
+    },
+    "integration.health.reason.reauthRequired": {
+      "comment": "#139 — health.reason reauth_required.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Freigabe ist abgelaufen. Verbinde neu, damit der Abgleich weiterläuft."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The authorization has expired. Reconnect to keep syncing."
+          }
+        }
+      }
+    },
+    "integration.health.reason.pausedAfterErrors": {
+      "comment": "#139 — health.reason paused_after_errors.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Abgleich ist nach wiederholten Fehlern pausiert."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Syncing is paused after repeated errors."
+          }
+        }
+      }
+    },
+    "integration.health.reason.unknown": {
+      "comment": "#139 — health.reason this build does not know.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Server meldet einen Zustand, den diese Version noch nicht kennt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The server reports a state this version does not know yet."
+          }
+        }
+      }
+    },
+    "integration.health.action.reconnect": {
+      "comment": "#139 — the one button for health.action reconnect.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neu verbinden"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reconnect"
+          }
+        }
+      }
+    },
+    "integration.health.action.resume": {
+      "comment": "#139 — the one button for health.action resume.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abgleich fortsetzen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resume sync"
+          }
+        }
+      }
+    },
+    "integration.health.unavailable %@": {
+      "comment": "#139 — data types the connection cannot deliver; %@ is the list of provider keys as sent by the server.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicht verfügbar: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not available: %@"
+          }
+        }
+      }
+    },
+    "integration.health.since %@": {
+      "comment": "#139 — when the degraded / action-required condition started; %@ is a date and time.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seit %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Since %@"
+          }
+        }
+      }
+    },
+    "labs.biomarker.aliases %@": {
+      "comment": "#130 — biomarker detail: other spellings the server maps to this marker; %@ is the list of names.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auch geschrieben als %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Also written as %@"
+          }
+        }
+      }
+    },
+    "trend.verdict.spoken.positive": {
+      "comment": "#135 VoiceOver clause after a trend, from the server's verdict (positive).",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "gute Richtung für dich"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "a good direction for you"
+          }
+        }
+      }
+    },
+    "trend.verdict.spoken.negative": {
+      "comment": "#135 VoiceOver clause after a trend, from the server's verdict (negative).",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ungünstige Richtung für dich"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "an unfavourable direction for you"
+          }
+        }
+      }
+    },
+    "chart.referenceLine.a11y.upper": {
+      "comment": "#135 VoiceOver label of a server reference line (upper edge).",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obere Referenzlinie"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upper reference line"
+          }
+        }
+      }
+    },
+    "chart.referenceLine.a11y.lower": {
+      "comment": "#135 VoiceOver label of a server reference line (lower edge).",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Untere Referenzlinie"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lower reference line"
+          }
+        }
+      }
+    },
+    "chart.referenceLine.a11y.line": {
+      "comment": "#135 VoiceOver label of a server reference line of an unknown edge.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Referenzlinie"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reference line"
+          }
+        }
+      }
+    },
+    "records.comparison.range %@": {
+      "comment": "#135 Record comparison band: the server's benchmark range with unit.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Typischer Bereich: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Typical range: %@"
+          }
+        }
+      }
+    },
+    "mood.patterns.title": {
+      "comment": "#136 Heading of the server's mood pattern cards.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muster in deiner Stimmung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Patterns in your mood"
+          }
+        }
+      }
+    },
+    "mood.patterns.basedOn %lld %lld": {
+      "comment": "#136 Sample size line under a mood pattern: days on each side of the comparison.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grundlage: %1$lld und %2$lld Tage. Ein Muster, keine Ursache."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Based on %1$lld and %2$lld days. A pattern, not a cause."
+          }
+        }
+      }
+    },
+    "mood.patterns.previousDayHigher %@ %@": {
+      "comment": "#136 Mood pattern previous_day, higher. Args: subject mean, comparison mean.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nach einem Tag unter deinem Üblichen ist der nächste Tag meist besser (%1$@ gegenüber %2$@ nach einem Tag darüber)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "After a below-usual day, the next day tends to be better (%1$@ against %2$@ after an above-usual day)."
+          }
+        }
+      }
+    },
+    "mood.patterns.previousDayLower %@ %@": {
+      "comment": "#136 Mood pattern previous_day, lower.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Tag unter deinem Üblichen wirkt meist in den nächsten Tag hinein (%1$@ gegenüber %2$@ nach einem Tag darüber)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A below-usual day tends to carry over into the next one (%1$@ against %2$@ after an above-usual day)."
+          }
+        }
+      }
+    },
+    "mood.patterns.weekendHigher %@ %@": {
+      "comment": "#136 Mood pattern weekend, higher.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Am Wochenende ist deine Stimmung meist besser (%1$@ gegenüber %2$@ unter der Woche)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your mood tends to be higher at the weekend (%1$@ against %2$@ on weekdays)."
+          }
+        }
+      }
+    },
+    "mood.patterns.weekendLower %@ %@": {
+      "comment": "#136 Mood pattern weekend, lower.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Am Wochenende ist deine Stimmung meist schlechter (%1$@ gegenüber %2$@ unter der Woche)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your mood tends to be lower at the weekend (%1$@ against %2$@ on weekdays)."
+          }
+        }
+      }
+    },
+    "mood.patterns.bestWeekday %@ %@ %@": {
+      "comment": "#136 Mood pattern best_weekday. Args: weekday name, subject mean, comparison mean.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ ist meist dein bester Tag (%2$@ gegenüber %3$@ an den übrigen Tagen)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ tends to be your best day (%2$@ against %3$@ on the other days)."
+          }
+        }
+      }
+    },
+    "mood.patterns.notesHigher %@ %@": {
+      "comment": "#136 Mood pattern notes, higher.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "An Tagen mit Notiz ist deine Stimmung meist besser (%1$@ gegenüber %2$@ ohne)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On days with a note your mood tends to be higher (%1$@ against %2$@ without one)."
+          }
+        }
+      }
+    },
+    "mood.patterns.notesLower %@ %@": {
+      "comment": "#136 Mood pattern notes, lower.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "An Tagen mit Notiz ist deine Stimmung meist schlechter (%1$@ gegenüber %2$@ ohne)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On days with a note your mood tends to be lower (%1$@ against %2$@ without one)."
+          }
+        }
+      }
+    },
+    "mood.patterns.delayedTagHigher %@ %@ %@": {
+      "comment": "#136 Mood pattern delayed_tag, higher. Args: tag label, subject mean, comparison mean.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Am Tag nach „%1$@“ ist deine Stimmung meist besser (%2$@ gegenüber %3$@ sonst)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The day after “%1$@”, your mood tends to be higher (%2$@ against %3$@ otherwise)."
+          }
+        }
+      }
+    },
+    "mood.patterns.delayedTagLower %@ %@ %@": {
+      "comment": "#136 Mood pattern delayed_tag, lower.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Am Tag nach „%1$@“ ist deine Stimmung meist schlechter (%2$@ gegenüber %3$@ sonst)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The day after “%1$@”, your mood tends to be lower (%2$@ against %3$@ otherwise)."
+          }
+        }
+      }
+    },
+    "mood.patterns.multipleEntriesHigher %@ %@": {
+      "comment": "#136 Mood pattern multiple_entries, higher.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "An Tagen mit mehreren Einträgen ist deine Stimmung meist besser (%1$@ gegenüber %2$@ an Tagen mit einem)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On days you log more than once, your mood tends to be higher (%1$@ against %2$@ on single-entry days)."
+          }
+        }
+      }
+    },
+    "mood.patterns.multipleEntriesLower %@ %@": {
+      "comment": "#136 Mood pattern multiple_entries, lower.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "An Tagen mit mehreren Einträgen ist deine Stimmung meist schlechter (%1$@ gegenüber %2$@ an Tagen mit einem)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On days you log more than once, your mood tends to be lower (%1$@ against %2$@ on single-entry days)."
+          }
+        }
+      }
+    },
+    "mood.patterns.strength.strong": {
+      "comment": "#136 Strength chip of a mood pattern (server: strong).",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stark"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strong"
+          }
+        }
+      }
+    },
+    "mood.patterns.strength.moderate": {
+      "comment": "#136 Strength chip of a mood pattern (server: moderate).",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mittel"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moderate"
+          }
+        }
+      }
+    },
+    "mood.patterns.strength.weak": {
+      "comment": "#136 Strength chip of a mood pattern (server: weak).",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schwach"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weak"
+          }
+        }
+      }
+    },
+    "Day to day": {
+      "comment": "#136 Mood pattern category: previous day.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Von Tag zu Tag"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Day to day"
+          }
+        }
+      }
+    },
+    "Weekends": {
+      "comment": "#136 Mood pattern category: weekend.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wochenende"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weekends"
+          }
+        }
+      }
+    },
+    "Weekdays": {
+      "comment": "#136 Mood pattern category: best weekday.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wochentage"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weekdays"
+          }
+        }
+      }
+    },
+    "Next day": {
+      "comment": "#136 Mood pattern category: delayed tag.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Folgetag"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next day"
+          }
+        }
+      }
+    },
+    "Check-ins": {
+      "comment": "#136 Mood pattern category: several entries a day.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einträge pro Tag"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check-ins"
+          }
+        }
+      }
+    },
+    "cycle.startNotice.merged %@ %@": {
+      "comment": "#137 Cycle calendar notice after the server folded a later start into the one just logged. Args: absorbed day, kept day.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein Start am %1$@ wurde mit dem %2$@ zusammengelegt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your start on %1$@ was merged into %2$@."
+          }
+        }
+      }
+    },
+    "cycle.startNotice.restoredOne %@": {
+      "comment": "#137 Cycle calendar notice after the server gave back one start.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Start am %@ ist wieder da."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The start on %@ is back."
+          }
+        }
+      }
+    },
+    "cycle.startNotice.restoredMany %@": {
+      "comment": "#137 Cycle calendar notice after the server gave back several starts (a list).",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Starts am %@ sind wieder da."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The starts on %@ are back."
+          }
+        }
+      }
+    },
+    "cycle.startNotice.dismiss": {
+      "comment": "#137 VoiceOver label of the close button on the cycle start notice.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hinweis ausblenden"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hide note"
+          }
+        }
+      }
+    },
+    "error.id.copy": {
+      "comment": "Error banner: accessibility label and action that copies the server request id (#134)",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fehler-ID kopieren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy error ID"
+          }
+        }
+      }
+    },
+    "settings.about.support.title": {
+      "comment": "About screen: card title for the support info (#134)",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Support"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Support"
+          }
+        }
+      }
+    },
+    "settings.about.support.copy": {
+      "comment": "About screen: button that copies the plain-text support info (#134)",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Support-Info kopieren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy support info"
+          }
+        }
+      }
+    },
+    "settings.about.support.footer": {
+      "comment": "About screen: footer under Copy support info (#134)",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopiert App- und iOS-Version, die Server-Version und die IDs der letzten Fehler für eine Support-Anfrage. Ohne Namen, E-Mail, Serveradresse und Gesundheitswerte."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copies app and iOS version, the server version and the IDs of the last errors, for a support request. No name, email, server address or health values."
+          }
+        }
+      }
+    },
+    "settings.about.support.copied": {
+      "comment": "About screen: confirmation after copying the support info (#134)",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopiert. Füge sie in deine Support-Anfrage ein."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copied. Paste it into your support request."
+          }
+        }
+      }
+    },
+    "error.id.label": {
+      "comment": "Error banner: label before the short server request id of the failure (#134)",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fehler-ID"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Error ID"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.source.server": {
+      "comment": "W5 — Sync Diagnostics, one-line source tag at the top of the server card.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quelle: dein Server, frisch abgefragt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Source: your server, fetched just now"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.source.device_stored": {
+      "comment": "W5 — Sync Diagnostics, source tag of a card read from this iPhone's persistent records.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quelle: dieses iPhone, über Neustarts gespeichert"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Source: this iPhone, kept across restarts"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.source.device_session": {
+      "comment": "W5 — Sync Diagnostics, source tag of a card with session counters.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quelle: dieses iPhone, seit dem letzten App-Start"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Source: this iPhone, since the app last started"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.freshness_new_value %@": {
+      "comment": "W5 — Server freshness row: when a batch last brought a new or changed reading of this type (relative time). Server lastNewSampleAt.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zuletzt neuer Wert übertragen %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last new value sent %@"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.freshness_background %@": {
+      "comment": "W5 — Server freshness row: when a background batch last carried this type (relative time). Server lastBackgroundAt, v1.42.4.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zuletzt im Hintergrund übertragen %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last sent in the background %@"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.freshness_legend": {
+      "comment": "W5 — Legend under 'Freshness per type'.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rechts steht, wann die neueste Messung entstand. Geprüft heißt, die App hat den Typ übertragen, auch wenn nichts Neues dabei war."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On the right: when the newest reading was taken. Checked means the app sent the type, even when nothing new was in it."
+          }
+        }
+      }
+    },
+    "settings.hkdiag.freshness.medication_dose": {
+      "comment": "W5 — Name of the server freshness entry MEDICATION_DOSE (doses imported from Apple Health).",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Medikamente aus Apple Health"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Medications from Apple Health"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.kind_time.none": {
+      "comment": "W5 — Per-kind session row: no check and no upload since launch.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seit dem App-Start noch nichts"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing since the app started"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.kind_time.checked %@": {
+      "comment": "W5 — Per-kind session row: the app looked (relative time), nothing new went up.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zuletzt geprüft %@, nichts Neues"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last checked %@, nothing new"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.kind_time.new %@": {
+      "comment": "W5 — Per-kind session row: when a new value last went to the server (relative time).",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zuletzt neuer Wert übertragen %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last new value sent %@"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.kind_time.new_and_checked %@ %@": {
+      "comment": "W5 — Per-kind session row: last new value (relative) and a later check that found nothing new (relative).",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zuletzt neuer Wert übertragen %1$@, zuletzt geprüft %2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last new value sent %1$@, last checked %2$@"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.stats.none_sent": {
+      "comment": "W5 — Day totals and pulse card: this iPhone's record has no upload for the type.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Von diesem iPhone noch keiner gesendet"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "None sent from this iPhone yet"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.stats.sent %@ %@": {
+      "comment": "W5 — Day totals and pulse card: when this iPhone last sent a new value (relative time) and the trigger word.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neuer Wert gesendet %1$@, %2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New value sent %1$@, %2$@"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.stats.server_line %@": {
+      "comment": "W5 — Day totals and pulse card: the server's line for the same type, e.g. 'Server: Last checked 5 hours ago (Background)'.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server: %@"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.report.title": {
+      "comment": "W5 — Sync Diagnostics, card title for copying a text report.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bericht"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Report"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.report.copy": {
+      "comment": "W5 — Sync Diagnostics, action that copies the plain-text report to the clipboard.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bericht kopieren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy report"
+          }
+        }
+      }
+    },
+    "settings.hkdiag.report.copied": {
+      "comment": "W5 — Confirmation after copying the report.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Bericht liegt in der Zwischenablage."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The report is on the clipboard."
+          }
+        }
+      }
+    },
+    "settings.hkdiag.report.footer": {
+      "comment": "W5 — Footer of the report card: what the report contains and what it leaves out.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Textfassung dieser Seite zum Einfügen in eine Fehlermeldung: Build, Serverversion, Stand pro Typ, zurückgehaltene Einträge nach Grund und die letzten Auslöser. Ohne Messwerte und ohne persönliche Daten."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A text version of this page to paste into a bug report: build, server version, state per type, entries held back by reason and the last triggers. No readings and no personal data."
+          }
+        }
+      }
+    },
+    "settings.ai.usage.title": {
+      "comment": "#129 Settings, Assistant: card title of the AI usage level picker.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KI-Nutzung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI usage"
+          }
+        }
+      }
+    },
+    "settings.ai.usage.explainer": {
+      "comment": "#129 one explanatory sentence under the AI usage card title.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Legt fest, wie viel die KI im Hintergrund arbeitet: Statuskarten, Tagesbriefing, Dokumente lesen. Den Coach betrifft das nicht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sets how much the AI works in the background: status cards, the daily briefing, reading documents. The Coach is not affected."
+          }
+        }
+      }
+    },
+    "settings.ai.usage.level.frugal": {
+      "comment": "#129 AI usage level frugal.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sparsam"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frugal"
+          }
+        }
+      }
+    },
+    "settings.ai.usage.level.standard": {
+      "comment": "#129 AI usage level standard.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Standard"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Standard"
+          }
+        }
+      }
+    },
+    "settings.ai.usage.level.full": {
+      "comment": "#129 AI usage level full.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voll"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Full"
+          }
+        }
+      }
+    },
+    "settings.ai.usage.limited": {
+      "comment": "#129 under an AI usage option the operator does not allow.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vom Betreiber des Servers begrenzt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limited by the server operator"
+          }
+        }
+      }
+    },
+    "settings.ai.usage.estimate %@": {
+      "comment": "#129 the server's estimate under an AI usage option; %@ is the formatted number.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Etwa %@ Tokens am Tag (Schätzung)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About %@ tokens a day (estimate)"
+          }
+        }
+      }
+    },
+    "settings.ai.usage.adminCap %@": {
+      "comment": "#129 source admin_cap; %@ is the level in effect.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deine Wahl liegt über der Grenze des Betreibers, deshalb gilt %@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your choice is above the operator's limit, so %@ applies."
+          }
+        }
+      }
+    },
+    "settings.ai.usage.measured %@ %lld": {
+      "comment": "#129 measured use; %1$@ tokens per day, %2$lld days.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gemessen: etwa %1$@ Tokens am Tag in den letzten %2$lld Tagen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Measured: about %1$@ tokens a day over the last %2$lld days"
+          }
+        }
+      }
+    },
+    "settings.ai.usage.error": {
+      "comment": "#129 the PUT failed.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die KI-Nutzung ließ sich nicht ändern. Bitte versuche es noch einmal."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't change the AI usage. Please try again."
+          }
+        }
+      }
+    },
+    "ai.reason.usageLevel": {
+      "comment": "#129 reason usage_level wherever an AI surface explains why it is unavailable.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf deiner aktuellen Stufe der KI-Nutzung nicht verfügbar."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not available at your current AI usage level."
+          }
+        }
+      }
+    },
+    "mood.source.notification": {
+      "comment": "#126 P2 mood history source filter: entries answered from a mood reminder notification (server source NOTIFICATION).",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mitteilung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notification"
+          }
+        }
+      }
+    },
+    "labs.conversion.from %@": {
+      "comment": "#126 3.5 under a lab reading the server converted; %@ is the printed value and unit.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Umgerechnet aus %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Converted from %@"
+          }
+        }
+      }
+    },
+    "labs.conversion.printedRange %@": {
+      "comment": "#126 3.5 the reference range as printed on the report, in the source unit.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gedruckter Bereich: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Printed range: %@"
+          }
+        }
+      }
+    },
+    "labs.add.printedUnit": {
+      "comment": "#126 3.5 add sheet: optional unit for a linked marker when the report prints another unit.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einheit laut Befund, falls anders"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unit as printed, if different"
+          }
+        }
+      }
+    },
+    "labs.refusal.unit.unknownAnalyte": {
+      "comment": "#126 P2 422 labs.unit.mismatch reason unknown_analyte.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Server kann diesen Marker nicht in eine andere Einheit umrechnen. Gib den Wert in der Einheit des Markers ein."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The server can't convert this marker into another unit. Enter the value in the marker's unit."
+          }
+        }
+      }
+    },
+    "labs.refusal.unit.unknownUnit": {
+      "comment": "#126 P2 422 labs.unit.mismatch reason unknown_unit.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese Einheit kennt der Server nicht. Prüf die Schreibweise oder gib den Wert in der Einheit des Markers ein."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The server doesn't know this unit. Check the spelling or enter the value in the marker's unit."
+          }
+        }
+      }
+    },
+    "labs.refusal.unit.notFinite": {
+      "comment": "#126 P2 422 labs.unit.mismatch reason not_finite.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dieser Wert lässt sich nicht umrechnen. Prüf die Zahl."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This value can't be converted. Check the number."
+          }
+        }
+      }
+    },
+    "labs.refusal.unit.general": {
+      "comment": "#126 P2 422 labs.unit.mismatch with a reason this build does not know.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese Einheit lässt sich nicht in die des Markers umrechnen. Nichts wurde gespeichert."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This unit can't be converted into the marker's unit. Nothing was saved."
+          }
+        }
+      }
+    },
+    "labs.refusal.aliasTaken %@": {
+      "comment": "#130 409 labs.biomarker.alias.taken; %@ is the spelling.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ist schon der Name oder eine Schreibweise eines anderen Markers."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ is already the name or a spelling of another marker."
+          }
+        }
+      }
+    },
+    "labs.refusal.merged": {
+      "comment": "#130 404 with meta.mergedInto.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dieser Marker wurde mit einem anderen zusammengelegt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This marker was merged into another one."
+          }
+        }
+      }
+    },
+    "labs.refusal.mergeUnitMismatch": {
+      "comment": "#130 422 labs.biomarker.merge.unitMismatch.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Server kann die Einheiten dieser Marker nicht ineinander umrechnen. Nichts wurde zusammengelegt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The server can't convert these markers' units into each other. Nothing was merged."
+          }
+        }
+      }
+    },
+    "labs.refusal.mergeInvalid": {
+      "comment": "#130 422 labs.biomarker.merge.invalid.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese Zusammenlegung ist nicht möglich. Nichts wurde geändert."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This merge isn't possible. Nothing was changed."
+          }
+        }
+      }
+    },
+    "labs.aliases.edit": {
+      "comment": "#130 marker detail: opens the alias editor.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schreibweisen bearbeiten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit spellings"
+          }
+        }
+      }
+    },
+    "labs.merge.open": {
+      "comment": "#130 marker detail: opens the merge sheet.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Marker zusammenlegen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Merge markers"
+          }
+        }
+      }
+    },
+    "labs.aliases.add.placeholder": {
+      "comment": "#130 alias editor text field.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weitere Schreibweise"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Another spelling"
+          }
+        }
+      }
+    },
+    "labs.aliases.add": {
+      "comment": "#130 alias editor add button.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hinzufügen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add"
+          }
+        }
+      }
+    },
+    "labs.aliases.footer": {
+      "comment": "#130 alias editor footer.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Befunde, die diesen Marker anders schreiben, landen hier."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lab reports that write this marker differently are filed under it."
+          }
+        }
+      }
+    },
+    "labs.merge.title": {
+      "comment": "#130 merge sheet title.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Marker zusammenlegen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Merge markers"
+          }
+        }
+      }
+    },
+    "labs.merge.into %@": {
+      "comment": "#130 merge sheet section header; %@ is the marker that stays.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zusammenlegen in %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Merge into %@"
+          }
+        }
+      }
+    },
+    "labs.merge.pick.footer": {
+      "comment": "#130 merge sheet footer.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wähle die Marker, deren Messungen hierher wandern. Ihre Namen werden Schreibweisen dieses Markers."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick the markers whose readings should move here. Their names become spellings of this marker."
+          }
+        }
+      }
+    },
+    "labs.merge.preview.header": {
+      "comment": "#130 dry-run preview header.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Was der Server tun würde"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What the server would do"
+          }
+        }
+      }
+    },
+    "labs.merge.check": {
+      "comment": "#130 runs the dry run.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zusammenlegung prüfen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check merge"
+          }
+        }
+      }
+    },
+    "labs.merge.confirm": {
+      "comment": "#130 confirms the merge after a clean dry run.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jetzt zusammenlegen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Merge now"
+          }
+        }
+      }
+    },
+    "labs.merge.noUndo": {
+      "comment": "#130 under the confirm button.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Zusammenlegung lässt sich nicht rückgängig machen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A merge cannot be undone."
+          }
+        }
+      }
+    },
+    "labs.merge.source.same": {
+      "comment": "#130 preview: source in the target's unit.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "gleiche Einheit"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "same unit"
+          }
+        }
+      }
+    },
+    "labs.merge.source.converted": {
+      "comment": "#130 preview: source the server converts.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vom Server umgerechnet"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "converted by the server"
+          }
+        }
+      }
+    },
+    "labs.merge.source.refused": {
+      "comment": "#130 preview: source the server cannot convert.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nicht umrechenbar"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "can't be converted"
+          }
+        }
+      }
+    },
+    "labs.merge.source %@ %lld %@": {
+      "comment": "#130 preview row: marker name, its reading count, what happens to its unit.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$lld Messungen, %3$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$lld readings, %3$@"
+          }
+        }
+      }
+    },
+    "labs.merge.refused": {
+      "comment": "#130 preview with a refused source.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "So kann der Server diese Marker nicht zusammenlegen. Es würde sich nichts ändern."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The server can't merge these markers as they are. Nothing would change."
+          }
+        }
+      }
+    },
+    "labs.merge.moves %lld %lld": {
+      "comment": "#130 preview totals: moved and converted readings.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld Messungen wandern hierher, davon %2$lld umgerechnet."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld readings move here, %2$lld of them converted."
+          }
+        }
+      }
+    },
+    "labs.merge.aliases %@": {
+      "comment": "#130 preview: names that become aliases.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neue Schreibweisen dieses Markers: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New spellings of this marker: %@"
+          }
+        }
+      }
+    },
+    "notifications.content.title": {
+      "comment": "#126 3.3 card title for notificationPrefs.content.detail.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inhalt der Mitteilungen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notification content"
+          }
+        }
+      }
+    },
+    "notifications.content.toggle": {
+      "comment": "#126 3.3 toggle: detailed (on) or generic (off).",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gesundheitswerte zeigen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show health figures"
+          }
+        }
+      }
+    },
+    "notifications.content.footer": {
+      "comment": "#126 3.3 footer explaining generic vs detailed.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aus sagt eine Mitteilung nur, worum es geht. An kann sie Werte zeigen, etwa deinen Score im Morgenbriefing."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Off, a notification only says what it is about. On, it can show figures, such as your score in the morning briefing."
+          }
+        }
+      }
+    },
+    "clinicalSignals.healthStatus.band.sameHours": {
+      "comment": "#126 P2 deviation basis sameHours: the band is the usual range for this time of day (day in progress); %1$@ low, %2$@ high.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Üblich um diese Tageszeit %1$@ bis %2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usual for this time of day %1$@ to %2$@"
+          }
+        }
+      }
+    },
+    "today.restMode.day %lld": {
+      "comment": "#126 P2 digest restMode with the 1-based day of the illness episode.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erholungs-Modus, Tag %lld"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rest mode, day %lld"
+          }
+        }
+      }
+    },
+    "today.score.steady %lld": {
+      "comment": "#126 P2 digest score.steadyWeeks.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Score seit %lld Wochen stabil"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Score steady for %lld weeks"
+          }
+        }
+      }
+    },
+    "today.score.steadyAtLeast %lld": {
+      "comment": "#126 P2 digest score.steadyWeeks with steadyAtLeast (a lower bound).",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Score seit mindestens %lld Wochen stabil"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Score steady for at least %lld weeks"
+          }
+        }
+      }
+    },
+    "settings.coach.window.title": {
+      "comment": "#126 P2 card title for coach-prefs.defaultWindow.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reichweite des Coachs"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coach reach"
+          }
+        }
+      }
+    },
+    "settings.coach.window.pickerLabel": {
+      "comment": "#126 P2 picker label: how far back the Coach reads.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Liest zurück"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reads back"
+          }
+        }
+      }
+    },
+    "settings.coach.window.description": {
+      "comment": "#126 P2 the window is a real limit server-side.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Coach nutzt nur Daten aus diesem Zeitraum, in jeder Antwort."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Coach only uses data from this period, in every answer."
+          }
+        }
+      }
+    },
+    "settings.coach.window.last7days": {
+      "comment": "#126 P2 coach window option.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "7 Tage"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "7 days"
+          }
+        }
+      }
+    },
+    "settings.coach.window.last30days": {
+      "comment": "#126 P2 coach window option.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 Tage"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 days"
+          }
+        }
+      }
+    },
+    "settings.coach.window.last90days": {
+      "comment": "#126 P2 coach window option.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "90 Tage"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "90 days"
+          }
+        }
+      }
+    },
+    "settings.coach.window.lastYear": {
+      "comment": "#126 P2 coach window option lastYear.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "12 Monate"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "12 months"
+          }
+        }
+      }
+    },
+    "settings.coach.window.allTime": {
+      "comment": "#126 P2 coach window option allTime (no limit, server default).",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alles"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All"
+          }
+        }
+      }
+    },
+    "consent.recipients.forwarded": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein Server leitet sie an %@ weiter, um persönliche Einblicke zu erstellen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your server forwards them to %@ to generate personal insights."
+          }
+        }
+      }
+    },
+    "consent.recipients.bullet": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ erhält diese Daten von deinem Server und verarbeitet sie nach der eigenen Datenschutzrichtlinie."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ receives this data from your server and handles it under its own privacy policy."
           }
         }
       }

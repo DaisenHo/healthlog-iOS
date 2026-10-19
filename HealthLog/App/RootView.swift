@@ -253,6 +253,8 @@ struct RootView: View {
         guard case .authenticated = authStore.phase,
               let container else { return }
         await container.moodHealthSyncStore.activateIfEnabled()
+        // W3 (1.3, #126 1.5) — the Apple Health dose observer, restored on the same tick.
+        await container.medicationHealthSyncStore.startObservingIfEnabled()
     }
 
     /// GH #74 — run one ECG sweep on the transition into `.authenticated`, when

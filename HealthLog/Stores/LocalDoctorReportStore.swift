@@ -48,8 +48,14 @@ public final class LocalDoctorReportStore {
     /// (`GET /api/medications/compliance`) when a report is generated. One
     /// request, user-initiated, never on the launch path. Tests inject a stub;
     /// `nil` result = unavailable (offline / standalone / old server).
+    /// #126 P2 — asked with `?days=` = the report period, so the rows and the
+    /// account figure cover the report's own window.
     @ObservationIgnored
-    var complianceFetch: @MainActor () async -> [MedicationComplianceSummaryEntry]?
+    var complianceFetch: @MainActor (_ days: Int) async -> MedicationComplianceReport?
+    /// #119 — the server's daily pulse for the report window (v1.40.1 rule).
+    /// `nil` = unavailable; the pulse row then applies the rule to the readings.
+    @ObservationIgnored
+    var pulseDaysFetch: @MainActor (_ from: Date, _ to: Date) async -> [DailyPulseValue]?
 
     public init(
         renderer: DoctorReportRenderer = DoctorReportRenderer(),
@@ -67,9 +73,13 @@ public final class LocalDoctorReportStore {
         self.settingsStore = settingsStore
         self.calendar = calendar
         self.now = now
-        complianceFetch = { [medicationsStore] in
+        complianceFetch = { [medicationsStore] days in
             let repo = medicationsStore.repo
-            return try? await repo.complianceSummary()
+            return try? await repo.complianceReport(days: days)
+        }
+        pulseDaysFetch = { [measurementsStore] from, to in
+            let repo = measurementsStore.repo
+            return try? await repo.dailyPulse(from: from, to: to)
         }
     }
 
@@ -80,9 +90,11 @@ public final class LocalDoctorReportStore {
         isWorking = true
         error = nil
         defer { isWorking = false }
-        let snapshot = await makeSnapshot(serverCompliance: complianceFetch())
         let end = now()
         let start = calendar.date(byAdding: .day, value: -periodDays, to: end) ?? end
+        let report = await complianceFetch(periodDays)
+        let pulseDays = await pulseDaysFetch(start, end)
+        let snapshot = makeSnapshot(serverComplianceReport: report, serverPulseDays: pulseDays)
         let spec = DoctorReportSpecBuilder.build(
             snapshot: snapshot,
             periodStart: start,
@@ -132,7 +144,9 @@ public final class LocalDoctorReportStore {
     // MARK: - Snapshot
 
     func makeSnapshot(
-        serverCompliance: [MedicationComplianceSummaryEntry]? = nil
+        serverCompliance: [MedicationComplianceSummaryEntry]? = nil,
+        serverComplianceReport: MedicationComplianceReport? = nil,
+        serverPulseDays: [DailyPulseValue]? = nil
     ) -> DoctorReportSpecBuilder.Snapshot {
         let patientName: String = settingsStore.profile?.displayName
             ?? settingsStore.profile?.username
@@ -147,6 +161,8 @@ public final class LocalDoctorReportStore {
             measurements: measurementsStore.recent,
             medications: medicationsStore.medications,
             serverCompliance: serverCompliance,
+            serverComplianceReport: serverComplianceReport,
+            serverPulseDays: serverPulseDays,
             moodEntries: moodStore.entries,
             // #115 B5 — the PDF prints glucose in the account's unit.
             glucoseUnit: settingsStore.glucoseUnit,

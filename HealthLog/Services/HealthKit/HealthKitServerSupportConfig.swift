@@ -90,4 +90,12 @@ public enum HealthKitServerSupportConfig {
     /// deliberately keeps `reason` as an open `String`, so an unknown future
     /// reason lands in the same terminal default instead of breaking decoding.
     public static let reasonUnstableExternalId = "unstable_external_id"
+
+    /// **X4 (1.3, #138)** — the three skip reasons of an hourly
+    /// `stats:<HK>:<YYYY-MM-DD>T<HH>` row (server v1.43,
+    /// `src/lib/measurements/intraday-hour-buckets.ts`). Deterministic: the
+    /// same row re-sent is skipped the same way, so they are terminal.
+    public static let reasonHourBucketMisaligned = "hour_bucket_misaligned"
+    public static let reasonHourBucketUnsupportedType = "hour_bucket_unsupported_type"
+    public static let reasonHourBucketTooOld = "hour_bucket_too_old"
 }

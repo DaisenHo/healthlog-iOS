@@ -50,6 +50,15 @@ public final class AICapabilityGate {
         account != nil
     }
 
+    /// #143 — the standing AI consent the server reported (`ai.consent`,
+    /// v1.43.2), `nil` before the first load, on an older server, or when the
+    /// server's status is one this build does not know. Read-only: nothing
+    /// here ever mints a receipt.
+    public var standingConsent: AIStandingConsent? {
+        guard let consent = account?.consent, consent.verdict != nil else { return nil }
+        return consent
+    }
+
     /// The resolved state of one capability.
     public func state(_ key: AICapabilityKey) -> AICapabilityState {
         if let override = refusalOverrides[key] { return override }
@@ -82,6 +91,15 @@ public final class AICapabilityGate {
     public func apply(_ block: AIAccountBlock?) {
         account = block
         refusalOverrides = [:]
+        publish()
+    }
+
+    /// #129 — render the block `PUT /api/auth/me/ai-usage` answered until the
+    /// next `/api/auth/me` load (which also re-resolves the capabilities the
+    /// level gates). No-op without a block: the setting is hidden then.
+    public func applyUsage(_ usage: AIUsageState) {
+        guard let account else { return }
+        self.account = account.replacingUsage(usage)
         publish()
     }
 

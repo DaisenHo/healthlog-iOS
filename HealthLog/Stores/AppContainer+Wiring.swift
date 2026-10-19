@@ -328,7 +328,14 @@ extension AppContainer {
             // and the app-owned collector admits through the Phase-06 registry.
             retryQueue: outbox,
             authenticatedSessionRegistry: authenticatedSessionRegistry,
-            aggregates: (healthKitHRBucketSync, healthKitDailyStatsSync)
+            aggregates: (healthKitHRBucketSync, healthKitDailyStatsSync),
+            // 1.3 (#128) — how far the server already holds each type, asked
+            // once for a 1.2.0 installation's upgraded partitions.
+            serverFreshness: { [settingsRepo] in
+                await HealthSampleReplayFloor.freshnessAnswer {
+                    try await settingsRepo.healthKitConfig().metricFreshness
+                }
+            }
         )
         Self.wireAIRefusalMirror(apiClient: apiClient, gate: aiCapabilityGate, moduleGate: moduleGate) // #115 0.2
         Self.wireAICapabilityGates(gate: aiCapabilityGate, dailyBriefing: dailyBriefingStore, narrative: serverStatsStores.narrative)

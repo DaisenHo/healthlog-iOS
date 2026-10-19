@@ -141,10 +141,17 @@ extension SyncTriggerContext {
 
 /// Bounded work allowance for one trigger. `incrementalOnly` forbids a first
 /// history walk inside a short wake.
+///
+/// **1.3 (#127)** — `maxPagesPerType` is the live stream's allowance, served
+/// first on every trigger. History gets `historyPagesPerType` and
+/// `historyTimeBudget` from what is left, and only where
+/// `allowsFirstHistoryImport` (a history walk) is allowed at all.
 struct HealthSyncBudget: Sendable, Equatable {
     let maxPagesPerType: Int
     let incrementalOnly: Bool
     let allowsFirstHistoryImport: Bool
+    var historyPagesPerType = 0
+    var historyTimeBudget: TimeInterval = 0
 
     static func required(for trigger: HealthSyncTrigger) -> HealthSyncBudget {
         switch trigger {
@@ -153,9 +160,25 @@ struct HealthSyncBudget: Sendable, Equatable {
         case .observer:
             HealthSyncBudget(maxPagesPerType: 1, incrementalOnly: false, allowsFirstHistoryImport: false)
         case .processing:
-            HealthSyncBudget(maxPagesPerType: 8, incrementalOnly: false, allowsFirstHistoryImport: true)
+            // BGProcessing: minutes, usually on the charger. iOS still ends it
+            // by cancellation, which every page honours.
+            HealthSyncBudget(
+                maxPagesPerType: 8,
+                incrementalOnly: false,
+                allowsFirstHistoryImport: true,
+                historyPagesPerType: 16,
+                historyTimeBudget: 120
+            )
         case .coldActivation, .postAuthentication, .foreground, .manual:
-            HealthSyncBudget(maxPagesPerType: 4, incrementalOnly: false, allowsFirstHistoryImport: true)
+            // Inside the detached foreground pass (90 s), like the workout
+            // catch-up's 20 s.
+            HealthSyncBudget(
+                maxPagesPerType: 4,
+                incrementalOnly: false,
+                allowsFirstHistoryImport: true,
+                historyPagesPerType: 4,
+                historyTimeBudget: 20
+            )
         case .accountTeardown:
             HealthSyncBudget(maxPagesPerType: 0, incrementalOnly: true, allowsFirstHistoryImport: false)
         }
@@ -450,6 +473,12 @@ enum HealthSyncCompositionPlan {
     /// single-sample type to the server and left the day totals (steps, energy,
     /// flights, distance, daylight) and the pulse buckets at the last manual
     /// sync.
+    ///
+    /// **W3 (1.3, #126 1.5 / HealthLog#1173, #1221)** — the Apple Health
+    /// medication import is in it too. Without it a dose logged in Health
+    /// reached the server only on an app open or "Sync all". Bounded for a
+    /// short wake: the sweep posts at most one bulk chunk and leaves the rest
+    /// pending in the dose ledger for the next wake.
     static let incrementalSet: Set<HealthSyncCapability> = [
         .speziSampleCollection,
         .workoutImport,
@@ -457,6 +486,7 @@ enum HealthSyncCompositionPlan {
         .heartRateBuckets,
         .heartHealthEvents,
         .moodStateOfMindImport,
+        .appleMedicationImport,
         .outboxDrain
     ]
 

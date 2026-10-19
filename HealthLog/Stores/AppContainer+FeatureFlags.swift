@@ -17,6 +17,11 @@ extension AppContainer {
         moduleGate: ModuleGate
     ) {
         moduleGate.aiCapabilityGate = gate
+        // X4 (1.3, #138) — the `features` block rides the same load and is
+        // kept next to the server version every capability gate reads.
+        moduleGate.serverFeaturesSink = { features in
+            KnownServerVersion.recordFeatures(ServerFeatures.recorded(features))
+        }
         Task.detached {
             await apiClient.setAIRefusalHandler { @Sendable [weak gate] refusal in
                 await MainActor.run {

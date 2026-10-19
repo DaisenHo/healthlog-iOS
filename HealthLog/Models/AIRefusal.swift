@@ -52,6 +52,8 @@ public struct AIRefusal: Sendable, Equatable, Hashable {
     public static let providerNoneCode = "ai.provider.none"
     public static let unavailableCode = "ai.unavailable"
     public static let consentRequiredCode = "consent.ai.required"
+    /// #129 (v1.43) — 403 with `meta.capability`, `meta.reason: usage_level`.
+    public static let usageLevelTooLowCode = "ai.usage.levelTooLow"
 
     /// The refusal family, derived from the code alone (the code is the stable
     /// contract; `reason` only refines it).
@@ -124,7 +126,7 @@ public struct AIRefusal: Sendable, Equatable, Hashable {
     public static func from(status: Int, meta: APIEnvelopeMeta?, topLevelCode: String?) -> AIRefusal? {
         guard let code = meta?.errorCode ?? topLevelCode, !code.isEmpty else { return nil }
         let isOperator = code.hasPrefix(operatorDisabledPrefix) && code.count > operatorDisabledPrefix.count
-        let isAICode = code == recordNotPermittedCode || code == providerNoneCode || code == unavailableCode
+        let isAICode = [recordNotPermittedCode, providerNoneCode, unavailableCode, usageLevelTooLowCode].contains(code)
         guard (isOperator && status == 403) || isAICode else { return nil }
         let capability = meta?.capability.flatMap(AICapabilityKey.init(rawValue:))
         let reason = meta?.reason.flatMap { $0.isEmpty ? nil : AIUnavailableReason(wireValue: $0) }
@@ -148,6 +150,7 @@ public struct AIRefusal: Sendable, Equatable, Hashable {
         case .moduleDisabled, .userDisabled: "module.disabled"
         case .noProvider: providerNoneCode
         case .consentRequired: consentRequiredCode
+        case .usageLevel: usageLevelTooLowCode
         case .checkFailed, .unknown: unavailableCode
         }
         return AIRefusal(errorCode: code, capability: capability, reason: reason, httpStatus: 0)

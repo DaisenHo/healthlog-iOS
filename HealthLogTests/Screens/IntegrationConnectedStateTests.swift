@@ -68,11 +68,9 @@ struct IntegrationConnectedStateTests {
             configured: true,
             lastSyncedAt: nil,
             connectedAt: nil,
-            tokenExpired: nil,
             tokenRefreshFailed: nil,
             tokenExpiresAt: nil,
-            scope: nil,
-            hasActivityScope: nil
+            scope: nil
         )
         #expect(IntegrationConnectedState.withings(status) == true)
     }
@@ -84,11 +82,9 @@ struct IntegrationConnectedStateTests {
             configured: false,
             lastSyncedAt: nil,
             connectedAt: nil,
-            tokenExpired: nil,
             tokenRefreshFailed: nil,
             tokenExpiresAt: nil,
-            scope: nil,
-            hasActivityScope: nil
+            scope: nil
         )
         #expect(IntegrationConnectedState.withings(status) == false)
     }

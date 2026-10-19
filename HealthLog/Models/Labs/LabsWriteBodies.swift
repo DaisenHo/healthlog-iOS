@@ -263,6 +263,9 @@ public struct BiomarkerPatch: Codable, Sendable, Equatable {
     /// key leaves visibility untouched; `true` drops the marker from the active
     /// catalog list + every lab-entry picker WITHOUT deleting its readings.
     public var hidden: Bool?
+    /// #130 (v1.43) — replaces the manual and merge aliases (0 to 50). `nil`
+    /// omits the key, which leaves them alone (the server's contract).
+    public var aliases: [String]?
 
     public init(
         name: String? = nil,
@@ -271,7 +274,8 @@ public struct BiomarkerPatch: Codable, Sendable, Equatable {
         upperBound: RecordPatchField<Double> = .unchanged,
         context: RecordPatchField<String> = .unchanged,
         panel: RecordPatchField<String> = .unchanged,
-        hidden: Bool? = nil
+        hidden: Bool? = nil,
+        aliases: [String]? = nil
     ) {
         self.name = name
         self.unit = unit
@@ -280,6 +284,7 @@ public struct BiomarkerPatch: Codable, Sendable, Equatable {
         self.context = context
         self.panel = panel
         self.hidden = hidden
+        self.aliases = aliases
     }
 
     public init(from decoder: Decoder) throws {
@@ -291,6 +296,7 @@ public struct BiomarkerPatch: Codable, Sendable, Equatable {
         context = try RecordPatchField.decode(from: c, forKey: .context)
         panel = try RecordPatchField.decode(from: c, forKey: .panel)
         hidden = try c.decodeIfPresent(Bool.self, forKey: .hidden)
+        aliases = try c.decodeIfPresent([String].self, forKey: .aliases)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -302,10 +308,11 @@ public struct BiomarkerPatch: Codable, Sendable, Equatable {
         try context.encode(into: &c, forKey: .context)
         try panel.encode(into: &c, forKey: .panel)
         try c.encodeIfPresent(hidden, forKey: .hidden)
+        try c.encodeIfPresent(aliases, forKey: .aliases)
     }
 
     private enum CodingKeys: String, CodingKey {
-        case name, unit, lowerBound, upperBound, context, panel, hidden
+        case name, unit, lowerBound, upperBound, context, panel, hidden, aliases
     }
 }
 

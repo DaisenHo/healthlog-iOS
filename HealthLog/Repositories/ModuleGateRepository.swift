@@ -43,16 +43,23 @@ public struct AuthMeModules: Decodable, Sendable, Equatable {
     /// legacy AI behaviour (see ``AICapabilityGate``).
     public let ai: AIAccountBlock?
 
+    /// #126 P2 — `features` (server v1.42.0): what this server understands,
+    /// including the X4 hourly flags (v1.43, #138). `nil` on an older
+    /// server or when unreadable; it never costs the map.
+    public let features: ServerFeatures?
+
     public init(
         modules: [String: Bool]?,
         moduleAccess: [String: ModuleAccessState]? = nil,
         updatedAt: String? = nil,
-        ai: AIAccountBlock? = nil
+        ai: AIAccountBlock? = nil,
+        features: ServerFeatures? = nil
     ) {
         self.modules = modules
         self.moduleAccess = moduleAccess
         self.updatedAt = updatedAt
         self.ai = ai
+        self.features = features
     }
 
     public init(from decoder: Decoder) throws {
@@ -61,6 +68,7 @@ public struct AuthMeModules: Decodable, Sendable, Equatable {
         moduleAccess = try container.decodeIfPresent([String: ModuleAccessState].self, forKey: .moduleAccess)
         updatedAt = try container.decodeIfPresent(String.self, forKey: .updatedAt)
         ai = try? container.decodeIfPresent(AIAccountBlock.self, forKey: .ai)
+        features = try? container.decodeIfPresent(ServerFeatures.self, forKey: .features)
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -68,6 +76,7 @@ public struct AuthMeModules: Decodable, Sendable, Equatable {
         case moduleAccess
         case updatedAt
         case ai
+        case features
     }
 }
 

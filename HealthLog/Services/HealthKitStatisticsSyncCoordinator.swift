@@ -110,12 +110,12 @@ public extension HealthKitDailyStatsSyncing {
         /// share, no backoff share, and — before this plan — no acceptance gate
         /// at all. It now runs the same transmission every other measurement
         /// batch runs, chunked at the same server limit.
-        private let uploader: MeasurementBatchUploader
+        let uploader: MeasurementBatchUploader
         /// The durable-retry seam. `nil` in contexts with no queue (tests,
         /// pre-composition): a chunk that needs a retry and has nowhere to write
         /// it leaves the sweep incomplete rather than claiming ground.
         let retry: (any HealthSyncBatchRetryEnqueuing)?
-        private let featureFlags: FeatureFlagsServicing
+        let featureFlags: FeatureFlagsServicing
         private let calendar: Calendar
         let clock: @Sendable () -> Date
         /// **Phase 07 / Plan 07-04** — the only place this coordinator learns
@@ -402,7 +402,7 @@ public extension HealthKitDailyStatsSyncing {
         /// Der Account dieses Passes, oder `nil` wenn keiner admittiert werden
         /// kann. Kein Fallback auf einen ambienten Keychain-Read: ohne Admission
         /// laeuft der Sweep nicht.
-        private func admittedLease() -> HealthSyncAuthenticatedLease? {
+        func admittedLease() -> HealthSyncAuthenticatedLease? {
             guard let admission else { return nil }
             return try? admission()
         }

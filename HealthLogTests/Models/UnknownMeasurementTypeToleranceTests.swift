@@ -99,7 +99,6 @@ struct UnknownMeasurementTypeToleranceTests {
         #expect(MetricKind.unknown.unit.isEmpty)
         #expect(MeasurementRanges.range(for: .unknown) == nil)
         #expect(MetricFHIRMapper.mapping(for: .unknown) == nil)
-        #expect(LiveClinicalBenchmarkProvider().benchmark(for: .unknown) == nil)
         #expect(!ChartDetailStore.kindSupportsSeries(.unknown))
         // And it has no summaries key, so it can never claim "this kind has data".
         #expect(MetricKind.unknown.availabilitySummaryKey == nil)

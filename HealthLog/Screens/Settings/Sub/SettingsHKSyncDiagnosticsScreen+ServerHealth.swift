@@ -15,6 +15,10 @@ import SwiftUI
 /// Vertrag pinnen kann, ohne gegen lokalisierten Text zu assertieren — gleiches
 /// Muster wie ``KindRow``.
 struct HKServerSyncHealthSummary: Equatable {
+    /// #139 — the server's unified state. When present it is the only source
+    /// of the verdict row; ``verdict`` (legacy `syncHealth`) answers only for a
+    /// server without it.
+    let health: ConnectionHealth?
     let verdict: SyncHealthVerdict?
     let since: Date?
     let lastSyncTrigger: String?
@@ -24,8 +28,9 @@ struct HKServerSyncHealthSummary: Equatable {
     let freshness: [MetricFreshness]?
 
     init(config: HealthKitSyncConfig) {
-        verdict = config.syncHealth?.verdict
-        since = config.syncHealth?.since
+        health = config.health
+        verdict = config.health == nil ? config.syncHealth?.verdict : nil
+        since = config.health.map(\.since) ?? config.syncHealth?.since
         lastSyncTrigger = config.lastSyncTrigger
         lastBackgroundSyncAt = config.lastBackgroundSyncAt
         freshness = config.metricFreshness
@@ -36,8 +41,10 @@ struct HKServerSyncHealthSummary: Equatable {
         since: Date? = nil,
         lastSyncTrigger: String? = nil,
         lastBackgroundSyncAt: Date? = nil,
-        freshness: [MetricFreshness]? = nil
+        freshness: [MetricFreshness]? = nil,
+        health: ConnectionHealth? = nil
     ) {
+        self.health = health
         self.verdict = verdict
         self.since = since
         self.lastSyncTrigger = lastSyncTrigger
@@ -72,6 +79,9 @@ struct HKServerSyncHealthSummary: Equatable {
         case .background, .push: return .confirmed
         // V1 — "Sync all" is a person at the phone, not a phone that delivers alone.
         case .foreground, .manual: return .foregroundOnly
+        // X4 — a history catch-up says nothing about who delivers; the
+        // server never stores it as the last trigger either.
+        case .backfill: return .unknown
         }
     }
 
@@ -79,7 +89,7 @@ struct HKServerSyncHealthSummary: Equatable {
     /// dann zeigt die Fläche eine ehrliche „noch keine Server-Daten"-Zeile statt
     /// vier Gedankenstrichen.
     var hasServerData: Bool {
-        verdict != nil || lastSyncTrigger != nil || lastBackgroundSyncAt != nil || freshness != nil
+        health != nil || verdict != nil || lastSyncTrigger != nil || lastBackgroundSyncAt != nil || freshness != nil
     }
 
     // MARK: - Labels
@@ -101,6 +111,7 @@ struct HKServerSyncHealthSummary: Equatable {
     }
 
     var verdictLabel: String {
+        if let health { return ConnectionHealthPresentation(health: health).stateLabel }
         guard let verdict else { return String(localized: "settings.hkdiag.never") }
         switch verdict {
         case .fresh: return String(localized: "settings.hkdiag.verdict_fresh")
@@ -120,6 +131,9 @@ struct HKServerSyncHealthSummary: Equatable {
     }
 
     var verdictTint: Color {
+        if let health {
+            return ConnectionHealthPresentation(health: health).needsAttention ? HLColor.statusWarn : HLText.secondary
+        }
         guard let verdict else { return HLText.tertiary }
         return verdict.needsAttention ? HLColor.statusWarn : HLText.secondary
     }
@@ -135,7 +149,7 @@ struct HKServerSyncHealthSummary: Equatable {
         case .background: return String(localized: "settings.hkdiag.trigger_background")
         case .push: return String(localized: "settings.hkdiag.trigger_push")
         case .manual: return HKSyncDiagnosticsVocabulary.collectionTrigger("manual")
-        case nil: return HKSyncDiagnosticsVocabulary.unknown
+        case .backfill, nil: return HKSyncDiagnosticsVocabulary.unknown
         }
     }
 }
@@ -157,17 +171,32 @@ extension SettingsHKSyncDiagnosticsScreen {
         ) {
             if let summary = serverSummary {
                 VStack(alignment: .leading, spacing: HLSpace.md) {
+                    HKSyncDiagnosticsSourceTag(source: .server)
                     if summary.hasServerData {
                         serverStatRow(
                             label: "settings.hkdiag.server_autonomy",
                             value: summary.autonomyLabel,
                             tint: summary.autonomyTint
                         )
+                        // W5 (#126 1.4) — right under the answer it proves:
+                        // opening the app moves the last trigger, never this.
+                        serverStatRow(
+                            label: "settings.hkdiag.server_last_background",
+                            value: relativeOrNever(summary.lastBackgroundSyncAt),
+                            tint: HLText.secondary
+                        )
                         serverStatRow(
                             label: "settings.hkdiag.server_verdict",
                             value: summary.verdictLabel,
                             tint: summary.verdictTint
                         )
+                        // #139 — the reason behind the verdict, one sentence.
+                        if let health = summary.health, ConnectionHealthPresentation(health: health).showsDetail {
+                            Text(verbatim: ConnectionHealthPresentation(health: health).sentence)
+                                .font(.hlCaption)
+                                .foregroundStyle(HLText.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
                         if let since = summary.since {
                             serverStatRow(
                                 label: "settings.hkdiag.server_since",
@@ -178,11 +207,6 @@ extension SettingsHKSyncDiagnosticsScreen {
                         serverStatRow(
                             label: "settings.hkdiag.server_trigger",
                             value: summary.triggerLabel,
-                            tint: HLText.secondary
-                        )
-                        serverStatRow(
-                            label: "settings.hkdiag.server_last_background",
-                            value: relativeOrNever(summary.lastBackgroundSyncAt),
                             tint: HLText.secondary
                         )
                         freshnessSection(summary.freshness)
@@ -219,6 +243,11 @@ extension SettingsHKSyncDiagnosticsScreen {
             Text("settings.hkdiag.freshness_title")
                 .font(.hlSubhead.weight(.semibold))
                 .foregroundStyle(HLText.primary)
+            // W5 — what the time on the right is, once for the whole list.
+            Text("settings.hkdiag.freshness_legend")
+                .font(.hlCaption2)
+                .foregroundStyle(HLText.tertiary)
+                .fixedSize(horizontal: false, vertical: true)
             if freshness.isEmpty {
                 Text("settings.hkdiag.freshness_empty")
                     .font(.hlCaption)
@@ -237,10 +266,10 @@ extension SettingsHKSyncDiagnosticsScreen {
                                 .foregroundStyle(row.stale ? HLColor.statusWarn : HLText.tertiary)
                                 .lineLimit(1)
                         }
-                        // V1 — server v1.42 says when the type last ARRIVED and
-                        // which trigger carried it. Absent on older servers.
-                        if let received = Self.receivedLabel(row) {
-                            Text(received)
+                        // V1/W5 — last check (with its trigger), last new value,
+                        // last background arrival. Absent on older servers.
+                        ForEach(ServerFreshnessFacts(row: row).detailLines, id: \.self) { line in
+                            Text(verbatim: line)
                                 .font(.hlCaption2)
                                 .foregroundStyle(HLText.tertiary)
                                 .fixedSize(horizontal: false, vertical: true)
@@ -249,18 +278,6 @@ extension SettingsHKSyncDiagnosticsScreen {
                 }
             }
         }
-    }
-
-    /// "Received 5 minutes ago (Background)", or `nil` when the server did
-    /// not say (before v1.42, the workouts entry, a failed ledger read).
-    static func receivedLabel(_ row: MetricFreshness) -> String? {
-        guard let received = row.lastReceivedAt else { return nil }
-        let when = received.formatted(.relative(presentation: .named))
-        guard let trigger = row.lastTrigger else {
-            return String(localized: "settings.hkdiag.freshness_received \(when)")
-        }
-        let word = HKSyncDiagnosticsVocabulary.collectionTrigger(trigger)
-        return String(localized: "settings.hkdiag.freshness_received_by \(when) \(word)")
     }
 
     private func serverStatRow(label: LocalizedStringKey, value: String, tint: Color) -> some View {

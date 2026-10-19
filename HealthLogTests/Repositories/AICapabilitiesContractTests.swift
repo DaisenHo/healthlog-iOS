@@ -17,7 +17,8 @@ import Testing
 @Suite("AI capabilities — /api/auth/me `ai` contract", .serialized, .mockURLSession)
 struct AICapabilitiesContractTests {
     /// A v1.39 `/api/auth/me` body: modules + moduleAccess + the complete `ai`
-    /// block (all ten capabilities, always present server-side).
+    /// block (every capability, always present server-side; `supplementLabel`
+    /// since v1.43, #129).
     static let meV139 = #"""
     {"data":{
       "id":"u1","email":"a@example.com",
@@ -34,7 +35,8 @@ struct AICapabilitiesContractTests {
           "aboutMeQuestions":{"available":false,"reason":"operator_disabled","onDeviceAllowed":false},
           "documentAi":{"available":false,"reason":"no_provider","onDeviceAllowed":true},
           "labsOcr":{"available":false,"reason":"no_provider","onDeviceAllowed":true},
-          "medicationExtract":{"available":false,"reason":"user_disabled","onDeviceAllowed":false}
+          "medicationExtract":{"available":false,"reason":"user_disabled","onDeviceAllowed":false},
+          "supplementLabel":{"available":false,"reason":"usage_level","onDeviceAllowed":false}
         },
         "provider":{"configured":true,"managedBy":"server","canConfigure":true}
       }

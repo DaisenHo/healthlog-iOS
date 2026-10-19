@@ -128,8 +128,9 @@
 
             let parked = try #require(await outbox.snapshot.first)
             #expect(parked.attempts == 0, "parked, not counted toward the dead-letter lane")
-            #expect(await outbox.parkedRowCount(ownerID: Self.owner) == 1)
-            #expect(await outbox.parkedRowCount(ownerID: "account-b") == 0, "counted per account")
+            // W1 (1.3.0) — held with its reason, and not "waiting for a connection".
+            #expect(await outbox.heldGroups() == [OutboxHeldGroup(reason: .refusalNotRecorded, count: 1)])
+            #expect(await outbox.waitingCount(in: outbox.snapshot) == 0)
         }
 
         // MARK: - A page the server never confirmed

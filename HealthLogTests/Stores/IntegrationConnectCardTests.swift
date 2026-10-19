@@ -86,8 +86,10 @@ struct IntegrationConnectCardTests {
 
     // MARK: - DTO decode
 
-    @Test("OAuthIntegrationStatus decodes the connected Oura/Polar ledger shape")
+    @Test("OAuthIntegrationStatus decodes the connected Oura/Polar shape")
     func oauthStatusDecodeConnected() throws {
+        // v1.42.4 shape: legacy `state` / `lastError` still on the wire (until
+        // v1.44), `health` beside them. The app reads `health` only (#139).
         let json = Data(#"""
         {
             "connected": true,
@@ -95,31 +97,41 @@ struct IntegrationConnectCardTests {
             "state": "ok",
             "lastSuccessAt": "2026-06-19T08:30:00.000Z",
             "lastAttemptAt": "2026-06-19T08:30:00.000Z",
-            "lastError": null
+            "lastError": null,
+            "health": { "state": "ok", "reason": "data_arriving", "since": null, "action": null,
+                        "unavailable": [], "lastSuccessAt": "2026-06-19T08:30:00.000Z", "lastDataAt": null,
+                        "diagnostics": { "ledgerState": "ok", "failingLegs": [], "failingSince": null,
+                                         "lastAttemptAt": null, "verdict": "fresh", "recentCalls": [] } }
         }
         """#.utf8)
         let status = try JSONDecoder.hlDefault.decode(OAuthIntegrationStatus.self, from: json)
         #expect(status.connected)
         #expect(status.configured == true)
-        #expect(status.state == "ok")
-        #expect(status.isParkedOrError == false)
+        #expect(status.health?.state == .ok)
+        #expect(status.health?.reason == .dataArriving)
         #expect(status.lastSync != nil) // falls back to lastSuccessAt
     }
 
-    @Test("OAuthIntegrationStatus decodes the not-connected shape + flags parked state")
+    @Test("OAuthIntegrationStatus decodes the not-connected shape; a parked ledger is read from health")
     func oauthStatusDecodeDisconnectedAndParked() throws {
         let disconnected = try JSONDecoder.hlDefault.decode(
             OAuthIntegrationStatus.self,
-            from: Data(#"{ "connected": false, "configured": false }"#.utf8)
+            from: Data(#"{ "connected": false, "configured": false, "health": null }"#.utf8)
         )
         #expect(disconnected.connected == false)
         #expect(disconnected.lastSync == nil)
+        #expect(disconnected.health == nil)
 
         let parked = try JSONDecoder.hlDefault.decode(
             OAuthIntegrationStatus.self,
-            from: Data(#"{ "connected": true, "configured": true, "state": "parked" }"#.utf8)
+            from: Data(#"""
+            { "connected": true, "configured": true, "state": "parked",
+              "health": { "state": "action_required", "reason": "paused_after_errors",
+                          "since": "2026-10-15T06:15:00.000Z", "action": "resume", "unavailable": [] } }
+            """#.utf8)
         )
-        #expect(parked.isParkedOrError)
+        #expect(parked.health?.state == .actionRequired)
+        #expect(parked.health?.canResume == true)
     }
 
     @Test("Fitbit status decodes lastSyncedAt + connectedAt")
@@ -147,13 +159,16 @@ struct IntegrationConnectCardTests {
             "configured": true,
             "hasToken": true,
             "allowPrivateHost": false,
-            "state": "ok"
+            "state": "ok",
+            "health": { "state": "degraded", "reason": "no_new_data", "since": "2026-10-14T22:00:00.000Z",
+                        "action": null, "unavailable": [] }
         }
         """#.utf8)
         let status = try JSONDecoder.hlDefault.decode(NightscoutStatus.self, from: json)
         #expect(status.connected)
         #expect(status.hasToken == true)
-        #expect(status.isParkedOrError == false)
+        #expect(status.health?.state == .degraded)
+        #expect(status.health?.reason == .noNewData)
     }
 
     // MARK: - OAuthIntegrationCore wiring
@@ -167,7 +182,7 @@ struct IntegrationConnectCardTests {
     @Test("loadStatus surfaces connected; every OAuth provider now supports manual sync")
     func oauthCoreLoadAndSyncGate() async {
         let stub = StubAPIClient()
-        let capture = Capture(oauth: [.init(connected: true, configured: true, state: "ok")])
+        let capture = Capture(oauth: [.init(connected: true, configured: true)])
         stub.sendHandler = capture.sendHandler()
         stub.voidHandler = capture.voidHandler()
 
@@ -184,8 +199,8 @@ struct IntegrationConnectCardTests {
     func oauthCoreDisconnect() async {
         let stub = StubAPIClient()
         let capture = Capture(oauth: [
-            .init(connected: true, configured: true, state: "ok"),
-            .init(connected: false, configured: true, state: "ok")
+            .init(connected: true, configured: true),
+            .init(connected: false, configured: true)
         ])
         stub.sendHandler = capture.sendHandler()
         stub.voidHandler = capture.voidHandler()
@@ -205,7 +220,7 @@ struct IntegrationConnectCardTests {
         let stub = StubAPIClient()
         let capture = Capture(nightscout: [
             .init(connected: false, configured: false),
-            .init(connected: true, configured: true, hasToken: true, state: "ok")
+            .init(connected: true, configured: true, hasToken: true)
         ])
         stub.sendHandler = capture.sendHandler()
         stub.voidHandler = capture.voidHandler()

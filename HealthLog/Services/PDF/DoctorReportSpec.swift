@@ -254,12 +254,39 @@ public struct DoctorReportSpec: Sendable, Equatable {
         /// The report period the reader chose.
         public let periodDays: Int
         public let perMedication: [Row]
+        /// #126 P2 (server v1.42.0) — the server's ONE figure for the whole
+        /// account over the same window (`meta.aggregate`, weighted by expected
+        /// doses). `nil` on an older server: the report never averages rows.
+        public let account: AccountFigure?
 
-        public init(availability: Availability, windowDays: Int, periodDays: Int, perMedication: [Row]) {
+        public init(
+            availability: Availability,
+            windowDays: Int,
+            periodDays: Int,
+            perMedication: [Row],
+            account: AccountFigure? = nil
+        ) {
             self.availability = availability
             self.windowDays = windowDays
             self.periodDays = periodDays
             self.perMedication = perMedication
+            self.account = account
+        }
+
+        /// The account figure as the server resolved it.
+        public struct AccountFigure: Sendable, Equatable {
+            public let rate: Int
+            public let taken: Int
+            /// `taken + missed`, as for a row.
+            public let expected: Int
+            public let medicationCount: Int
+
+            public init(rate: Int, taken: Int, expected: Int, medicationCount: Int) {
+                self.rate = rate
+                self.taken = taken
+                self.expected = expected
+                self.medicationCount = medicationCount
+            }
         }
 
         /// `false` → the section states that the server's window is not the

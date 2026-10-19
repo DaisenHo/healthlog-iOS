@@ -55,7 +55,7 @@ struct MoodAnalysisContent<Section: View>: View {
     var analysis: MoodAnalysisEngine = .live
     /// Per-section decorator: the host wraps each section in its own entrance
     /// motion (zone stagger) or renders it verbatim. `index` is the section's
-    /// position (0…5) so a staggered host can offset its delay.
+    /// position (0…6) so a staggered host can offset its delay.
     @ViewBuilder let section: (_ index: Int, _ content: AnyView) -> Section
 
     /// **Phase 09 / plan 09-04.** The analysis this body draws, published on the
@@ -151,12 +151,16 @@ struct MoodAnalysisContent<Section: View>: View {
         section(2, AnyView(trendSection))
         section(3, AnyView(stabilitySection))
         section(4, AnyView(MoodTagInsightSection(deltas: insights.tagDeltas)))
-        // #115 · 1.3 — the pattern cards (previous day, weekend, best weekday,
-        // notes, lagged tags, multi-entry days) were detected on the device
-        // calendar and have no server source yet; they are gone until the
-        // server publishes them (see the B2 report for the issue text).
+        // #136 — the pattern cards are back, from the server (v1.43) and only
+        // rendered here; an older server sends none and the section is absent,
+        // so the indices stay contiguous (recent is 5 without it, 6 with it).
+        // INT-Q — the patterns of the chosen period (`?days`), never the year's.
+        let patterns = relationsStore?.patterns(forDays: period.rawValue)
+        if let patterns {
+            section(5, AnyView(MoodPatternSection(patterns: patterns)))
+        }
         if showsRecentSection {
-            section(5, AnyView(recentSection))
+            section(MoodPatternSection.recentSectionIndex(hasPatterns: patterns != nil), AnyView(recentSection))
         }
     }
 
@@ -181,6 +185,8 @@ struct MoodAnalysisContent<Section: View>: View {
             await store.loadDailySeries()
             if let relationsStore, relationsStore.response == nil { await relationsStore.load() }
         }
+        // #126 P2 — stability follows the chosen period (`?days=`).
+        .task(id: period) { await relationsStore?.loadStability(days: period.rawValue) }
     }
 
     private var heatmapSection: some View {
@@ -206,7 +212,7 @@ struct MoodAnalysisContent<Section: View>: View {
 
     private var stabilitySection: some View {
         MoodStabilitySection(
-            stability: relationsStore?.response?.stability,
+            stability: relationsStore?.stability(forDays: period.rawValue),
             entryCount: insights.entryCount,
             windowLabel: windowLabel
         )

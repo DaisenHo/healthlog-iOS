@@ -6,7 +6,8 @@
 // `GET /api/user/ai-provider` of the review account (provider
 // `OPENAI_COMPATIBLE`, `aiAvailable: true`, `managedBy: "user"`),
 // `GET /api/consent/ai/latest` (full keyspace incl. `ai_extraction`) and
-// `POST /api/consent/ai` (`consentPostBody`: kind, artefact, signedAt+offset).
+// `POST /api/consent/ai` (`consentPostBody`: kind, artefact, signedAt+offset;
+// `confirm: true` since v1.43.2, #143).
 
 // swiftlint:disable force_unwrapping
 
@@ -146,7 +147,8 @@
             let log = Log()
             install(latestHasFull: false, mintStatus: 200, log: log)
             #expect(first.acceptAIConsent(request) == .granted)
-            await first.syncServerAIConsentReceipt(repository: mockRepository())
+            // #143 — the Accept tap records the receipt (older server: no `ai.consent`).
+            #expect(await first.recordAcceptedAIConsent(repository: mockRepository(), refresh: {}) == .recorded)
 
             // The receipt went out in the v1.39.2 shape.
             let posts = log.snapshot.filter { $0.method == "POST" && $0.path == "/api/consent/ai" }
@@ -155,6 +157,7 @@
                 posts.first?.body.flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] }
             )
             #expect(json["kind"] as? String == "ai_full")
+            #expect(json["confirm"] as? Bool == true)
             #expect((json["artefact"] as? String)?.isEmpty == false)
             let signedAt = try #require(json["signedAt"] as? String)
             #expect(signedAt.hasSuffix("Z") || signedAt.contains("+"))
@@ -175,7 +178,7 @@
             let log = Log()
             install(latestHasFull: true, mintStatus: 200, log: log)
             #expect(container.acceptAIConsent(AIConsentRequest(provider: .openaiCompatible)) == .granted)
-            await container.syncServerAIConsentReceipt(repository: mockRepository())
+            #expect(await container.recordAcceptedAIConsent(repository: mockRepository(), refresh: {}) == .alreadyOnFile)
             #expect(log.snapshot.map(\.path) == ["/api/consent/ai/latest"])
         }
 
@@ -187,7 +190,7 @@
             let log = Log()
             install(latestHasFull: false, mintStatus: 429, log: log)
             #expect(container.acceptAIConsent(AIConsentRequest(provider: .openaiCompatible)) == .granted)
-            await container.syncServerAIConsentReceipt(repository: mockRepository())
+            #expect(await container.recordAcceptedAIConsent(repository: mockRepository(), refresh: {}) == .failed)
             #expect(log.snapshot.contains { $0.method == "POST" && $0.path == "/api/consent/ai" })
             #expect(AIConsentRequest.pending(config: config, consent: container.aiConsentStore, honourDecline: true) == nil)
             let relaunched = makeContainer(keychain)

@@ -98,7 +98,8 @@ public struct SleepCompositeTile: View {
             TrendChip(
                 trend: metric.dashboardTrend,
                 polarity: descriptor.trendPolarity,
-                mode: .dashboardDirection
+                // #135 — the server's verdict when it sends one, else as before.
+                mode: metric.dashboardTrendMode(weightSentiment: nil)
             )
         }
     }
@@ -176,12 +177,13 @@ public struct SleepCompositeTile: View {
 
     private var combinedLabel: Text {
         let title = String(localized: MetricKind.sleep.descriptor.title)
-        let trend: String? = switch metric.dashboardTrend {
+        let direction: String? = switch metric.dashboardTrend {
         case .up: String(localized: "Trend rising")
         case .down: String(localized: "Trend falling")
         case .flat: String(localized: "Trend stable")
         case .unknown: nil
         }
+        let trend = direction.map { $0 + metric.spokenVerdictSuffix }
         if let stages, stages.total > 0 {
             let primary = metric.formattedPrimary()
             let stageDescription = String(

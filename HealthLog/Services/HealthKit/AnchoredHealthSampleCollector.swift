@@ -72,6 +72,43 @@
             notBefore cutoff: Date,
             limit: Int
         ) async throws -> AnchoredHealthSamplePage
+
+        /// 1.3 (#127) — the same bounded read, narrowed to `window` on every
+        /// call (not only the first). `nil` reads everything after `anchor`.
+        func page(
+            typeIdentifier: String,
+            resumingFrom anchor: HKQueryAnchor?,
+            within window: HealthSampleDateWindow?,
+            limit: Int
+        ) async throws -> AnchoredHealthSamplePage
+    }
+
+    extension AnchoredHealthSampleQuerying {
+        /// A source that only knows the cutoff form (test doubles) sees the
+        /// window's start as its cutoff.
+        func page(
+            typeIdentifier: String,
+            resumingFrom anchor: HKQueryAnchor?,
+            within window: HealthSampleDateWindow?,
+            limit: Int
+        ) async throws -> AnchoredHealthSamplePage {
+            try await page(
+                typeIdentifier: typeIdentifier,
+                resumingFrom: anchor,
+                notBefore: window?.start ?? .distantPast,
+                limit: limit
+            )
+        }
+    }
+
+    /// 1.3 (#127) — the history seam: samples of one type whose start date
+    /// lies in `window`, newest start first, at most `limit` (`nil` = all).
+    protocol HealthSampleHistoryQuerying: Sendable {
+        func historyPage(
+            typeIdentifier: String,
+            within window: HealthSampleDateWindow,
+            limit: Int?
+        ) async throws -> [HKSample]
     }
 
     /// The mapping/transmission seam. The collector owns *when* a page is read and
@@ -109,6 +146,20 @@
             let disposition: HealthSyncDisposition
             /// Present exactly when the cursor did not advance for this page.
             let holdReason: HealthSyncHoldReason?
+            /// 1.3 (#127) — what the history leg did for this type in this
+            /// pass, `nil` when the pass ran no history.
+            var history: HistoryResult?
+        }
+
+        /// What the history (and, for an upgrade, the legacy) leg did for one
+        /// type in one pass.
+        struct HistoryResult: Sendable, Equatable {
+            let pagesCollected: Int
+            let samplesRead: Int
+            let disposition: HealthSyncDisposition
+            let holdReason: HealthSyncHoldReason?
+            /// Nothing is owed any more by either leg.
+            let isFinished: Bool
         }
 
         /// Objects per anchored page. Large enough that a normal wake finishes in
@@ -117,11 +168,19 @@
         /// per-POST ceiling so a page is at most one batch.
         static let defaultPageLimit = MeasurementBatchUploader.maxEntriesPerBatch
 
-        private let cursors: DurableHealthCursorStore
-        private let query: any AnchoredHealthSampleQuerying
-        private let consumer: any HealthSamplePageConsuming
+        // Internal rather than private so the history leg
+        // (`AnchoredHealthSampleCollector+History.swift`) can share them.
+        let cursors: DurableHealthCursorStore
+        let query: any AnchoredHealthSampleQuerying
+        let history: (any HealthSampleHistoryQuerying)?
+        let consumer: any HealthSamplePageConsuming
         private let observer: (any HealthSampleChangeObserving)?
-        private let pageLimit: Int
+        let pageLimit: Int
+        let clock: HealthSampleSplitClock
+        /// The history run in flight, so two passes never walk the same date
+        /// cursor at once. Uptime at start; a run older than
+        /// `HealthSampleSplitPolicy.staleHistoryRun` no longer blocks.
+        var historyRun: (token: UUID, startedAt: TimeInterval)?
         /// V1 — what a delivery waits for after its drain: the statistics and
         /// pulse-bucket sweeps its pages requested.
         private let deliveryFollowUp: (@Sendable () async -> Void)?
@@ -141,14 +200,18 @@
             query: any AnchoredHealthSampleQuerying,
             consumer: any HealthSamplePageConsuming,
             observer: (any HealthSampleChangeObserving)? = nil,
+            history: (any HealthSampleHistoryQuerying)? = nil,
             pageLimit: Int = AnchoredHealthSampleCollector.defaultPageLimit,
+            clock: HealthSampleSplitClock = .live,
             deliveryFollowUp: (@Sendable () async -> Void)? = nil
         ) {
             self.cursors = cursors
             self.query = query
             self.consumer = consumer
             self.observer = observer
+            self.history = history
             self.pageLimit = max(1, pageLimit)
+            self.clock = clock
             self.deliveryFollowUp = deliveryFollowUp
         }
 
@@ -160,12 +223,21 @@
         /// It is a parameter rather than a lookup on purpose: a collector that
         /// resolved it itself could query before the choice was loaded, which is
         /// exactly the cold-activation defect Wave 0 pinned.
+        ///
+        /// **1.3 (#127)** — every type's live stream first, then history in
+        /// what is left: `historyOrder` (default: `typeIdentifiers`) is the
+        /// order the history leg visits, `historyBudget` replaces the
+        /// trigger's own history allowance ("Sync everything now"), and
+        /// `beforeHistory` runs between the two (the #128 floor lookup).
         @discardableResult
         func collect(
             typeIdentifiers: [String],
             trigger: HealthSyncTrigger,
             notBefore cutoff: Date,
-            requiring lease: HealthSyncAuthenticatedLease
+            requiring lease: HealthSyncAuthenticatedLease,
+            historyOrder: [String]? = nil,
+            historyBudget: HealthSampleHistoryBudget? = nil,
+            beforeHistory: (@Sendable () async -> Void)? = nil
         ) async -> [TypeResult] {
             let budget = HealthSyncBudget.required(for: trigger)
             guard budget.maxPagesPerType > 0 else { return [] }
@@ -173,39 +245,76 @@
             var results: [TypeResult] = []
             for typeIdentifier in typeIdentifiers {
                 await results.append(
-                    collectOne(typeIdentifier, budget: budget, cutoff: cutoff, lease: lease)
+                    collectLive(typeIdentifier, budget: budget, cutoff: cutoff, lease: lease)
                 )
-                if Task.isCancelled { break }
+                if Task.isCancelled { return results }
             }
-            return results
+
+            let allowance = historyBudget ?? .required(for: budget)
+            guard budget.allowsFirstHistoryImport, allowance.pagesPerType > 0, history != nil else {
+                return results
+            }
+            await beforeHistory?()
+            let order = (historyOrder ?? typeIdentifiers).filter { typeIdentifiers.contains($0) }
+            let walked = await collectHistory(order: order, cutoff: cutoff, lease: lease, allowance: allowance)
+            return results.map { result in
+                var merged = result
+                merged.history = walked[result.typeIdentifier]
+                return merged
+            }
         }
 
+        /// Whether a type's live leg may read, and from which split.
+        private enum LiveOpening {
+            case open(HealthSyncCursorKey, HealthSampleSplitState)
+            case refused(TypeResult)
+        }
+
+        private func openLive(
+            _ typeIdentifier: String,
+            cutoff: Date,
+            lease: HealthSyncAuthenticatedLease
+        ) async -> LiveOpening {
+            // A blank owner cannot produce a key, and a partition nobody owns is a
+            // partition nobody may write. Fail closed rather than fall back.
+            guard let key = lease.cursorKey(typeIdentifier: typeIdentifier) else {
+                return .refused(result(typeIdentifier, 0, 0, .failed, .leaseLost))
+            }
+            // The same gate the store applies to a write, applied before the read:
+            // an unproven or failed migration collects nothing at all.
+            guard await cursors.permitsCollection(for: key) else {
+                return .refused(result(typeIdentifier, 0, 0, .deferred, nil))
+            }
+            // 1.3 — establishes the split once: a 1.2.0 forward cursor moves to
+            // the legacy leg and the live stream starts at `liveStart`. A live
+            // read is bounded to that window, so even a short wake may start it.
+            do {
+                return try await .open(key, cursors.establishSplit(for: key, cutoff: cutoff, requiring: lease))
+            } catch {
+                let reason = lease.refusal?.holdReason ?? .retryPersistenceFailed
+                logHold(key, reason: reason)
+                return .refused(result(typeIdentifier, 0, 0, .failed, reason))
+            }
+        }
+
+        // The live leg of one type: the partition's main cursor, narrowed to
+        // `liveStart` until it has reached the present.
         // swiftlint:disable:next cyclomatic_complexity
-        private func collectOne(
+        private func collectLive(
             _ typeIdentifier: String,
             budget: HealthSyncBudget,
             cutoff: Date,
             lease: HealthSyncAuthenticatedLease
         ) async -> TypeResult {
-            // A blank owner cannot produce a key, and a partition nobody owns is a
-            // partition nobody may write. Fail closed rather than fall back.
-            guard let key = lease.cursorKey(typeIdentifier: typeIdentifier) else {
-                return result(typeIdentifier, 0, 0, .failed, .leaseLost)
-            }
-            // The same gate the store applies to a write, applied before the read:
-            // an unproven or failed migration collects nothing at all.
-            guard await cursors.permitsCollection(for: key) else {
-                return result(typeIdentifier, 0, 0, .deferred, nil)
+            let key: HealthSyncCursorKey
+            let split: HealthSampleSplitState
+            switch await openLive(typeIdentifier, cutoff: cutoff, lease: lease) {
+            case let .refused(refusal): return refusal
+            case let .open(openedKey, openedSplit): (key, split) = (openedKey, openedSplit)
             }
 
             var anchor = await cursors.queryAnchor(for: key)
-            // A partition with no committed cursor has never walked its history.
-            // A short wake may not start that walk — it would be cancelled long
-            // before it finished and would burn the grant every time.
-            if anchor == nil, !budget.allowsFirstHistoryImport {
-                return result(typeIdentifier, 0, 0, .deferred, nil)
-            }
-
+            var caughtUp = split.liveCaughtUp
             var pages = 0
             var samplesRead = 0
             var retryPersisted = false
@@ -223,7 +332,7 @@
                     page = try await query.page(
                         typeIdentifier: typeIdentifier,
                         resumingFrom: anchor,
-                        notBefore: cutoff,
+                        within: caughtUp ? nil : HealthSampleDateWindow(start: split.liveStart),
                         limit: pageLimit
                     )
                 } catch is CancellationError {
@@ -253,27 +362,24 @@
                     return result(typeIdentifier, pages, samplesRead, .failed, .retryPersistenceFailed)
                 }
 
-                let decision = await cursors.commit(
-                    page: outcome,
-                    anchor: blob,
-                    for: key,
-                    requiring: lease
-                )
+                let decision = await cursors.commit(page: outcome, anchor: blob, for: key, requiring: lease)
                 pages += 1
 
                 if case let .hold(reason) = decision {
                     logHold(key, reason: reason)
-                    return result(
-                        typeIdentifier,
-                        pages,
-                        samplesRead,
-                        retryPersisted ? .retryPersisted : .failed,
-                        reason
-                    )
+                    return result(typeIdentifier, pages, samplesRead, retryPersisted ? .retryPersisted : .failed, reason)
                 }
 
                 anchor = newAnchor
-                if !page.mayHaveMore { break }
+                if !page.mayHaveMore {
+                    // The stream has reached the present. From here on it reads
+                    // without a date narrowing, so a sample HealthKit inserts
+                    // later with an older date still arrives through it.
+                    if !caughtUp {
+                        caughtUp = await cursors.updateSplit(for: key, requiring: lease) { $0.liveCaughtUp = true }
+                    }
+                    break
+                }
             }
 
             return result(
@@ -358,7 +464,7 @@
 
         // MARK: - Private
 
-        private func result(
+        func result(
             _ typeIdentifier: String,
             _ pages: Int,
             _ samplesRead: Int,
@@ -374,7 +480,7 @@
             )
         }
 
-        private func logHold(_ key: HealthSyncCursorKey, reason: HealthSyncHoldReason) {
+        func logHold(_ key: HealthSyncCursorKey, reason: HealthSyncHoldReason) {
             // Source and hold reason are fixed enum cases chosen in this file; the
             // owner is hashed out of the key and never appears here, and an anchor
             // is an opaque resume token that carries no health data.
@@ -400,55 +506,6 @@
             return HKObjectType.categoryType(
                 forIdentifier: HKCategoryTypeIdentifier(rawValue: identifier)
             )
-        }
-    }
-
-    /// One bounded `HKAnchoredObjectQuery` per call. No update handler is
-    /// installed, so the query is genuinely one-shot and the collector — not
-    /// HealthKit — decides whether to ask again.
-    struct HealthKitAnchoredPageSource: AnchoredHealthSampleQuerying {
-        let store: HKHealthStore
-
-        func page(
-            typeIdentifier: String,
-            resumingFrom anchor: HKQueryAnchor?,
-            notBefore cutoff: Date,
-            limit: Int
-        ) async throws -> AnchoredHealthSamplePage {
-            guard let sampleType = HealthKitSampleTypeResolver.sampleType(for: typeIdentifier) else {
-                throw AnchoredHealthCollectionError.unknownSampleType
-            }
-            // The chosen window bounds the *first* walk only. Once an anchor
-            // exists HealthKit resolves the window from the anchor itself, and a
-            // start predicate would then silently re-narrow an established stream.
-            let predicate: NSPredicate? = anchor == nil
-                ? HKQuery.predicateForSamples(withStart: cutoff, end: nil, options: .strictStartDate)
-                : nil
-
-            return try await withCheckedThrowingContinuation { continuation in
-                let query = HKAnchoredObjectQuery(
-                    type: sampleType,
-                    predicate: predicate,
-                    anchor: anchor,
-                    limit: limit
-                ) { _, samples, deleted, newAnchor, error in
-                    if let error {
-                        continuation.resume(throwing: error)
-                        return
-                    }
-                    let collected = samples ?? []
-                    let deletedCount = deleted?.count ?? 0
-                    continuation.resume(
-                        returning: AnchoredHealthSamplePage(
-                            samples: collected,
-                            deletedObjectCount: deletedCount,
-                            newAnchor: newAnchor,
-                            mayHaveMore: collected.count + deletedCount >= limit
-                        )
-                    )
-                }
-                store.execute(query)
-            }
         }
     }
 

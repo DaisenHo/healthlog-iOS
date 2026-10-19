@@ -101,6 +101,14 @@ public struct LabResultDTO: Codable, Sendable, Equatable, Identifiable, Hashable
     public let rangeStatus: LabRangeStatus
     public let createdAt: String
     public let updatedAt: String
+    /// #126 P2 (v1.42.3) — the server converted the printed value into the
+    /// marker's unit. The printed value and unit stay in ``sourceValue`` /
+    /// ``sourceUnit``; ``printedReferenceText`` is the range as printed. All
+    /// optional (older servers send none). Decoded now, shown later (X3, 3.5).
+    public let converted: Bool?
+    public let sourceValue: Double?
+    public let sourceUnit: String?
+    public let printedReferenceText: String?
 
     /// True when this row is linked to a catalog biomarker (analyte / unit /
     /// range are server-resolved + must be read-only in the editor).
@@ -123,7 +131,11 @@ public struct LabResultDTO: Codable, Sendable, Equatable, Identifiable, Hashable
         hasNote: Bool,
         rangeStatus: LabRangeStatus,
         createdAt: String,
-        updatedAt: String
+        updatedAt: String,
+        converted: Bool? = nil,
+        sourceValue: Double? = nil,
+        sourceUnit: String? = nil,
+        printedReferenceText: String? = nil
     ) {
         self.id = id
         self.biomarkerId = biomarkerId
@@ -140,6 +152,10 @@ public struct LabResultDTO: Codable, Sendable, Equatable, Identifiable, Hashable
         self.rangeStatus = rangeStatus
         self.createdAt = createdAt
         self.updatedAt = updatedAt
+        self.converted = converted
+        self.sourceValue = sourceValue
+        self.sourceUnit = sourceUnit
+        self.printedReferenceText = printedReferenceText
     }
 
     public init(from decoder: Decoder) throws {
@@ -163,6 +179,10 @@ public struct LabResultDTO: Codable, Sendable, Equatable, Identifiable, Hashable
         rangeStatus = try c.decodeIfPresent(LabRangeStatus.self, forKey: .rangeStatus) ?? .unknown
         createdAt = try c.decodeIfPresent(String.self, forKey: .createdAt) ?? ""
         updatedAt = try c.decodeIfPresent(String.self, forKey: .updatedAt) ?? ""
+        converted = try? c.decodeIfPresent(Bool.self, forKey: .converted)
+        sourceValue = try? c.decodeIfPresent(Double.self, forKey: .sourceValue)
+        sourceUnit = try? c.decodeIfPresent(String.self, forKey: .sourceUnit)
+        printedReferenceText = try? c.decodeIfPresent(String.self, forKey: .printedReferenceText)
     }
 
     /// Explicit keys — `valueIsAbsent` / `isQualitative` are derived, off-wire
@@ -172,6 +192,7 @@ public struct LabResultDTO: Codable, Sendable, Equatable, Identifiable, Hashable
         case id, biomarkerId, panel, analyte, value, valueText, unit
         case referenceLow, referenceHigh, takenAt, source, hasNote
         case rangeStatus, createdAt, updatedAt
+        case converted, sourceValue, sourceUnit, printedReferenceText
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -192,6 +213,10 @@ public struct LabResultDTO: Codable, Sendable, Equatable, Identifiable, Hashable
         try c.encode(rangeStatus, forKey: .rangeStatus)
         try c.encode(createdAt, forKey: .createdAt)
         try c.encode(updatedAt, forKey: .updatedAt)
+        try c.encodeIfPresent(converted, forKey: .converted)
+        try c.encodeIfPresent(sourceValue, forKey: .sourceValue)
+        try c.encodeIfPresent(sourceUnit, forKey: .sourceUnit)
+        try c.encodeIfPresent(printedReferenceText, forKey: .printedReferenceText)
     }
 }
 
@@ -220,6 +245,11 @@ public struct LabResultDetailDTO: Codable, Sendable, Equatable, Identifiable, Ha
     public let updatedAt: String
     /// Decrypted free-text note (server-side decryption) or `nil`.
     public let note: String?
+    /// #126 P2 (v1.42.3) — see ``LabResultDTO/converted``. Decoded only.
+    public let converted: Bool?
+    public let sourceValue: Double?
+    public let sourceUnit: String?
+    public let printedReferenceText: String?
 
     public var isLinked: Bool {
         biomarkerId != nil
@@ -250,7 +280,11 @@ public struct LabResultDetailDTO: Codable, Sendable, Equatable, Identifiable, Ha
         rangeStatus: LabRangeStatus,
         createdAt: String,
         updatedAt: String,
-        note: String?
+        note: String?,
+        converted: Bool? = nil,
+        sourceValue: Double? = nil,
+        sourceUnit: String? = nil,
+        printedReferenceText: String? = nil
     ) {
         self.id = id
         self.biomarkerId = biomarkerId
@@ -267,6 +301,10 @@ public struct LabResultDetailDTO: Codable, Sendable, Equatable, Identifiable, Ha
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.note = note
+        self.converted = converted
+        self.sourceValue = sourceValue
+        self.sourceUnit = sourceUnit
+        self.printedReferenceText = printedReferenceText
     }
 
     public init(from decoder: Decoder) throws {
@@ -287,6 +325,10 @@ public struct LabResultDetailDTO: Codable, Sendable, Equatable, Identifiable, Ha
         createdAt = try c.decodeIfPresent(String.self, forKey: .createdAt) ?? ""
         updatedAt = try c.decodeIfPresent(String.self, forKey: .updatedAt) ?? ""
         note = try c.decodeIfPresent(String.self, forKey: .note)
+        converted = try? c.decodeIfPresent(Bool.self, forKey: .converted)
+        sourceValue = try? c.decodeIfPresent(Double.self, forKey: .sourceValue)
+        sourceUnit = try? c.decodeIfPresent(String.self, forKey: .sourceUnit)
+        printedReferenceText = try? c.decodeIfPresent(String.self, forKey: .printedReferenceText)
     }
 }
 
@@ -323,6 +365,10 @@ public struct BiomarkerDTO: Codable, Sendable, Equatable, Identifiable, Hashable
     public let hidden: Bool
     public let createdAt: String
     public let updatedAt: String
+    /// #130 (v1.43) — other spellings that map to this marker (sorted, without
+    /// the marker's own name). Empty from a server that does not send them.
+    /// Read-only here; editing aliases and merging are a later unit (X3).
+    public let aliases: [String]
 
     public init(
         id: String,
@@ -335,7 +381,8 @@ public struct BiomarkerDTO: Codable, Sendable, Equatable, Identifiable, Hashable
         context: String?,
         hidden: Bool = false,
         createdAt: String,
-        updatedAt: String
+        updatedAt: String,
+        aliases: [String] = []
     ) {
         self.id = id
         self.name = name
@@ -348,6 +395,7 @@ public struct BiomarkerDTO: Codable, Sendable, Equatable, Identifiable, Hashable
         self.hidden = hidden
         self.createdAt = createdAt
         self.updatedAt = updatedAt
+        self.aliases = aliases
     }
 
     public init(from decoder: Decoder) throws {
@@ -364,6 +412,7 @@ public struct BiomarkerDTO: Codable, Sendable, Equatable, Identifiable, Hashable
         hidden = try c.decodeIfPresent(Bool.self, forKey: .hidden) ?? false
         createdAt = try c.decodeIfPresent(String.self, forKey: .createdAt) ?? ""
         updatedAt = try c.decodeIfPresent(String.self, forKey: .updatedAt) ?? ""
+        aliases = (try? c.decodeIfPresent([String].self, forKey: .aliases)) ?? []
     }
 }
 
@@ -427,6 +476,84 @@ public struct ListBiomarkersResponse: Codable, Sendable, Equatable {
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         biomarkers = try c.decodeIfPresent([BiomarkerDTO].self, forKey: .biomarkers) ?? []
+    }
+}
+
+// MARK: - Marker overview (#130)
+
+/// `GET /api/labs/overview` → `data` = `{ markers: [LabOverviewMarker] }`
+/// (server v1.42.4+). One entry per marker over the WHOLE history, not paged,
+/// so a marker measured only years ago is never cut off by a page size. This is
+/// the source of the labs list; `GET /api/labs?limit=` is not.
+///
+/// Lossy: a marker this build cannot read is skipped, the rest still render.
+public struct LabOverviewResponse: Codable, Sendable, Equatable {
+    public let markers: [LabOverviewMarker]
+
+    public init(markers: [LabOverviewMarker]) {
+        self.markers = markers
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case markers
+    }
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        // `markers` is required: a body without it is not an overview (a
+        // fixture or proxy answering with some other shape) and must fail, so
+        // the store keeps its fallback instead of showing an empty list.
+        markers = try c.decode([FailableMarker].self, forKey: .markers).compactMap(\.marker)
+    }
+
+    private struct FailableMarker: Decodable {
+        let marker: LabOverviewMarker?
+
+        init(from decoder: Decoder) throws {
+            marker = try? LabOverviewMarker(from: decoder)
+        }
+    }
+}
+
+/// One marker of the caller's lab history: `key` is `bm:<biomarkerId>` for a
+/// catalog-linked marker or `analyte:<lower-cased name>` for an unlinked one,
+/// `count` is every live reading, `trend` the values of the newest readings
+/// (at most 50, oldest first, `nil` for a qualitative one), `latest` the newest
+/// reading exactly like a `GET /api/labs` row.
+public struct LabOverviewMarker: Codable, Sendable, Equatable, Identifiable {
+    public let key: String
+    public let count: Int
+    public let trend: [Double?]
+    public let latest: LabResultDTO
+
+    public var id: String {
+        key
+    }
+
+    /// The catalog marker id when `key` is `bm:<id>`, else `nil`.
+    public var biomarkerId: String? {
+        guard key.hasPrefix("bm:") else { return nil }
+        let id = String(key.dropFirst(3))
+        return id.isEmpty ? nil : id
+    }
+
+    public init(key: String, count: Int, trend: [Double?] = [], latest: LabResultDTO) {
+        self.key = key
+        self.count = count
+        self.trend = trend
+        self.latest = latest
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case key, count, trend, latest
+    }
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        key = try c.decode(String.self, forKey: .key)
+        latest = try c.decode(LabResultDTO.self, forKey: .latest)
+        count = (try? c.decodeIfPresent(Int.self, forKey: .count)) ?? 1
+        trend = (try? c.decodeIfPresent([Double?].self, forKey: .trend)) ?? []
     }
 }
 

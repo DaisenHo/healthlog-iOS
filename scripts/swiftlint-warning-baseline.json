@@ -165,10 +165,10 @@
     },
     {
       "file": "HealthLog/Models/Medication.swift",
-      "line": 996,
+      "line": 1000,
       "character": 1,
       "rule_id": "file_length",
-      "reason": "File should contain 600 lines or less: currently contains 996",
+      "reason": "File should contain 600 lines or less: currently contains 1000",
       "severity": "warning"
     },
     {
@@ -196,16 +196,16 @@
       "severity": "warning"
     },
     {
-      "file": "HealthLog/Repositories/OutboxReplayService.swift",
-      "line": 243,
+      "file": "HealthLog/Repositories/OutboxReplayService+Pass.swift",
+      "line": 30,
       "character": 9,
       "rule_id": "hllog_public_privacy_interpolation",
       "reason": "M-7: review whether this HLLog interpolation should be .private / .sensitive instead of .public. The sanitizer redacts tokens / emails / UUIDs as defence-in-depth, but the OS-level privacy boundary controls how the message surfaces in sysdiagnose on non-developer-signed devices. Use .public only for operator-grade values (counts, status codes, enum cases, sanitized paths).",
       "severity": "warning"
     },
     {
-      "file": "HealthLog/Repositories/OutboxReplayService.swift",
-      "line": 291,
+      "file": "HealthLog/Repositories/OutboxReplayService+Pass.swift",
+      "line": 80,
       "character": 17,
       "rule_id": "hllog_public_privacy_interpolation",
       "reason": "M-7: review whether this HLLog interpolation should be .private / .sensitive instead of .public. The sanitizer redacts tokens / emails / UUIDs as defence-in-depth, but the OS-level privacy boundary controls how the message surfaces in sysdiagnose on non-developer-signed devices. Use .public only for operator-grade values (counts, status codes, enum cases, sanitized paths).",
@@ -213,16 +213,16 @@
     },
     {
       "file": "HealthLog/Repositories/OutboxReplayService.swift",
-      "line": 346,
-      "character": 13,
+      "line": 258,
+      "character": 5,
       "rule_id": "cyclomatic_complexity",
       "reason": "Function should have complexity 12 or less; currently complexity is 16",
       "severity": "warning"
     },
     {
       "file": "HealthLog/Repositories/OutboxReplayService.swift",
-      "line": 346,
-      "character": 13,
+      "line": 258,
+      "character": 5,
       "rule_id": "function_body_length",
       "reason": "Function body should span 60 lines or less excluding comments and whitespace: currently spans 75 lines",
       "severity": "warning"
@@ -1069,7 +1069,7 @@
     },
     {
       "file": "HealthLog/Screens/Settings/Sub/AppleHealthIntegrationDetailScreen.swift",
-      "line": 257,
+      "line": 262,
       "character": 13,
       "rule_id": "hl_no_raw_toggle",
       "reason": "R11: Schalter-Zeilen sind `HLSettingsToggleRow` (Titel + optionale Beschreibung nach R2 + Toggle, eine Geometrie app-weit). Ein roher `Toggle` driftet in Schrift, Tinte und Gap.",
@@ -1077,7 +1077,7 @@
     },
     {
       "file": "HealthLog/Screens/Settings/Sub/AppleHealthIntegrationDetailScreen.swift",
-      "line": 384,
+      "line": 389,
       "character": 13,
       "rule_id": "hl_no_raw_toggle",
       "reason": "R11: Schalter-Zeilen sind `HLSettingsToggleRow` (Titel + optionale Beschreibung nach R2 + Toggle, eine Geometrie app-weit). Ein roher `Toggle` driftet in Schrift, Tinte und Gap.",
@@ -1085,7 +1085,7 @@
     },
     {
       "file": "HealthLog/Screens/Settings/Sub/AppleHealthIntegrationDetailScreen.swift",
-      "line": 420,
+      "line": 425,
       "character": 13,
       "rule_id": "hl_no_raw_toggle",
       "reason": "R11: Schalter-Zeilen sind `HLSettingsToggleRow` (Titel + optionale Beschreibung nach R2 + Toggle, eine Geometrie app-weit). Ein roher `Toggle` driftet in Schrift, Tinte und Gap.",
@@ -1181,7 +1181,7 @@
     },
     {
       "file": "HealthLog/Services/APIClient.swift",
-      "line": 577,
+      "line": 617,
       "character": 13,
       "rule_id": "function_body_length",
       "reason": "Function body should span 60 lines or less excluding comments and whitespace: currently spans 83 lines",
@@ -1221,15 +1221,15 @@
     },
     {
       "file": "HealthLog/Services/HealthKit/AnchoredHealthSampleCollector.swift",
-      "line": 184,
+      "line": 303,
       "character": 17,
       "rule_id": "function_body_length",
-      "reason": "Function body should span 60 lines or less excluding comments and whitespace: currently spans 74 lines",
+      "reason": "Function body should span 60 lines or less excluding comments and whitespace: currently spans 66 lines",
       "severity": "warning"
     },
     {
       "file": "HealthLog/Services/HealthKit/AppleHealthMedicationImporter+DoseImport.swift",
-      "line": 126,
+      "line": 133,
       "character": 17,
       "rule_id": "hllog_public_privacy_interpolation",
       "reason": "M-7: review whether this HLLog interpolation should be .private / .sensitive instead of .public. The sanitizer redacts tokens / emails / UUIDs as defence-in-depth, but the OS-level privacy boundary controls how the message surfaces in sysdiagnose on non-developer-signed devices. Use .public only for operator-grade values (counts, status codes, enum cases, sanitized paths).",
@@ -1237,7 +1237,7 @@
     },
     {
       "file": "HealthLog/Services/HealthKit/AppleHealthMedicationImporter.swift",
-      "line": 373,
+      "line": 387,
       "character": 17,
       "rule_id": "hllog_public_privacy_interpolation",
       "reason": "M-7: review whether this HLLog interpolation should be .private / .sensitive instead of .public. The sanitizer redacts tokens / emails / UUIDs as defence-in-depth, but the OS-level privacy boundary controls how the message surfaces in sysdiagnose on non-developer-signed devices. Use .public only for operator-grade values (counts, status codes, enum cases, sanitized paths).",
@@ -1893,7 +1893,7 @@
     },
     {
       "file": "HealthLogTests/Services/AppleHealthMedicationImporterTestSupport.swift",
-      "line": 103,
+      "line": 105,
       "character": 42,
       "rule_id": "large_tuple",
       "reason": "Tuples should have at most 2 members",
@@ -1901,7 +1901,7 @@
     },
     {
       "file": "HealthLogTests/Services/AppleHealthMedicationImporterTestSupport.swift",
-      "line": 167,
+      "line": 169,
       "character": 28,
       "rule_id": "large_tuple",
       "reason": "Tuples should have at most 2 members",

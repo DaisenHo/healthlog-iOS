@@ -23,19 +23,49 @@ struct BiomarkerDetailScreen: View {
     /// The linked catalog biomarker, when this analyte resolves to one. Drives
     /// the editor gear (reference range + context) and the explainer fallback.
     let biomarker: BiomarkerDTO?
+    /// #130 — the marker's newest reading as the overview delivered it. The
+    /// readings below are filtered from the loaded `labs` page, which can end
+    /// before a marker measured only long ago; then this one reading stands in
+    /// so the page is never blank for a marker the list shows.
+    var overviewLatest: LabResultDTO?
 
     @State private var range: BiomarkerSeries.LabsRange = .month
-    @State private var showEditor = false
+    /// One sheet slot for the marker's editor, its spellings and the merge
+    /// (#130), so the page keeps a single presentation for all three.
+    @State private var markerSheet: MarkerSheet?
+    /// #130 — the marker's whole history when the page may end before it.
+    @State private var history: [LabResultDTO]?
     @State private var editingResult: LabResultDTO?
 
+    /// #130 — the marker as it is now: the one it was merged into, else the
+    /// live catalog entry (an alias edit shows at once).
+    private var marker: BiomarkerDTO? {
+        biomarker.map(store.resolvedBiomarker)
+    }
+
     /// All readings for this analyte (live re-derived so an edit / delete / undo
-    /// in the store repaints the page). Newest-first.
+    /// in the store repaints the page). Newest-first. #130: the marker's whole
+    /// history wins when it holds more than the loaded page.
     private var allRows: [LabResultDTO] {
-        if let biomarker {
-            let linked = BiomarkerSeries.rows(forBiomarkerId: biomarker.id, in: store.labs)
+        let page = pageRows
+        if let history, history.count > page.count {
+            return history
+        }
+        if page.isEmpty, let overviewLatest { return [overviewLatest] }
+        return page
+    }
+
+    private var pageRows: [LabResultDTO] {
+        if let marker {
+            let linked = BiomarkerSeries.rows(forBiomarkerId: marker.id, in: store.labs)
             if !linked.isEmpty { return linked }
         }
         return BiomarkerSeries.rows(forAnalyte: analyte, in: store.labs)
+    }
+
+    /// #130 — the page of rows can end before this marker's readings do.
+    private var pageMayBeTruncated: Bool {
+        pageRows.isEmpty || store.labs.count >= LabsStore.historyLimit
     }
 
     /// Readings inside the selected range window — drives stats, chart, and list.
@@ -50,28 +80,29 @@ struct BiomarkerDetailScreen: View {
     /// The display unit — prefer the linked biomarker's canonical unit, else the
     /// latest reading's unit.
     private var unit: String {
-        if let unit = biomarker?.unit, !unit.isEmpty { return unit }
+        if let unit = marker?.unit, !unit.isEmpty { return unit }
         return latest?.unit ?? ""
     }
 
     /// Reference bounds — the linked biomarker's bounds win (the canonical,
     /// user-editable range); else the latest reading's server-resolved bounds.
     private var referenceLow: Double? {
-        biomarker?.lowerBound ?? latest?.referenceLow
+        marker?.lowerBound ?? latest?.referenceLow
     }
 
     private var referenceHigh: Double? {
-        biomarker?.upperBound ?? latest?.referenceHigh
+        marker?.upperBound ?? latest?.referenceHigh
     }
 
     private var explainer: String? {
-        BiomarkerExplainer.text(context: biomarker?.context, name: biomarker?.name ?? analyte)
+        BiomarkerExplainer.text(context: marker?.context, name: marker?.name ?? analyte)
     }
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: HLSpace.lg) {
                 header
+                aliasesLine
                 explainerSlot
                 lastMeasurementSection
                 statsSection
@@ -86,13 +117,21 @@ struct BiomarkerDetailScreen: View {
         .safeAreaInset(edge: .bottom) {
             HLFloatingPeriodControl(selection: $range, accessibilityLabelText: "Time range")
         }
-        .sheet(isPresented: $showEditor) {
-            if let biomarker {
-                BiomarkerEditorSheet(store: store, existing: biomarker)
+        .sheet(item: $markerSheet) { sheet in
+            if let marker {
+                switch sheet {
+                case .editor: BiomarkerEditorSheet(store: store, existing: marker)
+                case .aliases: BiomarkerAliasesSheet(store: store, marker: marker)
+                case .merge: BiomarkerMergeSheet(store: store, target: marker)
+                }
             }
         }
         .sheet(item: $editingResult) { result in
             EditLabResultSheet(store: store, result: result)
+        }
+        // #130 — a marker measured only long ago can lie beyond the page.
+        .task(id: marker?.id ?? analyte) {
+            if pageMayBeTruncated { history = await store.fetchHistory(biomarkerId: marker?.id, analyte: analyte) }
         }
     }
 
@@ -103,13 +142,13 @@ struct BiomarkerDetailScreen: View {
             LocalizedStringKey(displayName),
             accessibilityIdentifierSuffix: "biomarker"
         ) {
-            if biomarker != nil {
+            if marker != nil {
                 InsightsHeaderActionCircle(
                     systemImage: "slider.horizontal.3",
                     accessibilityLabelText: String(localized: "biomarker.detail.editRange"),
                     accessibilityIdentifier: "biomarker.detail.gear"
                 ) {
-                    showEditor = true
+                    markerSheet = .editor
                 }
             }
         }
@@ -118,7 +157,7 @@ struct BiomarkerDetailScreen: View {
     /// The biomarker title. A linked marker shows its catalog name; an unlinked
     /// analyte shows the analyte string verbatim.
     private var displayName: String {
-        if let name = biomarker?.name, !name.isEmpty { return name }
+        if let name = marker?.name, !name.isEmpty { return name }
         return analyte
     }
 
@@ -145,10 +184,37 @@ struct BiomarkerDetailScreen: View {
         }
     }
 
+    /// #130 — the other spellings the server maps to this marker (v1.43), as
+    /// delivered. Nothing on a server that sends none.
+    /// #130 (v1.43) — editing them and merging other markers into this one
+    /// are offered only where the server has the routes
+    /// (`features.biomarkerMerge`).
+    @ViewBuilder
+    private var aliasesLine: some View {
+        if let aliases = marker?.aliases, !aliases.isEmpty {
+            Text(verbatim: String(localized: "labs.biomarker.aliases \(aliases.formatted(.list(type: .and)))"))
+                .font(.hlCaption)
+                .foregroundStyle(HLText.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityIdentifier("biomarker.detail.aliases")
+        }
+        if marker != nil, ServerFeatureMirror.shared.current?.biomarkerMerge == true {
+            HStack(spacing: HLSpace.lg) {
+                Button("labs.aliases.edit") { markerSheet = .aliases }
+                    .accessibilityIdentifier("biomarker.detail.editAliases")
+                Button("labs.merge.open") { markerSheet = .merge }
+                    .accessibilityIdentifier("biomarker.detail.merge")
+            }
+            .font(.hlCaption)
+            .buttonStyle(.plain)
+            .foregroundStyle(.tint)
+        }
+    }
+
     /// The citation topic for this marker: the resolved catalogue slug when the
     /// analyte name maps to one, else the shared lab reference-range topic.
     private var sourcesTopic: MedicalSourceTopic {
-        if let slug = BiomarkerExplainer.slug(forName: biomarker?.name ?? analyte) {
+        if let slug = BiomarkerExplainer.slug(forName: marker?.name ?? analyte) {
             return .labBiomarker(slug)
         }
         return .labReferenceRanges
@@ -208,5 +274,16 @@ struct BiomarkerDetailScreen: View {
                 }
             }
         }
+    }
+}
+
+/// #130 — what the marker page's single sheet shows.
+private enum MarkerSheet: String, Identifiable {
+    case editor
+    case aliases
+    case merge
+
+    var id: String {
+        rawValue
     }
 }

@@ -30,6 +30,7 @@ extension AppleHealthMedicationImporter {
         into summaryIn: AppleHealthMedicationSyncSummary,
         doses: [AppleHealthDoseRecord],
         ledger: AppleHealthDoseLedger,
+        maxChunks: Int? = nil,
         requiring lease: HealthSyncAuthenticatedLease
     ) async -> AppleHealthMedicationSyncSummary {
         var summary = summaryIn
@@ -64,7 +65,12 @@ extension AppleHealthMedicationImporter {
             prepared.append(PreparedDose(identity: dose.eventUUID, entry: entry))
         }
 
-        for chunk in prepared.chunked(into: Self.maxEntriesPerBatch) {
+        // W3 (1.3) — a short wake posts at most `maxChunks` chunks. The rest is
+        // observed but not accounted for, so the ledger keeps it pending.
+        let chunks = prepared.chunked(into: Self.maxEntriesPerBatch)
+        let budget = maxChunks.map { max(0, $0) } ?? chunks.count
+        summary.dosesDeferredToNextSweep += chunks.dropFirst(budget).reduce(0) { $0 + $1.count }
+        for chunk in chunks.prefix(budget) {
             let outcome = await transmit(chunk, into: summary, requiring: lease)
             summary = outcome.summary
             accountedFor.formUnion(outcome.settled)
@@ -106,7 +112,8 @@ extension AppleHealthMedicationImporter {
             try lease.requireCurrent()
             let response = try await repo.bulkImportAppleHealthDoses(
                 chunk.map(\.entry),
-                idempotencyKey: envelope?.idempotencyKey
+                idempotencyKey: envelope?.idempotencyKey,
+                syncTrigger: syncTrigger.wireValue
             )
             // Check 2 of 2 — an account replacement that lands during the await
             // must not let this chunk stamp progress into the new owner's ledger.

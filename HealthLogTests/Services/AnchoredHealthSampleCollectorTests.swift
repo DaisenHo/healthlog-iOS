@@ -41,10 +41,15 @@
             )
 
             // The first query resumes from nothing, because a replaying partition
-            // has no committed cursor yet — the chosen cutoff is what bounds it.
+            // has no committed cursor yet. 1.3 (#127): what bounds it is the live
+            // window (now minus two days, inside the chosen cutoff), not the
+            // cutoff itself; the history leg walks the rest.
             #expect(source.resumedAnchors.count == 1)
             #expect(source.resumedAnchors.first.flatMap { $0 } == nil)
-            #expect(source.observedCutoffs.allSatisfy { $0 == cutoff })
+            let liveStart = try #require(await store.splitState(for: key)?.liveStart)
+            #expect(liveStart > cutoff)
+            #expect(abs(liveStart.timeIntervalSinceNow + HealthSampleSplitPolicy.liveLookback) < 600)
+            #expect(source.observedCutoffs.allSatisfy { $0 == liveStart })
             #expect(await store.queryAnchor(for: key) == HKQueryAnchor(fromValue: 11))
         }
 

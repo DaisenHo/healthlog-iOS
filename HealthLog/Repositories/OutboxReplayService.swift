@@ -119,7 +119,7 @@ public actor OutboxReplayService {
     /// counted toward dead-lettering. Wired to a shared ``ServerHealthSignal`` in
     /// the composition root (init parameter, `makeOutboxReplay`);
     /// `nil` (tests / widget) reads as "not degraded".
-    private var serverHealthDegraded: (@Sendable () async -> Bool)?
+    var serverHealthDegraded: (@Sendable () async -> Bool)?
 
     /// **audit-v0162 H1 (Opt 2) — honest DLQ signal.** Invoked with the count of
     /// rows NEWLY dead-lettered in a pass so the sync footer can surface
@@ -165,7 +165,14 @@ public actor OutboxReplayService {
     /// `dispatch`. `internal` so the cross-file dispatch extensions can set it.
     var lastCreatedServerId: String?
 
-    private var isRunning = false
+    /// W1 (1.3.0) — the pass guard, its watchdog state and the one-time 1.2.0
+    /// update path; all explained in `+Watchdog`.
+    var isRunning = false
+    var runGeneration: UInt64 = 0
+    var runStartedAt: Date?
+    var runPhase = "idle"
+    let runWatchdogTimeout: TimeInterval
+    let updatePathDefaults: (@Sendable () -> UserDefaults)?
 
     public init(
         outbox: OutboxQueue,
@@ -188,13 +195,15 @@ public actor OutboxReplayService {
         customMetricsRepo: CustomMetricsRepository? = nil,
         nutrientReadRepo: NutrientReadRepository? = nil,
         currentUserProvider: @escaping @Sendable () -> String? = OutboxQueue.defaultOwnerProvider,
-        maxAttempts: Int = 8,
+        maxAttempts: Int = OutboxReplayService.defaultMaxAttempts,
         deadLetterMinAge: TimeInterval = 7 * 24 * 60 * 60,
         attemptBackoff: TimeInterval = 60,
         clock: @escaping @Sendable () -> Date = Date.init,
         serverHealthDegraded: (@Sendable () async -> Bool)? = nil,
         onDeadLettered: (@Sendable (Int) async -> Void)? = nil,
-        onDiscarded: (@Sendable ([OutboxDiscardNotice]) async -> Void)? = nil
+        onDiscarded: (@Sendable ([OutboxDiscardNotice]) async -> Void)? = nil,
+        runWatchdogTimeout: TimeInterval = OutboxReplayService.defaultRunWatchdogTimeout,
+        updatePathDefaults: (@Sendable () -> UserDefaults)? = nil
     ) {
         self.outbox = outbox
         self.measurementsRepo = measurementsRepo
@@ -223,111 +232,14 @@ public actor OutboxReplayService {
         self.serverHealthDegraded = serverHealthDegraded
         self.onDeadLettered = onDeadLettered
         self.onDiscarded = onDiscarded
+        self.runWatchdogTimeout = runWatchdogTimeout
+        self.updatePathDefaults = updatePathDefaults
         // Single source of truth: `JSONDecoder.hlDefault`. Vorher hatte der
         // Replay-Service eine eigene Strategie (`.iso8601` ohne fractional +
         // `.convertFromSnakeCase`) — ein latenter Footgun (Outbox-Payload wird
         // von iOS selbst encoded, also no-op heute, aber ein Encoder-Change
         // haette ein silent break verursacht). A4-Audit §6.
         decoder = .hlDefault
-    }
-
-    /// One pass over the outbox. Re-entrant-safe via `isRunning`-Guard.
-    public func runOnce() async {
-        guard !isRunning else { return }
-        isRunning = true
-        defer { isRunning = false }
-
-        let snapshot = await outbox.snapshot
-        guard !snapshot.isEmpty else { return await transferUnconfirmedHealthKitRows(now: clock()) }
-
-        HLLog.outbox.info("Outbox-Replay startet (\(snapshot.count, privacy: .public) Operations)")
-
-        // v0.13 WS — resolve the currently signed-in user ONCE per pass so a
-        // foreign-owned row is never replayed under the wrong bearer token.
-        let currentUser = currentUserProvider()
-        // audit-v0162 H1 (Opt 3) — is the server confirmed-reachable but degraded?
-        let degraded = await serverHealthDegraded?() ?? false
-        let now = clock()
-        idRemap.removeAll()
-        // audit-v0162 M2 — entity ids whose earlier op failed retriably THIS
-        // pass. A later update/delete on the same entity is SKIPPED (not
-        // attempted → never 404-dropped) so a dependent write can never fire
-        // before its create lands. Keyed on `clientEntityId`, which a create and
-        // its dependents all share while the create is still offline.
-        var blockedEntities: Set<String> = []
-
-        for op in snapshot {
-            // Phase 07 — quarantine gate, ahead of every other decision. Two
-            // on-disk shapes cannot be attributed by this build: a row with no
-            // recorded owner while a named account is signed in, and a row whose
-            // `kindRaw` this build cannot name. Both are health writes whose
-            // owner or meaning is unknown, so both are retained untouched:
-            // never transmitted under the ambient account, never deleted, never
-            // re-stamped. The row stays in the snapshot so it remains
-            // inspectable, and it is skipped every pass until a build (or an
-            // account) can attribute it. See `OutboxQueue+HealthKit.swift`.
-            if let reason = op.quarantineReason(currentUserID: currentUser) {
-                // Kind and reason are finite operator-grade vocabulary; no
-                // owner id, no payload, no idempotency key.
-                // swiftlint:disable:next hllog_public_privacy_interpolation
-                HLLog.outbox.warning(
-                    "Op \(op.kind.rawValue, privacy: .public) quarantined (\(reason.rawValue, privacy: .public)) — retained, not transmitted"
-                )
-                continue
-            }
-
-            // v0.13 WS — cross-user binding gate. A row carries the user-id that
-            // owned it at enqueue. On a shared device, User A's queued write can
-            // survive A's sign-out (the `.userInitiated`/`.tokenExpired` paths
-            // KEEP the outbox + cipher key), so when User B signs in the replay
-            // loop would otherwise POST A's health data under B's token. Skip +
-            // dead-letter any row whose owner doesn't match the current user.
-            // Build 273 (sync audit A11) — RETAIN, never delete. The row is
-            // another user's health write; it replays when that user signs in
-            // again and is invisible to everyone else meanwhile. Deleting it
-            // here (the pre-273 behaviour, logged as "dead-lettered") destroyed
-            // User A's queued writes the moment User B signed in.
-            if let owner = op.ownerUserID, owner != currentUser {
-                HLLog.outbox.warning(
-                    "Op \(op.kind.rawValue, privacy: .public) owner-mismatch — retained for its owner, not transmitted"
-                )
-                continue
-            }
-
-            // Rows this pass does not send (`holdsThisPass`, in this order):
-            // Audit B-2 — a row the server already has only owes its local
-            // delete, finished ahead of the hold gate on purpose (a delivered
-            // row is not failing and must never age into the DLQ); C4 — a row
-            // unconfirmed past the server's idempotency window is dead-lettered
-            // before it could go out as a second record; then the budget and
-            // back-off holds of `isOnHoldThisPass`.
-            //
-            // One gate call, so the loop stays inside its complexity budget.
-            if await holdsThisPass(op, now: now) { continue }
-
-            // audit-v0162 M2 — dependent-op guard: an earlier op for this entity
-            // failed retriably this pass, so skip its dependents entirely.
-            if let key = op.clientEntityId, blockedEntities.contains(key) { continue }
-
-            do {
-                lastCreatedServerId = nil
-                try await pausingOnRateLimit(op, passStartedAt: now) { try await dispatch(op) }
-                try await onReplaySuccess(op)
-            } catch let error where Self.isInterruption(error) {
-                return onInterrupted(op) // C4 — "stopped", not "no": row untouched, the pass ends.
-            } catch let err as HLError where err.shouldPersistToOutbox {
-                // audit-v0162 M2 — block dependents of this entity for the pass.
-                if let key = op.clientEntityId { blockedEntities.insert(key) }
-                await onRetriableFailure(op, err: err, degraded: degraded)
-            } catch let err as DecodingError {
-                // Audit B-3 — our own stored payload no longer decodes: retained.
-                await onUndecodablePayload(op, error: err, now: now)
-            } catch {
-                await blockedEntities.formUnion(holdingDependents(op, afterNonRetriable: error, now: now))
-            }
-        }
-
-        await sweepDeadLetters(now: now)
     }
 
     /// **audit-v0162 H-4 — resolve the entity id to actually send.** Prefers an
@@ -343,7 +255,7 @@ public actor OutboxReplayService {
         return payloadId
     }
 
-    private func dispatch(_ op: OutboxQueue.Operation) async throws {
+    func dispatch(_ op: OutboxQueue.Operation) async throws {
         switch op.kind {
         case .createMeasurement,
              .logMood,

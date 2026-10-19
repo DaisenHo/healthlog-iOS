@@ -137,10 +137,64 @@ public struct WhoopStatus: Codable, Sendable {
     public let configured: Bool?
     public let lastSyncedAt: Date?
     public let connectedAt: Date?
+    /// **Legacy, fallback only (#139).** Deprecated in server v1.43, removed in
+    /// v1.44. Read only when ``health`` is absent (a server before v1.42.4);
+    /// every other reader goes through ``health``.
     public let tokenExpired: Bool?
     public let tokenExpiresAt: Date?
     public let backfillCompleted: Bool?
     public let scope: String?
+    /// #139 — the server's unified connection state (v1.42.4+).
+    public let health: ConnectionHealth?
+
+    public init(
+        connected: Bool,
+        configured: Bool?,
+        lastSyncedAt: Date?,
+        connectedAt: Date?,
+        tokenExpired: Bool?,
+        tokenExpiresAt: Date?,
+        backfillCompleted: Bool?,
+        scope: String?,
+        health: ConnectionHealth? = nil
+    ) {
+        self.connected = connected
+        self.configured = configured
+        self.lastSyncedAt = lastSyncedAt
+        self.connectedAt = connectedAt
+        self.tokenExpired = tokenExpired
+        self.tokenExpiresAt = tokenExpiresAt
+        self.backfillCompleted = backfillCompleted
+        self.scope = scope
+        self.health = health
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case connected, configured, lastSyncedAt, connectedAt, tokenExpired
+        case tokenExpiresAt, backfillCompleted, scope, health
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        connected = try c.decode(Bool.self, forKey: .connected)
+        configured = try c.decodeIfPresent(Bool.self, forKey: .configured)
+        lastSyncedAt = try c.decodeIfPresent(Date.self, forKey: .lastSyncedAt)
+        connectedAt = try c.decodeIfPresent(Date.self, forKey: .connectedAt)
+        // Fallback field: once v1.44 drops it, absence is the normal case.
+        tokenExpired = try? c.decodeIfPresent(Bool.self, forKey: .tokenExpired)
+        tokenExpiresAt = try c.decodeIfPresent(Date.self, forKey: .tokenExpiresAt)
+        backfillCompleted = try c.decodeIfPresent(Bool.self, forKey: .backfillCompleted)
+        scope = try c.decodeIfPresent(String.self, forKey: .scope)
+        health = ConnectionHealth.tolerant(from: c, forKey: .health)
+    }
+
+    /// #139 — the connection is broken until the person reconnects. From
+    /// ``health`` when the server sends it; the legacy `tokenExpired` only
+    /// answers for a server that does not.
+    public var needsReconnect: Bool {
+        if let health { return health.needsReconnect }
+        return tokenExpired == true
+    }
 }
 
 /// Mirror of `GET /api/whoop/credentials`.

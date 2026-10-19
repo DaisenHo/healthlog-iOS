@@ -26,10 +26,10 @@
         static func installAppOwnedHealthCollection(
             keychain: KeychainStoring,
             registry: AuthenticatedSessionLeaseRegistry,
-            retryQueue: OutboxQueue,
             uploader: MeasurementBatchUploader,
             skipRegister: HealthKitSkippedRowRegister = .shared,
-            deliveryFollowUp: (@Sendable () async -> Void)? = nil
+            deliveryFollowUp: (@Sendable () async -> Void)? = nil,
+            serverFreshness: (@Sendable () async -> [MetricFreshness]?)? = nil
         ) {
             let admission: @Sendable () throws -> HealthSyncAuthenticatedLease = {
                 let owner = keychain.getString(forKey: KeychainKey.userID) ?? ""
@@ -56,17 +56,26 @@
                     query: HealthKitAnchoredPageSource(store: store),
                     consumer: SpeziStandardPageConsumer(),
                     observer: HealthKitSampleChangeObserver(store: store),
+                    // 1.3 (#127) — the backwards history walk.
+                    history: HealthKitHistoryPageSource(store: store),
                     deliveryFollowUp: deliveryFollowUp
                 ),
                 cursors: cursors,
                 admission: admission,
                 cutoff: cutoff,
-                reoffer: Self.skippedRowReoffer(uploader: uploader, register: skipRegister)
+                reoffer: Self.skippedRowReoffer(uploader: uploader, register: skipRegister),
+                serverFreshness: serverFreshness
             )
             Task { @MainActor in
                 AppOwnedHealthCollection.installSampleCollection { trigger in
                     await coordinator.run(trigger)
                 }
+                // 1.3 (#127, public #25) — the history state and "Sync
+                // everything now", under the collection's own admission.
+                AppOwnedHealthCollection.installHistory(
+                    overview: { await coordinator.historyOverview() },
+                    catchUp: { progress in await coordinator.runFullCatchUp(progress: progress) }
+                )
                 // #113 — Sync Diagnostics reads and resends the register only
                 // under the same admission the collection uses.
                 HealthKitSkippedRowAccess.install(
@@ -74,8 +83,7 @@
                         guard let lease = try? admission() else { return nil }
                         return await HealthKitSkippedRowSnapshot(
                             rows: skipRegister.rows(ownerID: lease.ownerID),
-                            overflow: skipRegister.overflowCount(ownerID: lease.ownerID),
-                            parkedOutboxRows: retryQueue.parkedRowCount(ownerID: lease.ownerID)
+                            overflow: skipRegister.overflowCount(ownerID: lease.ownerID)
                         )
                     },
                     resend: { await coordinator.resendSkipped() }

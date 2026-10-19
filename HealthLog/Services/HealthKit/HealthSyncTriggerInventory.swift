@@ -125,7 +125,10 @@ enum HealthSyncTriggerInventory {
         make("T-23", "HealthLog/Services/HealthKitService.swift", "resetEventImport", .accountTeardown, "07-02", isolation),
         make("T-24", "HealthLog/Services/HealthKitService.swift", "resetWorkoutImport", .accountTeardown, "07-02", isolation),
         make("T-25", "HealthLog/Services/HealthKitService.swift", "resetCycleImport", .accountTeardown, "07-02", isolation),
-        make("T-26", "HealthLog/Services/EcgSyncCoordinator.swift", "resetAnchor", .accountTeardown, "07-06", isolation)
+        make("T-26", "HealthLog/Services/EcgSyncCoordinator.swift", "resetAnchor", .accountTeardown, "07-06", isolation),
+        // W3 (1.3) — the Apple Health dose-event observer reaches its own
+        // importer under the importer's admitted lease, like T-19 to T-21.
+        make("T-27", "HealthLog/Stores/MedicationHealthSyncStore.swift", "startObservingIfEnabled", .observer, "07-05", routing)
     ]
 
     static func row(_ id: String) -> HealthSyncTriggerOwnership? {

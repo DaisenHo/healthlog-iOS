@@ -1,5 +1,8 @@
 import Foundation
 import Observation
+#if canImport(UIKit)
+    import UIKit
+#endif
 
 /// **GH #47 — owns the "Sync medications with Apple Health" toggle (iOS 26+).**
 ///
@@ -46,14 +49,32 @@ public final class MedicationHealthSyncStore {
     /// by user id) so a re-login never inherits the prior user's mirror map.
     private var importer: AppleHealthMedicationImporter?
 
+    /// **W3 (1.3)** — the running dose-event observer, while the toggle is on.
+    private var observation: (any AppleHealthDoseEventObservation)?
+    /// **W3** — one sweep at a time. A dose observer, the foreground pass and a
+    /// background wake can all ask at once; the actor's reentrancy would
+    /// otherwise interleave two sweeps over the same dose ledger. A request
+    /// that lands mid-sweep becomes exactly one trailing re-run.
+    private let sweepGate = SweepCoalescer(label: "medications")
+    /// **W3** — whether the process is in the background right now. A dose
+    /// signal that arrives then is a background arrival and posts under
+    /// `background`; in front, the context's own answer stands. Injectable
+    /// because a unit test cannot move `UIApplication`.
+    private let isApplicationBackgrounded: @MainActor () -> Bool
+    /// Where the importer keeps its dose ledger. Production keeps the default;
+    /// a test points it at an isolated suite before the first sweep.
+    var ledgerStorage: HealthSyncCursorStorage = .standard
+
     static let prefKey = "hl.medications.syncWithAppleHealth"
 
     public init(
         repo: MedicationsRepository,
         keychain: KeychainStoring,
         reader: AppleHealthMedicationReading?,
-        defaults: UserDefaults = .standard
+        defaults: UserDefaults = .standard,
+        isApplicationBackgrounded: @escaping @MainActor () -> Bool = MedicationHealthSyncStore.applicationIsBackgrounded
     ) {
+        self.isApplicationBackgrounded = isApplicationBackgrounded
         self.repo = repo
         self.keychain = keychain
         self.reader = reader
@@ -80,17 +101,70 @@ public final class MedicationHealthSyncStore {
     }
 
     /// Trigger a mirror sweep if the feature is on (foreground / BG hook).
-    public func triggerSyncIfEnabled() async {
+    ///
+    /// - Parameter incrementalOnly: **W3 (1.3)** — a short wake (AppRefresh,
+    ///   silent push, a dose signal) posts at most one bulk chunk; the rest
+    ///   stays pending for the next sweep.
+    public func triggerSyncIfEnabled(incrementalOnly: Bool = false) async {
         guard enabled, isAvailable else { return }
-        await runSweep()
+        await runSweep(incrementalOnly: incrementalOnly)
+    }
+
+    /// **W3 (1.3, #126 1.5)** — arms the dose-event observer when the
+    /// toggle is on. Called on every authenticated launch (the observer does
+    /// not survive process death) and when the toggle is switched on. Idempotent.
+    public func startObservingIfEnabled() async {
+        guard enabled, isAvailable, observation == nil, let reader else { return }
+        let started = await reader.observeDoseEvents { [weak self] in
+            await self?.handleObservedDoseChange()
+        }
+        // The toggle may have gone off while the observer was being armed.
+        guard enabled, observation == nil else {
+            await started?.stop()
+            return
+        }
+        observation = started
+    }
+
+    /// One HealthKit dose signal: a bounded sweep under the wake's trigger.
+    func handleObservedDoseChange() async {
+        guard enabled, isAvailable else { return }
+        if isApplicationBackgrounded() {
+            await SyncTriggerContext.shared.bind(.background) {
+                await runSweep(incrementalOnly: true)
+            }
+        } else {
+            await runSweep(incrementalOnly: true)
+        }
     }
 
     /// One sweep + the state it leaves behind. `sync()` (not the fire-and-forget
     /// protocol hop) so the summary's ``AppleHealthMedicationSyncSummary/issue``
     /// reaches the UI instead of being logged and dropped.
-    private func runSweep() async {
-        let summary = await makeImporter().sync()
+    private func runSweep(incrementalOnly: Bool = false) async {
+        await sweepGate.run(key: "appleMedication") { [weak self] in
+            await self?.performSweep(incrementalOnly: incrementalOnly)
+        }
+    }
+
+    private func performSweep(incrementalOnly: Bool) async {
+        let summary = await makeImporter().sync(maxDoseChunks: incrementalOnly ? 1 : nil)
         mirrorIssue = summary.issue
+    }
+
+    private func stopObserving() async {
+        let running = observation
+        observation = nil
+        await running?.stop()
+    }
+
+    /// The live app state, read on the main actor.
+    public static func applicationIsBackgrounded() -> Bool {
+        #if canImport(UIKit) && !os(watchOS)
+            UIApplication.shared.applicationState == .background
+        #else
+            false
+        #endif
     }
 
     /// Flip the toggle. Turning ON requests Medications read auth (and runs a
@@ -115,17 +189,20 @@ public final class MedicationHealthSyncStore {
             enabled = true
             defaults.set(true, forKey: Self.prefKey)
             await runSweep()
+            await startObservingIfEnabled()
         } else {
             enabled = false
             defaults.set(false, forKey: Self.prefKey)
             importer = nil
             mirrorIssue = nil
+            await stopObserving()
         }
     }
 
     /// Reset on logout / user-change: force the toggle off + clear the per-user
     /// mirror registry so the next user starts clean (mirrors the mood importer).
     public func deactivateOnLogout() async {
+        await stopObserving()
         registry().reset()
         enabled = false
         defaults.set(false, forKey: Self.prefKey)
@@ -148,7 +225,8 @@ public final class MedicationHealthSyncStore {
             repo: repo,
             keychain: keychain,
             registry: registry(),
-            admission: admission?.provider(for: .appleMedication)
+            admission: admission?.provider(for: .appleMedication),
+            ledgerStorage: ledgerStorage
         )
         importer = built
         return built

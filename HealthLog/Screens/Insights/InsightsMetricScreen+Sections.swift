@@ -534,15 +534,15 @@ extension InsightsMetricScreen {
 
     /// W5-3 — "vs prior <range>" caption from the already-loaded series (no new
     /// server contract). Self-suppresses when `MetricRangeDelta.resolve` finds no
-    /// coherent prior window. #115 · 1.3 — colour only from a server verdict:
-    /// weight reads `tiles.weightTrend.direction` off the snapshot the briefing
-    /// store already holds; every other metric stays neutral.
+    /// coherent prior window. #115 · 1.3 / #135 — colour only from a server
+    /// verdict: the series' own `direction` (v1.43), else for weight the
+    /// snapshot's `tiles.weightTrend`; without either the caption stays neutral.
     @ViewBuilder
     var rangeDeltaSlot: some View {
         if let points = store.displaySeries?.points, !points.isEmpty {
             MetricRangeDelta(
                 points: points,
-                sentiment: kind == .weight ? briefingStore.snapshotBriefing?.weightTrend?.direction : nil,
+                sentiment: store.rangeDeltaSentiment(weightTrend: briefingStore.snapshotBriefing?.weightTrend),
                 range: store.range
             )
         }

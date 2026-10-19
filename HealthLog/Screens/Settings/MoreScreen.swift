@@ -147,6 +147,18 @@ struct MoreScreen: View {
                         // switch itself, with the real IA behind the back
                         // button. Same screen the Integrations list row pushes.
                         AppleHealthIntegrationDetailScreen()
+                    case .security:
+                        // #141 — a security alert's push lands here, the same
+                        // screen Account pushes.
+                        SettingsSecurityScreen()
+                    case .checkups:
+                        // #141 — the push path `/checkups`: Vorsorge, the
+                        // same screen the clinical-spine row links to.
+                        MeasurementRemindersScreen()
+                    case .cycle:
+                        // #141 — the push path `/cycle`, the same screen the
+                        // cycle row links to.
+                        CycleScreen()
                     }
                 }
         }

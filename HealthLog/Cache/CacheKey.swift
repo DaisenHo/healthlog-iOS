@@ -76,6 +76,12 @@ public enum CacheKey: Hashable, Sendable {
     /// caches the aggregate ~60s; this row mirrors that so the Mood-page cards
     /// paint cache-first on launch + revalidate in the background.
     case moodInsights
+    /// INT-Q (1.3, #126 P2 + #136) — the same route cut to a period
+    /// (`GET /api/mood/insights?days=N`, N in 30/90/180/365). Since v1.43 the
+    /// server cuts `stability` AND `patterns` to that window, so each window
+    /// is its own row: a 30-day view must never paint the year's patterns
+    /// from the cache. `.moodInsights` stays the unwindowed (365-day) row.
+    case moodInsightsWindow(days: Int)
     /// #115 · 1.3 — the canonical daily mood series (`GET /api/mood/analytics`):
     /// one mean per profile-zone day plus the server's summary slopes. The
     /// Mood analysis draws its day means from this row instead of bucketing
@@ -254,6 +260,7 @@ public extension CacheKey {
         case let .medicationsCompliance(days): "medicationsCompliance:\(days)"
         case let .moodEntries(days): "moodEntries:\(days)"
         case .moodInsights: "moodInsights"
+        case let .moodInsightsWindow(days): "moodInsightsWindow:\(days)"
         case .moodDailySeries: "moodDailySeries"
         case .userProfile: "userProfile"
         case .hkSyncConfig: "hkSyncConfig"
@@ -334,6 +341,7 @@ public extension CacheKey {
         // Mirrors the server-side 60s `cached()` window on the mood-insights
         // aggregate so the relations cards paint from disk on a warm bounce.
         case .moodInsights: 60
+        case .moodInsightsWindow: 60
         case .moodDailySeries: 60
         case .hkSyncConfig: 5 * 60
         case .notificationsPreferences: 5 * 60

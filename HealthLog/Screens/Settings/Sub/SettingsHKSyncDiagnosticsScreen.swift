@@ -13,11 +13,13 @@ import SwiftUI
 /// advanced. The operator (and any future debug session) can read this
 /// inline instead of attaching to Console.app.
 ///
-/// **Read-only except for one row since #113** — the screen does not trigger a
-/// sync and exposes no reset button (logout-cleanup happens implicitly via
-/// `HKSyncDiagnostics.reset()` when the auth store wipes). The one action is
-/// "Resend skipped": it offers readings the server already refused once more,
-/// the same rows, under the same account — it cannot make the device send
+/// **Read-only except for two rows since #113 and W1** — the screen does not
+/// trigger a sync and exposes no reset button (logout-cleanup happens
+/// implicitly via `HKSyncDiagnostics.reset()` when the auth store wipes). One
+/// action is "Resend skipped": it offers readings the server already refused
+/// once more, the same rows, under the same account. The other (W1, 1.3.0) is
+/// "Erneut senden" on the rows the outbox holds back: it re-arms rows already
+/// queued and starts one replay pass. Neither can make the device send
 /// anything new. A "Jetzt syncen" affordance lives one
 /// screen up in Integrations → Apple Health; pushing the same button here
 /// would be the wrong IA.
@@ -52,24 +54,36 @@ struct SettingsHKSyncDiagnosticsScreen: View {
     @State var hrBucketSnapshot: HRBucketDiagnosticsSnapshot?
     /// V1 — the persistent `stats:` upload record of the signed-in account (`+StatsUploads`).
     @State var statsUploadLog: HealthKitStatsUploadLog?
+    /// W1 (1.3.0) — the outbox rows the replay holds back, by reason (`+HeldWrites`).
+    @State var heldGroups: [OutboxHeldGroup] = []
+    @State var isRearming = false
+    @State var rearmedCount: Int?
+    /// W5 (1.3.0) — "Bericht kopieren" just put the summary on the clipboard.
+    @State var reportCopied = false
 
     var body: some View {
         HLSettingsPage(title: "settings.hkdiag.title") {
-            summaryCard
-            // CU-21 — die Server-Sicht steht bewusst DIREKT unter der
-            // Zusammenfassung: sie trägt die Antwort auf „liefert dieses
-            // Telefon selbstständig?", die einzige Hintergrund-Aussage, die
-            // ohne Log-Wissen lesbar ist.
+            // W5 (1.3.0, #126 1.4) — the server view comes first: it holds
+            // the answer to "does this phone deliver on its own?" and the last
+            // background arrival, which opening the app no longer hides. Every
+            // card below names its own source.
             serverHealthCard
-            // V1 — directly under the server view: the app's own half of the
-            // same question, per summed type, kept across launches.
+            // W1 — the banner's "waiting" count leaves these rows out, so this
+            // is where they are explained.
+            heldWritesCard
+            summaryCard
+            // V1 — the app's own half of the same question, per summed type,
+            // kept across launches, with the server's line for the same type.
             statsUploadCard
             skippedCard
             heartRateBucketCard
             workoutDeliveryCard
+            // 1.3 (#127) — how far back the older history has got, per type.
+            historyPerTypeCard
             kindListCard
             explainerCard
             systemLimitsCard
+            reportCard
             supportDiagnosticsCard
         }
         .navigationTitle("settings.hkdiag.title")
@@ -79,6 +93,7 @@ struct SettingsHKSyncDiagnosticsScreen: View {
         .task { await loadSkipped() }
         .task { loadHeartRateBuckets() }
         .task { loadStatsUploads() }
+        .task { await loadHeldWrites() }
     }
 
     // MARK: - Summary
@@ -90,6 +105,7 @@ struct SettingsHKSyncDiagnosticsScreen: View {
             subtitle: "settings.hkdiag.summary_subtitle"
         ) {
             VStack(alignment: .leading, spacing: HLSpace.md) {
+                HKSyncDiagnosticsSourceTag(source: .deviceSession)
                 statRow(
                     label: "settings.hkdiag.summary_kinds_observed",
                     value: "\(observedKindCount)"
@@ -185,7 +201,8 @@ struct SettingsHKSyncDiagnosticsScreen: View {
         HLSettingsCard(
             icon: "list.bullet.indent",
             title: "settings.hkdiag.kinds_title",
-            subtitle: "settings.hkdiag.kinds_subtitle"
+            subtitle: "settings.hkdiag.kinds_subtitle",
+            subtitleWraps: true
         ) {
             if rows.isEmpty {
                 Text("settings.hkdiag.kinds_empty")
@@ -194,6 +211,7 @@ struct SettingsHKSyncDiagnosticsScreen: View {
                     .fixedSize(horizontal: false, vertical: true)
             } else {
                 VStack(alignment: .leading, spacing: HLSpace.md) {
+                    HKSyncDiagnosticsSourceTag(source: .deviceSession)
                     ForEach(rows, id: \.kind) { row in
                         kindRow(row)
                         if row.kind != rows.last?.kind {
@@ -220,15 +238,14 @@ struct SettingsHKSyncDiagnosticsScreen: View {
                     .font(.hlCaption.monospacedDigit())
                     .foregroundStyle(row.statusTint)
             }
-            HStack(spacing: HLSpace.md) {
-                Text(row.detailLabel)
-                    .font(.hlCaption.monospacedDigit())
-                    .foregroundStyle(HLText.secondary)
-                Spacer()
-                Text(row.lastSeenLabel)
-                    .font(.hlCaption)
-                    .foregroundStyle(HLText.tertiary)
-            }
+            Text(row.detailLabel)
+                .font(.hlCaption.monospacedDigit())
+                .foregroundStyle(HLText.secondary)
+            // W5 — says which time it is: checked, or a new value sent.
+            Text(row.timeLabel)
+                .font(.hlCaption)
+                .foregroundStyle(HLText.tertiary)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .padding(.vertical, HLSpace.xs)
     }
@@ -365,24 +382,27 @@ struct SettingsHKSyncDiagnosticsScreen: View {
     /// is always visible. Sorted by most-recent activity first so the
     /// operator's eye lands on the active kinds, with idle kinds trailing
     /// stably by kind raw value.
-    private var rows: [KindRow] {
+    var rows: [KindRow] {
         let live = snapshot
+        let summedKinds = Set(HealthKitCumulativeTypeConfig.defaults.compactMap {
+            HKSyncDiagnostics.metricKind(for: $0.identifier)
+        })
+        let sweepAt = statsUploadLog?.lastSweep?.at
         return Self.syncedKinds
             .map { kind in
                 KindRow(
                     kind: kind,
                     stats: live[kind] ?? HKSyncDiagnostics.KindStats(identifier: kind.rawValue),
-                    registeredSkipCount: registeredSkips[kind] ?? 0
+                    registeredSkipCount: registeredSkips[kind] ?? 0,
+                    lastSweepAt: summedKinds.contains(kind) ? sweepAt : nil
                 )
             }
             .sorted { lhs, rhs in
-                let lhsDate = lhs.stats.lastObservationAt ?? lhs.stats.lastStatsActionAt
-                let rhsDate = rhs.stats.lastObservationAt ?? rhs.stats.lastStatsActionAt
-                switch (lhsDate, rhsDate) {
-                case let (.some(l), .some(r)): return l > r
-                case (.some, nil): return true
-                case (nil, .some): return false
-                case (nil, nil): return lhs.kind.rawValue < rhs.kind.rawValue
+                switch (lhs.lastTouchedAt, rhs.lastTouchedAt) {
+                case let (.some(l), .some(r)): l > r
+                case (.some, nil): true
+                case (nil, .some): false
+                case (nil, nil): lhs.kind.rawValue < rhs.kind.rawValue
                 }
             }
     }
@@ -399,6 +419,9 @@ struct KindRow: Equatable {
     /// #113 — rows of this kind waiting in the skip register. Persistent, so the
     /// warning survives the cold-launch reset of the session counters.
     var registeredSkipCount: Int = 0
+    /// W5 — for a summed kind, the last daily-statistics sweep (kept across
+    /// launches): a check that found nothing new still counts as a check.
+    var lastSweepAt: Date?
 
     /// Total HK-STATS aggregator actions (cumulative-kind path: Steps /
     /// Active Energy / Flights / Distance / Daylight). These flow over
@@ -514,12 +537,6 @@ struct KindRow: Equatable {
             )
         }
         return String(localized: "settings.hkdiag.detail_simple \(read) \(uploaded)")
-    }
-
-    var lastSeenLabel: String {
-        let candidate = stats.lastObservationAt ?? stats.lastStatsActionAt
-        guard let candidate else { return "—" }
-        return candidate.formatted(.relative(presentation: .named))
     }
 }
 

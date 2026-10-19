@@ -160,4 +160,30 @@ public protocol AppleHealthMedicationReading: Sendable {
     /// Dose events recorded since `since` (nil → the full available history on
     /// first sync). Auto-granted with the parent med's per-object auth.
     func readDoseEvents(since: Date?) async throws -> [AppleHealthDoseRecord]
+
+    /// **W3 (1.3, #126 1.5)** — subscribe to new dose events: an
+    /// `HKObserverQuery` on the dose-event type plus background delivery, so a
+    /// dose logged in Health wakes the app instead of waiting for the next app
+    /// open. `onChange` runs once per HealthKit signal; HealthKit gets its
+    /// completion handler back when `onChange` returns (or at the delivery
+    /// deadline). `nil` when nothing can be observed on this OS or device.
+    func observeDoseEvents(
+        _ onChange: @escaping @Sendable () async -> Void
+    ) async -> (any AppleHealthDoseEventObservation)?
+}
+
+/// **W3 (1.3)** — a running dose-event subscription. `stop()` ends the observer
+/// and the background delivery it armed.
+public protocol AppleHealthDoseEventObservation: Sendable {
+    func stop() async
+}
+
+public extension AppleHealthMedicationReading {
+    /// Readers that cannot observe (test doubles, the inert reader below
+    /// iOS 26) answer "nothing to observe".
+    func observeDoseEvents(
+        _: @escaping @Sendable () async -> Void
+    ) async -> (any AppleHealthDoseEventObservation)? {
+        nil
+    }
 }
