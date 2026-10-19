@@ -115,6 +115,12 @@ public struct APIEnvelopeMeta: Decodable, Sendable, Equatable {
     public let upstreamStatus: Int?
     public let smtpCode: Int?
     public let upstreamBody: String?
+    /// #130 (v1.43) — `409 labs.biomarker.alias.taken` names the spelling that
+    /// is already another marker's name or alias.
+    public let alias: String?
+    /// #130 (v1.43) — `404 labs.biomarker.notFound` for a marker that was
+    /// merged names the marker it went into.
+    public let mergedInto: String?
 
     public init(
         errorCode: String? = nil,
@@ -127,7 +133,9 @@ public struct APIEnvelopeMeta: Decodable, Sendable, Equatable {
         unknownLeaves: [String]? = nil,
         upstreamStatus: Int? = nil,
         smtpCode: Int? = nil,
-        upstreamBody: String? = nil
+        upstreamBody: String? = nil,
+        alias: String? = nil,
+        mergedInto: String? = nil
     ) {
         self.errorCode = errorCode
         self.module = module
@@ -140,11 +148,13 @@ public struct APIEnvelopeMeta: Decodable, Sendable, Equatable {
         self.upstreamStatus = upstreamStatus
         self.smtpCode = smtpCode
         self.upstreamBody = upstreamBody
+        self.alias = alias
+        self.mergedInto = mergedInto
     }
 
     private enum CodingKeys: String, CodingKey {
         case errorCode, module, mfaRequired, mfaTicket, methods, reason, capability
-        case unknownLeaves, upstreamStatus, smtpCode, upstreamBody
+        case unknownLeaves, upstreamStatus, smtpCode, upstreamBody, alias, mergedInto
     }
 
     public init(from decoder: Decoder) throws {
@@ -162,6 +172,8 @@ public struct APIEnvelopeMeta: Decodable, Sendable, Equatable {
         upstreamStatus = try? c.decodeIfPresent(Int.self, forKey: .upstreamStatus)
         smtpCode = try? c.decodeIfPresent(Int.self, forKey: .smtpCode)
         upstreamBody = try? c.decodeIfPresent(String.self, forKey: .upstreamBody)
+        alias = try? c.decodeIfPresent(String.self, forKey: .alias)
+        mergedInto = try? c.decodeIfPresent(String.self, forKey: .mergedInto)
     }
 }
 
@@ -176,16 +188,29 @@ public struct APIEnvelopeMeta: Decodable, Sendable, Equatable {
 public enum APIRefusal {
     /// Error codes whose `meta.reason` the client maps to its own sentence.
     public static let reasonedCodes: Set<String> = [
-        HealthScoreConfigErrorCode.tooNarrow
+        HealthScoreConfigErrorCode.tooNarrow,
+        LabsRefusal.unitMismatch,
+        LabsRefusal.aliasTaken,
+        LabsRefusal.markerNotFound
     ]
 
     /// Throw ``HLError/refusedWithReason(code:reason:)`` when `meta` carries an
-    /// opted-in code **and** a non-empty reason; return quietly otherwise so the
+    /// opted-in code **and** a non-empty detail; return quietly otherwise so the
     /// caller's generic rejection path runs unchanged.
+    ///
+    /// The detail is `meta.reason`, except for the two #130 codes whose
+    /// machine-readable *why* lives in another field: `alias.taken` names the
+    /// `alias`, and a `notFound` marker that was merged names `mergedInto` (a
+    /// plain not-found without it stays the ordinary 404).
     static func throwIfReasoned(_ meta: APIEnvelopeMeta?) throws {
-        guard let code = meta?.errorCode, reasonedCodes.contains(code),
-              let reason = meta?.reason, !reason.isEmpty else { return }
-        throw HLError.refusedWithReason(code: code, reason: reason)
+        guard let code = meta?.errorCode, reasonedCodes.contains(code) else { return }
+        let detail: String? = switch code {
+        case LabsRefusal.aliasTaken: meta?.alias
+        case LabsRefusal.markerNotFound: meta?.mergedInto
+        default: meta?.reason
+        }
+        guard let detail, !detail.isEmpty else { return }
+        throw HLError.refusedWithReason(code: code, reason: detail)
     }
 }
 

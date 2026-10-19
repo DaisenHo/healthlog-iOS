@@ -62,6 +62,16 @@ public actor WithingsRepository {
         try await api.sendVoid(req)
     }
 
+    /// #139 — clear a parked connection (`health.action == "resume"`):
+    /// `POST /api/integrations/withings/resume`, no body, same response as
+    /// WHOOP's resume route.
+    public func resume() async throws {
+        let req: APIRequest<WhoopResumeResult> = try .post("/api/integrations/withings/resume", body: ResumeBody())
+        _ = try await api.send(req)
+    }
+
+    private struct ResumeBody: Encodable {}
+
     /// Revokes the Withings link. DELETE is idempotent on the path; no
     /// wire-side key is attached (see type doc).
     public func disconnect() async throws {

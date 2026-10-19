@@ -31,7 +31,7 @@ import Foundation
 /// the range. `rangeStatus` is the singular NEUTRAL verdict — passed through
 /// untouched.
 public actor LabsRepository {
-    private let api: APIClientProtocol
+    let api: APIClientProtocol
     private let outbox: OutboxQueue
     private let encoder: JSONEncoder
     private let swr: SWRCoordinator?
@@ -111,6 +111,23 @@ public actor LabsRepository {
             )
         }
         return try await networkFetch()
+    }
+
+    /// #130 — `GET /api/labs/overview` (server v1.42.4+): one entry per marker
+    /// over the whole history, the source of the labs list.
+    ///
+    /// Returns `nil` when the server does not have the route (before v1.42.4
+    /// the path falls through to `GET /api/labs/{id}` and answers 404, or a
+    /// 400/405/422 from a stricter router); the caller then builds the list from
+    /// `GET /api/labs` as before. Every other failure throws. Network-direct,
+    /// not SWR-cached: offline, the list falls back to the cached rows.
+    public func labsOverview() async throws -> LabOverviewResponse? {
+        let req: APIRequest<LabOverviewResponse> = .get("/api/labs/overview")
+        do {
+            return try await api.send(req)
+        } catch let HLError.server(status, _, _) where [400, 404, 405, 422].contains(status) {
+            return nil
+        }
     }
 
     /// `GET /api/biomarkers` — the user's biomarker catalog (name-ordered).
@@ -362,7 +379,7 @@ public actor LabsRepository {
     /// Drop the given cached SWR snapshots after a successful write so a mutation
     /// is never masked by a fresh-enough cached row (the store's post-write
     /// `load()` then refetches). No-op when no coordinator is wired.
-    private func invalidate(_ keys: [CacheKey]) async {
+    func invalidate(_ keys: [CacheKey]) async {
         await swr?.invalidate(keys)
     }
 

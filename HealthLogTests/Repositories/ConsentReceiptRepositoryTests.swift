@@ -9,15 +9,17 @@ import Testing
     @testable import HealthLog
 #endif
 
-/// v0.14.10 W-INSIGHTSDATA — pins the server consent-receipt sync contract.
+/// v0.14.10 W-INSIGHTSDATA — pins the server consent-receipt contract.
+///
+/// #143 (server v1.43.2): a receipt is recorded only from an Accept tap and
+/// carries `confirm: true`; a 400 `consent.ai.confirmRequired` is not an error.
 ///
 /// Server v1.12.1 enforcement fails the per-metric assessment family closed
 /// without an active `ConsentReceipt` on file, and no client ever minted one
 /// (`POST /api/consent/ai` had zero callers — the root cause of "Einschätzung
 /// no longer loads on the Insights metric sub-pages"). These tests pin the
-/// repository half of the fix: ensure mints exactly when no active master
-/// receipt exists, the POST body matches the server zod schema, and the
-/// master revoke targets the right route.
+/// repository half: a tap mints at most once, the POST body matches the server
+/// zod schema, and the master revoke targets the right route.
 @Suite("ConsentReceiptRepository", .serialized, .mockURLSession)
 struct ConsentReceiptRepositoryTests {
     /// One recorded wire call (struct, not 3-tuple, per `large_tuple`).
@@ -106,20 +108,22 @@ struct ConsentReceiptRepositoryTests {
         }
     }
 
-    @Test("ensure mints ai_full when no receipt is on file — POST body matches the zod schema")
-    func ensureMintsWhenAbsent() async throws {
+    @Test("a tap after the server said needed: one POST, confirm true, body matches the zod schema")
+    func tapPostsConfirmOnce() async throws {
         let repo = makeRepo()
         let log = RequestLog()
         MockURLProtocol.install(Self.wireHandler(latest: Self.emptyLatestPayload(), log: log))
 
-        let ok = await repo.ensureFullConsentReceipt(artefact: "{\"source\":\"test\"}")
+        let outcome = await repo.recordAcceptedConsent(artefact: "{\"source\":\"test\"}", checkExisting: false)
 
-        #expect(ok)
+        #expect(outcome == .recorded)
         let calls = log.snapshot
-        #expect(calls.map(\.method) == ["GET", "POST"])
+        #expect(calls.map(\.method) == ["POST"])
         #expect(calls.last?.path == "/api/consent/ai")
         let body = try #require(calls.last?.body)
         let json = try #require(try JSONSerialization.jsonObject(with: body) as? [String: Any])
+        // #143 (server v1.43.2) — without it the server writes nothing (400).
+        #expect(json["confirm"] as? Bool == true)
         #expect(json["kind"] as? String == "ai_full")
         #expect((json["artefact"] as? String)?.isEmpty == false)
         // signedAt must be ISO-8601 WITH a timezone designator
@@ -130,27 +134,40 @@ struct ConsentReceiptRepositoryTests {
         #expect(iso.date(from: signedAt) != nil)
     }
 
-    @Test("ensure is a no-op when an active ai_full receipt exists")
-    func ensureNoOpWhenActive() async {
+    @Test("mintFullConsentReceipt always carries confirm true")
+    func mintCarriesConfirm() async throws {
+        let repo = makeRepo()
+        let log = RequestLog()
+        MockURLProtocol.install(Self.wireHandler(latest: Self.emptyLatestPayload(), log: log))
+
+        try await repo.mintFullConsentReceipt(artefact: "{}")
+
+        let body = try #require(log.snapshot.last?.body)
+        let json = try #require(try JSONSerialization.jsonObject(with: body) as? [String: Any])
+        #expect(json["confirm"] as? Bool == true)
+    }
+
+    @Test("older server: a tap reads the receipt first and sends nothing when one is active")
+    func tapNoOpWhenActive() async {
         let repo = makeRepo()
         let log = RequestLog()
         MockURLProtocol.install(Self.wireHandler(latest: Self.activeLatestPayload(revoked: false), log: log))
 
-        let ok = await repo.ensureFullConsentReceipt(artefact: "{}")
+        let outcome = await repo.recordAcceptedConsent(artefact: "{}", checkExisting: true)
 
-        #expect(ok)
+        #expect(outcome == .alreadyOnFile)
         #expect(log.snapshot.map(\.method) == ["GET"]) // no POST fired
     }
 
-    @Test("ensure re-mints when the latest ai_full receipt is revoked")
-    func ensureRemintsWhenRevoked() async {
+    @Test("older server: a tap mints when the latest ai_full receipt is revoked")
+    func tapMintsWhenRevoked() async {
         let repo = makeRepo()
         let log = RequestLog()
         MockURLProtocol.install(Self.wireHandler(latest: Self.activeLatestPayload(revoked: true), log: log))
 
-        let ok = await repo.ensureFullConsentReceipt(artefact: "{}")
+        let outcome = await repo.recordAcceptedConsent(artefact: "{}", checkExisting: true)
 
-        #expect(ok)
+        #expect(outcome == .recorded)
         #expect(log.snapshot.map(\.method) == ["GET", "POST"])
     }
 
@@ -168,16 +185,35 @@ struct ConsentReceiptRepositoryTests {
         #expect(calls.first?.path == "/api/consent/ai/latest")
     }
 
-    @Test("ensure reports false on transport failure (best-effort, never throws)")
-    func ensureBestEffortOnFailure() async {
+    @Test("a tap reports failed on a transport failure (best-effort, never throws)")
+    func tapBestEffortOnFailure() async {
         let repo = makeRepo()
         MockURLProtocol.install { req in
             (HTTPURLResponse(url: req.url!, statusCode: 500, httpVersion: nil, headerFields: nil)!, Data())
         }
 
-        let ok = await repo.ensureFullConsentReceipt(artefact: "{}")
+        let outcome = await repo.recordAcceptedConsent(artefact: "{}", checkExisting: false)
 
-        #expect(!ok)
+        #expect(outcome == .failed)
+    }
+
+    @Test("400 consent.ai.confirmRequired maps to needsExplicitConsent, not a failure")
+    func tapConfirmRequired() async {
+        let repo = makeRepo()
+        let log = RequestLog()
+        MockURLProtocol.install { req in
+            log.record(method: req.httpMethod ?? "?", path: req.url!.path, body: nil)
+            let body = Data("""
+            {"data":null,"error":"Consent is recorded only from an explicit confirmation",\
+            "meta":{"errorCode":"consent.ai.confirmRequired","requestId":"r"}}
+            """.utf8)
+            return (HTTPURLResponse(url: req.url!, statusCode: 400, httpVersion: nil, headerFields: nil)!, body)
+        }
+
+        let outcome = await repo.recordAcceptedConsent(artefact: "{}", checkExisting: false)
+
+        #expect(outcome == .needsExplicitConsent)
+        #expect(log.snapshot.count == 1) // no retry
     }
 }
 

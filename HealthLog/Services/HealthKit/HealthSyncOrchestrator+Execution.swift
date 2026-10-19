@@ -150,8 +150,18 @@ extension HealthSyncOrchestrator {
         context: HealthSyncRunContext
     ) async -> HealthSyncCapabilityResult {
         let started = DispatchTime.now().uptimeNanoseconds
+        // W1 (1.3.0) — persisted brackets around every capability, so a pass
+        // that never returns (see `SweepCoalescer`) names the capability it
+        // hangs in. Trigger and capability are fixed vocabulary.
+        let name = adapter.capability.rawValue, trigger = context.trigger.rawValue
+        // swiftlint:disable:next hllog_public_privacy_interpolation
+        HLLog.healthKit.notice("HK pass \(trigger, privacy: .public): \(name, privacy: .public) begins")
         let result = await adapter.run(context)
         let elapsed = Int((DispatchTime.now().uptimeNanoseconds - started) / 1_000_000)
+        // swiftlint:disable:next hllog_public_privacy_interpolation
+        HLLog.healthKit.notice(
+            "HK pass \(trigger, privacy: .public): \(name, privacy: .public) \(result.disposition.rawValue, privacy: .public) after \(elapsed, privacy: .public)ms"
+        )
         guard result.capability == adapter.capability else {
             return HealthSyncCapabilityResult(
                 capability: adapter.capability,

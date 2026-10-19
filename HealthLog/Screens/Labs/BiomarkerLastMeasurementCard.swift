@@ -25,6 +25,8 @@ struct BiomarkerLastMeasurementCard: View {
                 Text(takenCaption)
                     .font(.hlSubhead)
                     .foregroundStyle(HLText.secondary)
+                // #126 3.5 — a reading the server converted names what was printed.
+                LabConversionNote(conversion: LabConversion(latest))
             }
         }
         .accessibilityElement(children: .combine)

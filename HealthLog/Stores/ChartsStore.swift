@@ -124,12 +124,9 @@ public final class ChartsStore {
         let downsampled = await Task.detached(priority: .userInitiated) {
             SeriesDownsampler.downsampleIfNeeded(points, rangeDays: days)
         }.value
-        series = MeasurementSeries(
-            kind: result.kind,
-            points: downsampled,
-            stats: result.stats, // server-seitig berechnet, bleibt original
-            unit: result.unit // W-B187 (#29) — preserve the server-resolved unit
-        )
+        // Stats stay the server's; W-B187 (#29) unit and #135 verdict and
+        // reference lines ride along.
+        series = result.replacing(points: downsampled)
     }
 
     public func clearOnLogout() {

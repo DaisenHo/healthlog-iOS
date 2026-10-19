@@ -116,7 +116,7 @@ enum SystemSheetDismissal {
             }
             let label = sheet.label
             declineSave.tap()
-            if sheet.waitForNonExistence(timeout: 1) {
+            if sheet.waitForNonExistence(timeout: 3) {
                 // The line the ledger was missing. A run that meets the sheet
                 // now SAYS so, so "it did not appear" and "it appeared and was
                 // handled" stop looking identical in a gate log.
@@ -135,5 +135,41 @@ enum SystemSheetDismissal {
         }
 
         return false
+    }
+
+    /// **FLAKES (1.3.0).** Waits for the step a tap was meant to reveal, and
+    /// recovers the one way that tap can be lost without the app being wrong.
+    ///
+    /// INT-Q's red iteration (`AuthJourneyUITest.swift:94`) is the case the
+    /// pre-tap contract above cannot close: two sheet-free hittable samples at
+    /// 11.28 s and 11.54 s, the tap at 11.64 s, and iOS's "Passwort sichern?"
+    /// presented in between. The tap landed on the sheet, the step never moved,
+    /// and the 25 s wait for its successor only ever asked for the successor, so
+    /// the sheet stood there unhandled until the deadline. The sheet's timing is
+    /// the OS's, so no amount of sampling BEFORE the tap makes that window
+    /// zero; it has to be handled AFTER the tap as well.
+    ///
+    /// So while the successor is absent this keeps checking for the sheet, and
+    /// only when it dismissed one (same shape gate, same refusals, same log
+    /// line) does it call `retap`. The claim stays the caller's: the successor
+    /// must still appear within `timeout`, and nothing but an OS-owned sheet of
+    /// the measured shape earns a second tap.
+    @MainActor
+    static func awaitSuccessor(
+        timeout: TimeInterval,
+        in app: XCUIApplication,
+        retap: () -> Void,
+        until arrived: () -> Bool
+    ) -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
+        while Date() < deadline {
+            if arrived() { return true }
+            if dismissIfPresent(in: app) {
+                if !arrived() { retap() }
+                continue
+            }
+            usleep(250_000)
+        }
+        return arrived()
     }
 }

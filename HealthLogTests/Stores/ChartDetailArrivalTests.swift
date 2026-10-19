@@ -35,6 +35,43 @@
         /// settled" is unmistakable, short enough that the suite stays quick.
         private nonisolated static let insightsDelay: TimeInterval = 0.30
 
+        /// Upper bound for every wait in this suite. It is a hang guard, not a
+        /// latency budget: a passing run never comes near it, so a loaded
+        /// machine cannot turn it red.
+        private nonisolated static let hangGuard: TimeInterval = 30
+
+        /// FLAKES (1.3.0) — parks the insight roundtrips until the test has
+        /// observed what it came to observe. Opening is one-way, so both
+        /// insight requests (and any retry) pass once it is open; the wait is
+        /// bounded so a red run cannot wedge the URL-loading thread.
+        private final class InsightsGate: @unchecked Sendable {
+            private let condition = NSCondition()
+            private var isOpen = false
+            private var parked = 0
+
+            /// How many insight requests have reached the transport so far.
+            var parkedCount: Int {
+                condition.lock()
+                defer { condition.unlock() }
+                return parked
+            }
+
+            func open() {
+                condition.lock()
+                isOpen = true
+                condition.broadcast()
+                condition.unlock()
+            }
+
+            func park(upTo seconds: TimeInterval) {
+                let deadline = Date().addingTimeInterval(seconds)
+                condition.lock()
+                parked += 1
+                while !isOpen, condition.wait(until: deadline) {}
+                condition.unlock()
+            }
+        }
+
         /// Anchored on the live clock, not a frozen epoch: the store's own
         /// range cutoff is `Date.now - range`, so a fixture pinned to a past
         /// date lands `.empty(.outsideRange)` and would be measuring the
@@ -108,7 +145,8 @@
             _ session: MockURLProtocolSession,
             kind: MetricKind,
             type: String,
-            latest: Double
+            latest: Double,
+            insightsGate: InsightsGate? = nil
         ) {
             let series = seriesBody(kind: kind)
             let page = pageBody(type: type, value: latest)
@@ -123,7 +161,11 @@
                 if path.hasPrefix("/api/insights") {
                     // The URL-loading system owns this thread; the test's actor
                     // is free while the two best-effort roundtrips are parked.
-                    Thread.sleep(forTimeInterval: Self.insightsDelay)
+                    if let insightsGate {
+                        insightsGate.park(upTo: Self.hangGuard)
+                    } else {
+                        Thread.sleep(forTimeInterval: Self.insightsDelay)
+                    }
                     return (
                         HTTPURLResponse(url: request.url!, statusCode: 500, httpVersion: nil, headerFields: nil)!,
                         Data(#"{"data":null,"error":"slow"}"#.utf8)
@@ -141,9 +183,10 @@
 
         /// Polls `condition` on the main actor against a real deadline. A yield
         /// loop would be racing the URL-loading thread rather than waiting for
-        /// it, which is how a timing test becomes a flake.
+        /// it, which is how a timing test becomes a flake. The deadline is the
+        /// hang guard, never the claim: every caller asserts an ORDER.
         private func settle(
-            within seconds: Double = 3.0,
+            within seconds: Double = hangGuard,
             _ condition: @MainActor () -> Bool
         ) async -> Bool {
             let steps = Int(seconds * 200)
@@ -156,35 +199,55 @@
 
         // MARK: - 1) the value block may not trail the chart
 
-        /// The moment the chart can paint, the number blocks above it must be
-        /// settled too. Today they are not: `dataState` and
-        /// `latestRawMeasurement` are assigned only after the findings and
-        /// summary roundtrips return, so `StatsRow` (Min/Ø/Max/Median, gated on
-        /// `dataState.hasValue`) and the headline's raw-latest refinement land
-        /// two requests late — above the chart, pushing it down.
+        /// The number blocks above the chart must not wait for the two insight
+        /// roundtrips. Before 14-01 `dataState` and `latestRawMeasurement` were
+        /// assigned only after the findings and summary roundtrips returned, so
+        /// `StatsRow` (Min/Ø/Max/Median, gated on `dataState.hasValue`) and the
+        /// headline's raw-latest refinement landed two requests late, above the
+        /// chart, pushing it down.
+        ///
+        /// **FLAKES (1.3.0) — proved by order, not by the wall clock.** This used
+        /// to park the insights for 0.3 s and require the value in the same
+        /// main-actor turn the chart first became renderable in, inside a 3 s
+        /// poll. Under load the measurements page can answer a few milliseconds
+        /// after the series (both are real concurrent requests), so the poll
+        /// could catch the chart alone and the case went red with the product
+        /// unchanged (build 294, load 113). The claim never was "same
+        /// millisecond", it was "not two roundtrips later". So the insight
+        /// roundtrips are now held shut until the value has settled: with the
+        /// 14-01 order the value settles while they are still unanswered; with
+        /// the old order it cannot settle at all and the case goes red.
         @Test("Der Kopfwert kommt mit der Grafik, nicht zwei Roundtrips später")
         func headlinePublishesWithTheSeries() async throws {
             let session = MockURLProtocolSession()
-            defer { session.invalidate() }
-            installArrivalHandlers(session, kind: .weight, type: "WEIGHT", latest: 79.0)
+            let gate = InsightsGate()
+            defer {
+                gate.open()
+                session.invalidate()
+            }
+            installArrivalHandlers(session, kind: .weight, type: "WEIGHT", latest: 79.0, insightsGate: gate)
             let store = try makeStore(kind: .weight, session: session)
 
             let load = Task { await store.load() }
-            let chartCanPaint = await settle { store.chartPoints.count >= 2 }
-            #expect(chartCanPaint, "the series must reach the chart for this test to say anything")
-
-            // Read the two gates the number blocks above the chart hang on, in
-            // the same main-actor turn the chart became renderable in.
-            let valueSettledWithChart = store.dataState.hasValue && store.latestRawMeasurement != nil
+            // The two gates the number blocks above the chart hang on, with
+            // neither insight roundtrip answered yet.
+            let valueSettledBeforeInsights = await settle {
+                store.dataState.hasValue && store.latestRawMeasurement != nil
+            }
             #expect(
-                valueSettledWithChart,
-                "EXPECTED_RED: the headline value arrives two roundtrips after the chart"
+                valueSettledBeforeInsights,
+                "EXPECTED_RED: the headline value waits for the two insight roundtrips"
             )
+            // ...and with the chart: the series is published first, so when the
+            // value is there the chart is already renderable.
+            #expect(store.chartPoints.count >= 2, "the value must not settle ahead of the series it belongs to")
 
+            gate.open()
             await load.value
             // The data was never the problem — only when it was published.
             #expect(store.latestRawMeasurement != nil)
             #expect(store.dataState.hasValue)
+            #expect(gate.parkedCount >= 1, "the insight roundtrips must actually have been held for this to prove the order")
         }
 
         // MARK: - 2) refinement is one-directional (control)

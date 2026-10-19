@@ -69,10 +69,9 @@
                 "records.delta.vsPrevious %@", "records.a11y.newRecord", "records.a11y.change %@",
                 "records.hero.since %@", "records.hero.a11y %@ %@ %@ %@", "records.comparison.a11yHint",
                 "records.comparison.a11y %@ %@ %@ %@ %@", "records.comparison.insideBand",
-                "records.comparison.belowBetter", "records.comparison.belowWorse",
-                "records.comparison.belowCentered", "records.comparison.aboveWorse",
-                "records.comparison.aboveBetter", "records.comparison.aboveCentered",
-                "benchmark.source.eyebrow"
+                // #135 — the band is the server's: position words only, plus its range.
+                "records.comparison.belowCentered", "records.comparison.aboveCentered",
+                "records.comparison.range %@", "benchmark.source.eyebrow", "benchmark.source.typicalRange"
             ]
         )
         func recordCopy(key: String) throws {

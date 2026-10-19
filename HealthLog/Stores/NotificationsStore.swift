@@ -55,6 +55,10 @@ public final class NotificationsStore {
     public private(set) var measurementReminderClientManaged: Bool =
         MeasurementReminderPrefStore.clientManaged()
 
+    /// #126 3.3 — whether notifications may show figures (`content.detail`).
+    /// `nil` until loaded and on a server without the block (setting hidden).
+    public private(set) var notificationContentDetailed: Bool?
+
     private let repo: NotificationsRepository
     private let swr: SWRCoordinator?
 
@@ -109,6 +113,8 @@ public final class NotificationsStore {
                 measurementReminderClientManaged = clientManaged
                 MeasurementReminderPrefStore.setClientManaged(clientManaged)
             }
+            // #126 3.3 — the content setting rides the same payload.
+            notificationContentDetailed = prefs.contentDetailed
         } catch {
             HLLog.notifications.warning(
                 "Mood-Reminder-Stunde cold-read fehlgeschlagen — lokaler Mirror bleibt. err=\(error.localizedDescription)"
@@ -252,6 +258,24 @@ public final class NotificationsStore {
                 "Measurement-reminder opt-in speichern fehlgeschlagen: \(err.localizedDescription)"
             )
         } catch {
+            self.error = .unknown(error.localizedDescription)
+        }
+    }
+
+    /// #126 3.3 — switch figures in notifications on or off. Renders the
+    /// server's answer; a failure puts the previous value back.
+    public func setNotificationContentDetailed(_ detailed: Bool) async {
+        let previous = notificationContentDetailed
+        notificationContentDetailed = detailed
+        do {
+            let echoed = try await repo.setNotificationContentDetailed(detailed)
+            notificationContentDetailed = echoed.contentDetailed ?? detailed
+            error = nil
+        } catch let err as HLError {
+            notificationContentDetailed = previous
+            error = err
+        } catch {
+            notificationContentDetailed = previous
             self.error = .unknown(error.localizedDescription)
         }
     }

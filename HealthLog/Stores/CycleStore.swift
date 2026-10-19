@@ -68,6 +68,10 @@ public final class CycleStore {
     /// in-sheet confirmation. The richer calendar surface lands in C5.
     public private(set) var lastSaveSucceeded = false
 
+    /// #137 (v1.43) — the server merged or gave back a start: one sentence for
+    /// the calendar, from the answer only (`CycleStore+StartNotice`).
+    public internal(set) var startNotice: CycleStartNotice?
+
     /// Module-internal rather than `private` so the split-out extensions
     /// (`CycleStore+Verdict`) can reach it — the file-length discipline moves
     /// code out of this file, not out of this type.
@@ -192,6 +196,7 @@ public final class CycleStore {
         isDisabled = false
         lastError = nil
         lastSaveSucceeded = false
+        startNotice = nil
     }
 
     // MARK: - Writes (optimistic + Outbox + HealthKit mirror)
@@ -236,7 +241,7 @@ public final class CycleStore {
         guard gate.isCycleTrackingAvailable else { return false }
         lastError = nil
         do {
-            try await repository.period(request)
+            startNotice = try await CycleStartNotice.merged(repository.period(request), requestedDate: request.date)
             lastSaveSucceeded = true
             await load()
             return true
@@ -270,13 +275,14 @@ public final class CycleStore {
     ) async -> Bool {
         guard gate.isCycleTrackingAvailable else { return false }
         lastError = nil
+        startNotice = nil
         var enqueuedOffline = false
         // #115 1.6 — a stored boundary can absorb or restore a start: refetch.
         var periodStored = false
 
         if let request {
             do {
-                try await repository.period(request)
+                startNotice = try await CycleStartNotice.merged(repository.period(request), requestedDate: request.date)
                 periodStored = true
             } catch let error as HLError where error.shouldPersistToOutbox {
                 enqueuedOffline = true
@@ -289,7 +295,7 @@ public final class CycleStore {
 
         do {
             let dto: CycleDayLogDTO = if let existingID, let patch {
-                try await repository.updateDayLog(id: existingID, patch: patch)
+                try await updateDayLogNotingStarts(id: existingID, patch: patch)
             } else {
                 try await repository.logDayLog(write)
             }
@@ -389,10 +395,7 @@ public final class CycleStore {
         }
         customSymptomsError = nil
         do {
-            let updated = try await repository.updateCustomSymptom(
-                key: key,
-                patch: .init(label: trimmed, icon: icon)
-            )
+            let updated = try await repository.updateCustomSymptom(key: key, patch: .init(label: trimmed, icon: icon))
             if let index = customSymptoms.firstIndex(where: { $0.key == key }) {
                 customSymptoms[index] = updated
             }

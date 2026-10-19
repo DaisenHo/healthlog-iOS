@@ -65,7 +65,7 @@ import Foundation
         private var observerQuery: HKObserverQuery?
         /// One sweep at a time per importer, with exactly one trailing re-run —
         /// an observer burst is one pass, not one pass per callback.
-        private let coalescer = SweepCoalescer()
+        private let coalescer = SweepCoalescer(label: "mood")
         /// Owned observer work. Not fire-and-forget: `stop()` cancels every entry
         /// and waits for it, which is what makes the teardown a fact rather than
         /// a request.

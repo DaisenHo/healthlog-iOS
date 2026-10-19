@@ -559,7 +559,7 @@ extension DashboardStore {
                 unit: metric.unit,
                 trend: metric.trend,
                 sparkline: values,
-                updatedAt: metric.updatedAt
+                updatedAt: metric.updatedAt, trendSentiment: metric.trendSentiment, direction: metric.direction
             )
         }
         guard didReplace else { return }

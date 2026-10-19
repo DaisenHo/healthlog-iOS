@@ -29,14 +29,14 @@ import SwiftUI
 ///
 /// **Localization:** every string surfaced here flows through
 /// `LocalizedStringKey` + the project `Localizable.xcstrings` so the
-/// EN translation can extend without code edits. Source label comes
-/// from `ClinicalBenchmark.sourceLabel` (plain-string carrier, also
-/// localised at definition site in `LiveClinicalBenchmarkProvider`).
+/// EN translation can extend without code edits. #135 — the source label
+/// and the band are the server's (`benchmark.sourceLabel`, already in the
+/// account's language; `low` and `high` in the record's unit).
 struct BenchmarkSourceSheet: View {
     let metricLabel: String
     /// 1.0.3 (App Review 1.4.1) — which metric's references to cite.
     let kind: MetricKind
-    let benchmark: ClinicalBenchmark
+    let band: RecordBenchmarkBand
     let onDismiss: () -> Void
 
     private var sources: [MedicalSource] {
@@ -88,7 +88,7 @@ struct BenchmarkSourceSheet: View {
     private var sourceCard: some View {
         VStack(alignment: .leading, spacing: HLSpace.sm) {
             HLSectionLabel(LocalizedStringKey(Layout.sourceTitle))
-            Text(benchmark.sourceLabel)
+            Text(band.sourceLabel)
                 .font(.hlBody)
                 .foregroundStyle(HLText.primary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -100,38 +100,14 @@ struct BenchmarkSourceSheet: View {
     }
 
     private var referenceRangeRow: some View {
-        VStack(alignment: .leading, spacing: HLSpace.xs) {
-            HStack(spacing: HLSpace.xs) {
-                Text(LocalizedStringKey(Layout.typicalRangeLabel))
-                    .font(.hlCaption.weight(.semibold))
-                    .foregroundStyle(HLText.secondary)
-                Text(formattedBand)
-                    .font(.hlCaption)
-                    .foregroundStyle(HLText.primary)
-                    .monospacedDigit()
-            }
-            if let floor = benchmark.clinicalFloor {
-                HStack(spacing: HLSpace.xs) {
-                    Text(LocalizedStringKey(Layout.clinicalFloorLabel))
-                        .font(.hlCaption.weight(.semibold))
-                        .foregroundStyle(HLText.secondary)
-                    Text(format(floor))
-                        .font(.hlCaption)
-                        .foregroundStyle(HLText.primary)
-                        .monospacedDigit()
-                }
-            }
-            if let ceiling = benchmark.clinicalCeiling {
-                HStack(spacing: HLSpace.xs) {
-                    Text(LocalizedStringKey(Layout.clinicalCeilingLabel))
-                        .font(.hlCaption.weight(.semibold))
-                        .foregroundStyle(HLText.secondary)
-                    Text(format(ceiling))
-                        .font(.hlCaption)
-                        .foregroundStyle(HLText.primary)
-                        .monospacedDigit()
-                }
-            }
+        HStack(spacing: HLSpace.xs) {
+            Text(LocalizedStringKey(Layout.typicalRangeLabel))
+                .font(.hlCaption.weight(.semibold))
+                .foregroundStyle(HLText.secondary)
+            Text(band.formattedRange)
+                .font(.hlCaption)
+                .foregroundStyle(HLText.primary)
+                .monospacedDigit()
         }
         .padding(.top, HLSpace.xs)
     }
@@ -157,25 +133,6 @@ struct BenchmarkSourceSheet: View {
         .background(HLSurface.tertiary, in: RoundedRectangle(cornerRadius: HLRadius.card, style: .continuous))
         .accessibilityIdentifier("benchmark.source.references")
     }
-
-    // MARK: - Derived
-
-    private var formattedBand: String {
-        HLNumberFormat.range(format(benchmark.bandLow), format(benchmark.bandHigh))
-    }
-
-    private func format(_ value: Double) -> String {
-        Self.numberFormatter.string(from: NSNumber(value: value)) ?? "\(value)"
-    }
-
-    private static let numberFormatter: NumberFormatter = {
-        let f = NumberFormatter()
-        f.locale = Locale.current
-        f.numberStyle = .decimal
-        f.maximumFractionDigits = 1
-        f.minimumFractionDigits = 0
-        return f
-    }()
 }
 
 extension BenchmarkSourceSheet {
@@ -187,23 +144,14 @@ extension BenchmarkSourceSheet {
         static let eyebrow = "benchmark.source.eyebrow"
         static let sourceTitle = "benchmark.source.sourceTitle"
         static let typicalRangeLabel = "benchmark.source.typicalRange"
-        static let clinicalFloorLabel = "benchmark.source.clinicalFloor"
-        static let clinicalCeilingLabel = "benchmark.source.clinicalCeiling"
     }
 }
 
-#Preview("BenchmarkSourceSheet — Schritte") {
+#Preview("BenchmarkSourceSheet — VO2 max") {
     BenchmarkSourceSheet(
-        metricLabel: "Steps",
-        kind: .steps,
-        benchmark: ClinicalBenchmark(
-            mean: 7500,
-            sigma: 3000,
-            clinicalFloor: nil,
-            clinicalCeiling: nil,
-            favorability: .higherIsBetter,
-            sourceLabel: "Tudor-Locke et al. 2011 + CDC BRFSS 2019-2023"
-        ),
+        metricLabel: "VO₂ max",
+        kind: .vo2Max,
+        band: RecordBenchmarkBand(low: 35, high: 43, value: 41, unit: "ml/kg/min", sourceLabel: "ACSM, 11th edition"),
         onDismiss: {}
     )
 }

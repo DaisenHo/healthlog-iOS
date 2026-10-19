@@ -38,16 +38,50 @@ public struct MeasurementSeries: Codable, Sendable {
     /// unit-at-source). `nil` on an older server / a kind the server doesn't
     /// unit-stamp → the consumer falls back to the per-`MetricKind` default.
     public let unit: String?
+    /// #135 (server v1.43) — which way a change of this metric counts for this
+    /// person. `nil` on an older server: the change stays uncoloured.
+    public let direction: TrendVerdict?
+    /// #135 — first and last day value of the window and how that change
+    /// counts. `nil` under two days and on an older server.
+    public let change: SeriesChange?
+    /// #135 — the lines the server asks the chart to draw, in this series'
+    /// unit. `nil` on a server before v1.43, `[]` when there is nothing to draw.
+    public let referenceLines: [SeriesReferenceLine]?
 
-    public init(kind: MetricKind, points: [SeriesPoint], stats: SeriesStats, unit: String? = nil) {
+    public init(
+        kind: MetricKind,
+        points: [SeriesPoint],
+        stats: SeriesStats,
+        unit: String? = nil,
+        direction: TrendVerdict? = nil,
+        change: SeriesChange? = nil,
+        referenceLines: [SeriesReferenceLine]? = nil
+    ) {
         self.kind = kind
         self.points = points
         self.stats = stats
         self.unit = unit
+        self.direction = direction
+        self.change = change
+        self.referenceLines = referenceLines
+    }
+
+    /// The same series with other points and stats (downsampled, patched,
+    /// converted): the server's unit, verdict and reference lines ride along.
+    public func replacing(points: [SeriesPoint], stats: SeriesStats? = nil) -> MeasurementSeries {
+        MeasurementSeries(
+            kind: kind,
+            points: points,
+            stats: stats ?? self.stats,
+            unit: unit,
+            direction: direction,
+            change: change,
+            referenceLines: referenceLines
+        )
     }
 
     private enum CodingKeys: String, CodingKey {
-        case kind, points, stats, unit
+        case kind, points, stats, unit, direction, change, referenceLines
     }
 
     public init(from decoder: Decoder) throws {
@@ -68,6 +102,11 @@ public struct MeasurementSeries: Codable, Sendable {
         stats = try c.decode(SeriesStats.self, forKey: .stats)
         // Tolerant: absent OR JSON `null` both decode to `nil` (older server).
         unit = try c.decodeIfPresent(String.self, forKey: .unit)
+        // #135 — additive v1.43 fields, each tolerant on its own: a block this
+        // build cannot read degrades to "not sent", never a failed chart.
+        direction = try? c.decodeIfPresent(TrendVerdict.self, forKey: .direction)
+        change = try? c.decodeIfPresent(SeriesChange.self, forKey: .change)
+        referenceLines = SeriesReferenceLine.decodeList(from: c, forKey: .referenceLines)
     }
 
     /// The display unit label for this series — the server-resolved `unit`

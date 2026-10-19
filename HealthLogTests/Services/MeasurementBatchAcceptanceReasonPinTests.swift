@@ -32,6 +32,18 @@ struct MeasurementBatchAcceptanceReasonPinTests {
             MeasurementBatchAcceptance.Reason.supersededInBatch
                 == DeployedMeasurementContract.supersededInBatchReason
         )
+        #expect(
+            MeasurementBatchAcceptance.Reason.hourBucketMisaligned
+                == HealthKitServerSupportConfig.reasonHourBucketMisaligned
+        )
+        #expect(
+            MeasurementBatchAcceptance.Reason.hourBucketUnsupportedType
+                == HealthKitServerSupportConfig.reasonHourBucketUnsupportedType
+        )
+        #expect(
+            MeasurementBatchAcceptance.Reason.hourBucketTooOld
+                == HealthKitServerSupportConfig.reasonHourBucketTooOld
+        )
     }
 
     @Test("the allowlist is exactly the documented terminal reasons — unmappable included")
@@ -40,10 +52,15 @@ struct MeasurementBatchAcceptanceReasonPinTests {
         // is complete and no retry of the same batch changes it. The one index it
         // affects is held separately by the sample importers, which is why it may
         // be in the allowlist without letting a stalled type advance.
+        // X4 (1.3): the three hour-bucket reasons of server v1.43 are
+        // deterministic refusals of one hourly row, terminal like the rest.
         #expect(MeasurementBatchAcceptance.Policy.deployedMeasurementRoute.terminalSkipReasons == [
             HealthKitServerSupportConfig.reasonUnmappableIdentifier,
             HealthKitServerSupportConfig.reasonValueOutOfRange,
-            HealthKitServerSupportConfig.reasonUnstableExternalId
+            HealthKitServerSupportConfig.reasonUnstableExternalId,
+            HealthKitServerSupportConfig.reasonHourBucketMisaligned,
+            HealthKitServerSupportConfig.reasonHourBucketUnsupportedType,
+            HealthKitServerSupportConfig.reasonHourBucketTooOld
         ])
     }
 

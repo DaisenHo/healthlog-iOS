@@ -487,11 +487,9 @@ final class AppRouter {
             selectedTab = .more
             morePath = .init()
             morePath.append(PersonalRecordRoute(id: id))
-        case .settingsNotifications:
-            selectedTab = .more
-            morePath = .init()
-            morePath.append(SettingsRoute.root)
-            morePath.append(SettingsRoute.notifications)
+        case .settingsNotifications, .checkups, .cycle, .settingsSecurity, .settingsIntegrations:
+            // #141 — every More-stack screen a link opens (see `+PushPaths`).
+            applyMoreStackRoute(route)
         case .mood:
             // v0.10.0 W10 — `healthlog://mood` (the systemSmall mood widget's
             // whole-tile tap) reuses the same central-CTA quick-entry path the

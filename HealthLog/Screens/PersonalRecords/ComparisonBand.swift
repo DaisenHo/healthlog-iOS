@@ -1,33 +1,27 @@
 import SwiftUI
 
-/// v0.5.5.7 RECONCILE-COMPARE — clinical-benchmark comparison band
-/// for the `PersonalRecordsScreen`.
+/// v0.5.5.7 RECONCILE-COMPARE — benchmark comparison band for the
+/// `PersonalRecordsScreen`.
 ///
-/// Closes POLISH-PR component #5, which deferred in v0.5.5.6 because
-/// no `ClinicalBenchmarkProvider` existed yet. The band paints a
-/// per-record reference stripe (population mean ± 1σ) with the user's
-/// best value plotted as a tick on top, plus a one-line summary
-/// (e.g. *"Dein Bestwert liegt im typischen Bereich"*). Tapping the
-/// band opens `BenchmarkSourceSheet` with the source label + the
-/// "kein medizinischer Befund" disclaimer.
+/// #135 (server v1.43) — the band is the server's `benchmark` on the record
+/// (``RecordBenchmarkBand``): its two edges as a stripe, the person's best as
+/// a tick, a one-line position ("within the typical range") and the server's
+/// citation. No mean marker and no "favourable" sentence: the server sends
+/// neither, and the app adds no judgement of its own. Tapping the band opens
+/// `BenchmarkSourceSheet` with the citation and the named references.
 ///
-/// **Slot in the screen:** between `MilestoneStrip` and the footer.
-/// The parent passes one band per record-kind that the provider
-/// carries data for; kinds returning `nil` from
-/// `ClinicalBenchmarkProvider.benchmark(for:)` are skipped.
+/// **Slot in the screen:** between `MilestoneStrip` and the footer, one band
+/// per record kind whose record carries a benchmark; nothing when none does.
 ///
 /// **Theme-2.0 contract:** the band uses the mono surface scale
-/// (`HLSurface.tertiary` recessed well + `HLAccent.userBrandTint`
-/// for the user tick + `HLText.secondary` for the band stripe). No
-/// per-kind tinting on this surface — the comparison band is a
-/// data-rich callout, not a chart.
+/// (`HLSurface.tertiary` recessed well + `HLAccent.userBrandTint` for the user
+/// tick + `HLText.secondary` for the band stripe). No per-kind tinting.
 ///
-/// **Accessibility:** collapsed to one VoiceOver element with the
-/// summary line + the user value + the typical range, so users don't
-/// have to swipe through the geometry.
+/// **Accessibility:** one VoiceOver element with the metric, the value, the
+/// band and the position line, so nobody has to swipe through the geometry.
 struct ComparisonBand: View {
     let record: PersonalRecord
-    let benchmark: ClinicalBenchmark
+    let band: RecordBenchmarkBand
     let onTap: () -> Void
 
     var body: some View {
@@ -49,6 +43,7 @@ struct ComparisonBand: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(accessibilityLabel)
         .accessibilityHint(Text(LocalizedStringKey(Layout.accessibilityHint)))
+        .accessibilityIdentifier("records.comparison.\(record.id)")
     }
 
     // MARK: - Subviews
@@ -71,30 +66,25 @@ struct ComparisonBand: View {
 
     private var bar: some View {
         GeometryReader { geo in
+            let width = Double(geo.size.width)
             ZStack(alignment: .leading) {
-                // Track — full chart range.
+                // Track — full domain.
                 Capsule()
                     .fill(HLSurface.tertiary)
                     .frame(height: Layout.trackHeight)
 
-                // Reference band — population mean ± 1σ.
-                let bandRect = bandRect(in: geo.size.width)
-                Capsule()
-                    .fill(HLText.secondary.opacity(HLOpacity.surfaceTintStrong))
-                    .frame(width: bandRect.width, height: Layout.trackHeight)
-                    .offset(x: bandRect.minX)
-
-                // Mean marker — center tick of the band.
-                if let meanX = meanX(in: geo.size.width) {
-                    Rectangle()
-                        .fill(HLText.secondary)
-                        .frame(width: 1, height: Layout.trackHeight)
-                        .offset(x: meanX)
+                // The server's band.
+                if let lo = band.position(of: band.low, width: width),
+                   let hi = band.position(of: band.high, width: width)
+                {
+                    Capsule()
+                        .fill(HLText.secondary.opacity(HLOpacity.surfaceTintStrong))
+                        .frame(width: max(0, hi - lo), height: Layout.trackHeight)
+                        .offset(x: lo)
                 }
 
-                // User value tick — accent-coloured pill so it reads
-                // as "your value" against the mono band.
-                if let userX = userX(in: geo.size.width) {
+                // The person's best — accent tick against the mono band.
+                if let userX = band.position(of: band.value, width: width) {
                     Capsule()
                         .fill(HLAccent.userBrandTint)
                         .frame(width: Layout.tickWidth, height: Layout.trackHeight + 6)
@@ -104,70 +94,34 @@ struct ComparisonBand: View {
             .frame(width: geo.size.width, height: Layout.trackHeight + 6, alignment: .leading)
         }
         .frame(height: Layout.trackHeight + 6)
+        .accessibilityHidden(true)
     }
 
     private var summary: some View {
         HStack(alignment: .firstTextBaseline, spacing: HLSpace.xs) {
-            Text(summaryLine)
-                .font(.hlSubhead)
-                .foregroundStyle(HLText.primary)
-                .lineLimit(2)
-                .fixedSize(horizontal: false, vertical: true)
+            VStack(alignment: .leading, spacing: HLSpace.xxs) {
+                Text(band.summary)
+                    .font(.hlSubhead)
+                    .foregroundStyle(HLText.primary)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text(String(localized: "records.comparison.range \(band.formattedRange)"))
+                    .font(.hlCaption)
+                    .foregroundStyle(HLText.secondary)
+                    .monospacedDigit()
+                    .fixedSize(horizontal: false, vertical: true)
+                if !band.sourceLabel.isEmpty {
+                    Text(band.sourceLabel)
+                        .font(.hlCaption)
+                        .foregroundStyle(HLText.tertiary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
             Spacer(minLength: 0)
             Image(systemName: "info.circle")
                 .font(.hlIcon(HLIconSize.rowAction))
                 .foregroundStyle(HLText.tertiary)
                 .accessibilityHidden(true)
         }
-    }
-
-    // MARK: - Geometry
-
-    /// Chart's X-domain. Picks `min(bandLow, userValue)` and
-    /// `max(bandHigh, userValue, clinicalCeiling?)` so the user tick
-    /// always lands inside the visible track, even if the value is
-    /// far from the population band (e.g. a 25 000 step day vs. a
-    /// 7 500 mean).
-    private var domain: ClosedRange<Double> {
-        let userValue = record.base.value
-        var lo = min(benchmark.bandLow, userValue)
-        var hi = max(benchmark.bandHigh, userValue)
-        if let floor = benchmark.clinicalFloor {
-            lo = min(lo, floor)
-        }
-        if let ceiling = benchmark.clinicalCeiling {
-            hi = max(hi, ceiling)
-        }
-        // Pad 8% on each side so the user tick + mean marker don't
-        // sit flush with the capsule edges.
-        let span = max(hi - lo, 1)
-        let pad = span * 0.08
-        return (lo - pad) ... (hi + pad)
-    }
-
-    private func position(for value: Double, in width: CGFloat) -> CGFloat? {
-        let range = domain
-        let span = range.upperBound - range.lowerBound
-        guard span > 0 else { return nil }
-        let ratio = (value - range.lowerBound) / span
-        return CGFloat(ratio) * width
-    }
-
-    private func bandRect(in width: CGFloat) -> (minX: CGFloat, width: CGFloat) {
-        guard let lo = position(for: benchmark.bandLow, in: width),
-              let hi = position(for: benchmark.bandHigh, in: width) else
-        {
-            return (0, 0)
-        }
-        return (lo, max(0, hi - lo))
-    }
-
-    private func meanX(in width: CGFloat) -> CGFloat? {
-        position(for: benchmark.mean, in: width)
-    }
-
-    private func userX(in width: CGFloat) -> CGFloat? {
-        position(for: record.base.value, in: width)
     }
 
     // MARK: - Copy
@@ -179,49 +133,18 @@ struct ComparisonBand: View {
         return MetricTypeLocalisation.label(forType: record.base.metricType)
     }
 
-    private var summaryLine: String {
-        String(localized: summaryResource)
-    }
-
-    private var summaryResource: LocalizedStringResource {
-        let region = benchmark.classify(record.base.value)
-        switch (region, benchmark.favorability) {
-        case (.insideBand, _):
-            return Layout.summaryInsideBand
-        case (.belowBand, .lowerIsBetter):
-            return Layout.summaryBelowBetter
-        case (.belowBand, .higherIsBetter):
-            return Layout.summaryBelowWorse
-        case (.belowBand, .centered):
-            return Layout.summaryBelowCentered
-        case (.aboveBand, .lowerIsBetter):
-            return Layout.summaryAboveWorse
-        case (.aboveBand, .higherIsBetter):
-            return Layout.summaryAboveBetter
-        case (.aboveBand, .centered):
-            return Layout.summaryAboveCentered
-        }
-    }
-
     private var accessibilityLabel: Text {
-        let userValue = Self.numberFormatter.string(from: NSNumber(value: record.base.value)) ?? "\(record.base.value)"
-        let lo = Self.numberFormatter.string(from: NSNumber(value: benchmark.bandLow)) ?? "\(benchmark.bandLow)"
-        let hi = Self.numberFormatter.string(from: NSNumber(value: benchmark.bandHigh)) ?? "\(benchmark.bandHigh)"
-        let unit = record.base.unit
-        let unitSuffix = unit.isEmpty ? "" : " \(unit)"
-        let yours = "\(userValue)\(unitSuffix)"
-        let high = "\(hi)\(unitSuffix)"
-        return Text("records.comparison.a11y \(metricLabel) \(yours) \(lo) \(high) \(summaryLine)")
+        Text(
+            "records.comparison.a11y \(metricLabel) \(band.formattedValue) \(RecordBenchmarkBand.format(band.low)) \(band.formattedHigh) \(band.summary)"
+        )
     }
+}
 
-    private static let numberFormatter: NumberFormatter = {
-        let f = NumberFormatter()
-        f.locale = Locale.current
-        f.numberStyle = .decimal
-        f.maximumFractionDigits = 1
-        f.minimumFractionDigits = 0
-        return f
-    }()
+extension RecordBenchmarkBand {
+    /// The upper edge with its unit, for the spoken "from … to …".
+    var formattedHigh: String {
+        unit.isEmpty ? Self.format(high) : "\(Self.format(high)) \(unit)"
+    }
 }
 
 extension ComparisonBand {
@@ -229,56 +152,40 @@ extension ComparisonBand {
         static let trackHeight: CGFloat = 10
         static let tickWidth: CGFloat = 6
 
-        // L1 — catalog keys. These were German sentences rendered verbatim
-        // (`Text(String)`) or as keys the catalog did not have, so the English
-        // UI and VoiceOver read German on the whole comparison section.
+        // L1 — catalog keys, never German literals rendered verbatim.
         static let eyebrow = "benchmark.source.eyebrow"
         static let accessibilityHint = "records.comparison.a11yHint"
-
-        static let summaryInsideBand: LocalizedStringResource = "records.comparison.insideBand"
-        static let summaryBelowBetter: LocalizedStringResource = "records.comparison.belowBetter"
-        static let summaryBelowWorse: LocalizedStringResource = "records.comparison.belowWorse"
-        static let summaryBelowCentered: LocalizedStringResource = "records.comparison.belowCentered"
-        static let summaryAboveWorse: LocalizedStringResource = "records.comparison.aboveWorse"
-        static let summaryAboveBetter: LocalizedStringResource = "records.comparison.aboveBetter"
-        static let summaryAboveCentered: LocalizedStringResource = "records.comparison.aboveCentered"
     }
 }
 
-#Preview("ComparisonBand — Schritte (above-band, better)") {
+#Preview("ComparisonBand — VO2 max inside the band") {
     let dto = PersonalRecordDTO(
-        id: "preview.steps",
+        id: "preview.vo2",
         userId: "u1",
-        metricType: "ACTIVITY_STEPS",
-        metricSlot: "Bester Tag",
+        metricType: "VO2_MAX",
+        metricSlot: nil,
         direction: .max,
-        value: 18500,
-        unit: "Steps",
+        value: 41,
+        unit: "ml/kg/min",
         achievedAt: Date(),
         sourceMeasurementId: nil,
         source: "HEALTHKIT",
         externalId: nil,
-        createdAt: Date()
+        createdAt: Date(),
+        benchmark: RecordBenchmark(low: 35, high: 43, unit: "ml/kg/min", source: "acsm", sourceLabel: "ACSM, 11th edition")
     )
     let record = PersonalRecord(
         id: dto.id,
         base: dto,
-        kind: .steps,
+        kind: .vo2Max,
         sparklineValues: [],
         peakIndex: nil,
         previousValue: nil,
         bucket: .month,
         impressiveness: 0.7
     )
-    let benchmark = ClinicalBenchmark(
-        mean: 7500,
-        sigma: 3000,
-        clinicalFloor: nil,
-        clinicalCeiling: nil,
-        favorability: .higherIsBetter,
-        sourceLabel: "Tudor-Locke et al. 2011 + CDC BRFSS 2019-2023"
-    )
-    return ComparisonBand(record: record, benchmark: benchmark, onTap: {})
+    let band = RecordBenchmarkBand(low: 35, high: 43, value: 41, unit: "ml/kg/min", sourceLabel: "ACSM, 11th edition")
+    return ComparisonBand(record: record, band: band, onTap: {})
         .padding()
         .background(HLSurface.primary)
 }

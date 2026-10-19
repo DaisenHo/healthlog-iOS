@@ -70,7 +70,7 @@ struct FullscreenChartCover: View {
                 points: plotted,
                 // v0.14 light-mode walk: refined graphite chart ink (matches
                 // the `HLChartTints.series` default — softer than near-black text).
-                emphasisTint: HLColor.inkGraphite
+                emphasisTint: HLColor.inkGraphite, references: store.referenceLineMarks(units: units)
             )
             if let selectedDate,
                let selectedPoint = series.points.min(by: {
@@ -120,7 +120,7 @@ struct FullscreenChartCover: View {
         }
         .chartXSelection(value: $selectedDate)
         .chartYScale(
-            domain: MetricChartMath.logDomain(for: plotted),
+            domain: MetricChartMath.logDomain(for: plotted, including: store.plotReferenceLines(units: units)),
             type: store.useLogScale ? .log : .linear
         )
         .chartYAxis {

@@ -246,6 +246,7 @@ struct MoodHistoryScreen: View {
         case .web: "Web"
         case .telegram: "Telegram"
         case .daylio: "Daylio"
+        case .notification: "mood.source.notification"
         }
     }
 

@@ -24,27 +24,106 @@ import Foundation
 /// **Semantics note:** only the FIRST caller's closure is (re-)executed; a
 /// coalesced caller's closure is never invoked. The importers always pass the
 /// same operation for a given key, so this is the intended behaviour.
+///
+/// **W1 (1.3.0, HealthLog#1173) — logging and a watchdog.** `inFlight` was
+/// cleared only by the running call's `defer`. A body whose await never
+/// returned (a HealthKit query callback that never fires is the suspect) kept
+/// its key in flight for the rest of the process, and every later trigger was
+/// folded into a run that would never finish, without a trace. Every run now
+/// logs its start and end (`notice`, category `healthkit`, so it persists), a
+/// trigger folded into a run older than a minute says how old, and a trigger
+/// that finds a body running longer than `staleAfter` starts a new run. The
+/// stale run is fenced by its id: it neither clears the new run's slot nor
+/// starts another trailing re-run.
 actor SweepCoalescer {
-    private var inFlight: Set<String> = []
+    private struct Run {
+        let id: UInt64
+        var bodyStartedAt: Date
+    }
+
+    private var inFlight: [String: Run] = [:]
     private var queued: Set<String> = []
+    private var nextRunID: UInt64 = 0
+
+    /// Names this coalescer in the log (`orchestrator`, `cycle`, …).
+    let label: String
+    /// How long one body may run before a trigger replaces it.
+    let staleAfter: TimeInterval
+    private let now: @Sendable () -> Date
+
+    /// Twenty minutes: above the longest bounded pass (a BGProcessing wake or a
+    /// manual full sync), far below "until the app is restarted".
+    static let defaultStaleAfter: TimeInterval = 20 * 60
+
+    init(
+        label: String = "sweep",
+        staleAfter: TimeInterval = SweepCoalescer.defaultStaleAfter,
+        now: @escaping @Sendable () -> Date = Date.init
+    ) {
+        self.label = label
+        self.staleAfter = staleAfter
+        self.now = now
+    }
 
     /// Runs `body` if no run for `key` is in flight; otherwise coalesces this
     /// trigger into one trailing re-run of the in-flight caller's body.
     func run(key: String = "", _ body: @Sendable () async -> Void) async {
-        guard !inFlight.contains(key) else {
-            queued.insert(key)
-            return
-        }
-        inFlight.insert(key)
-        defer { inFlight.remove(key) }
+        guard admits(key) else { return }
+        nextRunID &+= 1
+        let id = nextRunID
+        inFlight[key] = Run(id: id, bodyStartedAt: now())
+        // Label, key and id are fixed vocabulary; no identifier, no value.
+        // swiftlint:disable:next hllog_public_privacy_interpolation
+        HLLog.healthKit.notice("\(label, privacy: .public)[\(key, privacy: .public)] run \(id, privacy: .public) begins")
+        let started = now()
+        defer { finish(key, id: id, started: started) }
         repeat {
-            guard !Task.isCancelled else {
-                queued.remove(key)
+            guard !Task.isCancelled, inFlight[key]?.id == id else {
+                if inFlight[key]?.id == id { queued.remove(key) }
                 return
             }
             queued.remove(key)
+            inFlight[key]?.bodyStartedAt = now()
             await body()
-        } while queued.contains(key) && !Task.isCancelled
+        } while queued.contains(key) && !Task.isCancelled && inFlight[key]?.id == id
+    }
+
+    /// `true` when this trigger runs the body itself: nothing is in flight, or
+    /// what is in flight is older than `staleAfter`.
+    private func admits(_ key: String) -> Bool {
+        guard let running = inFlight[key] else { return true }
+        let age = now().timeIntervalSince(running.bodyStartedAt)
+        guard age >= staleAfter else {
+            queued.insert(key)
+            if age >= 60 {
+                // swiftlint:disable:next hllog_public_privacy_interpolation
+                HLLog.healthKit.notice(
+                    "\(label, privacy: .public)[\(key, privacy: .public)] trigger folded into run \(running.id, privacy: .public), in flight \(Int(age), privacy: .public)s"
+                )
+            }
+            return false
+        }
+        // swiftlint:disable:next hllog_public_privacy_interpolation
+        HLLog.healthKit.error(
+            "\(label, privacy: .public)[\(key, privacy: .public)] run \(running.id, privacy: .public) stuck \(Int(age), privacy: .public)s: watchdog starts a new run"
+        )
+        return true
+    }
+
+    private func finish(_ key: String, id: UInt64, started: Date) {
+        let seconds = Int(now().timeIntervalSince(started))
+        if inFlight[key]?.id == id {
+            inFlight[key] = nil
+            // swiftlint:disable:next hllog_public_privacy_interpolation
+            HLLog.healthKit.notice(
+                "\(label, privacy: .public)[\(key, privacy: .public)] run \(id, privacy: .public) ended after \(seconds, privacy: .public)s"
+            )
+        } else {
+            // swiftlint:disable:next hllog_public_privacy_interpolation
+            HLLog.healthKit.notice(
+                "\(label, privacy: .public)[\(key, privacy: .public)] run \(id, privacy: .public) returned after \(seconds, privacy: .public)s, superseded"
+            )
+        }
     }
 }
 

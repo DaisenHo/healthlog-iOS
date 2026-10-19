@@ -153,16 +153,22 @@
             identifiers.filter(serverAccepts)
         }
 
-        private let collector: AnchoredHealthSampleCollector
-        private let cursors: DurableHealthCursorStore
-        private let admission: @Sendable () throws -> HealthSyncAuthenticatedLease
-        private let cutoff: @Sendable () -> Date
+        // Internal so the history surface (`AppOwnedHealthCollection+History.swift`)
+        // runs under exactly the same admission, cutoff and cursors.
+        let collector: AnchoredHealthSampleCollector
+        let cursors: DurableHealthCursorStore
+        let admission: @Sendable () throws -> HealthSyncAuthenticatedLease
+        let cutoff: @Sendable () -> Date
         /// #113 — offers the skip register's rows again (`force` = all rows, not
         /// only those this build has not offered). `nil` where no uploader is
         /// composed; the register then simply waits.
         private let reoffer: (@Sendable (HealthSyncAuthenticatedLease, Bool) async -> HealthKitSkippedRowReoffer.Summary)?
         /// V1 — where ``HealthCollectionRotation`` keeps its offset.
-        private let defaultsProvider: @Sendable () -> UserDefaults
+        let defaultsProvider: @Sendable () -> UserDefaults
+        /// 1.3 (#128) — the server's per-type freshness, asked once for the
+        /// upgraded partitions that still wait for their replay floor. `nil`
+        /// result = could not ask; `nil` closure = no server composed.
+        let serverFreshness: (@Sendable () async -> [MetricFreshness]?)?
 
         /// Owners whose partitions have already been established in this process.
         /// The store refuses a repeated migration anyway; this only avoids walking
@@ -176,7 +182,8 @@
             admission: @escaping @Sendable () throws -> HealthSyncAuthenticatedLease,
             cutoff: @escaping @Sendable () -> Date,
             reoffer: (@Sendable (HealthSyncAuthenticatedLease, Bool) async -> HealthKitSkippedRowReoffer.Summary)? = nil,
-            defaultsProvider: @escaping @Sendable () -> UserDefaults = { .standard }
+            defaultsProvider: @escaping @Sendable () -> UserDefaults = { .standard },
+            serverFreshness: (@Sendable () async -> [MetricFreshness]?)? = nil
         ) {
             self.collector = collector
             self.cursors = cursors
@@ -184,6 +191,7 @@
             self.cutoff = cutoff
             self.reoffer = reoffer
             self.defaultsProvider = defaultsProvider
+            self.serverFreshness = serverFreshness
         }
 
         /// One bounded pass for `trigger`, with a name for what it did.
@@ -207,6 +215,48 @@
             }
             let window = cutoff()
 
+            await prepare(lease: lease, window: window)
+
+            // V1 (1.2) — a pass that runs out of time hands the start of the
+            // next one to the first type it did not finish (HealthLog#1173).
+            // V4: only the types this server can store take part.
+            // 1.3 (#127) — the history leg keeps its own rotation, so a run cut
+            // short by its time budget hands the next one to the type it did
+            // not reach.
+            let defaults = defaultsProvider()
+            let collectable = Self.serverCollectable(Self.collectedTypeIdentifiers)
+            let types = HealthCollectionRotation.ordered(collectable, defaults: defaults)
+            let historyOrder = HealthCollectionRotation.ordered(
+                collectable,
+                defaults: defaults,
+                key: HealthCollectionRotation.historyOffsetKey
+            )
+            let results = await collector.collect(
+                typeIdentifiers: types,
+                trigger: trigger,
+                notBefore: window,
+                requiring: lease,
+                historyOrder: historyOrder,
+                beforeHistory: replayFloorResolution(collectable, lease: lease)
+            )
+            HealthCollectionRotation.advance(
+                finished: results.prefix { $0.disposition != .expired }.count,
+                of: types.count,
+                defaults: defaults
+            )
+            Self.advanceHistoryRotation(historyOrder, results: results, defaults: defaults)
+            // #113 — rows the server refused under an older build get one new
+            // offer per build. After that first pass this is one register read.
+            _ = await reoffer?(lease, false)
+            // `ran`, not `succeeded`: the collector commits per type through the
+            // shared cursor rule, and a page it held is still owed. Claiming
+            // success here would be the overstatement this phase removes.
+            return .ran(.speziSampleCollection)
+        }
+
+        /// Migration, the one-time resets and the observer arming: everything
+        /// that must be true before the first query of a pass.
+        func prepare(lease: HealthSyncAuthenticatedLease, window: Date) async {
             if !migratedOwners.contains(lease.ownerID) {
                 await SpeziAnchorMigrator.migrateAccountCursors(
                     types: Self.collectedTypeIdentifiers,
@@ -229,33 +279,42 @@
                     admitting: admission
                 )
             }
+        }
 
-            // V1 (1.2) — a pass that runs out of time hands the start of the
-            // next one to the first type it did not finish (HealthLog#1173).
-            // V4: only the types this server can store take part.
-            let defaults = defaultsProvider()
-            let types = HealthCollectionRotation.ordered(
-                Self.serverCollectable(Self.collectedTypeIdentifiers),
-                defaults: defaults
-            )
-            let results = await collector.collect(
-                typeIdentifiers: types,
-                trigger: trigger,
-                notBefore: window,
-                requiring: lease
-            )
+        /// #128 — between the live streams and the history leg (the live leg
+        /// establishes the split, so an upgrade's floor can be asked for in
+        /// the same pass). `nil` where no server is composed.
+        func replayFloorResolution(
+            _ typeIdentifiers: [String],
+            lease: HealthSyncAuthenticatedLease
+        ) -> (@Sendable () async -> Void)? {
+            guard let serverFreshness else { return nil }
+            let cursors = cursors
+            return {
+                await HealthSampleReplayFloor.resolvePending(
+                    typeIdentifiers: typeIdentifiers,
+                    cursors: cursors,
+                    lease: lease,
+                    fetch: serverFreshness
+                )
+            }
+        }
+
+        /// Moves the history rotation to the first type the run did not reach.
+        static func advanceHistoryRotation(
+            _ order: [String],
+            results: [AnchoredHealthSampleCollector.TypeResult],
+            defaults: UserDefaults
+        ) {
+            let byType = Dictionary(results.map { ($0.typeIdentifier, $0.history) }, uniquingKeysWith: { first, _ in first })
+            guard byType.values.contains(where: { $0 != nil }) else { return }
+            let reached = order.prefix { byType[$0]??.disposition != .expired }.count
             HealthCollectionRotation.advance(
-                finished: results.prefix { $0.disposition != .expired }.count,
-                of: types.count,
-                defaults: defaults
+                finished: reached,
+                of: order.count,
+                defaults: defaults,
+                key: HealthCollectionRotation.historyOffsetKey
             )
-            // #113 — rows the server refused under an older build get one new
-            // offer per build. After that first pass this is one register read.
-            _ = await reoffer?(lease, false)
-            // `ran`, not `succeeded`: the collector commits per type through the
-            // shared cursor rule, and a page it held is still owed. Claiming
-            // success here would be the overstatement this phase removes.
-            return .ran(.speziSampleCollection)
         }
 
         /// "Resend skipped" in Sync Diagnostics: every register row of the

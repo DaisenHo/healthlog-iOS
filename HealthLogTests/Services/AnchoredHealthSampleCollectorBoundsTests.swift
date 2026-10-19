@@ -42,12 +42,16 @@
             #expect(results.first?.pagesCollected == budget.maxPagesPerType)
         }
 
-        @Test("a short wake refuses to start the first history walk")
-        func shortWakeRefusesFirstHistoryImport() async throws {
+        /// 1.3 (#127) — until 1.2.0 a short wake refused a partition without a
+        /// cursor outright, because its first read was the whole history. The
+        /// first read is now the live window (two days), which a short wake may
+        /// start; the history walk stays refused.
+        @Test("a short wake starts the bounded live stream but never the history walk")
+        func shortWakeStartsLiveNotHistory() async throws {
             let registry = AuthenticatedSessionLeaseRegistry()
             let lease = try CollectorFixture.makeLease(registry: registry)
             let backing = CollectorCursorBacking()
-            let (store, _) = try await CollectorFixture.makeReplayingStore(backing: backing, lease: lease)
+            let (store, key) = try await CollectorFixture.makeReplayingStore(backing: backing, lease: lease)
 
             let source = ScriptedPageSource(pages: [CollectorFixture.page(61)])
             let collector = AnchoredHealthSampleCollector(
@@ -63,8 +67,11 @@
                 requiring: lease
             )
 
-            #expect(source.queryCount == 0)
-            #expect(results.first?.disposition == .deferred)
+            #expect(source.queryCount == 1)
+            #expect(results.first?.disposition == .succeeded)
+            #expect(results.first?.history == nil)
+            let liveStart = try #require(await store.splitState(for: key)?.liveStart)
+            #expect(source.observedCutoffs == [liveStart])
         }
 
         @Test("a partition whose migration is not proven collects nothing")

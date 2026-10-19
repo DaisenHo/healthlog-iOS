@@ -60,6 +60,8 @@
             private var _body: String = ""
             private var _responded = false
             private var _calls = 0
+            private var _released = false
+            private let releaseSignal = NSCondition()
 
             var body: String {
                 lock.lock()
@@ -84,6 +86,24 @@
                 _body = body
                 _calls += 1
                 lock.unlock()
+            }
+
+            /// FLAKES (1.3.0) — the in-flight window is held open by the test,
+            /// not by a fixed park: the answer leaves only after the test has
+            /// looked (or the hang guard ran out), so a loaded machine can no
+            /// longer close the window before the test's actor gets a turn.
+            func holdUntilReleased(upTo seconds: TimeInterval) {
+                let deadline = Date().addingTimeInterval(seconds)
+                releaseSignal.lock()
+                while !_released, releaseSignal.wait(until: deadline) {}
+                releaseSignal.unlock()
+            }
+
+            func release() {
+                releaseSignal.lock()
+                _released = true
+                releaseSignal.broadcast()
+                releaseSignal.unlock()
             }
 
             func didRespond() {
@@ -156,12 +176,12 @@
             return String(data: data ?? Data(), encoding: .utf8) ?? ""
         }
 
-        /// Parks the answer long enough that the in-flight window is observable
-        /// from the test's own actor, then answers with `status` + `json`.
+        /// Holds the answer (when `held`) until the test has observed the
+        /// in-flight window, then answers with `status` + `json`.
         private func installIntakeHandler(
             _ session: MockURLProtocolSession,
             recorder: Recorder,
-            park: TimeInterval,
+            held: Bool,
             status: Int,
             json: @escaping @Sendable () -> String
         ) {
@@ -174,7 +194,7 @@
                     )
                 }
                 recorder.record(body: Self.body(of: request))
-                Thread.sleep(forTimeInterval: park)
+                if held { recorder.holdUntilReleased(upTo: 30) }
                 recorder.didRespond()
                 return (
                     HTTPURLResponse(url: request.url!, statusCode: status, httpVersion: nil, headerFields: nil)!,
@@ -201,7 +221,10 @@
             recorder: Recorder,
             expected: Date
         ) async -> Bool {
-            for _ in 0 ..< 600 {
+            // The deadline is a hang guard; the answer is held until release.
+            defer { recorder.release() }
+            let deadline = Date().addingTimeInterval(30)
+            while Date() < deadline {
                 if recorder.responded { return false }
                 if store.todayIntakes.first?.takenAt == expected { return true }
                 try? await Task.sleep(for: .milliseconds(2))
@@ -219,7 +242,7 @@
             let session = MockURLProtocolSession()
             defer { session.invalidate() }
             let recorder = Recorder()
-            installIntakeHandler(session, recorder: recorder, park: 0.25, status: 200) {
+            installIntakeHandler(session, recorder: recorder, held: true, status: 200) {
                 Self.intakeJSON(takenAt: Self.corrected)
             }
             let store = try makeStore(session)
@@ -259,7 +282,7 @@
             let session = MockURLProtocolSession()
             defer { session.invalidate() }
             let recorder = Recorder()
-            installIntakeHandler(session, recorder: recorder, park: 0.25, status: 422) {
+            installIntakeHandler(session, recorder: recorder, held: true, status: 422) {
                 #"{"data":null,"error":{"code":"medications.intake.taken_at.out_of_range","message":"bad"}}"#
             }
             let store = try makeStore(session)
@@ -301,7 +324,7 @@
             let session = MockURLProtocolSession()
             defer { session.invalidate() }
             let recorder = Recorder()
-            installIntakeHandler(session, recorder: recorder, park: 0, status: 200) {
+            installIntakeHandler(session, recorder: recorder, held: false, status: 200) {
                 Self.intakeJSON(takenAt: Self.corrected)
             }
             let store = try makeStore(session)
@@ -331,7 +354,7 @@
             let session = MockURLProtocolSession()
             defer { session.invalidate() }
             let recorder = Recorder()
-            installIntakeHandler(session, recorder: recorder, park: 0, status: 200) {
+            installIntakeHandler(session, recorder: recorder, held: false, status: 200) {
                 Self.intakeJSON(takenAt: Self.corrected)
             }
             let store = try makeStore(session)
@@ -373,7 +396,7 @@
             let session = MockURLProtocolSession()
             defer { session.invalidate() }
             let recorder = Recorder()
-            installIntakeHandler(session, recorder: recorder, park: 0, status: 200) {
+            installIntakeHandler(session, recorder: recorder, held: false, status: 200) {
                 Self.intakeJSON(takenAt: Self.scheduled)
             }
             let store = try makeStore(session)

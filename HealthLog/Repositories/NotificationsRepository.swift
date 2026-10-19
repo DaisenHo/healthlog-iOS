@@ -78,6 +78,18 @@ public actor NotificationsRepository {
         }
     }
 
+    /// #126 3.3 (v1.42.2) — `PATCH { content: { detail } }`: `detailed` lets a
+    /// notification carry figures such as the morning score, `generic` keeps
+    /// them out. Answers the resolved prefs.
+    @discardableResult
+    public func setNotificationContentDetailed(_ detailed: Bool) async throws -> AuthNotificationPrefsPayload {
+        struct Body: Encodable, Sendable {
+            let content: AuthNotificationPrefsPayload.Content
+        }
+        let detail = detailed ? AuthNotificationPrefsPayload.Content.detailed : AuthNotificationPrefsPayload.Content.generic
+        return try await patchAuthNotificationPrefs(Body(content: .init(detail: detail)))
+    }
+
     public func setPreference(channelId: String, eventType: String, enabled: Bool) async throws {
         struct Body: Encodable, Sendable {
             let channelId: String

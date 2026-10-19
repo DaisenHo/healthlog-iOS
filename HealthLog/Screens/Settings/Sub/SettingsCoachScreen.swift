@@ -94,6 +94,7 @@ struct SettingsCoachScreen: View {
             if backend.hasServer, let store = appContainer?.aiCoachSettingsStore {
                 CoachDocumentsAutoAICard(store: store)
                 CoachInsightsPrivacyCard(store: store)
+                CoachWindowCard(store: store) // #126 P2 defaultWindow
             }
             heroVisibilityCard
             memoryCard

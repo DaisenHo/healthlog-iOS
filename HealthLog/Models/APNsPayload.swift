@@ -33,6 +33,13 @@ public struct APNsPayload: Sendable, Equatable {
     /// for it to ride the wire — until then this stays `nil` and the handler
     /// gracefully falls back to the capture deep-link (never dead-ends).
     public let reminderId: String?
+    /// #141 / #126 3.2 (server v1.42.2, every visible push since v1.43) — the
+    /// top-level `url`: the same-origin web path the tap opens (`/`,
+    /// `/mood?add=1`, `/medications`, `/checkups`, `/settings/security`,
+    /// `/settings/integrations`, `/cycle`). Mapped to a native screen by
+    /// ``DeepLinkRoute/fromPushPath(_:)``. `nil` on the silent sync push and on
+    /// every local banner.
+    public let url: String?
 
     public init(
         title: String?,
@@ -44,7 +51,8 @@ public struct APNsPayload: Sendable, Equatable {
         medicationId: String? = nil,
         scheduleId: String? = nil,
         scheduledFor: Date? = nil,
-        reminderId: String? = nil
+        reminderId: String? = nil,
+        url: String? = nil
     ) {
         self.title = title
         self.body = body
@@ -56,6 +64,7 @@ public struct APNsPayload: Sendable, Equatable {
         self.scheduleId = scheduleId
         self.scheduledFor = scheduledFor
         self.reminderId = reminderId
+        self.url = url
     }
 
     /// Pure parser. Akzeptiert die rohen `userInfo`-Dictionaries, die UIKit /
@@ -88,6 +97,7 @@ public struct APNsPayload: Sendable, Equatable {
         let scheduledForRaw = userInfo["scheduledFor"] as? String
         let scheduledFor = scheduledForRaw.flatMap(Self.parseISO8601)
         let reminderId = userInfo["reminderId"] as? String
+        let url = (userInfo["url"] as? String).flatMap { $0.isEmpty ? nil : $0 }
 
         return APNsPayload(
             title: title,
@@ -99,7 +109,8 @@ public struct APNsPayload: Sendable, Equatable {
             medicationId: medicationId,
             scheduleId: scheduleId,
             scheduledFor: scheduledFor,
-            reminderId: reminderId
+            reminderId: reminderId,
+            url: url
         )
     }
 

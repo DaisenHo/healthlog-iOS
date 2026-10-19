@@ -14,6 +14,7 @@ extension SettingsHKSyncDiagnosticsScreen {
             subtitle: "settings.hkdiag.wakes_subtitle"
         ) {
             VStack(alignment: .leading, spacing: HLSpace.md) {
+                HKSyncDiagnosticsSourceTag(source: .deviceStored)
                 statRow(
                     label: "settings.hkdiag.workout_observer",
                     value: registrationLabel

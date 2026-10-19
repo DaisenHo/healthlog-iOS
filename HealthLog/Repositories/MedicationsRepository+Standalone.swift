@@ -32,10 +32,11 @@ extension MedicationsRepository {
     /// `.offline` — the store falls back to its bounded per-med fan-out (which is
     /// itself standalone-gated). A ≤ pre-batch server (route absent) 404s → same
     /// fallback. Never client-recomputes: the server value is the only source.
+    ///
+    /// #126 P2 — the same read now keeps `meta.aggregate` (the account figure)
+    /// for the compliance widget via ``complianceReport(days:)``.
     public func complianceSummary() async throws -> [MedicationComplianceSummaryEntry] {
-        if isStandaloneActive { throw HLError.offline }
-        let req: APIRequest<[MedicationComplianceSummaryEntry]> = .get("/api/medications/compliance")
-        return try await api.send(req)
+        try await complianceReport(days: nil).entries
     }
 
     // MARK: - Definition CRUD (v0.13 W5)

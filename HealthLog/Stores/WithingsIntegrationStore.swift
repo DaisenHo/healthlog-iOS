@@ -52,6 +52,21 @@ public final class WithingsIntegrationStore {
     }
 
     /// Revokes the Withings link, then re-loads status.
+    /// #139 — `health.action == "resume"`: clear the park, then re-load status.
+    public func resume() async {
+        isWorking = true
+        error = nil
+        defer { isWorking = false }
+        do {
+            try await repo.resume()
+            await loadStatus()
+        } catch let err as HLError {
+            error = err
+        } catch {
+            self.error = .unknown(String(describing: error))
+        }
+    }
+
     public func disconnect() async {
         isWorking = true
         error = nil

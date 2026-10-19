@@ -8,45 +8,63 @@ import Foundation
 /// run at all.
 ///
 /// All non-essential fields are optional so additional server fields never
-/// break iOS decoding — same tolerant shape as ``WithingsStatus``. The
-/// integration-ledger `state` ("ok" / "parked" / "error") + the
-/// last-success/attempt timestamps surface the same honest pill the web cards
-/// render.
+/// break iOS decoding — same tolerant shape as ``WithingsStatus``.
+///
+/// **#139 — the connection state is `health` only.** The ledger `state` and
+/// `lastError` this struct used to decode are deprecated in server v1.43 and
+/// removed in v1.44; nothing here reads them any more. A server before v1.42.4
+/// sends no `health`, and the surface then shows no state line rather than a
+/// guess.
 public struct OAuthIntegrationStatus: Codable, Sendable, Hashable {
     public let connected: Bool
     public let configured: Bool?
-    /// Integration-ledger health: `ok` / `parked` / `error` (provider-defined).
-    public let state: String?
     public let lastSyncedAt: Date?
     public let lastSuccessAt: Date?
     public let lastAttemptAt: Date?
-    public let lastError: String?
     public let connectedAt: Date?
     public let tokenExpiresAt: Date?
     public let scope: String?
+    /// #139 — the server's unified connection state (v1.42.4+).
+    public let health: ConnectionHealth?
 
     public init(
         connected: Bool,
         configured: Bool? = nil,
-        state: String? = nil,
         lastSyncedAt: Date? = nil,
         lastSuccessAt: Date? = nil,
         lastAttemptAt: Date? = nil,
-        lastError: String? = nil,
         connectedAt: Date? = nil,
         tokenExpiresAt: Date? = nil,
-        scope: String? = nil
+        scope: String? = nil,
+        health: ConnectionHealth? = nil
     ) {
         self.connected = connected
         self.configured = configured
-        self.state = state
         self.lastSyncedAt = lastSyncedAt
         self.lastSuccessAt = lastSuccessAt
         self.lastAttemptAt = lastAttemptAt
-        self.lastError = lastError
         self.connectedAt = connectedAt
         self.tokenExpiresAt = tokenExpiresAt
         self.scope = scope
+        self.health = health
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case connected, configured, lastSyncedAt, lastSuccessAt, lastAttemptAt
+        case connectedAt, tokenExpiresAt, scope, health
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        connected = try c.decode(Bool.self, forKey: .connected)
+        configured = try c.decodeIfPresent(Bool.self, forKey: .configured)
+        lastSyncedAt = try c.decodeIfPresent(Date.self, forKey: .lastSyncedAt)
+        lastSuccessAt = try c.decodeIfPresent(Date.self, forKey: .lastSuccessAt)
+        lastAttemptAt = try c.decodeIfPresent(Date.self, forKey: .lastAttemptAt)
+        connectedAt = try c.decodeIfPresent(Date.self, forKey: .connectedAt)
+        tokenExpiresAt = try c.decodeIfPresent(Date.self, forKey: .tokenExpiresAt)
+        scope = try c.decodeIfPresent(String.self, forKey: .scope)
+        health = ConnectionHealth.tolerant(from: c, forKey: .health)
     }
 
     /// The most recent successful sync instant the surface can show — prefers
@@ -54,13 +72,6 @@ public struct OAuthIntegrationStatus: Codable, Sendable, Hashable {
     /// (Oura / Polar).
     public var lastSync: Date? {
         lastSyncedAt ?? lastSuccessAt
-    }
-
-    /// `true` when the integration ledger reports a non-healthy state — the UI
-    /// surfaces a calm "needs attention" pill rather than a flat "Connected".
-    public var isParkedOrError: Bool {
-        guard let state else { return false }
-        return state != "ok"
     }
 }
 
@@ -124,38 +135,49 @@ public struct ConnectionTestResult: Codable, Sendable, Hashable {
 /// Mirror of `GET /api/nightscout/status`. Nightscout is **not** OAuth — the
 /// self-hoster pastes their instance URL (+ optional API token) which the
 /// server stores encrypted; `configured` is whether a URL is stored.
+///
+/// #139 — like ``OAuthIntegrationStatus`` it reads the connection state from
+/// `health` only; the deprecated ledger `state` / `lastError` are gone.
 public struct NightscoutStatus: Codable, Sendable, Hashable {
     public let connected: Bool
     public let configured: Bool?
     public let hasToken: Bool?
     public let allowPrivateHost: Bool?
-    public let state: String?
     public let lastSuccessAt: Date?
     public let lastAttemptAt: Date?
-    public let lastError: String?
+    /// #139 — the server's unified connection state (v1.42.4+).
+    public let health: ConnectionHealth?
 
     public init(
         connected: Bool,
         configured: Bool? = nil,
         hasToken: Bool? = nil,
         allowPrivateHost: Bool? = nil,
-        state: String? = nil,
         lastSuccessAt: Date? = nil,
         lastAttemptAt: Date? = nil,
-        lastError: String? = nil
+        health: ConnectionHealth? = nil
     ) {
         self.connected = connected
         self.configured = configured
         self.hasToken = hasToken
         self.allowPrivateHost = allowPrivateHost
-        self.state = state
         self.lastSuccessAt = lastSuccessAt
         self.lastAttemptAt = lastAttemptAt
-        self.lastError = lastError
+        self.health = health
     }
 
-    public var isParkedOrError: Bool {
-        guard let state else { return false }
-        return state != "ok"
+    private enum CodingKeys: String, CodingKey {
+        case connected, configured, hasToken, allowPrivateHost, lastSuccessAt, lastAttemptAt, health
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        connected = try c.decode(Bool.self, forKey: .connected)
+        configured = try c.decodeIfPresent(Bool.self, forKey: .configured)
+        hasToken = try c.decodeIfPresent(Bool.self, forKey: .hasToken)
+        allowPrivateHost = try c.decodeIfPresent(Bool.self, forKey: .allowPrivateHost)
+        lastSuccessAt = try c.decodeIfPresent(Date.self, forKey: .lastSuccessAt)
+        lastAttemptAt = try c.decodeIfPresent(Date.self, forKey: .lastAttemptAt)
+        health = ConnectionHealth.tolerant(from: c, forKey: .health)
     }
 }

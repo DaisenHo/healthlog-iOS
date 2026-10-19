@@ -98,8 +98,22 @@
             // The two percent partitions start over from the backfill window …
             #expect(firstSource.resumedAnchors(Self.spo2) == [nil])
             #expect(firstSource.resumedAnchors(Self.bodyFat) == [nil])
-            // … and nothing else moved.
-            #expect(firstSource.resumedAnchors(Self.heartRate) == [500])
+            // … and nothing else was dropped. 1.3 (#127): heart rate's 1.2.0
+            // cursor moved to the legacy slot (its live stream starts fresh),
+            // while the two reset partitions carry no legacy cursor at all.
+            #expect(firstSource.resumedAnchors(Self.heartRate) == [nil])
+            let cursors = DurableHealthCursorStore(storage: backing.storage)
+            let heartKey = try #require(lease.cursorKey(typeIdentifier: Self.heartRate))
+            let legacyHeart = await HealthKitAnchorArchive.decodeAnchor(
+                cursors.legacyAnchor(for: heartKey),
+                label: "test"
+            )
+            #expect(legacyHeart == HKQueryAnchor(fromValue: 500))
+            for type in [Self.spo2, Self.bodyFat] {
+                let key = try #require(lease.cursorKey(typeIdentifier: type))
+                #expect(await cursors.legacyAnchor(for: key) == nil)
+                #expect(await cursors.splitState(for: key)?.origin == .fresh)
+            }
 
             // Second launch: the re-read committed 900, and the reset does not
             // run again.

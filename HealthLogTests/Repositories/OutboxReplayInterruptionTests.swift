@@ -19,7 +19,8 @@ import Testing
 /// The contract now, per failure class:
 ///
 /// * cancellation: row untouched (no attempt, no stamp), the pass ends;
-/// * timeout / 5xx: row kept, one attempt counted (unchanged);
+/// * 5xx: row kept, one attempt counted; a timeout keeps the row but is not
+///   counted (W1, 1.3.0);
 /// * a refusal the server names (4xx): never deleted when the data would be
 ///   gone — the row is dead-lettered (retained, visible, not re-sent); a
 ///   delete, which carries nothing to lose, still drains;
@@ -212,7 +213,9 @@ struct OutboxReplayInterruptionTests {
 
     // MARK: - Transient failures stay what they were
 
-    @Test("a timeout or a 5xx keeps the row and counts one attempt", arguments: ["timeout", "503"])
+    /// W1 (1.3.0) — a timeout keeps the row too, but is no longer counted:
+    /// `OutboxTransientReplayTests.connectivityFailureIsNotCounted`.
+    @Test("a timeout keeps the row uncounted, a 5xx keeps it and counts one attempt", arguments: ["timeout", "503"])
     func transientFailureKeepsTheRowCounted(_ failure: String) async throws {
         let outbox = try OutboxQueue(inMemory: true, currentOwnerProvider: { Self.owner })
         try await enqueueAllergy(outbox, "Penicillin")
@@ -225,7 +228,8 @@ struct OutboxReplayInterruptionTests {
         await makeReplay(outbox: outbox, discards: discards).runOnce()
 
         let row = try #require(await outbox.snapshot.first)
-        #expect(row.attempts == 1)
+        #expect(row.attempts == (failure == "timeout" ? 0 : 1))
+        #expect(row.lastAttemptAt != nil, "stamped either way, so the back-off applies")
         #expect(discards.all.isEmpty)
         #expect(await outbox.deadLetterCount == 0)
     }
@@ -356,9 +360,10 @@ struct OutboxReplayInterruptionTests {
         await replay.runOnce() // unconfirmed at t0
         clock.advance(by: 2 * 3600)
         timesOut.withLock { $0 = true }
-        await replay.runOnce() // a counted timeout at t0 + 2 h
+        await replay.runOnce() // a timeout at t0 + 2 h (W1: stamped, not counted)
         let sent = requests.withLock { $0 }
-        #expect(await outbox.snapshot.first?.attempts == 2)
+        #expect(await outbox.snapshot.first?.attempts == 1)
+        #expect(await outbox.snapshot.first?.lastError?.hasPrefix(OutboxReplayService.unconfirmedPrefix) == true)
 
         clock.advance(by: 21.5 * 3600) // t0 + 23.5 h: past the window of the FIRST answer
         await replay.runOnce()

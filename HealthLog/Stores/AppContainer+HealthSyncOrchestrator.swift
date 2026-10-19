@@ -118,7 +118,7 @@ extension AppContainer {
         return HealthSyncCapabilityRegistry(
             speziSampleCollection: { context in
                 #if canImport(HealthKit) && canImport(SpeziHealthKit)
-                    return await AppOwnedHealthCollection.runSampleCollection(context.trigger)
+                    return await runSampleCollectionThenHourlyBackfill(context, hourly: handles.dailyStats)
                 #else
                     return .unsupported(.speziSampleCollection)
                 #endif
@@ -171,9 +171,11 @@ extension AppContainer {
                     return .ran(.moodStateOfMindImport)
                 }
             },
-            appleMedicationImport: { _ in
+            appleMedicationImport: { context in
+                // W3 — a short wake (AppRefresh, silent push) runs the same
+                // sweep with a one-chunk dose budget; the rest stays pending.
                 await admitted(.appleMedicationImport, admission) {
-                    await handles.medications.triggerSyncIfEnabled()
+                    await handles.medications.triggerSyncIfEnabled(incrementalOnly: context.budget.incrementalOnly)
                     return .ran(.appleMedicationImport)
                 }
             },

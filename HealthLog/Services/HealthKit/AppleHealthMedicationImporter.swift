@@ -63,6 +63,11 @@ public actor AppleHealthMedicationImporter {
     /// owner there is no partition to write and no one to attribute a dose to.
     private let admission: (@Sendable () throws -> HealthSyncAuthenticatedLease)?
     private let ledgerStorage: HealthSyncCursorStorage
+    /// **W3 (1.3)** — where the bulk POST reads its top-level `syncTrigger`
+    /// (server v1.42.4 records it on the `MEDICATION_DOSE` arrival entry). The
+    /// same context and the same wire mapping the measurement batches use, so
+    /// `manual` only reaches a server that knows it. Injectable for tests.
+    let syncTrigger: SyncTriggerContext
 
     /// Apple's bulk-intake ceiling (server contract): 500 entries per call.
     static let maxEntriesPerBatch = 500
@@ -97,8 +102,10 @@ public actor AppleHealthMedicationImporter {
         registry: AppleHealthMirrorRegistry,
         clock: @escaping @Sendable () -> Date = { Date() },
         admission: (@Sendable () throws -> HealthSyncAuthenticatedLease)?,
-        ledgerStorage: HealthSyncCursorStorage = .standard
+        ledgerStorage: HealthSyncCursorStorage = .standard,
+        syncTrigger: SyncTriggerContext = .shared
     ) {
+        self.syncTrigger = syncTrigger
         self.reader = reader
         self.repo = repo
         self.keychain = keychain
@@ -109,8 +116,14 @@ public actor AppleHealthMedicationImporter {
     }
 
     /// Run one full sweep. Returns a summary the tests assert against.
+    ///
+    /// - Parameter maxDoseChunks: **W3 (1.3)** — the most bulk chunks this
+    ///   sweep may post. `nil` (every pull trigger with time to spare) posts
+    ///   everything; a short wake passes `1`. Doses past the budget are neither
+    ///   sent nor accounted for, so the ledger keeps them pending and the next
+    ///   sweep resumes at the oldest of them.
     @discardableResult
-    public func sync() async -> AppleHealthMedicationSyncSummary {
+    public func sync(maxDoseChunks: Int? = nil) async -> AppleHealthMedicationSyncSummary {
         // Gate: pre-login → nothing to mirror.
         guard keychain.getString(forKey: KeychainKey.authToken)?.isEmpty == false else {
             HLLog.healthKit.debug("APPLE-MED sync skipped — no auth token")
@@ -181,6 +194,7 @@ public actor AppleHealthMedicationImporter {
                 into: summary,
                 doses: doseRecords,
                 ledger: ledger,
+                maxChunks: maxDoseChunks,
                 requiring: lease
             )
         }

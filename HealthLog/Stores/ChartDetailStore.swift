@@ -257,8 +257,9 @@ public final class ChartDetailStore {
             dayStart: dayStart,
             dayEnd: dayEnd
         )
-        // W-B187 (#29) — preserve the server-resolved unit through the today-patch.
-        return MeasurementSeries(kind: series.kind, points: patched, stats: series.stats, unit: series.unit)
+        // W-B187 (#29) — preserve the server-resolved unit through the today-patch
+        // (#135: and the server's verdict and reference lines).
+        return series.replacing(points: patched)
     }
 
     /// W-B187 (#29) — display unit label: the server-resolved series `unit`

@@ -145,10 +145,12 @@ actor DurableHealthCursorStore {
         let permitsCollection: Bool
     }
 
-    private let storage: HealthSyncCursorStorage
-    private let clock: @Sendable () -> Date
-    private let encoder = JSONEncoder()
-    private let decoder = JSONDecoder()
+    // Internal rather than private only so the 1.3 split records
+    // (`HealthSampleLiveHistorySplit.swift`) can live beside this file.
+    let storage: HealthSyncCursorStorage
+    let clock: @Sendable () -> Date
+    let encoder = JSONEncoder()
+    let decoder = JSONDecoder()
 
     init(
         storage: HealthSyncCursorStorage = .standard,
@@ -394,8 +396,13 @@ actor DurableHealthCursorStore {
 
         // An empty blob is how "no cursor" reads (see `record(for:)`): the
         // backing store has no delete, and a tombstone keeps it that way.
+        // 1.3 (#127) — the legacy forward cursor and the live/history split
+        // go with it, so the partition walks again from the chosen window
+        // exactly like a fresh one.
+        storage.write(key.storageKey + Self.legacySuffix, Data())
+        storage.write(key.storageKey + Self.splitSuffix, Data())
         storage.write(key.storageKey, Data())
-        guard record(for: key) == nil else {
+        guard record(for: key) == nil, splitState(for: key) == nil, legacyAnchor(for: key) == nil else {
             throw HealthSyncCursorStoreError.writeNotVerified
         }
 

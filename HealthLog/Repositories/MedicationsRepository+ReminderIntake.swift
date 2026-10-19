@@ -81,6 +81,17 @@ public extension MedicationsRepository {
         /// status is neither taken nor skipped (not imported by contract). A
         /// `taken` entry carries `takenAt`; a `skipped` entry sets `skipped:true`.
         /// No `idempotencyKey` — the server dedups on `(source, externalId)`.
+        ///
+        /// **`scheduledFor`, server v1.42.4 (HealthLog#1221).** It is the dose
+        /// event's own scheduled date when Health has one, and the event's own
+        /// time for an unscheduled (extra, as-needed) dose. The server reads it
+        /// to tell an edit from an extra dose: a record whose `scheduledFor`
+        /// names a slot within a minute is that slot's dose recorded again,
+        /// one without is another dose and never takes the slot from the dose
+        /// already on it (`slotHeldByAnotherDose` / `isAnotherDose` in
+        /// `src/lib/medications/scheduling/slot-upsert.ts` at `v1.42.4`).
+        /// ``AppleHealthDoseRecord/occurrenceDate(scheduledDate:sampleStart:)``
+        /// is where the two cases are told apart.
         public static func appleHealth(
             dose: AppleHealthDoseRecord,
             mirroredMedicationId: String

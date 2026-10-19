@@ -126,6 +126,17 @@ public struct MetricFreshness: Codable, Sendable, Equatable, Identifiable {
     public let lastTrigger: String?
     /// Wann ein Batch zuletzt eine neue oder geänderte Messung brachte.
     public let lastNewSampleAt: Date?
+    /// **W5 (1.3, server v1.42.4, #126 S3)** — when a batch sent with
+    /// `syncTrigger: "background"` last carried this type. A later
+    /// `foreground`, `push` or `manual` batch leaves it alone, so opening the
+    /// app to look at the diagnostics no longer hides the earlier background
+    /// arrival. Absent on older servers and on `WORKOUTS`.
+    public let lastBackgroundAt: Date?
+    /// **INT-Q (1.3, server v1.43, #138 / #77)** — when a batch sent
+    /// with `syncTrigger: "backfill"` (X4's hourly catch-up) last carried this
+    /// type. A backfill moves only this, never the live stamps above. Absent
+    /// on older servers.
+    public let lastBackfillAt: Date?
 
     public var id: String {
         type
@@ -137,7 +148,9 @@ public struct MetricFreshness: Codable, Sendable, Equatable, Identifiable {
         stale: Bool = false,
         lastReceivedAt: Date? = nil,
         lastTrigger: String? = nil,
-        lastNewSampleAt: Date? = nil
+        lastNewSampleAt: Date? = nil,
+        lastBackgroundAt: Date? = nil,
+        lastBackfillAt: Date? = nil
     ) {
         self.type = type
         self.lastSeenAt = lastSeenAt
@@ -145,10 +158,12 @@ public struct MetricFreshness: Codable, Sendable, Equatable, Identifiable {
         self.lastReceivedAt = lastReceivedAt
         self.lastTrigger = lastTrigger
         self.lastNewSampleAt = lastNewSampleAt
+        self.lastBackgroundAt = lastBackgroundAt
+        self.lastBackfillAt = lastBackfillAt
     }
 
     private enum CodingKeys: String, CodingKey {
-        case type, lastSeenAt, stale, lastReceivedAt, lastTrigger, lastNewSampleAt
+        case type, lastSeenAt, stale, lastReceivedAt, lastTrigger, lastNewSampleAt, lastBackgroundAt, lastBackfillAt
     }
 
     public init(from decoder: any Decoder) throws {
@@ -161,5 +176,7 @@ public struct MetricFreshness: Codable, Sendable, Equatable, Identifiable {
         lastReceivedAt = try? c.decodeIfPresent(Date.self, forKey: .lastReceivedAt)
         lastTrigger = try? c.decodeIfPresent(String.self, forKey: .lastTrigger)
         lastNewSampleAt = try? c.decodeIfPresent(Date.self, forKey: .lastNewSampleAt)
+        lastBackgroundAt = try? c.decodeIfPresent(Date.self, forKey: .lastBackgroundAt)
+        lastBackfillAt = try? c.decodeIfPresent(Date.self, forKey: .lastBackfillAt)
     }
 }

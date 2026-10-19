@@ -81,7 +81,7 @@ private struct DeviationRow: View {
 
     private var subline: String {
         let band = String(
-            format: String(localized: "clinicalSignals.healthStatus.band"),
+            format: InsightsHealthStatusCard.bandTemplate(basis: deviation.basis),
             Self.format(deviation.low),
             Self.format(deviation.high)
         )
@@ -129,5 +129,16 @@ private struct ShiftRow: View {
             ? "clinicalSignals.healthStatus.shift.up"
             : "clinicalSignals.healthStatus.shift.down"
         return String(format: String(localized: String.LocalizationValue(key)), shift.breakDate)
+    }
+}
+
+extension InsightsHealthStatusCard {
+    /// #126 P2 (v1.40.3) — `basis: sameHours` means the band is the usual
+    /// range for this time of day (a day still in progress), and the line says
+    /// so; `day`, `nil` and a word this build does not know keep the day band.
+    static func bandTemplate(basis: String?) -> String {
+        basis == "sameHours"
+            ? String(localized: "clinicalSignals.healthStatus.band.sameHours")
+            : String(localized: "clinicalSignals.healthStatus.band")
     }
 }

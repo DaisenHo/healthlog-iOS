@@ -13,6 +13,23 @@ import Foundation
             from: Date,
             to: Date
         ) async throws -> [HealthKitDailyStatRow]
+        /// X4 (1.3) — the hourly sums of the four hourly types from the start
+        /// of `from`'s day through the end of `through`'s hour, cut in
+        /// ``hourlyTimeZone()``. Default: ``HealthKitHourlyStatsRead/unsupported``.
+        func hourlyRows(from: Date, through: Date) async -> HealthKitHourlyStatsRead
+        /// X4 — the zone hours are cut in (the account's), `nil` when this
+        /// reader cannot cut hours at all.
+        func hourlyTimeZone() async -> TimeZone?
+    }
+
+    public extension HealthKitDailyStatsReading {
+        func hourlyRows(from _: Date, through _: Date) async -> HealthKitHourlyStatsRead {
+            .unsupported
+        }
+
+        func hourlyTimeZone() async -> TimeZone? {
+            nil
+        }
     }
 
     extension HealthKitStatisticsService: HealthKitDailyStatsReading {}

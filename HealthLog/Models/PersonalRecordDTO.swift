@@ -28,6 +28,10 @@ public struct PersonalRecordDTO: Decodable, Sendable, Equatable, Identifiable {
     public let source: String
     public let externalId: String?
     public let createdAt: Date
+    /// #135 (server v1.43) — an age- and sex-aware comparison band from a
+    /// cited norm, in the record's unit. `nil` when no norm exists and on every
+    /// older server; the comparison band then omits itself.
+    public let benchmark: RecordBenchmark?
 
     public enum Direction: String, Decodable, Sendable, Equatable, TolerantServerEnum {
         case max = "MAX"
@@ -52,7 +56,8 @@ public struct PersonalRecordDTO: Decodable, Sendable, Equatable, Identifiable {
         sourceMeasurementId: String?,
         source: String,
         externalId: String?,
-        createdAt: Date
+        createdAt: Date,
+        benchmark: RecordBenchmark? = nil
     ) {
         self.id = id
         self.userId = userId
@@ -66,6 +71,32 @@ public struct PersonalRecordDTO: Decodable, Sendable, Equatable, Identifiable {
         self.source = source
         self.externalId = externalId
         self.createdAt = createdAt
+        self.benchmark = benchmark
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case id, userId, metricType, metricSlot, direction, value, unit, achievedAt
+        case sourceMeasurementId, source, externalId, createdAt, benchmark
+    }
+
+    /// The row fields exactly as the synthesized decoder read them, plus the
+    /// v1.43 `benchmark`, which is read tolerantly: a block this build cannot
+    /// read is "no benchmark", never a lost list of records.
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(String.self, forKey: .id)
+        userId = try c.decode(String.self, forKey: .userId)
+        metricType = try c.decode(String.self, forKey: .metricType)
+        metricSlot = try c.decodeIfPresent(String.self, forKey: .metricSlot)
+        direction = try c.decode(Direction.self, forKey: .direction)
+        value = try c.decode(Double.self, forKey: .value)
+        unit = try c.decode(String.self, forKey: .unit)
+        achievedAt = try c.decode(Date.self, forKey: .achievedAt)
+        sourceMeasurementId = try c.decodeIfPresent(String.self, forKey: .sourceMeasurementId)
+        source = try c.decode(String.self, forKey: .source)
+        externalId = try c.decodeIfPresent(String.self, forKey: .externalId)
+        createdAt = try c.decode(Date.self, forKey: .createdAt)
+        benchmark = (try? c.decodeIfPresent(RecordBenchmark.self, forKey: .benchmark)).flatMap { $0.isDrawable ? $0 : nil }
     }
 }
 

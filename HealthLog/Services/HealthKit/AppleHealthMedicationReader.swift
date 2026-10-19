@@ -89,6 +89,15 @@ import Foundation
             return events.compactMap(Self.record(from:))
         }
 
+        public func observeDoseEvents(
+            _ onChange: @escaping @Sendable () async -> Void
+        ) async -> (any AppleHealthDoseEventObservation)? {
+            guard isAvailable, #available(iOS 26.0, *) else { return nil }
+            let observation = AppleHealthDoseEventObserver(store: makeStore())
+            await observation.start(onChange)
+            return observation
+        }
+
         // MARK: - Mapping
 
         @available(iOS 26.0, *)
@@ -206,6 +215,65 @@ import Foundation
         @available(iOS 26.0, *)
         private static func rxNormCode(from codings: Set<HKClinicalCoding>) -> String? {
             codings.first { $0.system.lowercased().contains("rxnorm") }?.code
+        }
+    }
+
+    /// **W3 (1.3, #126 1.5 / HealthLog#1173)** — the dose-event observer.
+    ///
+    /// One `HKObserverQuery` on `HKMedicationDoseEventType` (an `HKSampleType`,
+    /// so the ordinary observer and background-delivery APIs apply) and one
+    /// `enableBackgroundDelivery` arming. Apple documents no medication-specific
+    /// limit; iOS caps most sample types at hourly whatever is asked, so
+    /// `.immediate` means "as soon as iOS allows". A refused arming is logged and
+    /// is not a failure: the import still runs on every pull trigger.
+    ///
+    /// The completion handler goes back to HealthKit when `onChange` has run or
+    /// at ``HealthKitDeliveryReceipt/deadline``, exactly once and on the error
+    /// path too, the same receipt the sample observers use (V1). Not tested in
+    /// the simulator: it delivers no background updates.
+    @available(iOS 26.0, *)
+    actor AppleHealthDoseEventObserver: AppleHealthDoseEventObservation {
+        private let store: HKHealthStore
+        private var query: HKObserverQuery?
+        private var backgroundArmed = false
+
+        init(store: HKHealthStore) {
+            self.store = store
+        }
+
+        func start(_ onChange: @escaping @Sendable () async -> Void) async {
+            guard query == nil else { return }
+            let type = HKObjectType.medicationDoseEventType()
+            let query = HKObserverQuery(sampleType: type, predicate: nil) { _, completionHandler, error in
+                let receipt = HealthKitDeliveryReceipt(completionHandler)
+                guard error == nil else {
+                    receipt.fire()
+                    return
+                }
+                receipt.arm(deadline: HealthKitDeliveryReceipt.deadline)
+                Task {
+                    await onChange()
+                    receipt.fire()
+                }
+            }
+            store.execute(query)
+            self.query = query
+            do {
+                try await store.enableBackgroundDelivery(for: type, frequency: .immediate)
+                backgroundArmed = true
+            } catch {
+                HLLog.healthKit.info("APPLE-MED dose background delivery unavailable; pull triggers still import")
+            }
+        }
+
+        func stop() async {
+            if let query {
+                store.stop(query)
+            }
+            query = nil
+            guard backgroundArmed else { return }
+            backgroundArmed = false
+            try? await store.disableBackgroundDelivery(for: HKObjectType.medicationDoseEventType())
         }
     }
 

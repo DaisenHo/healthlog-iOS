@@ -72,7 +72,12 @@ struct WithingsIntegrationScreen: View {
     private var statusPill: some View {
         switch IntegrationConnectedState.withings(store.status) {
         case .some(true):
-            HLStatusPill(.connected(label: String(localized: "Connected")))
+            // #139 — the pill follows `health.state` when the server sends it.
+            if let health = store.status?.health {
+                HLStatusPill(ConnectionHealthPresentation(health: health).pill)
+            } else {
+                HLStatusPill(.connected(label: String(localized: "Connected")))
+            }
         case .some(false):
             HLStatusPill(.disconnected(label: String(localized: "Not connected")))
         case .none:
@@ -86,6 +91,20 @@ struct WithingsIntegrationScreen: View {
                 Text("Last sync \(status.lastSyncedAt?.formatted(.relative(presentation: .named)) ?? "—")")
                     .font(.hlCaption)
                     .foregroundStyle(HLText.secondary)
+                if let health = status.health {
+                    ConnectionHealthSection(
+                        health: health,
+                        supportedActions: [.reconnect, .resume],
+                        isWorking: store.isWorking
+                    ) { action in
+                        Task {
+                            switch action {
+                            case .reconnect: await beginConnect()
+                            case .resume: await store.resume()
+                            }
+                        }
+                    }
+                }
                 // R9 — „Jetzt synchronisieren" ist eine wiederholbare
                 // Verwaltungsaktion, nicht das Commit des Flows.
                 HLButton("Sync now", icon: "arrow.triangle.2.circlepath", variant: .secondary, isLoading: store.isWorking) {
@@ -132,14 +151,54 @@ struct WithingsIntegrationScreen: View {
 /// `connected` + `lastSyncedAt` reichen für den Settings-Surface; weitere
 /// Felder dekodieren wir tolerant (alle optional), damit zusätzliche Server-
 /// Felder iOS nicht brechen.
+///
+/// #139 — der Verbindungszustand kommt nur noch aus `health`. Die veralteten
+/// Felder `tokenExpired` und `hasActivityScope` (v1.43 deprecated, v1.44
+/// entfernt) liest diese Struktur nicht mehr.
 public struct WithingsStatus: Codable, Sendable {
     public let connected: Bool
     public let configured: Bool?
     public let lastSyncedAt: Date?
     public let connectedAt: Date?
-    public let tokenExpired: Bool?
     public let tokenRefreshFailed: Bool?
     public let tokenExpiresAt: Date?
     public let scope: String?
-    public let hasActivityScope: Bool?
+    /// #139 — the server's unified connection state (v1.42.4+).
+    public let health: ConnectionHealth?
+
+    public init(
+        connected: Bool,
+        configured: Bool?,
+        lastSyncedAt: Date?,
+        connectedAt: Date?,
+        tokenRefreshFailed: Bool?,
+        tokenExpiresAt: Date?,
+        scope: String?,
+        health: ConnectionHealth? = nil
+    ) {
+        self.connected = connected
+        self.configured = configured
+        self.lastSyncedAt = lastSyncedAt
+        self.connectedAt = connectedAt
+        self.tokenRefreshFailed = tokenRefreshFailed
+        self.tokenExpiresAt = tokenExpiresAt
+        self.scope = scope
+        self.health = health
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case connected, configured, lastSyncedAt, connectedAt, tokenRefreshFailed, tokenExpiresAt, scope, health
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        connected = try c.decode(Bool.self, forKey: .connected)
+        configured = try c.decodeIfPresent(Bool.self, forKey: .configured)
+        lastSyncedAt = try c.decodeIfPresent(Date.self, forKey: .lastSyncedAt)
+        connectedAt = try c.decodeIfPresent(Date.self, forKey: .connectedAt)
+        tokenRefreshFailed = try c.decodeIfPresent(Bool.self, forKey: .tokenRefreshFailed)
+        tokenExpiresAt = try c.decodeIfPresent(Date.self, forKey: .tokenExpiresAt)
+        scope = try c.decodeIfPresent(String.self, forKey: .scope)
+        health = ConnectionHealth.tolerant(from: c, forKey: .health)
+    }
 }

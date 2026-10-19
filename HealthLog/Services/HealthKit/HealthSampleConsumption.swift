@@ -231,7 +231,11 @@
                 verdicts = PageVerdicts(outcomes)
             } catch let refusal as HealthSyncLeaseRefusal {
                 return (Self.refusedOutcome(refusal, postedCount: posted.count), HealthSampleServerTally())
-            } catch is CancellationError {
+            } catch let error where Self.isCancellation(error) {
+                // W1 (1.3.0) — a cancelled task, or a request a background
+                // expiry cut off on the wire, is "stopped", not "failed": the
+                // page holds its cursor and the next run reads it again. It is
+                // not parked, so it never shows up as waiting.
                 return (Self.refusedOutcome(.cancelled, postedCount: posted.count), HealthSampleServerTally())
             } catch {
                 // A raised transport says nothing about individual rows: the batch
@@ -394,6 +398,21 @@
         /// yields the same set, which is what makes the derived key restart stable.
         static func stableIdentity(of entries: [HealthKitBatchEntryDTO]) -> String {
             entries.map(\.externalId).sorted().joined(separator: "|")
+        }
+
+        /// W1 (1.3.0, HealthLog#1173) — the cancellation shapes of the batch
+        /// POST. `URLError.cancelled` reaches here as `HLError.canceled` (a
+        /// cancelled task, `APIClient.mapURLError`) or as
+        /// `.network(.writeCancelled)` (the background window ended while the
+        /// task still ran). Until 1.2.0 both fell into the transport arm and
+        /// parked the whole page (500 rows) in the outbox.
+        static func isCancellation(_ error: Error) -> Bool {
+            if error is CancellationError { return true }
+            if let urlError = error as? URLError { return urlError.code == .cancelled }
+            switch error as? HLError {
+            case .canceled?, .network(.writeCancelled)?: return true
+            default: return false
+            }
         }
 
         private static var emptyOutcome: HealthSyncPageOutcome {

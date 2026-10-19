@@ -47,6 +47,12 @@ public final class ModuleGate {
     /// explains them.
     public private(set) var moduleAccess: [String: ModuleAccessState]?
 
+    /// #126 P2 — `features` from the same `/api/auth/me` load: what this
+    /// server understands (`trackIntake`, `biomarkerMerge`, the X4 hourly
+    /// flags). `nil` before the
+    /// first load, on an older server and after logout.
+    public private(set) var serverFeatures: ServerFeatures?
+
     private let repo: ModuleGateRepository?
 
     /// **#114 / #115 · 0.2** — the AI capability gate fed from the same
@@ -54,14 +60,24 @@ public final class ModuleGate {
     /// Wired by the composition root; `nil` in unit tests that do not care.
     @ObservationIgnored public weak var aiCapabilityGate: AICapabilityGate?
 
+    /// **X4 (1.3, #138)** — receives the `features` block of every
+    /// successful load (`nil` from an older server). The composition root
+    /// points it at ``KnownServerVersion``; `nil` in unit tests.
+    @ObservationIgnored public var serverFeaturesSink: (@MainActor (ServerFeatures?) -> Void)?
+
+    /// Where `features` is mirrored for the model layer (tests pass their own).
+    @ObservationIgnored private let featureMirror: ServerFeatureMirror
+
     public init(
         repo: ModuleGateRepository? = nil,
         modules: [String: Bool]? = nil,
-        moduleAccess: [String: ModuleAccessState]? = nil
+        moduleAccess: [String: ModuleAccessState]? = nil,
+        featureMirror: ServerFeatureMirror = .shared
     ) {
         self.repo = repo
         self.modules = modules
         self.moduleAccess = moduleAccess
+        self.featureMirror = featureMirror
     }
 
     /// Whether the given module is enabled for the current user.
@@ -223,6 +239,11 @@ public final class ModuleGate {
             moduleAccess = resolved.moduleAccess
             // #115 · 0.2 — `ai` rides the same response. Absent → legacy.
             aiCapabilityGate?.apply(resolved.ai)
+            // #126 P2 — and so does `features` (what the server understands),
+            // one reader for the model layer and the HealthKit upload flags.
+            serverFeatures = resolved.features
+            featureMirror.store(resolved.features)
+            serverFeaturesSink?(resolved.features)
         }
     }
 
@@ -288,5 +309,7 @@ public final class ModuleGate {
         // #115 · 0.2 — the `ai` block rides the same `/api/auth/me` load, so it
         // is dropped with it; the next account loads its own.
         aiCapabilityGate?.clearOnLogout()
+        serverFeatures = nil
+        featureMirror.store(nil)
     }
 }

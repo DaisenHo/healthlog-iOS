@@ -49,6 +49,34 @@ public final class AICoachSettingsStore {
     public private(set) var isReminderWriteInFlight: Bool = false
     /// Last non-retriable error surfaced by a load or write, for a banner.
     public private(set) var error: HLError?
+    /// #126 P2 — how far back the Coach reads (`coach-prefs.defaultWindow`).
+    /// `nil` until loaded, or for a word this build does not know.
+    public private(set) var coachDefaultWindow: CoachDefaultWindow?
+    public private(set) var isWindowWriteInFlight: Bool = false
+
+    /// #126 P2 — read the window (the Coach settings screen asks on appear).
+    public func loadCoachDefaultWindow() async {
+        if let window = try? await repo.fetchCoachDefaultWindow() { coachDefaultWindow = window }
+    }
+
+    /// #126 P2 — write the window; a failure puts the previous one back.
+    public func setCoachDefaultWindow(_ window: CoachDefaultWindow) async {
+        guard coachDefaultWindow != window else { return }
+        let previous = coachDefaultWindow
+        coachDefaultWindow = window
+        isWindowWriteInFlight = true
+        defer { isWindowWriteInFlight = false }
+        do {
+            coachDefaultWindow = try await repo.setCoachDefaultWindow(window) ?? window
+            error = nil
+        } catch let err as HLError {
+            coachDefaultWindow = previous
+            error = err
+        } catch {
+            coachDefaultWindow = previous
+            self.error = .unknown(String(describing: error))
+        }
+    }
 
     private let repo: AICoachSettingsRepository
     private let defaults: UserDefaults

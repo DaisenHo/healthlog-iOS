@@ -27,7 +27,7 @@ import SwiftUI
 /// eigener Top-Level-Settings-Eintrag (`SettingsSourcesScreen`, jetzt
 /// priority-only).
 struct AppleHealthIntegrationDetailScreen: View {
-    @Environment(SettingsStore.self) private var store
+    @Environment(SettingsStore.self) var store
     @Environment(HKReadinessStore.self) private var hkReadiness
     /// v0.14.8 W2 — container access for the relocated cycle-opt-in + mood-sync
     /// toggles (feature flag, cycle store lifecycle, mood sync store).
@@ -57,6 +57,11 @@ struct AppleHealthIntegrationDetailScreen: View {
     var body: some View {
         HLSettingsPage(title: "Apple Health") {
             connectionCard
+            // 1.3 (#127, public #25) — how far the older history has got, and
+            // "Sync everything now". Server-only: it is the server it fills.
+            if backend.hasServer {
+                historyCard
+            }
             dataTypesCard
             specialSyncsCard
             // W-B187 (Settings consolidation §A.3) — the one-shot export.zip
@@ -113,7 +118,7 @@ struct AppleHealthIntegrationDetailScreen: View {
                 .lineLimit(1)
 
             writeBackNoticeRow
-
+            serverHealthLine
             if !hkReadiness.state.isFullyGranted {
                 HLButton(
                     String(localized: "Connect to Apple Health"),

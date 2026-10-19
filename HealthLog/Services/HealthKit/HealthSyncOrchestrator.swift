@@ -310,7 +310,7 @@ actor HealthSyncOrchestrator {
     /// returned to the caller.
     private let report: @Sendable (HealthSyncPassResult) async -> Void
 
-    private let coalescer = SweepCoalescer()
+    private let coalescer = SweepCoalescer(label: "orchestrator")
 
     /// Results of coalesced passes, taken back by the caller that filled them.
     /// A trigger whose token is never filled was folded into an in-flight pass

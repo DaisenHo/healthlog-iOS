@@ -242,6 +242,10 @@ public actor APIClient: APIClientProtocol {
     private var refreshHandler: (@Sendable () async -> RefreshOutcome)?
     private var selectedAccount: AccountAccessEntry?
     private nonisolated let sharingRecoveryHandler = SharingRecoveryHandlerSlot()
+    /// #134 — where a failure the server answered is recorded with its
+    /// request id. Production writes to the process-wide log the error banner
+    /// and "Support-Info kopieren" read; a test injects its own.
+    nonisolated let failureLog: RecentFailureLog
 
     public init(
         environment: AppEnvironment,
@@ -254,8 +258,10 @@ public actor APIClient: APIClientProtocol {
         // 120 s wait. Non-streaming paths are unaffected by this value.
         coachStreamPolicy: CoachStreamTimeoutPolicy = .coachStream,
         onUnauthorized: (@Sendable () async -> Void)? = nil,
-        refreshHandler: (@Sendable () async -> RefreshOutcome)? = nil
+        refreshHandler: (@Sendable () async -> RefreshOutcome)? = nil,
+        failureLog: RecentFailureLog = .shared
     ) {
+        self.failureLog = failureLog
         self.environment = environment
         self.keychain = keychain
         self.pinner = pinner
@@ -318,10 +324,30 @@ public actor APIClient: APIClientProtocol {
         let started = ContinuousClock.now
         do {
             let (data, response) = try await execute(request)
-            try ensureSuccess(response: response, data: data)
-            return try decodePayload(T.self, data: data, status: response.statusCode)
+            return try recordingFailure(method: request.method, path: request.path, response: response, data: data) {
+                try ensureSuccess(response: response, data: data)
+                return try decodePayload(T.self, data: data, status: response.statusCode)
+            }
         } catch {
             EndpointFailureDiagnostics.record(error, method: request.method, path: request.path, since: started)
+            throw error
+        }
+    }
+
+    /// #134 — runs the status check and decode of one response and, if they
+    /// throw, records the failure with the request id of exactly that
+    /// response before rethrowing. `internal` so the file upload path uses it.
+    func recordingFailure<R>(
+        method: HTTPMethod,
+        path: String,
+        response: HTTPURLResponse,
+        data: Data,
+        _ check: () throws -> R
+    ) rethrows -> R {
+        do {
+            return try check()
+        } catch {
+            failureLog.record(error, method: method, path: path, response: response, body: data)
             throw error
         }
     }
@@ -360,7 +386,9 @@ public actor APIClient: APIClientProtocol {
         let started = ContinuousClock.now
         do {
             let (data, response) = try await execute(request)
-            try ensureSuccess(response: response, data: data)
+            try recordingFailure(method: request.method, path: request.path, response: response, data: data) {
+                try ensureSuccess(response: response, data: data)
+            }
         } catch {
             EndpointFailureDiagnostics.record(error, method: request.method, path: request.path, since: started)
             throw error
@@ -371,7 +399,9 @@ public actor APIClient: APIClientProtocol {
         let started = ContinuousClock.now
         do {
             let (data, response) = try await execute(request)
-            try ensureSuccess(response: response, data: data)
+            try recordingFailure(method: request.method, path: request.path, response: response, data: data) {
+                try ensureSuccess(response: response, data: data)
+            }
             return (data, response)
         } catch {
             EndpointFailureDiagnostics.record(error, method: request.method, path: request.path, since: started)
@@ -390,7 +420,13 @@ public actor APIClient: APIClientProtocol {
     /// (patient + fail-fast auth + coach streaming) plus the process-wide
     /// `URLCache.shared` so no PHI JSON outlives the signed-in user. Idempotent
     /// and cheap (logout is rare); called from `performFullLocalLogout`.
-    public func purgeCachedResponses() {
+    ///
+    /// INT-Q: `async`, exactly like the requirement. A synchronous method here
+    /// lost to the protocol extension's async no-op whenever a caller wrote
+    /// `await client.purgeCachedResponses()` on the concrete actor in an async
+    /// context (X1 found it in a test), so that call purged nothing; with the
+    /// same signature this method is the witness and always wins.
+    public func purgeCachedResponses() async {
         for cache in [
             session.configuration.urlCache,
             authSession.configuration.urlCache,
@@ -399,6 +435,8 @@ public actor APIClient: APIClientProtocol {
             cache?.removeAllCachedResponses()
         }
         URLCache.shared.removeAllCachedResponses()
+        // #134 — the recent request ids belong to the closing session.
+        failureLog.clear()
     }
 
     /// **A360 H3 (v0156)** — progressive SSE line stream (see protocol doc).
@@ -447,8 +485,10 @@ public actor APIClient: APIClientProtocol {
             for try await byte in bytes {
                 collected.append(byte)
             }
-            try ensureSuccess(response: http, data: collected)
-            throw HLError.server(status: http.statusCode, code: nil, message: "")
+            try recordingFailure(method: request.method, path: request.path, response: http, data: collected) {
+                try ensureSuccess(response: http, data: collected)
+                throw HLError.server(status: http.statusCode, code: nil, message: "")
+            }
         }
         // Adapt the live `AsyncBytes.lines` sequence onto the protocol's
         // `AsyncThrowingStream<String, Error>` so the body is delivered line by

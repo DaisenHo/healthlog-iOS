@@ -83,13 +83,16 @@ enum HKSyncDiagnosticsVocabulary {
     ///
     /// U1 (#18) — the lookup ignores case and separators, so `heart_rate`,
     /// `heart-rate` and `HEART_RATE` are one key. `WORKOUTS` (the server's
-    /// pseudo-type from `Workout` rows, `metric-freshness.ts`) has its own word.
+    /// pseudo-type from `Workout` rows, `metric-freshness.ts`) and
+    /// `MEDICATION_DOSE` (W5, v1.42.4) have their own words.
     /// The fallback is no longer the raw identifier but a sentence-cased one
     /// („HEART_RATE" → „Heart rate"), so no row shouts or shows underscores.
     static func freshnessType(_ raw: String) -> String {
         let key = normalizedTypeKey(raw)
         switch key {
         case "WORKOUTS", "WORKOUT": return String(localized: "settings.hkdiag.freshness.workouts")
+        // W5 — server v1.42.4: doses imported from Apple Health (W3's bulk call).
+        case "MEDICATION_DOSE": return String(localized: "settings.hkdiag.freshness.medication_dose")
         case "BLOOD_PRESSURE_DIA": return MetricKind.bloodPressure.displayName
         default: break
         }

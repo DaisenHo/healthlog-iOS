@@ -265,12 +265,18 @@ public final class SyncStateStore {
     /// Binds the live outbox backlog count. `OutboxQueue.changes` yields the
     /// full snapshot on registration + every enqueue/remove, so the count is
     /// authoritative from the first event on.
+    ///
+    /// W1 (1.3.0, HealthLog#1173) — only rows the replay can still send count
+    /// (`OutboxQueue.waitingCount(in:)`). Parked rows, rows over their retry
+    /// budget and other accounts' rows are not "waiting for a connection";
+    /// Sync Diagnostics lists the held ones with their reason.
     public func bindOutbox(_ outbox: OutboxQueue) {
         outboxObservationTask?.cancel()
         outboxObservationTask = Task { [weak self] in
             for await ops in await outbox.changes {
+                let waiting = await outbox.waitingCount(in: ops)
                 guard let self else { return }
-                noteOutboxPending(ops.count)
+                noteOutboxPending(waiting)
             }
         }
     }

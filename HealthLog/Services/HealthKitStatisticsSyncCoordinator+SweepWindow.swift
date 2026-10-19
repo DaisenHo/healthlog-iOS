@@ -49,6 +49,10 @@ import Foundation
             if summary.isComplete {
                 recordCompletedSweep(ownerID: lease.ownerID, endingAt: now)
             }
+            // X4 (1.3, #138) — the hours of today and yesterday ride every
+            // sweep, after the day totals and apart from them: they never move
+            // this sweep's summary, its cache or its end.
+            await syncOpenHours(requiring: lease, now: now)
             return summary
         }
 

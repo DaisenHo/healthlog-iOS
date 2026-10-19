@@ -549,10 +549,12 @@ public struct HLDashboardTile: View {
         // label so VoiceOver hears the same secondary stats the sighted user
         // now reads on the tile.
         let stats = statsSpokenClause
+        // #135 — the server's verdict is spoken where the arrow is coloured.
+        let trend = trendDesc + metric.spokenVerdictSuffix
         if let cachedContextLine {
-            return Text("\(title): \(value). \(trendDesc). \(cachedContextLine).\(stats)")
+            return Text("\(title): \(value). \(trend). \(cachedContextLine).\(stats)")
         }
-        return Text("\(title): \(value). \(trendDesc).\(stats)")
+        return Text("\(title): \(value). \(trend).\(stats)")
     }
 }
 

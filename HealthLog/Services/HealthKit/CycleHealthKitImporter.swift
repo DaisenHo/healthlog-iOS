@@ -71,7 +71,7 @@ import Foundation
         /// otherwise let two rapid observer fires interleave two sweeps from
         /// the same per-type anchor (server-deduped, but redundant network).
         /// A mid-sweep fire coalesces into one trailing re-run for that type.
-        let sweepGate = SweepCoalescer()
+        let sweepGate = SweepCoalescer(label: "cycle")
         /// Owned observer work. Not fire-and-forget: `stop()` cancels every
         /// entry and waits for it, which is what makes the teardown a fact
         /// rather than a request.

@@ -80,8 +80,10 @@ public extension APIClient {
         let started = ContinuousClock.now
         do {
             let (data, response) = try await executeOneShotFileUpload(request)
-            try ensureSuccess(response: response, data: data)
-            return try decodePayload(T.self, data: data, status: response.statusCode)
+            return try recordingFailure(method: request.method, path: request.path, response: response, data: data) {
+                try ensureSuccess(response: response, data: data)
+                return try decodePayload(T.self, data: data, status: response.statusCode)
+            }
         } catch {
             EndpointFailureDiagnostics.record(error, method: request.method, path: request.path, since: started)
             throw error

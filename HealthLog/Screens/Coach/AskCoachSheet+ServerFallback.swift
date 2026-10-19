@@ -111,17 +111,21 @@ extension AskCoachSheet {
             // scope so accepting actually grants (not a `.unconfigured` no-op).
             let usesProviderOpaqueConsent =
                 container.aiProviderStore.config?.usesProviderOpaqueAIConsent == true
+            // #143 — name the operator-held services the server reports
+            // while it says `needed`.
+            let standing = container.aiCapabilityGate.standingConsent
             AIConsentSheet(
                 provider: provider,
+                recipients: standing?.verdict == .needed ? standing?.recipientNames ?? [] : [],
                 onAccept: {
                     if usesProviderOpaqueConsent {
                         // #24 — grant the server-managed scope: `aiMode` flips to
                         // `.online`, the coach surface re-renders into the live
-                        // server conversation. The `ai_full` receipt is minted
-                        // below (consent is not bypassed — this is its device half).
+                        // server conversation. The `ai_full` receipt below is this
+                        // tap's own consent act (#143, `confirm: true`).
                         container.aiConsentStore.grantServerManaged()
                         showCoachConsentSheet = false
-                        Task { await container.syncServerAIConsentReceipt() }
+                        Task { await container.recordAcceptedAIConsent() }
                         return
                     }
                     // v0.14.1 — fix the silent-bounce dead-end: `grant(for:)` is a
@@ -140,10 +144,10 @@ extension AskCoachSheet {
                     }
                     container.aiConsentStore.grant(for: provider)
                     showCoachConsentSheet = false
-                    // v0.14.10 W-INSIGHTSDATA — mint the server-side consent
-                    // receipt for the fresh grant (server v1.12.1 fails AI
-                    // generation closed without one). Best-effort.
-                    Task { await container.syncServerAIConsentReceipt() }
+                    // #143 — this tap's receipt (`confirm: true`). The server's
+                    // `ai.consent` decides whether one is needed: an own provider
+                    // (`not_needed`) sends nothing. Best-effort.
+                    Task { await container.recordAcceptedAIConsent() }
                 },
                 onDecline: {
                     if usesProviderOpaqueConsent {

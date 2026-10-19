@@ -111,13 +111,21 @@ public extension MedicationsRepository {
     /// per attempt. A process that dies between this POST and its ledger write
     /// rebuilds the identical key on relaunch, so the replay window folds the
     /// repeat rather than the route relying on `externalId` uniqueness alone.
+    ///
+    /// **W3 (1.3), server v1.42.4.** `syncTrigger` is the top-level field the
+    /// measurement batch already carries (`foreground | background | push |
+    /// manual`). The server records it on the `MEDICATION_DOSE` arrival entry
+    /// (`lastTrigger`, and `lastBackgroundAt` for `background`); it changes no
+    /// dose row. Older servers strip the unknown key (`z.object` is not strict
+    /// on the bulk route), so it is safe to send everywhere. `nil` omits it.
     func bulkImportAppleHealthDoses(
         _ entries: [BulkIntakeEntry],
-        idempotencyKey: String? = nil
+        idempotencyKey: String? = nil,
+        syncTrigger: SyncTrigger? = nil
     ) async throws -> AppleHealthBulkIntakeResponse {
         let req: APIRequest<AppleHealthBulkIntakeResponse> = try .post(
             "/api/medications/intake/bulk",
-            body: AppleHealthBulkIntakeBody(entries: entries),
+            body: AppleHealthBulkIntakeBody(entries: entries, syncTrigger: syncTrigger),
             idempotencyKey: idempotencyKey.map(IdempotencyKey.init(raw:)) ?? IdempotencyKey()
         )
         return try await api.send(req)
@@ -129,6 +137,10 @@ public extension MedicationsRepository {
 /// Request body wrapper for the bulk endpoint (1–500 entries).
 struct AppleHealthBulkIntakeBody: Codable {
     let entries: [MedicationsRepository.BulkIntakeEntry]
+    /// W3 (1.3) — optional top-level sibling of `entries`; `nil` is omitted
+    /// (synthesised `encodeIfPresent`), so the body without a known trigger is
+    /// byte-identical to the pre-1.3 one.
+    var syncTrigger: SyncTrigger?
 }
 
 public extension MedicationsRepository {

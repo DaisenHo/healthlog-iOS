@@ -59,7 +59,8 @@ enum MedFixtures {
     static func makeImporter(
         api: APIClientProtocol,
         keychain: InMemoryKeychain,
-        reader: FakeMedicationReader
+        reader: FakeMedicationReader,
+        syncTrigger: SyncTriggerContext = SyncTriggerContext()
     ) throws -> Fixture {
         let repo = try MedicationsRepository(api: api, outbox: OutboxQueue(inMemory: true))
         let defaultsProvider = isolatedDefaults()
@@ -74,7 +75,8 @@ enum MedFixtures {
             keychain: keychain,
             registry: registry,
             admission: admission.provider(for: .appleMedication),
-            ledgerStorage: storage
+            ledgerStorage: storage,
+            syncTrigger: syncTrigger
         )
         let ledger = try AppleHealthDoseLedger(
             storage: storage,
@@ -205,6 +207,26 @@ final class MedicationRequestRecorder: @unchecked Sendable {
         defer { lock.unlock() }
         guard let data = requests.last(where: { $0.path == "/api/medications" && $0.method == "POST" })?.body else { return nil }
         return (try? JSONSerialization.jsonObject(with: data)) as? [String: Any]
+    }
+
+    /// W3 — the whole last bulk body, for its top-level `syncTrigger`.
+    var lastBulkBody: [String: Any]? {
+        lock.lock()
+        defer { lock.unlock() }
+        guard let data = requests.last(where: { $0.path == "/api/medications/intake/bulk" })?.body else { return nil }
+        return (try? JSONSerialization.jsonObject(with: data)) as? [String: Any]
+    }
+
+    /// W3 — entry counts of every bulk POST, in order.
+    var bulkEntryCounts: [Int] {
+        lock.lock()
+        defer { lock.unlock() }
+        return requests
+            .filter { $0.path == "/api/medications/intake/bulk" }
+            .compactMap { request in
+                let object = (try? JSONSerialization.jsonObject(with: request.body)) as? [String: Any]
+                return (object?["entries"] as? [Any])?.count
+            }
     }
 
     var lastBulkFirstEntry: [String: Any]? {

@@ -26,7 +26,10 @@ struct RateLimitHeaderTests {
     @Test("429 with X-RateLimit-Reset surfaces a non-nil retryAfter")
     func parsesRateLimitReset() async {
         let api = makeAPI()
-        let resetIso = ISO8601DateFormatter().string(from: Date().addingTimeInterval(2))
+        // FLAKES (1.3.0) — 20 s, not 2 s: the header has whole-second
+        // resolution and a loaded runner can spend over a second between here
+        // and the parse, which turned a 2 s reset into "already passed" (nil).
+        let resetIso = ISO8601DateFormatter().string(from: Date().addingTimeInterval(20))
         MockURLProtocol.install { req in
             let headers: [String: String] = [
                 "X-RateLimit-Remaining": "0",
@@ -48,7 +51,7 @@ struct RateLimitHeaderTests {
             }
             #expect(retryAfter != nil)
             #expect((retryAfter ?? 0) > 0)
-            #expect((retryAfter ?? 0) <= 3)
+            #expect((retryAfter ?? 0) <= 21)
         } catch {
             Issue.record("unexpected error: \(error)")
         }

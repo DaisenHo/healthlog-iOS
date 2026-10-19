@@ -73,6 +73,12 @@ public extension MutationKind {
                 // caller (M-2), so this arm is no longer dead.
                 .moodEntries(days: 365),
                 .moodInsights,
+                // INT-Q — every period row of the same route, or a write
+                // would leave a 30-day view on its pre-write patterns.
+                .moodInsightsWindow(days: 30),
+                .moodInsightsWindow(days: 90),
+                .moodInsightsWindow(days: 180),
+                .moodInsightsWindow(days: 365),
                 .moodDailySeries,
                 dashboardSummaryKey,
                 .insightsComprehensive,

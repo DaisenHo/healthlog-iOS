@@ -43,6 +43,10 @@ struct TrendChip: View {
         /// ``TrendDirectionSentiment/tone(for:)`` and nothing else; `nil`
         /// (no snapshot yet, offline) colours nothing.
         case serverSentiment(TrendDirectionSentiment?)
+        /// #135 (server v1.43) — the server's verdict already applied to this
+        /// card's own change (`trendSentiment`): positive green, negative red,
+        /// neutral monochrome. Nothing is looked up or derived.
+        case serverVerdict(TrendSentiment)
     }
 
     enum ColorRole: String, Sendable {
@@ -118,6 +122,17 @@ struct TrendChip: View {
             case .adverse: return .statusBad
             case .neutral: return .textSecondary
             }
+        case let .serverVerdict(verdict):
+            return Self.colorRole(for: verdict)
+        }
+    }
+
+    /// The colour a delivered verdict paints; an unknown word paints nothing.
+    static func colorRole(for verdict: TrendSentiment) -> ColorRole {
+        switch verdict {
+        case .positive: .statusOK
+        case .negative: .statusBad
+        case .neutral, .unknown: .textSecondary
         }
     }
 
@@ -153,8 +168,41 @@ extension DashboardMetric {
     /// (`tiles.weightTrend`), never by a client rule. Literal green/up and
     /// red/down stays scoped to steps and sleep; every other kind keeps the
     /// established polarity-aware mode.
+    ///
+    /// #135 — a v1.43 server sends the verdict for every card
+    /// (`trendSentiment`); it wins over every client rule above. Older
+    /// servers keep the rendering they always had.
     func dashboardTrendMode(weightSentiment: TrendDirectionSentiment?) -> TrendChip.Mode {
+        if let trendSentiment, trendSentiment != .unknown { return .serverVerdict(trendSentiment) }
         if kind == .weight { return .serverSentiment(weightSentiment) }
         return [.steps, .sleep].contains(kind) ? .dashboardDirection : .polarityAware
+    }
+
+    /// #135 — VoiceOver hears the server's verdict next to the direction
+    /// ("Trend rising, a good direction for you"). Empty without one.
+    var spokenVerdictSuffix: String {
+        guard let clause = trendSentiment?.spokenClause else { return "" }
+        return ", \(clause)"
+    }
+
+    /// The spoken direction plus the server's verdict, for surfaces whose
+    /// label did not speak a trend before v1.43. `nil` without a verdict (an
+    /// older server keeps its label) or without a known direction.
+    var spokenTrendWithVerdict: String? {
+        guard trendSentiment != nil else { return nil }
+        let direction: String? = switch trend {
+        case .up: String(localized: "Trend rising")
+        case .down: String(localized: "Trend falling")
+        case .flat: String(localized: "Trend stable")
+        case .unknown: nil
+        }
+        return direction.map { $0 + spokenVerdictSuffix }
+    }
+
+    /// The chip mode for a surface outside the dashboard grid: the server's
+    /// verdict when it sends one, else the established polarity-aware mode.
+    var verdictOrPolarityMode: TrendChip.Mode {
+        guard let trendSentiment, trendSentiment != .unknown else { return .polarityAware }
+        return .serverVerdict(trendSentiment)
     }
 }

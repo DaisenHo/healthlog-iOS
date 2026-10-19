@@ -11,6 +11,9 @@ struct AddLabResultSheet: View {
     @State private var selectedBiomarkerID: String?
     @State private var analyte = ""
     @State private var unit = ""
+    /// #126 3.5 (v1.42.3) — a linked reading printed in another unit. The
+    /// server converts it when it knows the pair, else refuses with a reason.
+    @State private var printedUnit = ""
     @State private var valueText = ""
     /// Item 1.5 — numeric vs. qualitative result mode, mirroring the web form
     /// (`lab-form.tsx:111-113`). Qualitative mode enters a result TEXT
@@ -152,6 +155,8 @@ struct AddLabResultSheet: View {
             }
             if let marker = linkedMarker {
                 LabeledContent("labs.add.unit", value: marker.unit)
+                TextField("labs.add.printedUnit", text: $printedUnit)
+                    .accessibilityIdentifier("labs.add.printedUnit")
                 if let lower = marker.lowerBound {
                     LabeledContent("labs.add.referenceLow", value: lower.formatted())
                 }
@@ -200,7 +205,9 @@ struct AddLabResultSheet: View {
                     TextField("labs.add.value", text: $valueText)
                         .keyboardType(.decimalPad)
                         .focused($focusedField, equals: .value)
-                    if isLinked, let marker = linkedMarker, !marker.unit.isEmpty {
+                    if isLinked, let shown = LabPrintedUnit.sent(printedUnit, markerUnit: linkedMarker?.unit) {
+                        Text(shown).foregroundStyle(HLText.secondary)
+                    } else if isLinked, let marker = linkedMarker, !marker.unit.isEmpty {
                         Text(marker.unit).foregroundStyle(HLText.secondary)
                     } else if !unit.isEmpty {
                         Text(unit).foregroundStyle(HLText.secondary)
@@ -293,6 +300,7 @@ struct AddLabResultSheet: View {
                 biomarkerId: selectedBiomarkerID,
                 value: numericValue,
                 valueText: qualitativeValue,
+                unit: numericValue == nil ? nil : LabPrintedUnit.sent(printedUnit, markerUnit: linkedMarker?.unit),
                 takenAt: iso.string(from: takenAt),
                 note: trimmedNote.isEmpty ? nil : trimmedNote
             )
@@ -334,6 +342,7 @@ struct AddLabResultSheet: View {
         selectedBiomarkerID = next.selectedBiomarkerID
         analyte = next.analyte
         unit = next.unit
+        printedUnit = ""
         valueText = next.valueText
         qualitativeText = next.qualitativeText
         referenceLowText = next.referenceLowText

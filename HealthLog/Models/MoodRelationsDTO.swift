@@ -41,17 +41,29 @@ public struct MoodRelationsResponse: Codable, Sendable, Equatable {
     /// below the server's day floor). The Mood analysis renders it instead of
     /// computing its own. Tolerant: absent or unreadable → `nil`.
     public let stability: MoodStability?
+    /// #126 P2 (server v1.42.0) — the trailing window `stability` covers
+    /// (30, 90, 180 or 365; the `?days=` the request named, 365 without one).
+    /// `nil` on an older server, whose stability is always the year.
+    public let stabilityWindowDays: Int?
+    /// #136 (server v1.43) — the mood patterns that passed the server's gate,
+    /// in the order delivered. `nil` on an older server (the cards stay
+    /// hidden), `[]` when none was found. Rendered only, never computed here.
+    public let patterns: [MoodPattern]?
 
     public init(
         tagInfluence: TagInfluence = .empty,
         betterDays: [BetterDayFactor] = [],
         factorCrosstab: [FactorMetricCrosstabRow] = [],
-        stability: MoodStability? = nil
+        stability: MoodStability? = nil,
+        stabilityWindowDays: Int? = nil,
+        patterns: [MoodPattern]? = nil
     ) {
         self.tagInfluence = tagInfluence
         self.betterDays = betterDays
         self.factorCrosstab = factorCrosstab
         self.stability = stability
+        self.stabilityWindowDays = stabilityWindowDays
+        self.patterns = patterns
     }
 
     /// Tolerant additive decode: a payload missing a slice (pre-v1.11.5 server,
@@ -64,6 +76,8 @@ public struct MoodRelationsResponse: Codable, Sendable, Equatable {
         betterDays = try container.decodeIfPresent([BetterDayFactor].self, forKey: .betterDays) ?? []
         factorCrosstab = try container.decodeIfPresent([FactorMetricCrosstabRow].self, forKey: .factorCrosstab) ?? []
         stability = try? container.decodeIfPresent(MoodStability.self, forKey: .stability)
+        stabilityWindowDays = try? container.decodeIfPresent(Int.self, forKey: .stabilityWindowDays)
+        patterns = MoodPattern.decodeList(from: container, forKey: .patterns)
     }
 }
 

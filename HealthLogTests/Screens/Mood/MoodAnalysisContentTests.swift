@@ -42,8 +42,9 @@ struct MoodAnalysisContentTests {
         return recorder.indices
     }
 
-    /// #115 1.3 — the device-calendar pattern cards have no server source and
-    /// are gone, so the body has six sections.
+    /// #115 1.3 — the device-calendar pattern cards are gone. #136 brings them
+    /// back from the server only; without a server answer (this harness has
+    /// none) the body has six sections.
     @Test("emits exactly six sections")
     func emitsSixSections() throws {
         #expect(try recordedSectionIndices().count == 6)

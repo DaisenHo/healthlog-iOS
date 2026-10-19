@@ -166,7 +166,8 @@ struct WhoopIntegrationStoreTests {
         configured: Bool? = nil,
         lastSyncedAt: Date? = nil,
         tokenExpired: Bool? = nil,
-        scope: String? = nil
+        scope: String? = nil,
+        health: ConnectionHealth? = nil
     ) -> WhoopStatus {
         WhoopStatus(
             connected: connected,
@@ -176,7 +177,8 @@ struct WhoopIntegrationStoreTests {
             tokenExpired: tokenExpired,
             tokenExpiresAt: nil,
             backfillCompleted: nil,
-            scope: scope
+            scope: scope,
+            health: health
         )
     }
 
@@ -419,5 +421,58 @@ struct WhoopIntegrationStoreTests {
         if store.status != nil || store.isWorking {
             Issue.record("EXPECTED_RED: late A WHOOP connect published into B")
         }
+    }
+}
+
+/// #139 — kept in an extension so the suite body stays under the type-length
+/// budget; same private helpers, same isolation.
+extension WhoopIntegrationStoreTests {
+    // MARK: - #139: the state comes from `health`
+
+    @Test("#139: health action_required + reconnect → .tokenExpired without the legacy flag")
+    func healthReauthDrivesReconnect() async {
+        let health = ConnectionHealth(state: .actionRequired, reason: .reauthRequired, action: .reconnect)
+        let (store, _) = makeStore(initialStatus: status(connected: true, configured: true, health: health))
+        await store.loadStatus()
+        #expect(store.stage == .tokenExpired)
+    }
+
+    @Test("#139: health wins over the deprecated tokenExpired")
+    func healthWinsOverLegacy() async {
+        let health = ConnectionHealth(state: .ok, reason: .dataArriving)
+        let (store, _) = makeStore(
+            initialStatus: status(connected: true, configured: true, tokenExpired: true, health: health)
+        )
+        await store.loadStatus()
+        #expect(store.stage == .connected)
+    }
+
+    @Test("#139: health action resume arms the resume affordance without a probe")
+    func healthResumeArmsResume() async {
+        let health = ConnectionHealth(state: .actionRequired, reason: .pausedAfterErrors, action: .resume)
+        let (store, _) = makeStore(initialStatus: status(connected: true, configured: true, health: health))
+        await store.loadStatus()
+        #expect(store.stage == .connected)
+        #expect(store.isRateLimitParked)
+    }
+
+    @Test("#139: the v1.42.4 status shape decodes health beside the legacy fields")
+    func decodeHealthShape() throws {
+        let json = Data(#"""
+        {
+          "connected": true, "configured": true, "tokenExpired": true,
+          "health": { "state": "degraded", "reason": "unexpected_silence",
+                      "since": "2026-10-14T06:00:00.000Z", "action": null,
+                      "unavailable": [ { "item": "spo2", "cause": "plan" } ],
+                      "lastSuccessAt": "2026-10-13T06:00:00.000Z", "lastDataAt": null,
+                      "diagnostics": { "ledgerState": "ok", "failingLegs": [], "failingSince": null,
+                                       "lastAttemptAt": null, "verdict": "stale", "recentCalls": [] } }
+        }
+        """#.utf8)
+        let decoded = try JSONDecoder.hlDefault.decode(WhoopStatus.self, from: json)
+        #expect(decoded.health?.state == .degraded)
+        #expect(decoded.health?.reason == .unexpectedSilence)
+        #expect(decoded.health?.unavailable == [ConnectionHealth.Unavailable(item: "spo2", cause: "plan")])
+        #expect(decoded.needsReconnect == false, "health says degraded, the stale legacy flag is not read")
     }
 }

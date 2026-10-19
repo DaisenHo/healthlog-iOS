@@ -71,12 +71,15 @@ struct AuthAccountBoundaryCancellationTests {
         }
         await drainMainActorJobs()
 
+        // Both tasks are awaited before the verdict: eight yields are not a
+        // guaranteed turn for each of them on a loaded machine, and the
+        // properties under test (one completion, ownership reaches the live
+        // waiter) hold or fail the same way once both have finished.
+        _ = await cancelled.result
+        _ = await live.result
         if !probe.liveWaiterAcquired || probe.cancelledCompletions != 1 {
             Issue.record("EXPECTED_RED: waiter completed more than once")
         }
-
-        _ = await cancelled.result
-        _ = await live.result
         #expect(probe.cancelledCompletions == 1)
     }
 

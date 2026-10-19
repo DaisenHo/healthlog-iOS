@@ -17,6 +17,7 @@ extension SettingsHKSyncDiagnosticsScreen {
             subtitleWraps: true
         ) {
             VStack(alignment: .leading, spacing: HLSpace.md) {
+                HKSyncDiagnosticsSourceTag(source: .deviceStored)
                 if let snapshot = skippedSnapshot, !snapshot.rows.isEmpty {
                     statRow(label: "settings.hkdiag.skipped_count", value: "\(snapshot.rows.count)")
                     if snapshot.overflow > 0 {
@@ -44,11 +45,6 @@ extension SettingsHKSyncDiagnosticsScreen {
                         .font(.hlBody)
                         .foregroundStyle(HLText.secondary)
                         .fixedSize(horizontal: false, vertical: true)
-                }
-                // INT-A — readings the outbox holds back (parked by the replay):
-                // waiting for the server, not uploaded and not lost.
-                if let parked = skippedSnapshot?.parkedOutboxRows, parked > 0 {
-                    statRow(label: "settings.hkdiag.parked_count", value: "\(parked)")
                 }
                 if let resendSummary {
                     Text(Self.resendResultText(resendSummary))

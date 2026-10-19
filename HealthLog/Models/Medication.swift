@@ -23,6 +23,8 @@ public struct MedicationWireDTO: Codable, Sendable, Identifiable, Hashable {
     public var categoryLabel: String?
     public let active: Bool?
     public let notificationsEnabled: Bool?
+    /// v1.42.2 `remindersActive` / `autoMarkTaken`, folded in `toDomain()`.
+    public var remindersActive: Bool?, autoMarkTaken: Bool?
     public let schedules: [MedicationScheduleDTO]?
     public let lastTakenAt: Date?
     public let todayEventCount: Int?
@@ -481,6 +483,7 @@ public struct Medication: Codable, Sendable, Identifiable, Hashable {
     public let category: String?
     /// v1.40: server label of a custom category; `nil` for a built-in one.
     public var categoryLabel: String?
+    public var remindersActive: Bool?
     public let dosesPerUnit: Int?
     /// **v1.16.10/.12 `unitsPerDose`.** Inventory units one dose consumes
     /// (whole 1–100 or a curated split-pill fraction). `nil` → 1.0. See
@@ -827,6 +830,7 @@ public extension MedicationWireDTO {
             intakeActionable: intakeActionable
         )
         medication.categoryLabel = categoryLabel
+        medication.remindersActive = autoMarkTaken == true ? false : remindersActive
         return medication
     }
 

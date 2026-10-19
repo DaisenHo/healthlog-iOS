@@ -125,7 +125,7 @@ public actor AICoachSettingsRepository {
     /// re-read prefs object after a conflict, so the retry carries the user's
     /// change applied on top of the other session's write rather than
     /// resurrecting the stale blob.
-    private func putCoachPrefs(
+    func putCoachPrefs(
         _ raw: [String: HLJSONValue],
         reapply: @escaping @Sendable ([String: HLJSONValue]) -> [String: HLJSONValue]
     ) async throws {

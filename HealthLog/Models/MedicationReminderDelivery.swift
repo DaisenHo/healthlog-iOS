@@ -61,8 +61,20 @@ enum MedicationReminderDeliveryPolicy {
     /// switched on for it, intake tracked (v1.39.1), and a real schedule (an
     /// as-needed medication or one without a plan has nothing to remind of, on
     /// either side).
+    ///
+    /// **v1.42.2 (#126 P2) — the server's `remindersActive` decides.** It
+    /// folds in what the local flags cannot see: `autoMarkTaken` (a supplement
+    /// the server records by itself must not remind) and an ended course. When
+    /// the server says `false`, nothing is armed, whatever the local flags say.
+    /// The local flags stay in the conjunction so an optimistic edit (switching
+    /// reminders off, archiving) takes effect before the server row comes back.
+    /// `nil` (a server before v1.42.2, or a row built locally) keeps the old
+    /// rule. `autoMarkTaken: true` on the wire is folded into
+    /// `remindersActive: false` when the row is decoded
+    /// (`MedicationWireDTO.toDomain()`), so either one stops a reminder.
     static func plansLocalReminder(for medication: Medication) -> Bool {
-        medication.active && medication.notificationsEnabled && medication.tracksIntake
+        medication.remindersActive != false
+            && medication.active && medication.notificationsEnabled && medication.tracksIntake
     }
 
     /// Whether this device delivers medication reminders itself: the user

@@ -213,13 +213,13 @@ struct AuthenticatedShell: View {
             if container?.aiProviderStore.config == nil {
                 await container?.aiProviderStore.load()
             }
-            evaluateConsentGate()
-            // v0.14.10 — reconcile the server consent receipt (see doc there).
-            await container?.syncServerAIConsentReceipt()
+            // #143 — read-only: local consent follows `ai.consent`; never mints.
+            reconcileConsentWithServer()
         }
         .onChange(of: container?.aiProviderStore.config) { _, _ in
             evaluateConsentGate()
         }
+        .onChange(of: container?.aiCapabilityGate.standingConsent) { _, _ in reconcileConsentWithServer() }
         .onChange(of: router.selectedTab) { _, _ in
             // Re-evaluate on tab change so a user navigating to Insights
             // (the only off-device-LLM consumer) sees the gate before any
@@ -238,12 +238,12 @@ struct AuthenticatedShell: View {
         .sheet(item: $pendingConsentProvider, onDismiss: resumeParkedSheet) { request in
             AIConsentSheet(
                 provider: request.provider,
+                recipients: request.recipients,
                 onAccept: {
                     // W-B186 COACH-1 (#24) — server-managed grant has no concrete
                     // provider; grant the server-managed scope so `aiMode` flips
                     // to `.online` and every Coach surface appears. The receipt
-                    // mint below still runs (the #24 thread: mint `ai_full` for
-                    // `managedBy: "server"`) — consent is NOT bypassed.
+                    // below is this tap's own consent act (#143, `confirm: true`).
                     //
                     // Bug 2 (v0.14.8) + J1 — the grant itself (server-managed
                     // scope or the live-resolved provider, never a stray
@@ -257,9 +257,9 @@ struct AuthenticatedShell: View {
                     // immediately after granting (otherwise they'd have
                     // to manually pull-to-refresh).
                     Task {
-                        // v0.14.10 — mint the server consent receipt FIRST,
-                        // else the loads below warm no-key fallbacks.
-                        await container.syncServerAIConsentReceipt()
+                        // Record this tap's receipt FIRST (#143, `confirm:
+                        // true`), else the loads below warm no-key fallbacks.
+                        await container.recordAcceptedAIConsent()
                         await container.insightsStore.load()
                         await container.dailyBriefingStore.load()
                     }

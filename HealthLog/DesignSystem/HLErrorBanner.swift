@@ -1,4 +1,7 @@
 import SwiftUI
+#if canImport(UIKit)
+    import UIKit
+#endif
 
 /// Top-anchored error banner with optional retry CTA.
 ///
@@ -22,19 +25,29 @@ import SwiftUI
 ///
 /// Audit ref: `audit-v021/ux-hig.md` C5 — silent error swallowing on
 /// Charts / Insights / Medications / Mood / Achievements.
+///
+/// **#134 — the error id.** On a 5xx or an unreadable answer the banner names
+/// the server's request id in its short form („Fehler-ID 3f9a2c1b“) with a
+/// copy button, read from ``RecentFailureLog``. No id, no line: older servers
+/// and failures the server never answered show the banner as before.
 public struct ErrorBanner: View {
     public let error: HLError?
     public let retry: (() -> Void)?
+    private let failureLog: RecentFailureLog
 
-    public init(error: HLError?, retry: (() -> Void)? = nil) {
+    public init(error: HLError?, retry: (() -> Void)? = nil, failureLog: RecentFailureLog = .shared) {
         self.error = error
         self.retry = retry
+        self.failureLog = failureLog
     }
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    /// The id last copied from this banner, so the button can say so.
+    @State private var copiedID: String?
 
     public var body: some View {
         if let error {
+            let errorID = failureLog.displayID(for: error)
             let stacked = dynamicTypeSize.isAccessibilitySize
             let layout = stacked
                 ? AnyLayout(VStackLayout(alignment: .leading, spacing: HLSpace.sm))
@@ -43,12 +56,17 @@ public struct ErrorBanner: View {
                 HStack(alignment: .top, spacing: HLSpace.sm) {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .accessibilityHidden(true)
-                    Text(error.userFacingDescription)
-                        .font(.hlCaption)
-                        .lineLimit(stacked ? nil : 3)
-                        .multilineTextAlignment(.leading)
-                        .fixedSize(horizontal: false, vertical: stacked)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    VStack(alignment: .leading, spacing: HLSpace.xxs) {
+                        Text(error.userFacingDescription)
+                            .font(.hlCaption)
+                            .lineLimit(stacked ? nil : 3)
+                            .multilineTextAlignment(.leading)
+                            .fixedSize(horizontal: false, vertical: stacked)
+                        if let errorID {
+                            errorIDButton(errorID)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 if let retry {
                     Button(action: retry) {
@@ -77,8 +95,52 @@ public struct ErrorBanner: View {
             .accessibilityElement(children: .combine)
             .accessibilityIdentifier("hl.errorBanner")
             .accessibilityLabel(Text("Error"))
-            .accessibilityValue(Text(error.userFacingDescription))
+            .accessibilityValue(accessibilityValue(error, errorID: errorID))
+            .accessibilityActions {
+                if let errorID {
+                    Button("error.id.copy") { copy(errorID) }
+                }
+            }
         }
+    }
+
+    /// Small and secondary: the id is for a support conversation, not the
+    /// headline. The whole line is the button, at least 44 pt tall.
+    private func errorIDButton(_ errorID: String) -> some View {
+        Button {
+            copy(errorID)
+        } label: {
+            HStack(spacing: HLSpace.xs) {
+                Text("error.id.label")
+                    .font(.hlCaption2)
+                Text(verbatim: ServerErrorID.short(errorID))
+                    .font(.hlCaption2.monospaced())
+                Image(systemName: copiedID == errorID ? "checkmark" : "doc.on.doc")
+                    .font(.hlCaption2)
+                    .accessibilityHidden(true)
+            }
+            .opacity(0.9)
+            .frame(minHeight: 44, alignment: .leading)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text("error.id.copy"))
+        .accessibilityIdentifier("hl.errorBanner.errorID")
+    }
+
+    /// The full id goes on the clipboard; the operator's log search takes it
+    /// as well as the short form.
+    private func copy(_ errorID: String) {
+        #if canImport(UIKit)
+            UIPasteboard.general.string = errorID
+        #endif
+        copiedID = errorID
+    }
+
+    private func accessibilityValue(_ error: HLError, errorID: String?) -> String {
+        guard let errorID else { return error.userFacingDescription }
+        let idLabel = String(localized: "error.id.label")
+        return "\(error.userFacingDescription), \(idLabel) \(ServerErrorID.short(errorID))"
     }
 }
 

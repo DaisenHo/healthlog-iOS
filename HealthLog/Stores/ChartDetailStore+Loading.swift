@@ -512,8 +512,9 @@ extension ChartDetailStore {
         guard let raw else { return nil }
         let bucketed = SeriesDownsampler.downsampleIfNeeded(raw.points, rangeDays: rangeDays)
         let plotted = LTTB.downsampleSeries(bucketed)
-        // W-B187 (#29) — preserve the server-resolved unit through downsampling.
-        return MeasurementSeries(kind: raw.kind, points: plotted, stats: raw.stats, unit: raw.unit)
+        // W-B187 (#29) — preserve the server-resolved unit through downsampling;
+        // #135 — the verdict and the reference lines ride along the same way.
+        return raw.replacing(points: plotted)
     }
 
     /// QC-2 reconcile: matches `DashboardStore.kindSupportsSeries` —

@@ -89,7 +89,9 @@ public final class WhoopIntegrationStore {
             // A token-expired connection is technically `connected == true`
             // but is no longer syncing — downgrade so the status pill reflects
             // the dead-sync reality and the re-connect affordance shows.
-            return status.tokenExpired == true ? .tokenExpired : .connected
+            // #139 — read from `health` (`action_required` + `reconnect`); the
+            // legacy `tokenExpired` only answers for a server without it.
+            return status.needsReconnect ? .tokenExpired : .connected
         }
         if status.configured == true { return .needsConnect }
         return .needsCredentials
@@ -111,7 +113,7 @@ public final class WhoopIntegrationStore {
             status = loadedStatus
             // A fresh, healthy status clears any stale parked signal — the
             // server un-parked or the connection recovered.
-            if status?.connected == true, status?.tokenExpired != true {
+            if status?.connected == true, status?.needsReconnect != true {
                 lastErrorCode = nil
             }
         } catch let err as HLError {
@@ -187,10 +189,13 @@ public final class WhoopIntegrationStore {
     }
 
     /// `true` once a `test`/`resume` probe reported the connection is parked by
-    /// WHOOP's rate limiter. Drives the "Resume sync" affordance — the status
-    /// snapshot has no parked flag, so the error code is the only signal.
+    /// WHOOP's rate limiter. Drives the "Resume sync" affordance.
+    ///
+    /// #139 — a server with `health` says it directly (`action: resume`); the
+    /// last probe's error code stays the signal for a server without it.
     public var isRateLimitParked: Bool {
-        lastErrorCode == "rate_limited" || lastErrorCode == "rate_limited_self"
+        if status?.health?.canResume == true { return true }
+        return lastErrorCode == "rate_limited" || lastErrorCode == "rate_limited_self"
     }
 
     /// Probes the live connection; stores the result (or surfaces the mapped

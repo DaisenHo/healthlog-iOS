@@ -498,7 +498,7 @@ public actor OutboxQueue {
     /// `KeychainStore` read; tests inject a deterministic provider. Reads
     /// happen on the actor, off any hot path (enqueue is already a SwiftData
     /// write), so the synchronous Keychain hit is acceptable.
-    private let currentOwnerProvider: @Sendable () -> String?
+    let currentOwnerProvider: @Sendable () -> String?
 
     /// Resolves the live bearer paired with ``currentOwnerProvider``. Kept as a
     /// separate injectable seam so tests can deterministically rotate/remove a
@@ -1009,7 +1009,7 @@ public actor OutboxQueue {
         return ok
     }
 
-    private func broadcast() async {
+    func broadcast() async {
         let snap = await snapshot
         for c in continuations.values {
             c.yield(snap)

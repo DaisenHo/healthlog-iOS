@@ -201,6 +201,7 @@ struct TodayHeroCard: View {
         HLCard(style: .elevated) {
             VStack(alignment: .leading, spacing: HLSpace.md) {
                 readRow
+                TodayHeroFacts(digest: digest) // #126 P2: today[], restMode, steadyWeeks
                 if digest.sleepPending {
                     freshnessNote
                 }

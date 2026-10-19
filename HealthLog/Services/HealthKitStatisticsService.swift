@@ -350,7 +350,7 @@ public struct HealthKitCumulativeTypeConfig: Sendable, Equatable {
 
         // MARK: - Internals
 
-        private func runStatisticsCollection(
+        func runStatisticsCollection(
             quantityType: HKQuantityType,
             predicate: NSPredicate,
             anchor: Date,
@@ -390,7 +390,7 @@ public struct HealthKitCumulativeTypeConfig: Sendable, Equatable {
         /// Per-Identifier HK-Unit fuer die statistics-Sum-Query. Mirror der
         /// `HealthKitWireConverter.preferredUnit`-Tabelle, aber auf die 5
         /// cumulative types beschraenkt.
-        private nonisolated func hkUnit(for identifier: String) -> HKUnit {
+        nonisolated func hkUnit(for identifier: String) -> HKUnit {
             switch identifier {
             case "HKQuantityTypeIdentifierStepCount",
                  "HKQuantityTypeIdentifierFlightsClimbed":

@@ -66,6 +66,12 @@ struct AuthenticatedLabsBoundaryTests {
             if request is APIRequest<ListBiomarkersResponse> {
                 return ListBiomarkersResponse(biomarkers: [Self.biomarker(id: "account-a-marker")])
             }
+            // #130 — the third request of the fan-out: the marker overview.
+            if request is APIRequest<LabOverviewResponse> {
+                return LabOverviewResponse(markers: [
+                    LabOverviewMarker(key: "bm:account-a-marker", count: 1, latest: Self.lab(id: "account-a-lab"))
+                ])
+            }
             throw HLError.unknown("unexpected labs boundary request")
         }
 
@@ -76,7 +82,7 @@ struct AuthenticatedLabsBoundaryTests {
         let store = LabsStore(repository: repository)
         store.bindAuthenticatedSessionRegistry(sessionRegistry, ownerIDProvider: sessionOwner.read)
         let accountALoad = Task { @MainActor in await store.load() }
-        await gate.waitForRequests(2)
+        await gate.waitForRequests(3)
 
         sessionRegistry.invalidate()
         store.clearOnLogout()
@@ -91,6 +97,7 @@ struct AuthenticatedLabsBoundaryTests {
         let accountBRemainsCurrent = store.labs == [accountBLab]
             && store.biomarkers == [accountBMarker]
             && store.total == 1
+            && store.markerOverview == nil
             && !store.isLoading
             && store.lastError == nil
         #expect(
@@ -130,15 +137,15 @@ struct AuthenticatedLabsBoundaryTests {
         let gateB = FanoutGate()
         let calls = CallCounter()
         await api.setHandler { request in
-            // Two requests per load (labs + biomarkers); the first pair belongs
-            // to account A, the second to account B.
+            // Three requests per load (labs + biomarkers + the #130 marker
+            // overview); the first three belong to account A, the rest to B.
             let ordinal = calls.next()
-            if ordinal <= 2 {
+            if ordinal <= 3 {
                 await gateA.suspend()
             } else {
                 await gateB.suspend()
             }
-            let suffix = ordinal <= 2 ? "account-a" : "account-b"
+            let suffix = ordinal <= 3 ? "account-a" : "account-b"
             if request is APIRequest<ListLabResultsResponse> {
                 return ListLabResultsResponse(
                     results: [Self.lab(id: "\(suffix)-lab")],
@@ -147,6 +154,9 @@ struct AuthenticatedLabsBoundaryTests {
             }
             if request is APIRequest<ListBiomarkersResponse> {
                 return ListBiomarkersResponse(biomarkers: [Self.biomarker(id: "\(suffix)-marker")])
+            }
+            if request is APIRequest<LabOverviewResponse> {
+                return LabOverviewResponse(markers: [])
             }
             throw HLError.unknown("unexpected labs boundary request")
         }
@@ -159,7 +169,7 @@ struct AuthenticatedLabsBoundaryTests {
         store.bindAuthenticatedSessionRegistry(registry, ownerIDProvider: owner.read)
 
         let accountALoad = Task { @MainActor in await store.load() }
-        await gateA.waitForRequests(2)
+        await gateA.waitForRequests(3)
 
         registry.invalidate()
         store.clearOnLogout()
@@ -167,7 +177,7 @@ struct AuthenticatedLabsBoundaryTests {
         registry.activate(ownerID: owner.read())
 
         let accountBLoad = Task { @MainActor in await store.load() }
-        await gateB.waitForRequests(2)
+        await gateB.waitForRequests(3)
         #expect(store.isLoading, "precondition: account B's load is legitimately showing a skeleton")
 
         await gateA.release()

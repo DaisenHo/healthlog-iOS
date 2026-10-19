@@ -128,9 +128,25 @@ public struct AuthNotificationPrefsPayload: Codable, Sendable, Equatable {
         }
     }
 
+    /// #126 3.3 (server v1.42.2) — what a notification may show:
+    /// `content.detail` is `generic` (default, no health figure) or `detailed`
+    /// (adds figures such as the morning score). `nil` on an older server; the
+    /// setting is then hidden.
+    public struct Content: Codable, Sendable, Equatable {
+        public let detail: String?
+
+        public init(detail: String?) {
+            self.detail = detail
+        }
+
+        public static let generic = "generic"
+        public static let detailed = "detailed"
+    }
+
     public let mood: Mood?
     public let medication: Medication?
     public let measurementReminder: MeasurementReminder?
+    public let content: Content?
     /// **CU-20 (#69) — optimistic-concurrency token.** Echoed as
     /// `baseUpdatedAt` on the next PATCH; a stale one yields
     /// `409 notification_prefs_conflict` and nothing is written. Guards the
@@ -143,12 +159,22 @@ public struct AuthNotificationPrefsPayload: Codable, Sendable, Equatable {
         mood: Mood?,
         medication: Medication? = nil,
         measurementReminder: MeasurementReminder? = nil,
+        content: Content? = nil,
         updatedAt: String? = nil
     ) {
         self.mood = mood
         self.medication = medication
         self.measurementReminder = measurementReminder
+        self.content = content
         self.updatedAt = updatedAt
+    }
+
+    /// `true` for `detailed`, `false` for `generic` (or a word this build does
+    /// not know: the server's default is generic), `nil` when the server sent
+    /// no `content` block at all.
+    public var contentDetailed: Bool? {
+        guard let content else { return nil }
+        return content.detail == Content.detailed
     }
 
     /// The local-clock hour (0–23) for the evening mood reminder, clamped, or

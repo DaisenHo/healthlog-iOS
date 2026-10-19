@@ -111,7 +111,18 @@ extension OutboxReplayService {
         if case let .rateLimited(retryAfter) = err { return onRateLimited(op, retryAfter: retryAfter) }
         if err.isServerKeyMismatch { return onServerKeyMismatch(op) }
         let sanitized = Self.lastErrorKeepingUnconfirmed(op, LogSanitizer.redact(err.localizedDescription))
-        if degraded, err.is5xxOrRateLimited {
+        // W1 (1.3.0) — a timeout or a lost connection is the network's fault,
+        // not the write's. Counted, it pushed rows over budget within one bad
+        // background window, and an over-budget row waited unsent for the
+        // seven days before the dead-letter sweep. Stamped only, it goes out
+        // again after its back-off, on every pass until it lands.
+        if err.isTransientConnectivity {
+            try? await outbox.touchAttempt(id: op.id, lastError: sanitized)
+            // swiftlint:disable:next hllog_public_privacy_interpolation
+            HLLog.outbox.warning(
+                "Op \(op.kind.rawValue, privacy: .public) retriable (connectivity, attempt not counted): \(sanitized, privacy: .private)"
+            )
+        } else if degraded, err.is5xxOrRateLimited {
             try? await outbox.touchAttempt(id: op.id, lastError: sanitized)
             // Kind is public operator state; even sanitized error text remains private.
             // swiftlint:disable:next hllog_public_privacy_interpolation
@@ -344,6 +355,15 @@ extension HLError {
     /// this shape is the SERVER's fault, not the write's, so it must not count
     /// toward the dead-letter budget. (429 surfaces as `.rateLimited`, not
     /// `.server`, so both arms are needed.)
+    /// W1 (1.3.0) — no connection, a lost one, or none in time. Never a verdict
+    /// on the write; the replay re-sends without counting the attempt.
+    var isTransientConnectivity: Bool {
+        switch self {
+        case .offline, .network(.timeout), .network(.connectionLost), .network(.dnsFailure): true
+        default: false
+        }
+    }
+
     var is5xxOrRateLimited: Bool {
         switch self {
         case let .server(status, _, _): (500 ... 599).contains(status)

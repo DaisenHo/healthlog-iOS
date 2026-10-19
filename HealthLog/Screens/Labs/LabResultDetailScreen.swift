@@ -134,6 +134,8 @@ struct LabResultDetailScreen: View {
                         .font(.hlCaption)
                         .foregroundStyle(HLText.tertiary)
                 }
+                // #126 3.5 — converted from what was printed, and the printed range.
+                LabConversionNote(conversion: detail.map(LabConversion.init) ?? LabConversion(summary))
             }
         }
     }

@@ -142,6 +142,11 @@ public struct DashboardMetric: Codable, Sendable, Identifiable, Hashable {
     public let trend: TrendIndicator
     public let sparkline: [Double]
     public let updatedAt: Date?
+    /// #135 (server v1.43) — the verdict applied to this card's `trend`:
+    /// colour the arrow from this. `nil` on an older server (no colour change).
+    public let trendSentiment: TrendSentiment?
+    /// #135 — which way a change of this metric counts for this person.
+    public let direction: TrendVerdict?
 
     public init(
         id: String,
@@ -152,7 +157,9 @@ public struct DashboardMetric: Codable, Sendable, Identifiable, Hashable {
         unit: String,
         trend: TrendIndicator,
         sparkline: [Double],
-        updatedAt: Date?
+        updatedAt: Date?,
+        trendSentiment: TrendSentiment? = nil,
+        direction: TrendVerdict? = nil
     ) {
         self.id = id
         self.kind = kind
@@ -163,10 +170,13 @@ public struct DashboardMetric: Codable, Sendable, Identifiable, Hashable {
         self.trend = trend
         self.sparkline = sparkline
         self.updatedAt = updatedAt
+        self.trendSentiment = trendSentiment
+        self.direction = direction
     }
 
     private enum CodingKeys: String, CodingKey {
         case id, kind, title, titleKey, latestValue, secondaryValue, unit, unitKey, trend, sparkline, updatedAt
+        case trendSentiment, direction
     }
 
     public init(from decoder: any Decoder) throws {
@@ -190,6 +200,9 @@ public struct DashboardMetric: Codable, Sendable, Identifiable, Hashable {
         trend = try c.decode(TrendIndicator.self, forKey: .trend)
         sparkline = try c.decodeIfPresent([Double].self, forKey: .sparkline) ?? []
         updatedAt = try c.decodeIfPresent(Date.self, forKey: .updatedAt)
+        // #135 — additive v1.43 fields; an unreadable block is "not sent".
+        trendSentiment = try? c.decodeIfPresent(TrendSentiment.self, forKey: .trendSentiment)
+        direction = try? c.decodeIfPresent(TrendVerdict.self, forKey: .direction)
         title = try Self.resolve(
             key: c.decodeIfPresent(String.self, forKey: .titleKey),
             legacy: c.decodeIfPresent(String.self, forKey: .title)
@@ -216,6 +229,8 @@ public struct DashboardMetric: Codable, Sendable, Identifiable, Hashable {
         try c.encode(unit, forKey: .unit)
         try c.encode(trend, forKey: .trend)
         try c.encodeIfPresent(updatedAt, forKey: .updatedAt)
+        try c.encodeIfPresent(trendSentiment, forKey: .trendSentiment)
+        try c.encodeIfPresent(direction, forKey: .direction)
     }
 
     /// Build 7 / item 7.3 — decode `kind` with the summary route's short-token

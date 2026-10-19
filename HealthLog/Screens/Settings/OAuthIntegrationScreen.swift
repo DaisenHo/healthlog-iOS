@@ -101,7 +101,13 @@ struct OAuthIntegrationScreen<Store: OAuthIntegrationStoreProtocol & Observable 
     private var statusPill: some View {
         switch store.isConnected {
         case .some(true):
-            HLStatusPill(.connected(label: String(localized: "Connected")))
+            // #139 — a connected provider's pill follows `health.state`; a
+            // server without `health` keeps the plain "Connected".
+            if let health = store.status?.health {
+                HLStatusPill(ConnectionHealthPresentation(health: health).pill)
+            } else {
+                HLStatusPill(.connected(label: String(localized: "Connected")))
+            }
         case .some(false):
             HLStatusPill(.disconnected(label: String(localized: "Not connected")))
         case .none:
@@ -119,6 +125,15 @@ struct OAuthIntegrationScreen<Store: OAuthIntegrationStoreProtocol & Observable 
                 Text("Last sync \(status.lastSync?.formatted(.relative(presentation: .named)) ?? "—")")
                     .font(.hlCaption)
                     .foregroundStyle(HLText.secondary)
+                if let health = status.health {
+                    ConnectionHealthSection(
+                        health: health,
+                        supportedActions: supportedHealthActions,
+                        isWorking: store.isWorking
+                    ) { action in
+                        Task { await perform(action) }
+                    }
+                }
             }
             actions
             if let result = store.lastTestResult {
@@ -266,6 +281,19 @@ struct OAuthIntegrationScreen<Store: OAuthIntegrationStoreProtocol & Observable 
             ) {
                 Task { await beginConnect() }
             }
+        }
+    }
+
+    /// #139 — reconnect is the browser connect flow every provider has; resume
+    /// only where the server has a resume route.
+    private var supportedHealthActions: Set<ConnectionHealth.Action> {
+        store.supportsResume ? [.reconnect, .resume] : [.reconnect]
+    }
+
+    private func perform(_ action: ConnectionHealth.Action) async {
+        switch action {
+        case .reconnect: await beginConnect()
+        case .resume: await store.resume()
         }
     }
 

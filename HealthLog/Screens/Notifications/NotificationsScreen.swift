@@ -98,6 +98,7 @@ struct NotificationsScreen: View {
             preferencesCards
             focusFilterInfoCard
             lockScreenPrivacyCard
+            notificationContentCard
             testPushCard
             systemSettingsCard
             // v0.14.8 W2-SYNCUX — canonical sync-status footer (same

@@ -63,10 +63,13 @@ struct MoodLogRetirementTests {
         #expect(entry.source == "SOME_FUTURE_BRIDGE")
     }
 
-    @Test("the history filter still offers moodLog, and only the five server values")
+    @Test("the history filter still offers moodLog, and only the six server values")
     func filterVocabularyMatchesServer() {
-        // Mirrors `moodSourceEnum` (`src/lib/validations/mood.ts:29-35`) verbatim.
-        #expect(MoodEntrySource.allCases.map(\.rawValue) == ["MANUAL", "MOODLOG", "WEB", "TELEGRAM", "DAYLIO"])
+        // Mirrors `moodSourceEnum` verbatim (`NOTIFICATION` since v1.42.2, #126 P2).
+        #expect(
+            MoodEntrySource.allCases.map(\.rawValue)
+                == ["MANUAL", "MOODLOG", "WEB", "TELEGRAM", "DAYLIO", "NOTIFICATION"]
+        )
         #expect(MoodEntrySource(rawValue: "MOODLOG") == .moodlog)
     }
 
@@ -150,9 +153,8 @@ struct ProviderStatusAbsenceTests {
         )
         #expect(decoded.connected == false)
         #expect(decoded.configured == nil)
-        #expect(decoded.state == nil)
+        #expect(decoded.health == nil, "No health, no invented state (#139)")
         #expect(decoded.lastSync == nil, "No ledger, no invented timestamp")
-        #expect(decoded.isParkedOrError == false, "An absent state is calm, not an error")
     }
 
     @Test("unknown server fields are ignored rather than fatal")
@@ -162,22 +164,27 @@ struct ProviderStatusAbsenceTests {
         """#.utf8)
         let decoded = try JSONDecoder.hlDefault.decode(OAuthIntegrationStatus.self, from: json)
         #expect(decoded.connected == true)
-        #expect(decoded.isParkedOrError == false)
+        #expect(decoded.health == nil)
     }
 
-    @Test("a parked or errored ledger reads as needs-attention, an absent one does not")
+    /// #139 — the needs-attention signal moved from the deprecated ledger
+    /// `state` to `health`. The legacy word alone no longer says anything.
+    @Test("a parked connection reads from health; the legacy state word alone does not")
     func parkedStateIsHonest() throws {
         let parked = try JSONDecoder.hlDefault.decode(
             OAuthIntegrationStatus.self,
+            from: Data(#"""
+            { "connected": true, "state": "parked",
+              "health": { "state": "action_required", "reason": "paused_after_errors", "action": "resume" } }
+            """#.utf8)
+        )
+        #expect(parked.health?.state == .actionRequired)
+
+        let legacyOnly = try JSONDecoder.hlDefault.decode(
+            OAuthIntegrationStatus.self,
             from: Data(#"{ "connected": true, "state": "parked" }"#.utf8)
         )
-        #expect(parked.isParkedOrError == true)
-
-        let unknownState = try JSONDecoder.hlDefault.decode(
-            OAuthIntegrationStatus.self,
-            from: Data(#"{ "connected": true, "state": null }"#.utf8)
-        )
-        #expect(unknownState.isParkedOrError == false)
+        #expect(legacyOnly.health == nil)
     }
 
     @Test("Nightscout status tolerates the same minimal shape")
@@ -188,6 +195,6 @@ struct ProviderStatusAbsenceTests {
         )
         #expect(decoded.connected == false)
         #expect(decoded.configured == nil)
-        #expect(decoded.isParkedOrError == false)
+        #expect(decoded.health == nil)
     }
 }

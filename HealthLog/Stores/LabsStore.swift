@@ -33,12 +33,19 @@ public final class LabsStore {
     public private(set) var biomarkerCatalogError: String?
     /// Server-reported total (for an honest pull-to-refresh count).
     public private(set) var total = 0
+    /// #130 — the per-marker overview (`GET /api/labs/overview`, server
+    /// v1.42.4+), the source of the "by type" list. `nil` on a server without
+    /// the route, before the first load, or offline before it ever loaded; the
+    /// list then falls back to grouping ``labs`` (see ``markerIndex``).
+    public private(set) var markerOverview: LabOverviewResponse?
 
     /// Ids removed optimistically and pending a possible restore (undo window).
     /// Cleared when the undo window expires or the restore lands.
     public private(set) var pendingRestoreIDs: [String] = []
 
-    private let repository: LabsRepository
+    let repository: LabsRepository
+    /// #130 — merged marker id to the marker it went into (``resolvedBiomarker(_:)``).
+    public internal(set) var mergedMarkerRedirects: [String: String] = [:]
     private let undo: UndoCoordinator?
     @ObservationIgnored private var authenticatedSessionRegistry = AuthenticatedSessionLeaseRegistry()
     @ObservationIgnored private var authenticatedSessionOwnerProvider: @Sendable () -> String? = { "_anonymous" }
@@ -76,7 +83,7 @@ public final class LabsStore {
         ownsAuthenticatedSessionRegistry = false
     }
 
-    private func captureAuthenticatedSessionLease() -> AuthenticatedSessionLease? {
+    func captureAuthenticatedSessionLease() -> AuthenticatedSessionLease? {
         guard let ownerID = authenticatedSessionOwnerProvider()?.trimmingCharacters(in: .whitespacesAndNewlines),
               !ownerID.isEmpty else { return nil }
         return authenticatedSessionRegistry.capture(ownerID: ownerID)
@@ -133,6 +140,11 @@ public final class LabsStore {
         // truncated long histories under the by-type index.
         async let labsResult = repository.labs(limit: Self.historyLimit)
         async let catalog = repository.biomarkers()
+        // #130 — the marker list comes from the overview: one entry per marker
+        // over the whole history, so a long history is no longer cut at
+        // `historyLimit`. A third, independent half: a failed overview keeps the
+        // previous one (or the `labs` fallback) and states nothing of its own.
+        async let overviewResult = repository.labsOverview()
         // 14-03 (E1 / the #67 pattern, Labs edition) — two requests, two
         // independently settled halves.
         //
@@ -151,6 +163,10 @@ public final class LabsStore {
         var catalogFailure: Error?
         do { page = try await labsResult } catch { labsFailure = error }
         do { markers = try await catalog } catch { catalogFailure = error }
+        // Outer `nil` = the read failed (keep what we had); `.some(nil)` = the
+        // server has no overview route (fall back to grouping `labs`).
+        var overview: LabOverviewResponse??
+        do { overview = try await overviewResult } catch {}
         // The account fence is unchanged and still comes first: a retired lease
         // publishes NOTHING — not a row, not an error, not a caption. 13-03's
         // unconditional `defer` above still lowers both flags on this exit.
@@ -172,6 +188,7 @@ public final class LabsStore {
         labs = page?.results ?? labs
         total = page.map { $0.meta?.total ?? $0.results.count } ?? total
         biomarkers = markers?.biomarkers ?? biomarkers
+        if let overview { markerOverview = overview }
         publishHalfStatements(
             anyHalfSucceeded: page != nil || markers != nil,
             labsFailure: labsFailure,
@@ -457,6 +474,7 @@ public final class LabsStore {
             return true
         } catch {
             guard sessionLease.isCurrent else { return false }
+            noteMergedMarker(error, oldId: id)
             applyError(error)
             return false
         }
@@ -478,6 +496,7 @@ public final class LabsStore {
             return true
         } catch {
             guard sessionLease.isCurrent else { return false }
+            noteMergedMarker(error, oldId: id)
             applyError(error)
             return false
         }
@@ -487,6 +506,29 @@ public final class LabsStore {
     /// reads this to show an inline `HLFormErrorText`.
     public private(set) var lastErrorWasDuplicateName = false
 
+    /// #130 — dry run or real merge into `target`; redirects recorded only behind the lease.
+    func runBiomarkerMerge(into target: String, sources: [String], dryRun: Bool) async -> BiomarkerMergeResult? {
+        let picked = Array(sources.filter { $0 != target }.prefix(BiomarkerMergeRequest.maxSources))
+        guard !picked.isEmpty, let sessionLease = captureAuthenticatedSessionLease() else { return nil }
+        do {
+            let result = try await repository.mergeBiomarkers(into: target, sourceIds: picked, dryRun: dryRun)
+            try sessionLease.requireCurrent()
+            if !dryRun { recordMerge(into: target, sources: picked) }
+            return result
+        } catch {
+            guard sessionLease.isCurrent else { return nil }
+            applyError(error)
+            return nil
+        }
+    }
+
+    /// #130 — one marker's whole history, returned (never published) behind the lease.
+    public func fetchHistory(biomarkerId: String?, analyte: String) async -> [LabResultDTO]? {
+        guard let lease = captureAuthenticatedSessionLease() else { return nil }
+        let rows = try? await repository.markerHistory(biomarkerId: biomarkerId, analyte: analyte)
+        return lease.isCurrent ? rows : nil
+    }
+
     // MARK: - Logout
 
     /// Drop every in-memory snapshot on logout so the next user never inherits
@@ -495,6 +537,7 @@ public final class LabsStore {
         rotateOwnedAuthenticatedSessionBoundary()
         labs = []
         biomarkers = []
+        markerOverview = nil
         pendingRestoreIDs = []
         total = 0
         isLoading = false
@@ -505,68 +548,25 @@ public final class LabsStore {
         // 14-03 — the catalog's own failure slot is PHI-adjacent state like the
         // rest of this list and leaves with it.
         biomarkerCatalogError = nil
+        mergedMarkerRedirects = [:]
     }
 
     /// Test-only — populate the in-memory lab + biomarker snapshots without a
     /// network round-trip, so the logout-wipe suite can prove `clearOnLogout`
     /// purges the PHI. Production reaches this state only through ``load()``.
-    func seedForTesting(labs: [LabResultDTO], biomarkers: [BiomarkerDTO] = [], total: Int? = nil) {
+    func seedForTesting(
+        labs: [LabResultDTO],
+        biomarkers: [BiomarkerDTO] = [],
+        total: Int? = nil,
+        overview: LabOverviewResponse? = nil
+    ) {
         self.labs = labs
         self.biomarkers = biomarkers
         self.total = total ?? labs.count
+        markerOverview = overview
     }
 
     // MARK: - Private
-
-    /// Build an optimistic in-memory lab row for an offline-queued create
-    /// (audit H-2). Mirrors `AllergiesStore.optimisticAllergy`: carries a
-    /// temporary `optimistic-…` id so it never collides with a server id, and a
-    /// NEUTRAL `.unknown` range verdict because the server has not resolved one
-    /// yet (the store never invents a range). The next online `load()` replaces
-    /// the whole snapshot with the server rows (under the same idempotency key),
-    /// so the placeholder is transient.
-    private static func optimisticLab(from body: LabResultCreate) -> LabResultDTO {
-        let now = ISO8601DateFormatter().string(from: Date.now)
-        return LabResultDTO(
-            id: "optimistic-\(UUID().uuidString)",
-            biomarkerId: body.biomarkerId,
-            panel: body.panel,
-            analyte: body.analyte ?? "",
-            value: body.value,
-            // Item 1.5 — carry the qualitative result into the optimistic row so
-            // an offline-queued "negativ" doesn't show as an empty measurement
-            // until the next online load.
-            valueText: body.valueText,
-            unit: body.unit ?? "",
-            referenceLow: body.referenceLow,
-            referenceHigh: body.referenceHigh,
-            takenAt: body.takenAt,
-            source: body.source ?? "MANUAL",
-            hasNote: !(body.note ?? "").isEmpty,
-            rangeStatus: .unknown,
-            createdAt: now,
-            updatedAt: now
-        )
-    }
-
-    /// Build an optimistic in-memory catalog row for an offline-queued biomarker
-    /// create (audit H-2). Same transient-placeholder contract as
-    /// ``optimisticLab(from:)``.
-    private static func optimisticBiomarker(from body: BiomarkerCreate) -> BiomarkerDTO {
-        let now = ISO8601DateFormatter().string(from: Date.now)
-        return BiomarkerDTO(
-            id: "optimistic-\(UUID().uuidString)",
-            name: body.name,
-            unit: body.unit,
-            lowerBound: body.lowerBound,
-            upperBound: body.upperBound,
-            panel: body.panel,
-            hasContext: !(body.context ?? "").isEmpty,
-            context: body.context,
-            createdAt: now,
-            updatedAt: now
-        )
-    }
 
     /// 14-03 — end the biomarker catalogue's own statement. A named call so
     /// the two places that must end it (a successful catalogue re-read, and the
@@ -585,6 +585,7 @@ public final class LabsStore {
             isDisabled = true
             labs = []
             biomarkers = []
+            markerOverview = nil
             lastError = nil
             lastErrorWasDuplicateName = false
             // 14-03 — a switched-off module is not a catalogue failure; the
@@ -594,6 +595,6 @@ public final class LabsStore {
         }
         lastErrorWasDuplicateName = LabsRepository.isDuplicateName(error)
         HLLog.ui.error("Labs write failed: \(LogSanitizer.redact(String(describing: error)))")
-        lastError = HLError.userFacingText(for: error)
+        lastError = LabsRefusal.sentence(for: error) ?? HLError.userFacingText(for: error)
     }
 }

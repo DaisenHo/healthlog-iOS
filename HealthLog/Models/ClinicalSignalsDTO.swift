@@ -73,22 +73,36 @@ public struct InsightsHealthStatusDTO: Codable, Sendable, Equatable {
         public let high: Double
         /// Which side of the band the value falls on — `"above"` / `"below"`.
         public let direction: String
+        /// #126 P2 (v1.40.3) — what `low`/`high` describe: the usual whole day
+        /// (`day`) or the usual range for this time of day (`sameHours`, a day
+        /// still in progress). Raw text so a new word never drops the row;
+        /// `nil` from a server before v1.40.3. Decoded now, worded later (X3).
+        public let basis: String?
 
         public var id: String {
             type
         }
 
-        public init(type: String, value: Double, center: Double, low: Double, high: Double, direction: String) {
+        public init(
+            type: String,
+            value: Double,
+            center: Double,
+            low: Double,
+            high: Double,
+            direction: String,
+            basis: String? = nil
+        ) {
             self.type = type
             self.value = value
             self.center = center
             self.low = low
             self.high = high
             self.direction = direction
+            self.basis = basis
         }
 
         private enum CodingKeys: String, CodingKey {
-            case type, value, center, low, high, direction
+            case type, value, center, low, high, direction, basis
         }
 
         public init(from decoder: Decoder) throws {
@@ -99,6 +113,7 @@ public struct InsightsHealthStatusDTO: Codable, Sendable, Equatable {
             low = try c.decodeIfPresent(Double.self, forKey: .low) ?? 0
             high = try c.decodeIfPresent(Double.self, forKey: .high) ?? 0
             direction = try c.decodeIfPresent(String.self, forKey: .direction) ?? ""
+            basis = try? c.decodeIfPresent(String.self, forKey: .basis)
         }
 
         /// The iOS metric for this server token, or `nil` for an unknown token

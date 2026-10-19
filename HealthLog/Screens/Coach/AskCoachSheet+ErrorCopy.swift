@@ -158,6 +158,8 @@ extension AskCoachSheet {
             String(localized: "No AI provider is available. Set one up in Settings → Assistant.")
         case .consentRequired:
             String(localized: "The Coach needs your consent to use external AI. Grant it in Settings → Assistant.")
+        case .usageLevel:
+            String(localized: "ai.reason.usageLevel")
         case .checkFailed, .unknown:
             String(localized: "The Coach isn't available right now. Try again later.")
         }

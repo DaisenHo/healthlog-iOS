@@ -18,7 +18,9 @@ import SwiftUI
 /// platforms) — surfaced as a placeholder, not removed, so the IA matches
 /// web column-for-column.
 struct SettingsAboutScreen: View {
-    @Environment(\.appContainer) private var container
+    @Environment(\.appContainer) var container
+    /// #134 — "Support-Info kopieren" (`SettingsAboutScreen+SupportInfo.swift`).
+    @State var supportInfoState: SupportInfoCopyState = .idle
 
     var body: some View {
         HLSettingsPage(title: "About") {
@@ -29,6 +31,7 @@ struct SettingsAboutScreen: View {
             identityCard
             disclaimerCard
             linksCard
+            supportCard
             updatesCard
         }
         .navigationTitle("About")

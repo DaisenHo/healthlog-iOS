@@ -50,25 +50,45 @@ extension AppContainer {
     /// Not-applicable medications (`applicable: false`, NO_LOCAL_SCHEDULE)
     /// carry zero placeholders and never count. The server issue for an
     /// account-level rate is in the B2 report.
+    ///
+    /// #126 P2 (server v1.42.0) — the server now publishes that account rate
+    /// (`meta.aggregate`, weighted by expected doses). Its 7-day figure wins
+    /// whenever it was built from exactly the applicable medications the store
+    /// shows; the single-medication rule above stays the fallback for an older
+    /// server.
     static func aggregateServerCompliancePercent(
         _ store: MedicationsStore
     ) -> Int? {
-        serverCompliancePercent(
-            activeIDs: Set(store.medications.filter(\.active).map(\.id)),
-            snapshots: store.complianceCardSnapshots
+        let activeIDs = Set(store.medications.filter(\.active).map(\.id))
+        return serverCompliancePercent(
+            activeIDs: activeIDs,
+            snapshots: store.complianceCardSnapshots,
+            aggregate: MedicationComplianceAggregateMirror.shared.aggregate(
+                matching: applicableIDs(activeIDs: activeIDs, snapshots: store.complianceCardSnapshots)
+            )
         )
     }
 
     /// Pure core of ``aggregateServerCompliancePercent(_:)``.
     static func serverCompliancePercent(
         activeIDs: Set<String>,
-        snapshots: [String: MedicationsStore.ComplianceCardSnapshot]
+        snapshots: [String: MedicationsStore.ComplianceCardSnapshot],
+        aggregate: MedicationComplianceAggregate? = nil
     ) -> Int? {
+        if let aggregate { return aggregate.compliance7.rate }
         let rates: [Int] = snapshots
             .filter { activeIDs.contains($0.key) && $0.value.applicable }
             .compactMap { $0.value.displayRows.first?.rate }
         guard rates.count == 1 else { return nil }
         return rates.first
+    }
+
+    /// The active medications the server calls applicable, by id.
+    static func applicableIDs(
+        activeIDs: Set<String>,
+        snapshots: [String: MedicationsStore.ComplianceCardSnapshot]
+    ) -> Set<String> {
+        Set(snapshots.filter { activeIDs.contains($0.key) && $0.value.applicable }.keys)
     }
 
     /// **v0.10.0 W-Mood-B** — drive the interactive mood widget glance from

@@ -150,11 +150,17 @@ struct SettingsIntegrationsScreen: View {
     /// state so no false "Connected" flashes. Standalone (no server) renders
     /// nothing.
     @ViewBuilder
-    private func connectedPill(isConnected: Bool?) -> some View {
+    private func connectedPill(isConnected: Bool?, health: ConnectionHealth? = nil) -> some View {
         if backend.hasServer {
             switch isConnected {
             case .some(true):
-                HLStatusPill(.connected(label: String(localized: "Connected")))
+                // #139 — a connected provider reads its state from `health`;
+                // without it (server before v1.42.4) the plain "Connected".
+                if let health {
+                    HLStatusPill(ConnectionHealthPresentation(health: health).pill)
+                } else {
+                    HLStatusPill(.connected(label: String(localized: "Connected")))
+                }
             case .some(false):
                 HLStatusPill(.disconnected(label: String(localized: "Not connected")))
             case .none:
@@ -181,7 +187,7 @@ struct SettingsIntegrationsScreen: View {
             icon: "link.circle.fill",
             title: "Withings",
             subtitle: "Import vitals and activity from your Withings account.",
-            trailing: { connectedPill(isConnected: withingsConnected) },
+            trailing: { connectedPill(isConnected: withingsConnected, health: withings.status?.health) },
             content: { withingsRow }
         )
     }
@@ -200,7 +206,7 @@ struct SettingsIntegrationsScreen: View {
             icon: "link.circle.fill",
             title: "WHOOP",
             subtitle: "Import recovery, strain and sleep from your WHOOP account.",
-            trailing: { connectedPill(isConnected: whoopConnected) },
+            trailing: { connectedPill(isConnected: whoopConnected, health: whoop.status?.health) },
             content: { whoopRow }
         )
     }
@@ -219,7 +225,7 @@ struct SettingsIntegrationsScreen: View {
             icon: "moon.fill",
             title: "Oura",
             subtitle: "Import sleep, readiness and activity from your Oura account.",
-            trailing: { connectedPill(isConnected: oura.isConnected) },
+            trailing: { connectedPill(isConnected: oura.isConnected, health: oura.status?.health) },
             content: {
                 integrationRow(label: "Open Oura", identifier: "settings.integrations.ouraRow") {
                     OAuthIntegrationScreen<OuraIntegrationStore>(
@@ -236,7 +242,7 @@ struct SettingsIntegrationsScreen: View {
             icon: "figure.run",
             title: "Polar",
             subtitle: "Import workouts, heart rate and recovery from your Polar account.",
-            trailing: { connectedPill(isConnected: polar.isConnected) },
+            trailing: { connectedPill(isConnected: polar.isConnected, health: polar.status?.health) },
             content: {
                 integrationRow(label: "Open Polar", identifier: "settings.integrations.polarRow") {
                     OAuthIntegrationScreen<PolarIntegrationStore>(
@@ -253,7 +259,7 @@ struct SettingsIntegrationsScreen: View {
             icon: "figure.walk",
             title: "Fitbit",
             subtitle: "Import steps, sleep and heart rate from your Fitbit account.",
-            trailing: { connectedPill(isConnected: fitbit.isConnected) },
+            trailing: { connectedPill(isConnected: fitbit.isConnected, health: fitbit.status?.health) },
             content: {
                 integrationRow(label: "Open Fitbit", identifier: "settings.integrations.fitbitRow") {
                     OAuthIntegrationScreen<FitbitIntegrationStore>(
@@ -270,7 +276,7 @@ struct SettingsIntegrationsScreen: View {
             icon: "figure.outdoor.cycle",
             title: "Strava",
             subtitle: "Import workouts and activities from your Strava account.",
-            trailing: { connectedPill(isConnected: strava.isConnected) },
+            trailing: { connectedPill(isConnected: strava.isConnected, health: strava.status?.health) },
             content: {
                 integrationRow(label: "Open Strava", identifier: "settings.integrations.stravaRow") {
                     OAuthIntegrationScreen<StravaIntegrationStore>(
@@ -287,7 +293,7 @@ struct SettingsIntegrationsScreen: View {
             icon: "drop.circle.fill",
             title: "Nightscout",
             subtitle: "Connect your own Nightscout instance for continuous glucose data.",
-            trailing: { connectedPill(isConnected: nightscout.isConnected) },
+            trailing: { connectedPill(isConnected: nightscout.isConnected, health: nightscout.status?.health) },
             content: {
                 integrationRow(label: "Open Nightscout", identifier: "settings.integrations.nightscoutRow") {
                     NightscoutIntegrationScreen()

@@ -78,8 +78,6 @@ struct HealthKitSkippedRowReoffer: Sendable {
 struct HealthKitSkippedRowSnapshot: Sendable, Equatable {
     let rows: [HealthKitSkippedRow]
     let overflow: Int
-    /// INT-A — the account's outbox rows the replay parked (waiting, not lost).
-    var parkedOutboxRows: Int = 0
 
     var countsByIdentifier: [String: Int] {
         rows.reduce(into: [:]) { $0[$1.hkIdentifier, default: 0] += 1 }
