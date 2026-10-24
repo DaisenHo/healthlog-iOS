@@ -2,6 +2,8 @@
 
 Before changing this repository, read `CONTRIBUTING-AI.md` and the linked guidance relevant to the task.
 
+Before planning or implementing the personal health-log milestones, follow `docs/project/README.md` to the shared specification and M1 plan.
+
 ## Agent skills
 
 ### Issue tracker
