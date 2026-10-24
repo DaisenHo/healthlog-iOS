@@ -50,7 +50,7 @@ struct DocumentBulkBar: View {
             Button {
                 run {
                     await store.bulkDelete { count in
-                        let template = String(localized: "documents.bulk.deleted")
+                        let template = AppLocale.string("documents.bulk.deleted")
                         return String(format: template, count)
                     }
                 }
@@ -115,7 +115,7 @@ struct DocumentBulkBar: View {
     }
 
     private var selectionLabel: String {
-        let template = String(localized: "documents.selection.count")
+        let template = AppLocale.string("documents.selection.count")
         return String(format: template, store.selection.count)
     }
 

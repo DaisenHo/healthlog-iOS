@@ -253,16 +253,16 @@ private struct RecoveryRingTile: View {
     private var trendLine: String? {
         guard let delta = item.trendDelta, delta != 0, let rounded = Int(safeServer: delta) else { return nil }
         let signed = rounded > 0 ? "+\(rounded)" : "\(rounded)"
-        return String(localized: "insights.recovery.trend \(signed)")
+        return AppLocale.string("insights.recovery.trend \(signed)")
     }
 
     private var accessibilityLabel: String {
         let title = RecoveryFamilyLabels.label(for: item)
         guard let score = item.score, let safeScore = Int(safeServer: score) else {
-            return String(localized: "\(title): not enough data yet")
+            return AppLocale.string("\(title): not enough data yet")
         }
         let scoreText = "\(safeScore)"
-        return String(localized: "\(title) \(scoreText) of 100")
+        return AppLocale.string("\(title) \(scoreText) of 100")
     }
 }
 
@@ -293,12 +293,12 @@ enum RecoveryFamilyLabels {
             return serverLabel
         }
         switch item.id.uppercased() {
-        case "STRAIN", "STRAIN_SCORE": return String(localized: "insights.recovery.label.strain")
-        case "CARDIO_LOAD", "TRAINING_LOAD": return String(localized: "insights.recovery.label.trainingLoad")
-        case "ANS_CHARGE", "AUTONOMIC_CHARGE": return String(localized: "insights.recovery.label.autonomicCharge")
-        case "RECOVERY", "RECOVERY_SCORE": return String(localized: "insights.recovery.label.recovery")
-        case "HEART_RATE", "RESTING_HEART_RATE": return String(localized: "insights.recovery.label.heartRate")
-        case "ACTIVE_ENERGY", "ENERGY": return String(localized: "insights.recovery.label.energy")
+        case "STRAIN", "STRAIN_SCORE": return AppLocale.string("insights.recovery.label.strain")
+        case "CARDIO_LOAD", "TRAINING_LOAD": return AppLocale.string("insights.recovery.label.trainingLoad")
+        case "ANS_CHARGE", "AUTONOMIC_CHARGE": return AppLocale.string("insights.recovery.label.autonomicCharge")
+        case "RECOVERY", "RECOVERY_SCORE": return AppLocale.string("insights.recovery.label.recovery")
+        case "HEART_RATE", "RESTING_HEART_RATE": return AppLocale.string("insights.recovery.label.heartRate")
+        case "ACTIVE_ENERGY", "ENERGY": return AppLocale.string("insights.recovery.label.energy")
         default:
             // Unknown server id — render its raw token rather than a blank row.
             return item.id

@@ -56,9 +56,9 @@ public struct RangeBand: Sendable, Equatable {
     /// share one format.
     public var targetLine: String {
         if let unit, !unit.isEmpty {
-            String(localized: "Target \(lowerLabel)–\(upperLabel) \(unit)")
+            AppLocale.string("Target \(lowerLabel)–\(upperLabel) \(unit)")
         } else {
-            String(localized: "Target \(lowerLabel)–\(upperLabel)")
+            AppLocale.string("Target \(lowerLabel)–\(upperLabel)")
         }
     }
 }
@@ -98,7 +98,7 @@ public struct RangeBandRow: View {
         let tone = RangeBand.tone(pct: band.pctInRange).color
         VStack(alignment: .leading, spacing: HLSpace.xs) {
             HStack {
-                Text(String(localized: "In range"))
+                Text(AppLocale.string("In range"))
                     .font(.hlCaption)
                     .foregroundStyle(HLText.secondary)
                 Spacer()
@@ -131,7 +131,7 @@ public struct RangeBandRow: View {
                 .lineLimit(1)
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(String(localized: "\(pct) of 30 days in target range"))
+        .accessibilityLabel(AppLocale.string("\(pct) of 30 days in target range"))
     }
 }
 

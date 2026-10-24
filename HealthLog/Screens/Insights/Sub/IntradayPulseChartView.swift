@@ -177,11 +177,11 @@ struct IntradayPulseChartView: View {
             )
         }
         return HLChartAX.singleSeries(
-            title: String(localized: "insights.intraday.title"),
+            title: AppLocale.string("insights.intraday.title"),
             summary: accessibilitySummary,
-            xAxisTitle: String(localized: "Time"),
-            yAxisTitle: String(localized: "Pulse"),
-            seriesName: String(localized: "Pulse"),
+            xAxisTitle: AppLocale.string("Time"),
+            yAxisTitle: AppLocale.string("Pulse"),
+            seriesName: AppLocale.string("Pulse"),
             points: triples,
             yValueLabel: { value in "\(Int(value.rounded())) bpm" }
         )
@@ -194,7 +194,7 @@ struct IntradayPulseChartView: View {
         guard let first = day.series.min(by: { $0.startMinute < $1.startMinute }),
               let last = day.series.max(by: { $0.startMinute < $1.startMinute }) else
         {
-            return String(localized: "insights.intraday.empty")
+            return AppLocale.string("insights.intraday.empty")
         }
         let readings = day.series.reduce(0) { $0 + $1.count }
         let span = HLNumberFormat.range(
@@ -202,10 +202,8 @@ struct IntradayPulseChartView: View {
             IntradayPulseMath.minuteLabel(last.startMinute + day.bucketMinutes)
         )
         if let baseline = day.drawableBaseline {
-            return String(
-                localized: "insights.intraday.a11y.withBaseline \(readings) \(span) \(Int(baseline.rounded()))"
-            )
+            return AppLocale.string("insights.intraday.a11y.withBaseline \(readings) \(span) \(Int(baseline.rounded()))")
         }
-        return String(localized: "insights.intraday.a11y \(readings) \(span)")
+        return AppLocale.string("insights.intraday.a11y \(readings) \(span)")
     }
 }

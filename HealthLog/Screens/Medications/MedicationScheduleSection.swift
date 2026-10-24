@@ -74,11 +74,11 @@ struct ScheduleSection: View {
         var seen = Set<String>()
         return schedule.entries
             .compactMap(\.doseWindows)
-            .flatMap { $0 }
+            .flatMap(\.self)
             .filter { seen.insert($0.timeOfDay).inserted }
             .map { window in
                 "\(window.timeOfDay): " + String(
-                    format: String(localized: "med.schedule.dose_window"),
+                    format: AppLocale.string("med.schedule.dose_window"),
                     window.start,
                     window.end
                 )
@@ -93,14 +93,14 @@ struct ScheduleSection: View {
         let hasTimes = !schedule.times.isEmpty
         let hasWeekdays = !(schedule.weekdays?.isEmpty ?? true)
         if !hasTimes, !hasWeekdays {
-            return String(localized: "No schedule configured.")
+            return AppLocale.string("No schedule configured.")
         }
         let cadence = if schedule.intervalWeeks > 1 {
-            String(format: String(localized: "Every %d weeks"), schedule.intervalWeeks)
+            String(format: AppLocale.string("Every %d weeks"), schedule.intervalWeeks)
         } else if hasWeekdays {
-            String(localized: "Weekly")
+            AppLocale.string("Weekly")
         } else {
-            String(localized: "Daily")
+            AppLocale.string("Daily")
         }
         var parts = [cadence]
         if hasWeekdays, let days = schedule.weekdays {
@@ -125,11 +125,11 @@ struct ScheduleSection: View {
 
     /// v0.11 perf: hoist the weekday-symbol formatter to a single shared
     /// instance instead of allocating a `DateFormatter` on every row render.
-    private static let weekdayFormatter: DateFormatter = {
+    private static var weekdayFormatter: DateFormatter {
         let formatter = DateFormatter()
-        formatter.locale = Locale.current
+        formatter.locale = AppLocale.shared.current
         return formatter
-    }()
+    }
 
     private func weekdayLabel(_ days: Set<Weekday>) -> String {
         let sorted = days.sorted { $0.rawValue < $1.rawValue }

@@ -70,7 +70,7 @@ public final class CoachFactsStore {
         } catch let err as HLError {
             error = err.userFacingDescription
         } catch {
-            self.error = String(localized: "Couldn't load what the assistant knows. Please try again.")
+            self.error = AppLocale.string("Couldn't load what the assistant knows. Please try again.")
         }
     }
 
@@ -88,7 +88,7 @@ public final class CoachFactsStore {
         } catch let err as HLError {
             error = err.userFacingDescription
         } catch {
-            self.error = String(localized: "Couldn't forget that. Please try again.")
+            self.error = AppLocale.string("Couldn't forget that. Please try again.")
         }
     }
 
@@ -104,7 +104,7 @@ public final class CoachFactsStore {
         } catch let err as HLError {
             error = err.userFacingDescription
         } catch {
-            self.error = String(localized: "Couldn't forget everything. Please try again.")
+            self.error = AppLocale.string("Couldn't forget everything. Please try again.")
         }
     }
 

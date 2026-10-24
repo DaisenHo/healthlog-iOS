@@ -49,25 +49,25 @@ public enum HeroItemKind: String, Codable, Sendable, CaseIterable, Hashable {
     public var label: String {
         switch self {
         case .coachCheckin:
-            String(localized: "Coach check-ins", comment: "Today hero item kind — coach_checkin")
+            AppLocale.string(LocalizedStringResource("Coach check-ins", comment: "Today hero item kind — coach_checkin"))
         case .doseWindow:
-            String(localized: "Medication doses", comment: "Today hero item kind — dose_window")
+            AppLocale.string(LocalizedStringResource("Medication doses", comment: "Today hero item kind — dose_window"))
         case .preventiveCare:
             // No `comment:` on purpose — this key already exists in the catalogue
             // (MoreScreen hub row, same word, same German value "Vorsorge"), and
             // a second call site introducing a comment would only churn the
             // catalogue entry.
-            String(localized: "Preventive care")
+            AppLocale.string("Preventive care")
         case .syncIssue:
-            String(localized: "Sync issues", comment: "Today hero item kind — sync_issue")
+            AppLocale.string(LocalizedStringResource("Sync issues", comment: "Today hero item kind — sync_issue"))
         case .milestone:
-            String(localized: "Milestones", comment: "Today hero item kind — milestone")
+            AppLocale.string(LocalizedStringResource("Milestones", comment: "Today hero item kind — milestone"))
         case .ecgNewRecording:
-            String(localized: "New ECG recordings", comment: "Today hero item kind — ecg_new_recording")
+            AppLocale.string(LocalizedStringResource("New ECG recordings", comment: "Today hero item kind — ecg_new_recording"))
         case .tensionWindow:
-            String(localized: "Tension windows", comment: "Today hero item kind — tension_window")
+            AppLocale.string(LocalizedStringResource("Tension windows", comment: "Today hero item kind — tension_window"))
         case .sameTimeBaseline:
-            String(localized: "Same-time activity", comment: "Today hero item kind — same_time_baseline")
+            AppLocale.string(LocalizedStringResource("Same-time activity", comment: "Today hero item kind — same_time_baseline"))
         }
     }
 }

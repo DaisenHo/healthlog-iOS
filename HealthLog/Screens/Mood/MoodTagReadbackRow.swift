@@ -39,9 +39,9 @@ enum MoodRatedQuality {
     /// Localized one-word read-out ("schlecht"/"mittel"/"gut").
     var localizedWord: String {
         switch self {
-        case .bad: String(localized: "mood.ratedFactor.quality.bad")
-        case .mid: String(localized: "mood.ratedFactor.quality.mid")
-        case .good: String(localized: "mood.ratedFactor.quality.good")
+        case .bad: AppLocale.string("mood.ratedFactor.quality.bad")
+        case .mid: AppLocale.string("mood.ratedFactor.quality.mid")
+        case .good: AppLocale.string("mood.ratedFactor.quality.good")
         }
     }
 }
@@ -128,9 +128,9 @@ struct MoodTagReadbackRow: View {
 
     private var a11ySummary: String {
         let rated = ratedChips
-            .map { String(localized: "mood.readback.ratedValue \($0.label) \($0.qualityWord)") }
+            .map { AppLocale.string("mood.readback.ratedValue \($0.label) \($0.qualityWord)") }
             .joined(separator: ", ")
-        let tags = String(localized: "mood.readback.tags \(chips.map(\.label).joined(separator: ", "))")
+        let tags = AppLocale.string("mood.readback.tags \(chips.map(\.label).joined(separator: ", "))")
         if ratedChips.isEmpty { return tags }
         if chips.isEmpty { return rated }
         return "\(rated), \(tags)"

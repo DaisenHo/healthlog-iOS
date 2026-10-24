@@ -96,14 +96,14 @@ struct CustomMetricDetailScreen: View {
         ) {
             InsightsHeaderActionCircle(
                 systemImage: "plus",
-                accessibilityLabelText: String(localized: "customMetric.detail.logValue"),
+                accessibilityLabelText: AppLocale.string("customMetric.detail.logValue"),
                 accessibilityIdentifier: "customMetric.detail.add"
             ) {
                 showEntrySheet = true
             }
             InsightsHeaderActionCircle(
                 systemImage: "slider.horizontal.3",
-                accessibilityLabelText: String(localized: "customMetric.detail.editDefinition"),
+                accessibilityLabelText: AppLocale.string("customMetric.detail.editDefinition"),
                 accessibilityIdentifier: "customMetric.detail.gear"
             ) {
                 showEditor = true

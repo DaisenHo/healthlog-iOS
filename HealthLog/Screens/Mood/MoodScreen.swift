@@ -70,12 +70,12 @@ struct MoodScreen: View {
     /// peeking so the surface still reads as the mood-capture sheet.
     private static let annotateDetent: PresentationDetent = .fraction(0.92)
 
-    private static let dateHeaderFormatter: DateFormatter = {
+    private static var dateHeaderFormatter: DateFormatter {
         let f = DateFormatter()
-        f.locale = .autoupdatingCurrent
+        f.locale = AppLocale.shared.current
         f.setLocalizedDateFormatFromTemplate("EEEEdMMMMHHmm")
         return f
-    }()
+    }
 
     var body: some View {
         NavigationStack {
@@ -235,7 +235,7 @@ struct MoodScreen: View {
                 }
             }
 
-            HLButton(String(localized: "mood.annotate.done"), variant: .restrained) {
+            HLButton(AppLocale.string("mood.annotate.done"), variant: .restrained) {
                 Task { await commitAnnotation() }
             }
             .accessibilityIdentifier("mood.annotate.done")
@@ -258,7 +258,7 @@ struct MoodScreen: View {
     /// panel and reclaims its vertical space.
     private var noteRow: some View {
         HStack(alignment: .center, spacing: HLSpace.sm) {
-            TextField(String(localized: "mood.annotate.note.placeholder"), text: $annotateNote, axis: .vertical)
+            TextField(AppLocale.string("mood.annotate.note.placeholder"), text: $annotateNote, axis: .vertical)
                 .lineLimit(1 ... 3)
                 .focused($annotateNoteFocused)
                 .textFieldStyle(.plain)
@@ -468,7 +468,7 @@ struct MoodScreen: View {
         NavigationStack {
             VStack {
                 DatePicker(
-                    String(localized: "Date & time"),
+                    AppLocale.string("Date & time"),
                     selection: $selectedDate,
                     in: Self.allowedDateRange,
                     displayedComponents: [.date, .hourAndMinute]
@@ -481,10 +481,10 @@ struct MoodScreen: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(String(localized: "Done")) { showDatePicker = false }
+                    Button(AppLocale.string("Done")) { showDatePicker = false }
                 }
                 ToolbarItem(placement: .topBarLeading) {
-                    Button(String(localized: "Today")) {
+                    Button(AppLocale.string("Today")) {
                         selectedDate = .now
                     }
                 }
@@ -516,17 +516,17 @@ enum MoodCopy {
     /// it is the neutral "Mood unknown" chip, which is the whole visible shape
     /// of the sentinel on this screen.
     static func levelLabel(_ score: Int?) -> String {
-        guard let score else { return String(localized: "mood.level.unknown") }
+        guard let score else { return AppLocale.string("mood.level.unknown") }
         return scoreLabel(score)
     }
 
     static func scoreLabel(_ score: Int) -> String {
         switch max(1, min(5, score)) {
-        case 1: String(localized: "Awful")
-        case 2: String(localized: "Bad")
-        case 3: String(localized: "mood.score.ok")
-        case 4: String(localized: "Good")
-        default: String(localized: "Great")
+        case 1: AppLocale.string("Awful")
+        case 2: AppLocale.string("Bad")
+        case 3: AppLocale.string("mood.score.ok")
+        case 4: AppLocale.string("Good")
+        default: AppLocale.string("Great")
         }
     }
 
@@ -543,11 +543,11 @@ enum MoodCopy {
     /// the screen reader announces the scale clearly.
     static func accessibilityLabel(for score: Int) -> String {
         switch max(1, min(5, score)) {
-        case 1: String(localized: "Very bad")
-        case 2: String(localized: "Bad")
-        case 3: String(localized: "Neutral")
-        case 4: String(localized: "Good")
-        default: String(localized: "Very good")
+        case 1: AppLocale.string("Very bad")
+        case 2: AppLocale.string("Bad")
+        case 3: AppLocale.string("Neutral")
+        case 4: AppLocale.string("Good")
+        default: AppLocale.string("Very good")
         }
     }
 }
@@ -561,12 +561,13 @@ struct MoodEntryRow: View {
     /// to the bundled catalog the store seeds with.
     @Environment(MoodTagCatalogStore.self) private var tagCatalog
 
-    private static let relativeFormatter: RelativeDateTimeFormatter = {
+    private static var relativeFormatter: RelativeDateTimeFormatter {
         let f = RelativeDateTimeFormatter()
         f.dateTimeStyle = .named
         f.unitsStyle = .abbreviated
+        f.locale = AppLocale.shared.current
         return f
-    }()
+    }
 
     private var displayedTags: [String] {
         entry.tags.filter { !$0.hasPrefix("note:") }

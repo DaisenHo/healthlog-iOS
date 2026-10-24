@@ -77,9 +77,9 @@ struct ReferenceLineStyle: Equatable {
 
     var accessibilityLabel: String {
         switch line.kind {
-        case .upper: String(localized: "chart.referenceLine.a11y.upper")
-        case .lower: String(localized: "chart.referenceLine.a11y.lower")
-        case .unknown: String(localized: "chart.referenceLine.a11y.line")
+        case .upper: AppLocale.string("chart.referenceLine.a11y.upper")
+        case .lower: AppLocale.string("chart.referenceLine.a11y.lower")
+        case .unknown: AppLocale.string("chart.referenceLine.a11y.line")
         }
     }
 

@@ -264,8 +264,8 @@ import SwiftUI
                 if let sentAt = testSentAt {
                     Text(
                         String(
-                            format: String(localized: "Sent at %@ — should appear shortly."),
-                            sentAt.formatted(.dateTime.hour().minute().second())
+                            format: AppLocale.string("Sent at %@ — should appear shortly."),
+                            sentAt.formatted(.dateTime.hour().minute().second().locale(AppLocale.shared.current))
                         )
                     )
                     .font(.hlCaption)
@@ -307,14 +307,14 @@ import SwiftUI
         private var medsLastRefreshLabel: String {
             switch medsLastRefreshOutcome {
             case .notYetAttempted:
-                String(localized: "Not loaded yet")
+                AppLocale.string("Not loaded yet")
             case let .success(at):
                 String(
-                    format: String(localized: "Loaded at %@"),
-                    at.formatted(.dateTime.hour().minute().second())
+                    format: AppLocale.string("Loaded at %@"),
+                    at.formatted(.dateTime.hour().minute().second().locale(AppLocale.shared.current))
                 )
             case let .failure(message):
-                String(localized: "notifications.diagnostics.error \(message)")
+                AppLocale.string("notifications.diagnostics.error \(message)")
             }
         }
 
@@ -355,8 +355,8 @@ import SwiftUI
 
         private func sendTestNotification() async {
             let content = UNMutableNotificationContent()
-            content.title = String(localized: "notifications.diagnostics.title")
-            content.body = String(localized: "Test banner — if you see this, notifications work.")
+            content.title = AppLocale.string("notifications.diagnostics.title")
+            content.body = AppLocale.string("Test banner — if you see this, notifications work.")
             content.sound = .default
             let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
             let id = "meds.diagnostics.test.\(UUID().uuidString)"
@@ -371,7 +371,7 @@ import SwiftUI
                 HLLog.notifications.info("Diagnostics test banner queued id=\(id, privacy: .public)")
                 await refresh()
             } catch {
-                testError = String(localized: "notifications.diagnostics.scheduleError \(error.localizedDescription)")
+                testError = AppLocale.string("notifications.diagnostics.scheduleError \(error.localizedDescription)")
                 HLLog.notifications.error(
                     "Diagnostics test banner failed: \(LogSanitizer.redact(String(describing: error)), privacy: .public)"
                 )
@@ -478,7 +478,7 @@ import SwiftUI
             let nextPendingPreviews: [PendingPreview]
 
             static let placeholder = Snapshot(
-                authorizationLabel: String(localized: "notifications.diagnostics.loading"),
+                authorizationLabel: AppLocale.string("notifications.diagnostics.loading"),
                 authorizationStatus: nil,
                 categories: [],
                 pendingCount: 0,
@@ -533,7 +533,7 @@ import SwiftUI
                         CategoryRow(
                             identifier: entry.identifier,
                             actionsLabel: entry.actionIdentifiers.isEmpty
-                                ? String(localized: "No actions")
+                                ? AppLocale.string("No actions")
                                 : entry.actionIdentifiers.joined(separator: ", ")
                         )
                     }
@@ -551,19 +551,19 @@ import SwiftUI
 
             private static func label(for status: UNAuthorizationStatus) -> String {
                 switch status {
-                case .authorized: String(localized: "notifications.diagnostics.allowed")
-                case .provisional: String(localized: "Provisionally allowed")
-                case .ephemeral: String(localized: "App Clip — ephemeral")
-                case .denied: String(localized: "notifications.diagnostics.denied")
-                case .notDetermined: String(localized: "Not decided yet")
-                @unknown default: String(localized: "Unknown")
+                case .authorized: AppLocale.string("notifications.diagnostics.allowed")
+                case .provisional: AppLocale.string("Provisionally allowed")
+                case .ephemeral: AppLocale.string("App Clip — ephemeral")
+                case .denied: AppLocale.string("notifications.diagnostics.denied")
+                case .notDetermined: AppLocale.string("Not decided yet")
+                @unknown default: AppLocale.string("Unknown")
                 }
             }
 
             private static func actionList(_ category: UNNotificationCategory) -> String {
                 let ids = category.actions.map(\.identifier)
                 if ids.isEmpty {
-                    return String(localized: "No actions")
+                    return AppLocale.string("No actions")
                 }
                 return ids.joined(separator: ", ")
             }

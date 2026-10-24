@@ -424,19 +424,19 @@ public final class ExportStore {
                 case .failed:
                     importPhase = .failed(
                         terminal.failureReason
-                            ?? String(localized: "settings.applehealth_import.error_generic")
+                            ?? AppLocale.string("settings.applehealth_import.error_generic")
                     )
                 default:
-                    importPhase = .failed(String(localized: "settings.applehealth_import.error_generic"))
+                    importPhase = .failed(AppLocale.string("settings.applehealth_import.error_generic"))
                 }
             } catch is CancellationError {
                 // User navigated away — leave state as-is.
             } catch AppleHealthImportError.timedOut {
-                importPhase = .failed(String(localized: "settings.applehealth_import.error_timeout"))
+                importPhase = .failed(AppLocale.string("settings.applehealth_import.error_timeout"))
             } catch let err as HLError {
                 importPhase = .failed(err.userFacingDescription)
             } catch {
-                importPhase = .failed(String(localized: "settings.applehealth_import.error_generic"))
+                importPhase = .failed(AppLocale.string("settings.applehealth_import.error_generic"))
             }
         }
     }

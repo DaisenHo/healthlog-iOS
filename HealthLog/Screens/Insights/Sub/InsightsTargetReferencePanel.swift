@@ -266,16 +266,16 @@ struct InsightsTargetReferencePanel: View {
         let unit = display.unit
         if isBP, let dia = bpDiastolic?.range {
             return String(
-                format: String(localized: "Target: %@–%@ / %@–%@ %@"),
+                format: AppLocale.string("Target: %@–%@ / %@–%@ %@"),
                 fmt(range.min), fmt(range.max), fmt(dia.min), fmt(dia.max), unit
             )
         }
         let lo = fmt(display.value(range.min))
         let hi = fmt(display.value(range.max))
         if unit.isEmpty {
-            return String(format: String(localized: "Target: %@–%@"), lo, hi)
+            return String(format: AppLocale.string("Target: %@–%@"), lo, hi)
         }
-        return String(format: String(localized: "Target: %@–%@ %@"), lo, hi, unit)
+        return String(format: AppLocale.string("Target: %@–%@ %@"), lo, hi, unit)
     }
 
     /// "30-day average: 72.8 kg" (BP stitches `S/D`). nil when no average.
@@ -293,7 +293,7 @@ struct InsightsTargetReferencePanel: View {
         } else {
             display.value(avg).formatted(.number.precision(.fractionLength(0 ... 1)))
         }
-        let prefix = String(localized: "30-day average:")
+        let prefix = AppLocale.string("30-day average:")
         return unit.isEmpty ? "\(prefix) \(avgValue)" : "\(prefix) \(avgValue) \(unit)"
     }
 

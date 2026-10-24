@@ -139,9 +139,9 @@ enum WellnessScorePresentation {
     /// short word maps the server band, never reinterprets it. `nil` ⇒ no band.
     nonisolated static func hrvBalanceValueText(_ dto: DerivedMetricDTO) -> String? {
         switch dto.value?.band {
-        case "balanced": String(localized: "hrvBalance.short.balanced")
-        case "unbalanced": String(localized: "hrvBalance.short.high")
-        case "low": String(localized: "hrvBalance.short.low")
+        case "balanced": AppLocale.string("hrvBalance.short.balanced")
+        case "unbalanced": AppLocale.string("hrvBalance.short.high")
+        case "low": AppLocale.string("hrvBalance.short.low")
         default: nil
         }
     }
@@ -222,17 +222,17 @@ enum WellnessScorePresentation {
         var label: String {
             switch key {
             // READINESS components.
-            case "rhr": String(localized: "Resting heart rate")
-            case "hrv": String(localized: "Heart rate variability")
-            case "sleep": String(localized: "Sleep")
-            case "respiratory": String(localized: "Respiratory rate")
-            case "mood": String(localized: "Mood")
+            case "rhr": AppLocale.string("Resting heart rate")
+            case "hrv": AppLocale.string("Heart rate variability")
+            case "sleep": AppLocale.string("Sleep")
+            case "respiratory": AppLocale.string("Respiratory rate")
+            case "mood": AppLocale.string("Mood")
             // SLEEP_SCORE sub-scores.
-            case "sufficiency": String(localized: "Duration")
-            case "efficiency": String(localized: "Efficiency")
-            case "consistency": String(localized: "Consistency")
-            case "timing": String(localized: "Timing")
-            case "composition": String(localized: "Stages")
+            case "sufficiency": AppLocale.string("Duration")
+            case "efficiency": AppLocale.string("Efficiency")
+            case "consistency": AppLocale.string("Consistency")
+            case "timing": AppLocale.string("Timing")
+            case "composition": AppLocale.string("Stages")
             default: key
             }
         }
@@ -305,15 +305,15 @@ enum WellnessScorePresentation {
     /// vital still reads honestly rather than blank.
     nonisolated static func vitalLabel(_ serverType: String) -> String {
         switch serverType {
-        case "RESTING_HEART_RATE": String(localized: "Resting heart rate")
-        case "HEART_RATE_VARIABILITY": String(localized: "Heart rate variability")
-        case "RESPIRATORY_RATE": String(localized: "Respiratory rate")
-        case "OXYGEN_SATURATION": String(localized: "Oxygen saturation")
-        case "BODY_TEMPERATURE": String(localized: "Body temperature")
-        case "SKIN_TEMPERATURE": String(localized: "Skin temperature")
-        case "PULSE": String(localized: "Pulse")
-        case "BLOOD_PRESSURE_SYS": String(localized: "Blood pressure")
-        case "BLOOD_GLUCOSE": String(localized: "Blood glucose")
+        case "RESTING_HEART_RATE": AppLocale.string("Resting heart rate")
+        case "HEART_RATE_VARIABILITY": AppLocale.string("Heart rate variability")
+        case "RESPIRATORY_RATE": AppLocale.string("Respiratory rate")
+        case "OXYGEN_SATURATION": AppLocale.string("Oxygen saturation")
+        case "BODY_TEMPERATURE": AppLocale.string("Body temperature")
+        case "SKIN_TEMPERATURE": AppLocale.string("Skin temperature")
+        case "PULSE": AppLocale.string("Pulse")
+        case "BLOOD_PRESSURE_SYS": AppLocale.string("Blood pressure")
+        case "BLOOD_GLUCOSE": AppLocale.string("Blood glucose")
         default: serverType
         }
     }

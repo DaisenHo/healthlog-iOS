@@ -119,7 +119,7 @@ enum VorsorgeCard {
         let trimmed = row.label.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
         guard row.origin == .coach else { return trimmed }
-        let translated = String(localized: String.LocalizationValue(trimmed))
+        let translated = AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(trimmed)))
         return translated == trimmed ? trimmed : translated
     }
 
@@ -256,9 +256,9 @@ enum VorsorgeCard {
         let bucket = dueBucket(nextDueAt: nextDueAt, now: now, calendar: calendar)
         let key = String.LocalizationValue(bucket.localizedKey)
         if let days = bucket.dayArgument {
-            return String(format: String(localized: key), days)
+            return String(format: AppLocale.string(AppLocale.shared.resource(key)), days)
         }
-        return String(localized: key)
+        return AppLocale.string(AppLocale.shared.resource(key))
     }
 
     /// Relative last-done text — "heute"/"gestern" where natural, absolute date
@@ -273,12 +273,12 @@ enum VorsorgeCard {
         let today = calendar.startOfDay(for: now)
         let yesterday = calendar.date(byAdding: .day, value: -1, to: today) ?? today
         if day == today {
-            return String(localized: "medications.today")
+            return AppLocale.string("medications.today")
         }
         if day == yesterday {
-            return String(localized: "medications.yesterday")
+            return AppLocale.string("medications.yesterday")
         }
-        return last.formatted(.dateTime.day().month().year())
+        return last.formatted(.dateTime.day().month().year().locale(AppLocale.shared.current))
     }
 
     /// Cadence chip text — "Every N days" or a "Custom" label for an RRULE.

@@ -322,7 +322,7 @@ import SwiftUI
                 .filter { $0.value.lastAnchorAdvancedAt != nil }
                 .map { kind, stats in
                     (
-                        title: String(localized: kind.descriptor.title),
+                        title: AppLocale.string(AppLocale.shared.resource(kind.descriptor.title)),
                         value: relativeOrNever(stats.lastAnchorAdvancedAt)
                     )
                 }
@@ -359,7 +359,7 @@ import SwiftUI
                     CategoryDetail(
                         identifier: $0.identifier,
                         actionsLabel: $0.actions.isEmpty
-                            ? String(localized: "No actions")
+                            ? AppLocale.string("No actions")
                             : $0.actions.map(\.identifier).joined(separator: ", ")
                     )
                 }
@@ -373,7 +373,7 @@ import SwiftUI
         @MainActor
         private func forceFresh() async {
             guard let notif = container?.notifications else {
-                forceFreshError = String(localized: "Service unavailable.")
+                forceFreshError = AppLocale.string("Service unavailable.")
                 return
             }
             forceFreshInFlight = true
@@ -381,26 +381,24 @@ import SwiftUI
             defer { forceFreshInFlight = false }
             if await notif.forceRefreshRegistration() == nil {
                 forceFreshError =
-                    String(
-                        localized: "No push token stored yet. Allow notifications, then open the app once."
-                    )
+                    AppLocale.string("No push token stored yet. Allow notifications, then open the app once.")
             }
             lastRegistration = container?.notifications.lastRegistrationSnapshot
         }
 
         private var noValuePlaceholder: String {
-            String(localized: "— no data yet")
+            AppLocale.string("— no data yet")
         }
 
         private func relativeOrNever(_ date: Date?) -> String {
             guard let date else {
-                return String(localized: "settings.hkdiag.never")
+                return AppLocale.string("settings.hkdiag.never")
             }
-            return date.formatted(.relative(presentation: .named))
+            return date.formatted(.relative(presentation: .named).locale(AppLocale.shared.current))
         }
 
         private static func formatTimestamp(_ date: Date) -> String {
-            date.formatted(.dateTime.day().month().hour().minute().second())
+            date.formatted(.dateTime.day().month().hour().minute().second().locale(AppLocale.shared.current))
         }
 
         /// A support conversation needs a handful of identifiers, not the whole

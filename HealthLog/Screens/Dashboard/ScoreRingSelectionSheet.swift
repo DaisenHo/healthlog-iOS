@@ -59,10 +59,10 @@ struct ScoreRingSelectionSheet: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: HLSpace.md) {
-                    Text(String(
-                        localized: "Pick up to \(ScoreRingID.maxSelected) scores to feature on your dashboard and in Insights.",
+                    Text(AppLocale.string(LocalizedStringResource(
+                        "Pick up to \(ScoreRingID.maxSelected) scores to feature on your dashboard and in Insights.",
                         comment: "Score-ring picker subtitle"
-                    ))
+                    )))
                     .font(.hlSubhead)
                     .foregroundStyle(HLText.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -80,17 +80,17 @@ struct ScoreRingSelectionSheet: View {
             }
             .hlScreenBackground()
             .hlScrollEdgeSoft()
-            .navigationTitle(Text(String(localized: "Score rings", comment: "Score-ring picker title")))
+            .navigationTitle(Text(AppLocale.string(LocalizedStringResource("Score rings", comment: "Score-ring picker title"))))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(String(localized: "Done")) {
+                    Button(AppLocale.string("Done")) {
                         onSave(selection, order)
                         dismiss()
                     }
                 }
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "Cancel")) { dismiss() }
+                    Button(AppLocale.string("Cancel")) { dismiss() }
                 }
             }
         }
@@ -132,11 +132,11 @@ struct ScoreRingSelectionSheet: View {
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Text(id.label))
         .accessibilityValue(Text(isSelected
-                ? String(localized: "Selected")
-                : String(localized: "Not selected")))
+                ? AppLocale.string("Selected")
+                : AppLocale.string("Not selected")))
         .accessibilityHint(Text(isDisabled
-                ? String(localized: "Deselect a score first")
-                : String(localized: "Double-tap to toggle")))
+                ? AppLocale.string("Deselect a score first")
+                : AppLocale.string("Double-tap to toggle")))
     }
 
     // MARK: - Parity Build 4 · 4.8 — hero ring order (incl. the anchor)
@@ -151,17 +151,14 @@ struct ScoreRingSelectionSheet: View {
     private var orderSection: some View {
         if order.count > 1 {
             VStack(alignment: .leading, spacing: HLSpace.sm) {
-                Text(String(
-                    localized: "Order on the dashboard",
-                    comment: "Hero ring order section title"
-                ))
-                .font(.hlHeadline)
-                .foregroundStyle(HLText.primary)
+                Text(AppLocale.string(LocalizedStringResource("Order on the dashboard", comment: "Hero ring order section title")))
+                    .font(.hlHeadline)
+                    .foregroundStyle(HLText.primary)
 
-                Text(String(
-                    localized: "The health score ring is always shown. Move it anywhere in the row.",
+                Text(AppLocale.string(LocalizedStringResource(
+                    "The health score ring is always shown. Move it anywhere in the row.",
                     comment: "Hero ring order section hint"
-                ))
+                )))
                 .font(.hlCaption)
                 .foregroundStyle(HLText.tertiary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -210,8 +207,8 @@ struct ScoreRingSelectionSheet: View {
         .buttonStyle(.plain)
         .disabled(disabled)
         .accessibilityLabel(Text(systemImage == "chevron.up"
-                ? String(localized: "Move up")
-                : String(localized: "Move down")))
+                ? AppLocale.string("Move up")
+                : AppLocale.string("Move down")))
     }
 
     private func toggle(_ id: ScoreRingID) {
@@ -232,13 +229,13 @@ struct ScoreRingSelectionSheet: View {
     private func description(for id: ScoreRingID) -> String {
         switch id {
         case .readiness:
-            String(localized: "Your daily readiness blend.", comment: "READINESS ring picker description")
+            AppLocale.string(LocalizedStringResource("Your daily readiness blend.", comment: "READINESS ring picker description"))
         case .recovery:
-            String(localized: "Overnight recovery from your wearable.", comment: "RECOVERY ring picker description")
+            AppLocale.string(LocalizedStringResource("Overnight recovery from your wearable.", comment: "RECOVERY ring picker description"))
         case .sleepScore:
-            String(localized: "Last night's sleep quality.", comment: "SLEEP_SCORE ring picker description")
+            AppLocale.string(LocalizedStringResource("Last night's sleep quality.", comment: "SLEEP_SCORE ring picker description"))
         case .medCompliance:
-            String(localized: "Today's medication doses taken.", comment: "MED_COMPLIANCE ring picker description")
+            AppLocale.string(LocalizedStringResource("Today's medication doses taken.", comment: "MED_COMPLIANCE ring picker description"))
         }
     }
 }

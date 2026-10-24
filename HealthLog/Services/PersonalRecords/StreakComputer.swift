@@ -195,7 +195,7 @@ public enum StreakComputer {
             id: "\(config.idPrefix).best",
             userId: userId,
             metricType: config.metricType,
-            metricSlot: String(localized: "records.bestDay.slot"),
+            metricSlot: AppLocale.string("records.bestDay.slot"),
             direction: .max,
             value: best.value,
             unit: config.unit,
@@ -264,12 +264,10 @@ public enum StreakComputer {
             // L1 — catalog copy. Both locales keep the word the streak
             // classifiers match on ("Serie" / "streak",
             // `PersonalRecordsStore.streakRecords`, `MilestoneStrip`).
-            metricSlot: String(
-                localized: "records.streak.slot \(formatThreshold(config.streakThreshold)) \(bestLength)"
-            ),
+            metricSlot: AppLocale.string("records.streak.slot \(formatThreshold(config.streakThreshold)) \(bestLength)"),
             direction: .max,
             value: Double(bestLength),
-            unit: String(localized: "records.streak.unit"),
+            unit: AppLocale.string("records.streak.unit"),
             achievedAt: bestEnd,
             sourceMeasurementId: nil,
             source: "HEALTHLOG_CLIENT",
@@ -285,7 +283,7 @@ public enum StreakComputer {
     /// to round-trip through this code path.
     private static func formatThreshold(_ value: Double) -> String {
         let formatter = NumberFormatter()
-        formatter.locale = Locale.current
+        formatter.locale = AppLocale.shared.current
         formatter.numberStyle = .decimal
         formatter.maximumFractionDigits = 0
         return formatter.string(from: NSNumber(value: value)) ?? "\(value)"

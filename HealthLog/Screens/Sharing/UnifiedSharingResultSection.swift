@@ -37,9 +37,10 @@ struct UnifiedSharingResultSection: View {
             // needs an instruction, not an error and not a file.
             Text(
                 hasSelection
-                    ? String(localized: "Your saved report selection returned no data, so the server bundle is empty.")
-                    : String(
-                        localized: "The server bundle follows the selection you save in the doctor report. Save one there first, then generate again."
+                    ? AppLocale.string("Your saved report selection returned no data, so the server bundle is empty.")
+                    : AppLocale
+                    .string(
+                        "The server bundle follows the selection you save in the doctor report. Save one there first, then generate again."
                     )
             )
             .font(.hlCaption)

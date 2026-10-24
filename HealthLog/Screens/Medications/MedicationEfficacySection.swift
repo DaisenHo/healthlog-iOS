@@ -143,8 +143,8 @@ private struct EfficacyTargetCard: View {
 
     private func levelShiftText(_ at: Date) -> String {
         String(
-            format: String(localized: "med.wirkung.levelShift"),
-            at.formatted(.dateTime.day().month(.abbreviated).year())
+            format: AppLocale.string("med.wirkung.levelShift"),
+            at.formatted(.dateTime.day().month(.abbreviated).year().locale(AppLocale.shared.current))
         )
     }
 }
@@ -226,15 +226,15 @@ private struct EfficacyTargetChart: View {
             (
                 x: Double(idx),
                 y: point.value,
-                xLabel: point.t.formatted(.dateTime.day().month(.abbreviated).year())
+                xLabel: point.t.formatted(.dateTime.day().month(.abbreviated).year().locale(AppLocale.shared.current))
             )
         }
         let unit = target.unit ?? ""
         let unitSuffix = unit.isEmpty ? "" : " \(unit)"
         return HLChartAX.singleSeries(
-            title: String(localized: "med.wirkung.chart.a11y"),
+            title: AppLocale.string("med.wirkung.chart.a11y"),
             summary: "",
-            xAxisTitle: String(localized: "med.wirkung.axis.date"),
+            xAxisTitle: AppLocale.string("med.wirkung.axis.date"),
             yAxisTitle: unit.isEmpty ? target.label : unit,
             seriesName: target.label,
             points: triples,
@@ -253,8 +253,8 @@ private struct EfficacyTargetChart: View {
     private var referenceBandMark: some ChartContent {
         if let band = target.referenceBand {
             RectangleMark(
-                yStart: .value(String(localized: "med.wirkung.legend.typicalRange"), band.low),
-                yEnd: .value(String(localized: "med.wirkung.legend.typicalRange"), band.high)
+                yStart: .value(AppLocale.string("med.wirkung.legend.typicalRange"), band.low),
+                yEnd: .value(AppLocale.string("med.wirkung.legend.typicalRange"), band.high)
             )
             .foregroundStyle(HLChartTints.seriesLow.opacity(0.16))
         }
@@ -265,8 +265,8 @@ private struct EfficacyTargetChart: View {
     private var pauseMarks: some ChartContent {
         ForEach(markers.pauses) { pause in
             RectangleMark(
-                xStart: .value(String(localized: "med.wirkung.legend.pause"), pause.from),
-                xEnd: .value(String(localized: "med.wirkung.legend.pause"), pause.to ?? rightEdge ?? pause.from)
+                xStart: .value(AppLocale.string("med.wirkung.legend.pause"), pause.from),
+                xEnd: .value(AppLocale.string("med.wirkung.legend.pause"), pause.to ?? rightEdge ?? pause.from)
             )
             .foregroundStyle(HLText.primary.opacity(0.06))
         }
@@ -276,7 +276,7 @@ private struct EfficacyTargetChart: View {
     private var seriesMarks: some ChartContent {
         ForEach(points) { point in
             LineMark(
-                x: .value(String(localized: "med.wirkung.axis.date"), point.t),
+                x: .value(AppLocale.string("med.wirkung.axis.date"), point.t),
                 y: .value(target.label, point.value)
             )
             .foregroundStyle(HLChartTints.series)
@@ -284,7 +284,7 @@ private struct EfficacyTargetChart: View {
             .interpolationMethod(.monotone)
 
             PointMark(
-                x: .value(String(localized: "med.wirkung.axis.date"), point.t),
+                x: .value(AppLocale.string("med.wirkung.axis.date"), point.t),
                 y: .value(target.label, point.value)
             )
             .foregroundStyle(HLChartTints.series)
@@ -296,7 +296,7 @@ private struct EfficacyTargetChart: View {
     @ChartContentBuilder
     private var doseChangeMarks: some ChartContent {
         ForEach(markers.doseChanges) { change in
-            RuleMark(x: .value(String(localized: "med.wirkung.legend.doseChange"), change.at))
+            RuleMark(x: .value(AppLocale.string("med.wirkung.legend.doseChange"), change.at))
                 .foregroundStyle(HLChartTints.seriesMid)
                 .lineStyle(StrokeStyle(lineWidth: HLChartGrid.thresholdWidth, dash: HLChartGrid.thresholdDash))
         }
@@ -307,7 +307,7 @@ private struct EfficacyTargetChart: View {
     @ChartContentBuilder
     private var startMark: some ChartContent {
         if let start = markers.start {
-            RuleMark(x: .value(String(localized: "med.wirkung.startMarker"), start))
+            RuleMark(x: .value(AppLocale.string("med.wirkung.startMarker"), start))
                 .foregroundStyle(HLAccent.primary)
                 .lineStyle(StrokeStyle(lineWidth: HLChartGrid.thresholdWidth))
                 .annotation(position: .top, alignment: .leading, spacing: HLSpace.xxs) {
@@ -442,7 +442,7 @@ private struct EfficacyBeforeAfterCard: View {
     ) -> String {
         let sign = delta.mean > 0 ? "+" : ""
         return String(
-            format: String(localized: "med.wirkung.beforeAfter.summary"),
+            format: AppLocale.string("med.wirkung.beforeAfter.summary"),
             formatValue(before.mean),
             formatValue(after.mean),
             "\(sign)\(formatValue(delta.mean))"
@@ -454,7 +454,7 @@ private struct EfficacyBeforeAfterCard: View {
         after: MedicationEfficacyDTO.Target.BeforeAfter.Side
     ) -> String {
         String(
-            format: String(localized: "med.wirkung.beforeAfter.counts"),
+            format: AppLocale.string("med.wirkung.beforeAfter.counts"),
             before.count,
             after.count
         )
@@ -463,13 +463,13 @@ private struct EfficacyBeforeAfterCard: View {
     private var insufficientText: String {
         switch beforeAfter.reason {
         case "insufficient_before":
-            String(format: String(localized: "med.wirkung.beforeAfter.needBefore"), minWeeksPerSide)
+            String(format: AppLocale.string("med.wirkung.beforeAfter.needBefore"), minWeeksPerSide)
         case "insufficient_after":
-            String(format: String(localized: "med.wirkung.beforeAfter.needAfter"), minWeeksPerSide)
+            String(format: AppLocale.string("med.wirkung.beforeAfter.needAfter"), minWeeksPerSide)
         case "no_start":
-            String(localized: "med.wirkung.beforeAfter.needStart")
+            AppLocale.string("med.wirkung.beforeAfter.needStart")
         default:
-            String(format: String(localized: "med.wirkung.beforeAfter.needData"), minWeeksPerSide)
+            String(format: AppLocale.string("med.wirkung.beforeAfter.needData"), minWeeksPerSide)
         }
     }
 
@@ -519,7 +519,7 @@ private struct EfficacyAdherenceReadout: View {
 
     private var captionText: String {
         String(
-            format: String(localized: "med.wirkung.adherence.caption"),
+            format: AppLocale.string("med.wirkung.adherence.caption"),
             takenTotal,
             expectedTotal
         )
@@ -540,14 +540,14 @@ private struct EfficacyRetargetControl: View {
     var body: some View {
         Menu {
             if !options.metrics.isEmpty {
-                Section(String(localized: "med.wirkung.retarget.metricsGroup")) {
+                Section(AppLocale.string("med.wirkung.retarget.metricsGroup")) {
                     ForEach(options.metrics) { metric in
                         Button(metric.label) { onSelectTarget(.metric(metric.key)) }
                     }
                 }
             }
             if !options.biomarkers.isEmpty {
-                Section(String(localized: "med.wirkung.retarget.labsGroup")) {
+                Section(AppLocale.string("med.wirkung.retarget.labsGroup")) {
                     ForEach(options.biomarkers) { biomarker in
                         Button(biomarker.label) { onSelectTarget(.lab(biomarker.id)) }
                     }
@@ -556,7 +556,7 @@ private struct EfficacyRetargetControl: View {
             if isOverride {
                 Divider()
                 Button(role: .destructive) { onSelectTarget(.clear) } label: {
-                    Label(String(localized: "med.wirkung.retarget.reset"), systemImage: "arrow.uturn.backward")
+                    Label(AppLocale.string("med.wirkung.retarget.reset"), systemImage: "arrow.uturn.backward")
                 }
             }
         } label: {

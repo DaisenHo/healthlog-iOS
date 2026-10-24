@@ -84,7 +84,7 @@ struct EpisodeDocumentsCard: View {
                         .font(.hlSubhead)
                         .foregroundStyle(HLText.secondary)
                         .frame(width: 20)
-                    Text(document.resolvedTitle ?? String(localized: "documents.card.untitled"))
+                    Text(document.resolvedTitle ?? AppLocale.string("documents.card.untitled"))
                         .font(.hlSubhead)
                         .foregroundStyle(HLText.primary)
                         .lineLimit(1)

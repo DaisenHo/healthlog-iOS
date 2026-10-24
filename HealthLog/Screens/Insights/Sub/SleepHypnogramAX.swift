@@ -28,11 +28,11 @@ enum SleepHypnogramAX {
         let duration = max(1, session.end.timeIntervalSince(session.start))
 
         func clock(_ date: Date) -> String {
-            date.formatted(.dateTime.hour().minute())
+            date.formatted(.dateTime.hour().minute().locale(AppLocale.shared.current))
         }
 
         let xAxis = AXNumericDataAxisDescriptor(
-            title: String(localized: "sleep.hypnogram.a11y.axis.time"),
+            title: AppLocale.string("sleep.hypnogram.a11y.axis.time"),
             range: 0 ... duration,
             gridlinePositions: [],
             valueDescriptionProvider: { value in
@@ -43,7 +43,7 @@ enum SleepHypnogramAX {
 
         // Y = stage depth rank (0 = awake … 5 = deep); spoken as the stage name.
         let yAxis = AXNumericDataAxisDescriptor(
-            title: String(localized: "sleep.hypnogram.a11y.axis.stage"),
+            title: AppLocale.string("sleep.hypnogram.a11y.axis.stage"),
             range: 0 ... 5,
             gridlinePositions: [],
             valueDescriptionProvider: { value in
@@ -52,7 +52,7 @@ enum SleepHypnogramAX {
                 guard let stage = SleepStage.allCases.first(where: { $0.depthRank == rank }) else {
                     return ""
                 }
-                return String(localized: stage.displayKey)
+                return AppLocale.string(AppLocale.shared.resource(stage.displayKey))
             }
         )
 
@@ -60,7 +60,7 @@ enum SleepHypnogramAX {
             let midX = segment.start.timeIntervalSince(session.start)
                 + segment.end.timeIntervalSince(segment.start) / 2
             let label = String(
-                localized: "sleep.hypnogram.a11y.segment \(String(localized: segment.stage.displayKey)) \(clock(segment.start)) \(clock(segment.end))"
+                localized: "sleep.hypnogram.a11y.segment \(AppLocale.string(AppLocale.shared.resource(segment.stage.displayKey))) \(clock(segment.start)) \(clock(segment.end))"
             )
             return AXDataPoint(
                 x: midX,
@@ -70,16 +70,14 @@ enum SleepHypnogramAX {
         }
 
         let series = AXDataSeriesDescriptor(
-            name: String(localized: "sleep.hypnogram.a11y.series"),
+            name: AppLocale.string("sleep.hypnogram.a11y.series"),
             isContinuous: false,
             dataPoints: points
         )
 
         return AXChartDescriptor(
-            title: String(localized: "sleep.hypnogram.title"),
-            summary: String(
-                localized: "sleep.hypnogram.a11y.summary \(segments.count) \(clock(session.start)) \(clock(session.end))"
-            ),
+            title: AppLocale.string("sleep.hypnogram.title"),
+            summary: AppLocale.string("sleep.hypnogram.a11y.summary \(segments.count) \(clock(session.start)) \(clock(session.end))"),
             xAxis: xAxis,
             yAxis: yAxis,
             additionalAxes: [],

@@ -64,7 +64,7 @@ struct ScoreRingCard: View {
         .hlPressable() // QOL-AUDIT H1: press feedback
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Text(accessibilityLabel))
-        .accessibilityHint(Text(String(localized: "Double-tap for the breakdown")))
+        .accessibilityHint(Text(AppLocale.string("Double-tap for the breakdown")))
         .accessibilityIdentifier("insights.scoreCard.\(dto.metric)")
     }
 
@@ -98,10 +98,10 @@ struct ScoreRingCard: View {
     private var accessibilityLabel: String {
         let title = InsightsDerivedBlock.title(for: dto.metric)
         if WellnessScorePresentation.isInsufficient(dto) {
-            return String(localized: "\(title): not enough data yet")
+            return AppLocale.string("\(title): not enough data yet")
         }
         let score = WellnessScorePresentation.scoreValueText(dto) ?? "—"
-        return String(localized: "\(title) \(score) of 100")
+        return AppLocale.string("\(title) \(score) of 100")
     }
 }
 
@@ -183,11 +183,11 @@ struct FitnessDeltaRingCard: View {
     /// par" — so the ring reads "3 / yr older". Honest, whole-number framing.
     private var deltaUnit: String {
         guard let years = dto.value?.fitnessAgeDeltaYears, years.rounded() != 0 else {
-            return String(localized: "yr on par")
+            return AppLocale.string("yr on par")
         }
         return years < 0
-            ? String(localized: "yr younger")
-            : String(localized: "yr older")
+            ? AppLocale.string("yr younger")
+            : AppLocale.string("yr older")
     }
 
     private var accessibilityLabel: String {

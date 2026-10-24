@@ -115,7 +115,7 @@ struct MedicationSupplyEditorSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "meds.quick.cancel")) {
+                    Button(AppLocale.string("meds.quick.cancel")) {
                         if isDirty { showDiscardConfirm = true } else { onDismiss() }
                     }
                 }
@@ -136,8 +136,8 @@ struct MedicationSupplyEditorSheet: View {
         .hlConfirmDestructive(
             Text("med.inventory.editor.delete.confirm.title"),
             isPresented: $confirmingDelete,
-            confirm: Text(String(localized: "med.inventory.editor.delete.confirm.cta")),
-            cancel: Text(String(localized: "meds.quick.cancel")),
+            confirm: Text(AppLocale.string("med.inventory.editor.delete.confirm.cta")),
+            cancel: Text(AppLocale.string("meds.quick.cancel")),
             action: {
                 Task {
                     isBusy = true
@@ -175,7 +175,7 @@ struct MedicationSupplyEditorSheet: View {
                         .accessibilityIdentifier("med.inventory.editor.type.unnameable")
                 } else {
                     Picker(
-                        String(localized: "med.inventory.editor.type.label"),
+                        AppLocale.string("med.inventory.editor.type.label"),
                         selection: $containerType
                     ) {
                         ForEach(MedicationContainerType.serverCases) { type in
@@ -218,7 +218,7 @@ struct MedicationSupplyEditorSheet: View {
                     ? "med.inventory.editor.units.remaining.label"
                     : "med.inventory.editor.units.total.label")
                 TextField(
-                    String(localized: "med.inventory.editor.units.placeholder"),
+                    AppLocale.string("med.inventory.editor.units.placeholder"),
                     text: $unitsText
                 )
                 .keyboardType(.decimalPad)
@@ -244,7 +244,7 @@ struct MedicationSupplyEditorSheet: View {
                 .tint(HLText.secondary)
                 if hasExpiry {
                     DatePicker(
-                        String(localized: "med.inventory.editor.expiry.label"),
+                        AppLocale.string("med.inventory.editor.expiry.label"),
                         selection: $expiry,
                         displayedComponents: .date
                     )
@@ -321,7 +321,7 @@ struct MedicationSupplyEditorSheet: View {
 
     private var primaryButton: some View {
         HLButton(
-            String(localized: isEditing
+            AppLocale.string(isEditing
                 ? "med.inventory.editor.save.cta"
                 : "med.inventory.editor.add.cta"),
             icon: "checkmark.circle.fill",
@@ -335,7 +335,7 @@ struct MedicationSupplyEditorSheet: View {
 
     private var deleteButton: some View {
         HLButton(
-            String(localized: "med.inventory.editor.delete.cta"),
+            AppLocale.string("med.inventory.editor.delete.cta"),
             variant: .destructive,
             size: .regular
         ) {

@@ -42,12 +42,12 @@ public final class ImportStore {
         do {
             let data = try Data(contentsOf: fileURL)
             guard let text = String(data: data, encoding: .utf8) else {
-                phase = .failed(String(localized: "import.error.not_utf8"))
+                phase = .failed(AppLocale.string("import.error.not_utf8"))
                 return
             }
             csv = text
         } catch {
-            phase = .failed(String(localized: "import.error.read_failed"))
+            phase = .failed(AppLocale.string("import.error.read_failed"))
             return
         }
         await preview(csv: csv)
@@ -64,7 +64,7 @@ public final class ImportStore {
         } catch let error as HLError {
             phase = .failed(error.userFacingDescription)
         } catch {
-            phase = .failed(String(localized: "import.error.generic"))
+            phase = .failed(AppLocale.string("import.error.generic"))
         }
     }
 
@@ -80,7 +80,7 @@ public final class ImportStore {
         } catch let error as HLError {
             phase = .failed(error.userFacingDescription)
         } catch {
-            phase = .failed(String(localized: "import.error.generic"))
+            phase = .failed(AppLocale.string("import.error.generic"))
         }
     }
 

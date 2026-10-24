@@ -184,17 +184,17 @@ public enum WorkoutFormatter {
     public static func sportTitle(_ raw: String?) -> String {
         let normalised = normalise(raw)
         if normalised.isEmpty || normalised == "other" {
-            return String(localized: "Workout")
+            return AppLocale.string("Workout")
         }
         // WHOOP rows whose `sport_name` was absent arrive as the server's
         // generic `whoop_sport_<id>` token (see `sportLabel()` in the
         // server's `src/lib/whoop/sync-workout.ts`). "Whoop_Sport_44" is
         // not a user-facing label — fold to the generic workout title.
         if normalised.hasPrefix("whoop_sport") {
-            return String(localized: "Workout")
+            return AppLocale.string("Workout")
         }
         if let mapped = sportTitles[normalised] {
-            return String(localized: mapped)
+            return AppLocale.string(AppLocale.shared.resource(mapped))
         }
         // Title-case the raw token so the user reads "Tennis" rather
         // than "tennis" / "TENNIS" / "HKWorkoutActivityTypeTennis".
@@ -284,7 +284,7 @@ public enum WorkoutFormatter {
     /// Skips any segment that's nil so the line never reads "· · 0 kcal".
     public static func subtitle(
         _ workout: WorkoutListEntryDTO,
-        locale: Locale = .current,
+        locale: Locale = AppLocale.shared.current,
         system: HLUnitPreference = .current()
     ) -> String {
         var parts: [String] = []

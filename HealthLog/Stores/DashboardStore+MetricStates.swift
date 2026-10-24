@@ -127,10 +127,10 @@ extension DashboardStore {
         return DashboardMetric(
             id: "synth-\(kind.rawValue)-\(order)",
             kind: kind,
-            title: String(localized: descriptor.title),
+            title: AppLocale.string(AppLocale.shared.resource(descriptor.title)),
             latestValue: nil,
             secondaryValue: nil,
-            unit: String(localized: descriptor.unitLabel),
+            unit: AppLocale.string(AppLocale.shared.resource(descriptor.unitLabel)),
             trend: .unknown,
             sparkline: [],
             updatedAt: nil

@@ -160,7 +160,7 @@ public extension MedicationsStore {
         // the existing `unarchive(id:)` path — no id loss.
         let medicationID = id
         undoCoordinator?.enqueue(
-            message: String(localized: "undo.medication.archived")
+            message: AppLocale.string("undo.medication.archived")
         ) { [weak self] in
             guard let self, sessionLease.isCurrent else { return }
             _ = await unarchive(id: medicationID)

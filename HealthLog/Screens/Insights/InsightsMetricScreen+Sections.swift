@@ -35,7 +35,7 @@ extension InsightsMetricScreen {
             if canEditTargetBand {
                 InsightsHeaderActionCircle(
                     systemImage: "slider.horizontal.3",
-                    accessibilityLabelText: String(localized: "Adjust target range"),
+                    accessibilityLabelText: AppLocale.string("Adjust target range"),
                     accessibilityIdentifier: "insights.metric.targetEdit.\(kind.rawValue)"
                 ) {
                     presentTargetEditor = true
@@ -60,7 +60,7 @@ extension InsightsMetricScreen {
             if appContainer.offersCoach {
                 InsightsHeaderActionCircle(
                     systemImage: "sparkles",
-                    accessibilityLabelText: String(localized: "Ask the coach"),
+                    accessibilityLabelText: AppLocale.string("Ask the coach"),
                     accessibilityIdentifier: "insights.metric.coach.\(kind.rawValue)"
                 ) {
                     presentAskCoach = true
@@ -121,7 +121,7 @@ extension InsightsMetricScreen {
             return explainer.body
         }
         let key = "insights.metric.\(kind.rawValue).description"
-        let resolved = String(localized: String.LocalizationValue(key))
+        let resolved = AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(key)))
         // No catalog entry → `String(localized:)` echoes the key back; treat
         // that (and an empty placeholder) as "no copy yet" → suppress.
         //
@@ -204,11 +204,11 @@ extension InsightsMetricScreen {
             VStack(alignment: .leading, spacing: HLSpace.xs) {
                 VStack(alignment: .leading, spacing: HLSpace.xs) {
                     Text(String(
-                        format: String(localized: "insights.bp.derived.pulsePressure"),
+                        format: AppLocale.string("insights.bp.derived.pulsePressure"),
                         readout.pulsePressure
                     ))
                     Text(String(
-                        format: String(localized: "insights.bp.derived.meanArterialPressure"),
+                        format: AppLocale.string("insights.bp.derived.meanArterialPressure"),
                         readout.meanArterialPressure
                     ))
                     // UI-Standard R17 (U1) — Zuschreibung, kein Hinweis: dass
@@ -217,7 +217,7 @@ extension InsightsMetricScreen {
                     // darüber. Der „nicht als Diagnose"-Schwanz ist gefallen, und
                     // mit ihm das Ack-Gate — eine Zuschreibung unterdrückt sich
                     // nicht selbst.
-                    Text(String(localized: "insights.bp.derived.caveat"))
+                    Text(AppLocale.string("insights.bp.derived.caveat"))
                         .foregroundStyle(HLText.tertiary)
                 }
                 // I1 — match the canonical metric-page explainer style (intro
@@ -501,11 +501,11 @@ extension InsightsMetricScreen {
     private var ecgCrossLinkSubtitle: String {
         let count = ecgStore.recordings.count
         let countLine = count == 1
-            ? String(localized: "insights.ecg.crossLink.recordingsOne")
-            : String(localized: "insights.ecg.crossLink.recordingsMany \(count)")
+            ? AppLocale.string("insights.ecg.crossLink.recordingsOne")
+            : AppLocale.string("insights.ecg.crossLink.recordingsMany \(count)")
         guard let latest = ecgStore.latest, latest.classification != nil else { return countLine }
         let result = EcgPresentation.resultLabel(for: latest.verdict)
-        return countLine + " " + String(localized: "insights.ecg.crossLink.latestResult \(result)")
+        return countLine + " " + AppLocale.string("insights.ecg.crossLink.latestResult \(result)")
     }
 
     // MARK: - 4. Chart block (reused primitives)

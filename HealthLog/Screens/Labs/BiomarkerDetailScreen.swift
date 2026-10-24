@@ -145,7 +145,7 @@ struct BiomarkerDetailScreen: View {
             if marker != nil {
                 InsightsHeaderActionCircle(
                     systemImage: "slider.horizontal.3",
-                    accessibilityLabelText: String(localized: "biomarker.detail.editRange"),
+                    accessibilityLabelText: AppLocale.string("biomarker.detail.editRange"),
                     accessibilityIdentifier: "biomarker.detail.gear"
                 ) {
                     markerSheet = .editor
@@ -192,7 +192,8 @@ struct BiomarkerDetailScreen: View {
     @ViewBuilder
     private var aliasesLine: some View {
         if let aliases = marker?.aliases, !aliases.isEmpty {
-            Text(verbatim: String(localized: "labs.biomarker.aliases \(aliases.formatted(.list(type: .and)))"))
+            Text(verbatim: AppLocale
+                .string("labs.biomarker.aliases \(aliases.formatted(.list(type: .and).locale(AppLocale.shared.current)))"))
                 .font(.hlCaption)
                 .foregroundStyle(HLText.secondary)
                 .fixedSize(horizontal: false, vertical: true)

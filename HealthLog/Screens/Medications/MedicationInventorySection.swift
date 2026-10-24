@@ -96,7 +96,7 @@ struct MedicationInventorySection: View {
                     .foregroundStyle(HLText.secondary)
                 Text(
                     String(
-                        format: String(localized: "med.inventory.summary"),
+                        format: AppLocale.string("med.inventory.summary"),
                         Self.remainingDoseString(medication.stockDosesRemaining),
                         Self.capacityDoseString(summary)
                     )
@@ -107,7 +107,7 @@ struct MedicationInventorySection: View {
                 .monospacedDigit()
             }
             if let expired = Self.expiredUnitsString(summary) {
-                Text(String(format: String(localized: "med.inventory.expiredUnits"), expired))
+                Text(String(format: AppLocale.string("med.inventory.expiredUnits"), expired))
                     .font(.hlCaption)
                     .foregroundStyle(HLText.tertiary)
                     .monospacedDigit()
@@ -138,7 +138,7 @@ struct MedicationInventorySection: View {
                 .foregroundStyle(HLColor.statusWarn)
             Text(
                 String(
-                    format: String(localized: "med.inventory.runway"),
+                    format: AppLocale.string("med.inventory.runway"),
                     days
                 )
             )
@@ -159,7 +159,7 @@ struct MedicationInventorySection: View {
             }
             Text(
                 String(
-                    format: String(localized: "med.inventory.item.doses"),
+                    format: AppLocale.string("med.inventory.item.doses"),
                     Self.doseString(item.unitsRemaining, unitsPerDose: unitsPerDose),
                     Self.doseString(item.unitsTotal, unitsPerDose: unitsPerDose)
                 )
@@ -278,10 +278,10 @@ struct MedicationInventorySection: View {
     /// so unit tests can pin it off the MainActor.
     nonisolated static func stateLabel(_ state: String) -> String {
         switch state {
-        case "ACTIVE": String(localized: "med.inventory.state.active")
-        case "IN_USE": String(localized: "med.inventory.state.in_use")
-        case "EXPIRED": String(localized: "med.inventory.state.expired")
-        case "USED_UP": String(localized: "med.inventory.state.used_up")
+        case "ACTIVE": AppLocale.string("med.inventory.state.active")
+        case "IN_USE": AppLocale.string("med.inventory.state.in_use")
+        case "EXPIRED": AppLocale.string("med.inventory.state.expired")
+        case "USED_UP": AppLocale.string("med.inventory.state.used_up")
         default: state
         }
     }

@@ -135,7 +135,7 @@
             // name travels in the attributes. Default OFF → real name shown.
             let hideName = LockScreenPrivacy.hideMedicationName()
             let displayName = hideName
-                ? String(localized: "Medication reminder")
+                ? AppLocale.string("Medication reminder")
                 : medicationName
             let displayDose = hideName ? "" : doseText
             let attributes = MedicationActivityAttributes(

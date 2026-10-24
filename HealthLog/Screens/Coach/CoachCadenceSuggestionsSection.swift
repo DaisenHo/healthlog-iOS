@@ -51,7 +51,7 @@ private struct CoachCadenceSuggestionCard: View {
         HLCard {
             VStack(alignment: .leading, spacing: HLSpace.sm) {
                 Label(
-                    String(localized: "coach.cadenceSuggestion.title"),
+                    AppLocale.string("coach.cadenceSuggestion.title"),
                     systemImage: "sparkles"
                 )
                 .font(.hlCaption.weight(.semibold))
@@ -66,14 +66,14 @@ private struct CoachCadenceSuggestionCard: View {
 
                 HStack(spacing: HLSpace.sm) {
                     HLButton(
-                        String(localized: "coach.cadenceSuggestion.accept"),
+                        AppLocale.string("coach.cadenceSuggestion.accept"),
                         variant: .restrained,
                         size: .compact,
                         action: onAccept
                     )
                     .accessibilityIdentifier("coach.cadenceSuggestion.accept")
                     HLButton(
-                        String(localized: "coach.cadenceSuggestion.dismiss"),
+                        AppLocale.string("coach.cadenceSuggestion.dismiss"),
                         variant: .ghost,
                         size: .compact,
                         action: onDismiss
@@ -90,9 +90,9 @@ private struct CoachCadenceSuggestionCard: View {
     /// verbatim when the catalogue has no entry, so an unknown future cadence
     /// falls back to a generic, still-readable label.
     private var cadenceLabel: String {
-        let resolved = String(localized: String.LocalizationValue(suggestion.label))
+        let resolved = AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(suggestion.label)))
         return resolved == suggestion.label
-            ? String(localized: "coach.cadenceSuggestion.generic")
+            ? AppLocale.string("coach.cadenceSuggestion.generic")
             : resolved
     }
 }

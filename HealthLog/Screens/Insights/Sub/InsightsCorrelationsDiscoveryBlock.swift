@@ -99,7 +99,7 @@ struct InsightsCorrelationsDiscoveryBlock: View {
                     }
                     .padding(.top, HLSpace.sm)
                 } label: {
-                    Text(String(localized: "Relationships in your data"))
+                    Text(AppLocale.string("Relationships in your data"))
                         .font(.hlHeadline)
                         .foregroundStyle(HLText.primary)
                 }
@@ -287,7 +287,7 @@ struct InsightsCorrelationsDiscoveryBlock: View {
             HStack(spacing: HLSpace.xs) {
                 Image(systemName: "sparkles")
                     .font(.hlIcon(HLIconSize.sm))
-                Text(String(localized: "Ask the coach about this"))
+                Text(AppLocale.string("Ask the coach about this"))
                     .font(.hlFootnote)
             }
             .foregroundStyle(HLText.secondary)
@@ -309,44 +309,44 @@ struct InsightsCorrelationsDiscoveryBlock: View {
         let outcome = outcomeLabel(for: pair)
         switch pair.direction {
         case .positive:
-            return String(
-                localized: "More \(behaviour) tends to go with more \(outcome) the next day",
+            return AppLocale.string(LocalizedStringResource(
+                "More \(behaviour) tends to go with more \(outcome) the next day",
                 comment: "Descriptive (non-causal) positive correlation headline"
-            )
+            ))
         case .negative:
-            return String(
-                localized: "More \(behaviour) tends to go with less \(outcome) the next day",
+            return AppLocale.string(LocalizedStringResource(
+                "More \(behaviour) tends to go with less \(outcome) the next day",
                 comment: "Descriptive (non-causal) negative correlation headline"
-            )
+            ))
         }
     }
 
     /// `n = … · r = …` — paired-day count + Pearson r (2 dp). The transparency
     /// line, mirrored from the server values, never fabricated.
-    nonisolated static func statLine(for pair: DiscoveredCorrelation, locale: Locale = .current) -> String {
+    nonisolated static func statLine(for pair: DiscoveredCorrelation, locale: Locale = AppLocale.shared.current) -> String {
         let r = HLNumberFormat.decimal(pair.r, fractionDigits: 2, locale: locale)
         let strength = strengthLabel(pair.strength)
-        return String(
-            localized: "Based on \(pair.n) days · r = \(r) (\(strength))",
+        return AppLocale.string(LocalizedStringResource(
+            "Based on \(pair.n) days · r = \(r) (\(strength))",
             comment: "Correlation stat line: paired-day count + Pearson r + strength word"
-        )
+        ))
     }
 
     /// Honest footer — how many pairs were assessed to surface these. Mirrors
     /// the web's "N pairs tested" disclosure so the surfaced set is contextual.
     nonisolated static func footer(pairsTested: Int) -> String {
-        String(
-            localized: "From \(pairsTested) relationships checked. These are associations, not causes.",
+        AppLocale.string(LocalizedStringResource(
+            "From \(pairsTested) relationships checked. These are associations, not causes.",
             comment: "Correlation-discovery honest footer (pairs tested + non-causal caveat)"
-        )
+        ))
     }
 
     /// Conservative strength word from the |r| bucket.
     nonisolated static func strengthLabel(_ strength: DiscoveredCorrelation.Strength) -> String {
         switch strength {
-        case .weak: String(localized: "weak", comment: "Correlation strength: weak")
-        case .moderate: String(localized: "moderate", comment: "Correlation strength: moderate")
-        case .strong: String(localized: "strong", comment: "Correlation strength: strong")
+        case .weak: AppLocale.string(LocalizedStringResource("weak", comment: "Correlation strength: weak"))
+        case .moderate: AppLocale.string(LocalizedStringResource("moderate", comment: "Correlation strength: moderate"))
+        case .strong: AppLocale.string(LocalizedStringResource("strong", comment: "Correlation strength: strong"))
         }
     }
 
@@ -361,10 +361,10 @@ struct InsightsCorrelationsDiscoveryBlock: View {
     /// it names the presentation, not the destination, because the destination
     /// differs and the affordance must not.
     nonisolated static var followUpLabel: String {
-        String(
-            localized: "insights.correlations.followUp",
+        AppLocale.string(LocalizedStringResource(
+            "insights.correlations.followUp",
             comment: "Correlation card — opens the pair's detail shape (C1: every entry can be pursued)"
-        )
+        ))
     }
 
     // MARK: - CU-33 — relevance copy
@@ -372,42 +372,39 @@ struct InsightsCorrelationsDiscoveryBlock: View {
     /// The person's statement, phrased as their own judgement. Not "wrong",
     /// not "hide forever", not a delete.
     nonisolated static var dismissLabel: String {
-        String(
-            localized: "Not relevant for me",
+        AppLocale.string(LocalizedStringResource(
+            "Not relevant for me",
             comment: "Correlation card — mark this relationship as not relevant to me"
-        )
+        ))
     }
 
     /// Taking the statement back.
     nonisolated static var restoreLabel: String {
-        String(
-            localized: "Relevant after all",
-            comment: "Correlation card — undo the not-relevant statement"
-        )
+        AppLocale.string(LocalizedStringResource("Relevant after all", comment: "Correlation card — undo the not-relevant statement"))
     }
 
     /// Restates why a card is muted, so the styling is never a mystery.
     nonisolated static var dismissedNote: String {
-        String(
-            localized: "You marked this as not relevant for you.",
+        AppLocale.string(LocalizedStringResource(
+            "You marked this as not relevant for you.",
             comment: "Correlation card — caption on a card the person set aside"
-        )
+        ))
     }
 
     /// A pair the server brought back on its own. Calm and factual — the
     /// evidence moved, so the server lifted the dismissal. Not an error.
     nonisolated static var resurfacedNote: String {
-        String(
-            localized: "Back again because the data behind it has changed noticeably.",
+        AppLocale.string(LocalizedStringResource(
+            "Back again because the data behind it has changed noticeably.",
             comment: "Correlation card — a previously set-aside pair returned after a recomputation"
-        )
+        ))
     }
 
     /// Disclosure label for the set-aside group.
     nonisolated static func dismissedToggleLabel(count: Int) -> String {
-        String(
-            localized: "Set aside as not relevant (\(count))",
+        AppLocale.string(LocalizedStringResource(
+            "Set aside as not relevant (\(count))",
             comment: "Correlation block — disclosure for the pairs the person marked not relevant"
-        )
+        ))
     }
 }

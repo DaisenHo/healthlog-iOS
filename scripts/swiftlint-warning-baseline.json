@@ -280,12 +280,12 @@
       "line": 164,
       "character": 13,
       "rule_id": "function_body_length",
-      "reason": "Function body should span 60 lines or less excluding comments and whitespace: currently spans 65 lines",
+      "reason": "Function body should span 60 lines or less excluding comments and whitespace: currently spans 66 lines",
       "severity": "warning"
     },
     {
       "file": "HealthLog/Screens/Charts/TrendsOverlayCard.swift",
-      "line": 252,
+      "line": 253,
       "character": 23,
       "rule_id": "large_tuple",
       "reason": "Tuples should have at most 2 members",
@@ -293,7 +293,7 @@
     },
     {
       "file": "HealthLog/Screens/Charts/TrendsOverlayCard.swift",
-      "line": 382,
+      "line": 383,
       "character": 22,
       "rule_id": "large_tuple",
       "reason": "Tuples should have at most 2 members",
@@ -469,7 +469,7 @@
     },
     {
       "file": "HealthLog/Screens/GLP1/PenInventoryView.swift",
-      "line": 312,
+      "line": 310,
       "character": 21,
       "rule_id": "hl_no_raw_toggle",
       "reason": "R11: Schalter-Zeilen sind `HLSettingsToggleRow` (Titel + optionale Beschreibung nach R2 + Toggle, eine Geometrie app-weit). Ein roher `Toggle` driftet in Schrift, Tinte und Gap.",
@@ -821,10 +821,10 @@
     },
     {
       "file": "HealthLog/Screens/Mood/MoodScreen.swift",
-      "line": 701,
+      "line": 702,
       "character": 1,
       "rule_id": "file_length",
-      "reason": "File should contain 600 lines or less: currently contains 701",
+      "reason": "File should contain 600 lines or less: currently contains 702",
       "severity": "warning"
     },
     {
@@ -989,10 +989,10 @@
     },
     {
       "file": "HealthLog/Screens/Onboarding/ServerAuthStep.swift",
-      "line": 815,
+      "line": 816,
       "character": 1,
       "rule_id": "file_length",
-      "reason": "File should contain 600 lines or less: currently contains 815",
+      "reason": "File should contain 600 lines or less: currently contains 816",
       "severity": "warning"
     },
     {
@@ -1037,7 +1037,7 @@
     },
     {
       "file": "HealthLog/Screens/Settings/DeleteAccountScreen.swift",
-      "line": 102,
+      "line": 105,
       "character": 13,
       "rule_id": "hl_no_raw_toggle",
       "reason": "R11: Schalter-Zeilen sind `HLSettingsToggleRow` (Titel + optionale Beschreibung nach R2 + Toggle, eine Geometrie app-weit). Ein roher `Toggle` driftet in Schrift, Tinte und Gap.",
@@ -1045,7 +1045,7 @@
     },
     {
       "file": "HealthLog/Screens/Settings/ResetDataScreen.swift",
-      "line": 111,
+      "line": 114,
       "character": 13,
       "rule_id": "hl_no_raw_toggle",
       "reason": "R11: Schalter-Zeilen sind `HLSettingsToggleRow` (Titel + optionale Beschreibung nach R2 + Toggle, eine Geometrie app-weit). Ein roher `Toggle` driftet in Schrift, Tinte und Gap.",
@@ -1069,7 +1069,7 @@
     },
     {
       "file": "HealthLog/Screens/Settings/Sub/AppleHealthIntegrationDetailScreen.swift",
-      "line": 262,
+      "line": 260,
       "character": 13,
       "rule_id": "hl_no_raw_toggle",
       "reason": "R11: Schalter-Zeilen sind `HLSettingsToggleRow` (Titel + optionale Beschreibung nach R2 + Toggle, eine Geometrie app-weit). Ein roher `Toggle` driftet in Schrift, Tinte und Gap.",
@@ -1077,7 +1077,7 @@
     },
     {
       "file": "HealthLog/Screens/Settings/Sub/AppleHealthIntegrationDetailScreen.swift",
-      "line": 389,
+      "line": 387,
       "character": 13,
       "rule_id": "hl_no_raw_toggle",
       "reason": "R11: Schalter-Zeilen sind `HLSettingsToggleRow` (Titel + optionale Beschreibung nach R2 + Toggle, eine Geometrie app-weit). Ein roher `Toggle` driftet in Schrift, Tinte und Gap.",
@@ -1085,7 +1085,7 @@
     },
     {
       "file": "HealthLog/Screens/Settings/Sub/AppleHealthIntegrationDetailScreen.swift",
-      "line": 425,
+      "line": 423,
       "character": 13,
       "rule_id": "hl_no_raw_toggle",
       "reason": "R11: Schalter-Zeilen sind `HLSettingsToggleRow` (Titel + optionale Beschreibung nach R2 + Toggle, eine Geometrie app-weit). Ein roher `Toggle` driftet in Schrift, Tinte und Gap.",
@@ -1109,7 +1109,7 @@
     },
     {
       "file": "HealthLog/Screens/Settings/Sub/SettingsInsightsCustomizationScreen.swift",
-      "line": 197,
+      "line": 195,
       "character": 9,
       "rule_id": "hl_no_raw_toggle",
       "reason": "R11: Schalter-Zeilen sind `HLSettingsToggleRow` (Titel + optionale Beschreibung nach R2 + Toggle, eine Geometrie app-weit). Ein roher `Toggle` driftet in Schrift, Tinte und Gap.",
@@ -1117,7 +1117,7 @@
     },
     {
       "file": "HealthLog/Screens/Settings/Sub/SettingsInsightsCustomizationScreen.swift",
-      "line": 234,
+      "line": 232,
       "character": 9,
       "rule_id": "hl_no_raw_toggle",
       "reason": "R11: Schalter-Zeilen sind `HLSettingsToggleRow` (Titel + optionale Beschreibung nach R2 + Toggle, eine Geometrie app-weit). Ein roher `Toggle` driftet in Schrift, Tinte und Gap.",
@@ -1125,7 +1125,7 @@
     },
     {
       "file": "HealthLog/Screens/Settings/Sub/SettingsInsightsCustomizationScreen.swift",
-      "line": 267,
+      "line": 265,
       "character": 13,
       "rule_id": "cyclomatic_complexity",
       "reason": "Function should have complexity 12 or less; currently complexity is 15",
@@ -1405,10 +1405,10 @@
     },
     {
       "file": "HealthLog/Stores/AppContainer.swift",
-      "line": 819,
+      "line": 820,
       "character": 1,
       "rule_id": "file_length",
-      "reason": "File should contain 600 lines or less: currently contains 819",
+      "reason": "File should contain 600 lines or less: currently contains 820",
       "severity": "warning"
     },
     {
@@ -1624,15 +1624,15 @@
       "line": 17,
       "character": 14,
       "rule_id": "type_body_length",
-      "reason": "Class body should span 350 lines or less excluding comments and whitespace: currently spans 418 lines",
+      "reason": "Class body should span 350 lines or less excluding comments and whitespace: currently spans 430 lines",
       "severity": "warning"
     },
     {
       "file": "HealthLog/Stores/SettingsStore.swift",
-      "line": 733,
+      "line": 732,
       "character": 1,
       "rule_id": "file_length",
-      "reason": "File should contain 600 lines or less: currently contains 733",
+      "reason": "File should contain 600 lines or less: currently contains 732",
       "severity": "warning"
     },
     {

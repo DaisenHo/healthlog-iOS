@@ -130,9 +130,10 @@ struct SettingsCoachScreen: View {
             // Geltungsbereich: gelöscht wird die lokale Fassung, nicht die
             // serverseitig gehaltenen Unterhaltungen.
             message: Text(
-                String(
-                    localized: "This clears the transcript on this iPhone. Conversations kept on your server stay — delete them under “Past conversations”."
-                )
+                AppLocale
+                    .string(
+                        "This clears the transcript on this iPhone. Conversations kept on your server stay — delete them under “Past conversations”."
+                    )
             ),
             confirm: Text("Delete"),
             cancel: Text("Cancel"),
@@ -443,7 +444,7 @@ private struct CoachInsightsPrivacyCard: View {
                             .accessibilityHidden(true)
                     }
                     Picker(
-                        String(localized: "settings.coach.insightsPrivacy.pickerLabel"),
+                        AppLocale.string("settings.coach.insightsPrivacy.pickerLabel"),
                         selection: Binding(
                             get: { store.insightsPrivacyMode },
                             set: { newValue in Task { await store.setInsightsPrivacyMode(newValue) } }

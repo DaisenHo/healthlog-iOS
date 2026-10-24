@@ -57,6 +57,6 @@ struct SleepSourceDiscrepancyNote: View {
         }.joined(separator: ", ")
         guard discrepancy.deltaMinutes > 0 else { return claims }
         let delta = SleepDurationFormat.hoursMinutes(discrepancy.deltaMinutes)
-        return String(localized: "sleep.sourceDiscrepancy.detail \(claims) \(delta)")
+        return AppLocale.string("sleep.sourceDiscrepancy.detail \(claims) \(delta)")
     }
 }

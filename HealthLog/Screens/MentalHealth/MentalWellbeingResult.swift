@@ -42,7 +42,7 @@ struct MentalWellbeingResult: View {
                 // 1.0.3 (1.4.1) — the validation paper behind this instrument.
                 HLSourcesLink(topic: .mentalHealth(result.instrument))
 
-                HLButton(String(localized: "mentalHealth.result.takeAnother"), variant: .secondary) {
+                HLButton(AppLocale.string("mentalHealth.result.takeAnother"), variant: .secondary) {
                     store.backToChoose()
                 }
                 .accessibilityIdentifier("mentalHealth.result.takeAnother")

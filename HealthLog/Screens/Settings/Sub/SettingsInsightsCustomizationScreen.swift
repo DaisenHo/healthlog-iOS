@@ -90,7 +90,7 @@ struct SettingsInsightsCustomizationScreen: View {
             // present but cannot hide it or move it off the leading edge.
             overviewPinnedRow
             if orderedTiles.isEmpty {
-                Text(String(localized: "No targets loaded yet. Tap Refresh on the Insights page."))
+                Text(AppLocale.string("No targets loaded yet. Tap Refresh on the Insights page."))
                     .font(.hlSubhead)
                     .foregroundStyle(HLText.secondary)
             } else {
@@ -102,7 +102,7 @@ struct SettingsInsightsCustomizationScreen: View {
         } header: {
             // R12 — Abschnitts-Header eines List-Gerüsts ist der System-Default
             // (roher `Text`, versal). Die eigene Schrift/Tinte ist gefallen.
-            Text(String(localized: "Tabs"))
+            Text(AppLocale.string("Tabs"))
         } footer: {
             // UI-Standard R3/R5 — auf diesem Screen standen drei
             // Mechanik-Footer untereinander, die alle „ziehen zum Sortieren"
@@ -112,11 +112,9 @@ struct SettingsInsightsCustomizationScreen: View {
             // die Zieh-Anleitung war eine Bedien-Nacherzählung (R2), und
             // „Übersicht bleibt zuerst" steht bereits an der angehefteten
             // Zeile selbst.
-            Text(String(
-                localized: "Hidden tabs leave the strip and their page. Tabs without data stay hidden even when enabled."
-            ))
-            .font(.hlCaption)
-            .foregroundStyle(HLText.secondary)
+            Text(AppLocale.string("Hidden tabs leave the strip and their page. Tabs without data stay hidden even when enabled."))
+                .font(.hlCaption)
+                .foregroundStyle(HLText.secondary)
         }
     }
 
@@ -129,7 +127,7 @@ struct SettingsInsightsCustomizationScreen: View {
                 Text(label(for: InsightsLayoutTileId.overview))
                     .font(.hlSubhead.weight(.semibold))
                     .foregroundStyle(HLText.primary)
-                Text(String(localized: "Always shown first."))
+                Text(AppLocale.string("Always shown first."))
                     .font(.hlCaption)
                     .foregroundStyle(HLText.secondary)
             }
@@ -180,7 +178,7 @@ struct SettingsInsightsCustomizationScreen: View {
                     scoreToggleRow(for: id)
                 }
             } header: {
-                Text(String(localized: "Score cards"))
+                Text(AppLocale.string("Score cards"))
             }
             // UI-Standard R3/R4 — der Abschnitts-Footer ist ersatzlos gefallen.
             // Sein erster Satz erzählte den Schalter daneben nach, sein zweiter
@@ -217,7 +215,7 @@ struct SettingsInsightsCustomizationScreen: View {
             Button(role: .destructive) {
                 Task { await layoutStore.resetToDefaults() }
             } label: {
-                Label(String(localized: "Reset to default"), systemImage: "arrow.uturn.backward")
+                Label(AppLocale.string("Reset to default"), systemImage: "arrow.uturn.backward")
             }
         }
     }
@@ -266,20 +264,20 @@ struct SettingsInsightsCustomizationScreen: View {
     /// Localized label per server tile-id slug.
     private func label(for id: String) -> String {
         switch id {
-        case InsightsLayoutTileId.overview: String(localized: "Overview")
-        case InsightsLayoutTileId.bloodPressure: String(localized: "Blood pressure")
-        case InsightsLayoutTileId.pulse: String(localized: "Pulse")
-        case InsightsLayoutTileId.oxygen: String(localized: "Oxygen saturation")
-        case InsightsLayoutTileId.bodyTemperature: String(localized: "Body temperature")
-        case InsightsLayoutTileId.weight: String(localized: "Weight")
-        case InsightsLayoutTileId.bmi: String(localized: "BMI")
-        case InsightsLayoutTileId.activeEnergy: String(localized: "Steps")
-        case InsightsLayoutTileId.workouts: String(localized: "Workouts")
-        case InsightsLayoutTileId.sleep: String(localized: "Sleep")
-        case InsightsLayoutTileId.restingPulse: String(localized: "Resting heart rate")
-        case InsightsLayoutTileId.hrv: String(localized: "HRV")
-        case InsightsLayoutTileId.mood: String(localized: "Mood")
-        case InsightsLayoutTileId.medications: String(localized: "Compliance")
+        case InsightsLayoutTileId.overview: AppLocale.string("Overview")
+        case InsightsLayoutTileId.bloodPressure: AppLocale.string("Blood pressure")
+        case InsightsLayoutTileId.pulse: AppLocale.string("Pulse")
+        case InsightsLayoutTileId.oxygen: AppLocale.string("Oxygen saturation")
+        case InsightsLayoutTileId.bodyTemperature: AppLocale.string("Body temperature")
+        case InsightsLayoutTileId.weight: AppLocale.string("Weight")
+        case InsightsLayoutTileId.bmi: AppLocale.string("BMI")
+        case InsightsLayoutTileId.activeEnergy: AppLocale.string("Steps")
+        case InsightsLayoutTileId.workouts: AppLocale.string("Workouts")
+        case InsightsLayoutTileId.sleep: AppLocale.string("Sleep")
+        case InsightsLayoutTileId.restingPulse: AppLocale.string("Resting heart rate")
+        case InsightsLayoutTileId.hrv: AppLocale.string("HRV")
+        case InsightsLayoutTileId.mood: AppLocale.string("Mood")
+        case InsightsLayoutTileId.medications: AppLocale.string("Compliance")
         // Fall back to the canonical metric / special-page display name so strip
         // tabs beyond the original 14-id set (the full chartable universe +
         // workouts/mood) read with a human label, never a raw slug.

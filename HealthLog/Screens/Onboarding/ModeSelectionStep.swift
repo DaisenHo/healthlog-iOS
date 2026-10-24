@@ -35,8 +35,8 @@ struct ModeSelectionStep: View {
                 VStack(spacing: HLSpace.md) {
                     PathCard(
                         symbol: "externaldrive.badge.icloud",
-                        title: String(localized: "onboarding.mode.server.title"),
-                        subtitle: String(localized: "onboarding.mode.server.subtitle"),
+                        title: AppLocale.string("onboarding.mode.server.title"),
+                        subtitle: AppLocale.string("onboarding.mode.server.subtitle"),
                         identifier: "onboarding.modeServer"
                     ) {
                         select(.server)
@@ -55,8 +55,8 @@ struct ModeSelectionStep: View {
                     if FeatureFlags.standaloneModeAvailable {
                         PathCard(
                             symbol: "iphone.gen3",
-                            title: String(localized: "onboarding.mode.standalone.title"),
-                            subtitle: String(localized: "onboarding.mode.standalone.subtitle"),
+                            title: AppLocale.string("onboarding.mode.standalone.title"),
+                            subtitle: AppLocale.string("onboarding.mode.standalone.subtitle"),
                             identifier: "onboarding.modeStandalone"
                         ) {
                             select(.standalone)
@@ -197,7 +197,7 @@ private struct PathCard: View {
         .buttonStyle(.plain)
         .accessibilityIdentifier(identifier)
         .accessibilityElement(children: .combine)
-        .accessibilityHint(Text(String(localized: "Tap to choose this option")))
+        .accessibilityHint(Text(AppLocale.string("Tap to choose this option")))
         .simultaneousGesture(
             DragGesture(minimumDistance: 0)
                 .onChanged { _ in pressed = true }

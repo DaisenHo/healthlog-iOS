@@ -45,7 +45,7 @@ struct BiomarkerSeed: Identifiable, Hashable {
     /// fall back to the slug, which at least reads as a word.
     var displayName: String {
         let key = "labs.catalog.\(slug)"
-        let resolved = String(localized: String.LocalizationValue(key))
+        let resolved = AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(key)))
         return resolved == key ? slug : resolved
     }
 }
@@ -71,7 +71,7 @@ enum BiomarkerSeedPanel: String, CaseIterable, Hashable {
     /// as free text, so the user's own language is the right value.
     var displayName: String {
         let key = "labs.catalog.panel.\(rawValue)"
-        let resolved = String(localized: String.LocalizationValue(key))
+        let resolved = AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(key)))
         return resolved == key ? rawValue : resolved
     }
 }

@@ -41,13 +41,13 @@ public struct InjectionSitePicker: View {
                         Image(systemName: "arrow.triangle.2.circlepath")
                             .foregroundStyle(HLText.secondary)
                         Text(String(
-                            format: String(localized: "Vorschlag laut Rotationsplan: %@"),
+                            format: AppLocale.string("Vorschlag laut Rotationsplan: %@"),
                             suggested.localizedLabel
                         ))
                         .font(.hlSubhead)
                         .foregroundStyle(HLText.primary)
                     }
-                    Text(String(localized: "Rotate the site to protect your skin."))
+                    Text(AppLocale.string("Rotate the site to protect your skin."))
                         .font(.hlCaption)
                         .foregroundStyle(HLText.tertiary)
                     // 1.0.3 (App Review 1.4.1) — the rotation hygiene claim is
@@ -71,7 +71,7 @@ public struct InjectionSitePicker: View {
                 if let staged = stagedSite {
                     HStack(spacing: HLSpace.sm) {
                         Text(String(
-                            format: String(localized: "Selected: %@"),
+                            format: AppLocale.string("Selected: %@"),
                             staged.localizedLabel
                         ))
                         .font(.hlSubhead)
@@ -80,7 +80,7 @@ public struct InjectionSitePicker: View {
                         Button {
                             stagedSite = nil
                         } label: {
-                            Text(String(localized: "Reset"))
+                            Text(AppLocale.string("Reset"))
                                 .font(.hlSubhead)
                                 .foregroundStyle(HLText.secondary)
                         }
@@ -91,7 +91,7 @@ public struct InjectionSitePicker: View {
                                 stagedSite = nil
                             }
                         } label: {
-                            Text(String(localized: "Log"))
+                            Text(AppLocale.string("Log"))
                                 .font(.hlSubhead.weight(.semibold))
                                 .foregroundStyle(.tint)
                         }
@@ -106,7 +106,7 @@ public struct InjectionSitePicker: View {
     private var historyCard: some View {
         if store.mergedHistory.isEmpty {
             HLCard(style: .ghost) {
-                Text(String(localized: "No sites logged yet."))
+                Text(AppLocale.string("No sites logged yet."))
                     .font(.hlSubhead)
                     .foregroundStyle(HLText.secondary)
             }
@@ -142,24 +142,24 @@ private struct HistoryRow: View {
                 Text(record.site.localizedLabel)
                     .font(.hlHeadline)
                     .foregroundStyle(HLText.primary)
-                Text(record.when.formatted(.dateTime.day().month(.abbreviated).hour().minute()))
+                Text(record.when.formatted(.dateTime.day().month(.abbreviated).hour().minute().locale(AppLocale.shared.current)))
                     .font(.hlCaption)
                     .foregroundStyle(HLText.tertiary)
                     .monospacedDigit()
             }
             Spacer()
             if record.source == .server {
-                HLBadge(String(localized: "Server"), tone: .neutral)
+                HLBadge(AppLocale.string("Server"), tone: .neutral)
             } else {
                 Menu {
                     Button(role: .destructive, action: onDelete) {
-                        Label(String(localized: "Delete"), systemImage: "trash")
+                        Label(AppLocale.string("Delete"), systemImage: "trash")
                     }
                 } label: {
                     Image(systemName: "ellipsis.circle")
                         .foregroundStyle(HLText.secondary)
                 }
-                .accessibilityLabel(Text(String(localized: "Entry actions")))
+                .accessibilityLabel(Text(AppLocale.string("Entry actions")))
             }
         }
         .padding(.vertical, HLSpace.sm)

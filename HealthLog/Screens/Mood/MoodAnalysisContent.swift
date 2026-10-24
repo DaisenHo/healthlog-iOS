@@ -138,9 +138,9 @@ struct MoodAnalysisContent<Section: View>: View {
 
     private var windowLabel: String {
         switch period {
-        case .days30: String(localized: "in 30 days")
-        case .days90: String(localized: "in 90 days")
-        case .year: String(localized: "in 1 year")
+        case .days30: AppLocale.string("in 30 days")
+        case .days90: AppLocale.string("in 90 days")
+        case .year: AppLocale.string("in 1 year")
         }
     }
 

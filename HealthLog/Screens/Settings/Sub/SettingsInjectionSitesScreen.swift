@@ -44,13 +44,13 @@ struct SettingsInjectionSitesScreen: View {
         .navigationBarTitleDisplayMode(.inline)
         .task { await store.refresh() }
         .alert(
-            String(localized: "Could not update injection-site preferences. Please try again."),
+            AppLocale.string("Could not update injection-site preferences. Please try again."),
             isPresented: Binding(
                 get: { store.error != nil },
                 set: { _ in }
             )
         ) {
-            Button(String(localized: "OK"), role: .cancel) {}
+            Button(AppLocale.string("OK"), role: .cancel) {}
         }
     }
 

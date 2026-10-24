@@ -191,9 +191,9 @@ extension DashboardMetric {
     var spokenTrendWithVerdict: String? {
         guard trendSentiment != nil else { return nil }
         let direction: String? = switch trend {
-        case .up: String(localized: "Trend rising")
-        case .down: String(localized: "Trend falling")
-        case .flat: String(localized: "Trend stable")
+        case .up: AppLocale.string("Trend rising")
+        case .down: AppLocale.string("Trend falling")
+        case .flat: AppLocale.string("Trend stable")
         case .unknown: nil
         }
         return direction.map { $0 + spokenVerdictSuffix }

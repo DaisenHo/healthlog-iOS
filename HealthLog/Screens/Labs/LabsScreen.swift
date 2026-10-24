@@ -293,7 +293,7 @@ struct LabsScreen: View {
                     }
                 } header: {
                     MeasurementListSectionHeader(
-                        text: String(localized: "labs.analyte.none")
+                        text: AppLocale.string("labs.analyte.none")
                     )
                 }
             }
@@ -381,7 +381,7 @@ struct LabsScreen: View {
     }
 
     private func deleteRow(_ row: LabResultDTO, store: LabsStore) async {
-        let message = String(localized: "labs.delete.undo")
+        let message = AppLocale.string("labs.delete.undo")
         await store.deleteLab(id: row.id, undoMessage: message)
     }
 
@@ -458,7 +458,7 @@ struct BiomarkerIndexRow: View {
     }
 
     private var countCaption: String {
-        let template = String(localized: "labs.byType.count")
+        let template = AppLocale.string("labs.byType.count")
         return String(format: template, count)
     }
 
@@ -469,7 +469,7 @@ struct BiomarkerIndexRow: View {
 
     private var accessibilityText: String {
         guard let latest else { return name }
-        let template = String(localized: "labs.row.a11y")
+        let template = AppLocale.string("labs.row.a11y")
         return String(format: template, name, valueLabel(latest), latest.rangeStatus.localizedLabel)
     }
 }
@@ -526,7 +526,7 @@ struct LabResultRow: View {
     }
 
     private var accessibilityText: String {
-        let template = String(localized: "labs.row.a11y")
+        let template = AppLocale.string("labs.row.a11y")
         return String(format: template, row.analyte, valueLabel, row.rangeStatus.localizedLabel)
     }
 }
@@ -558,7 +558,7 @@ private struct LabsBiomarkerCatalogErrorState: View {
                 message: "labs.biomarkerCatalog.error.message"
             ) {
                 HLButton(
-                    String(localized: "Try again"),
+                    AppLocale.string("Try again"),
                     icon: "arrow.clockwise",
                     variant: .secondary,
                     isLoading: isRetrying

@@ -89,13 +89,13 @@ struct SettingsAppleHealthImportScreen: View {
     private var statusPill: some View {
         switch phase {
         case .idle:
-            HLStatusPill(.disconnected(label: String(localized: "settings.applehealth_import.pill_ready")))
+            HLStatusPill(.disconnected(label: AppLocale.string("settings.applehealth_import.pill_ready")))
         case .uploading, .polling:
-            HLStatusPill(.unknown(label: String(localized: "settings.applehealth_import.pill_running")))
+            HLStatusPill(.unknown(label: AppLocale.string("settings.applehealth_import.pill_running")))
         case .done:
-            HLStatusPill(.connected(label: String(localized: "settings.applehealth_import.pill_done")))
+            HLStatusPill(.connected(label: AppLocale.string("settings.applehealth_import.pill_done")))
         case .failed:
-            HLStatusPill(.error(label: String(localized: "settings.applehealth_import.pill_failed")))
+            HLStatusPill(.error(label: AppLocale.string("settings.applehealth_import.pill_failed")))
         }
     }
 
@@ -126,7 +126,7 @@ struct SettingsAppleHealthImportScreen: View {
                 }
             case .uploading:
                 progressBlock(
-                    label: String(localized: "settings.applehealth_import.progress_uploading"),
+                    label: AppLocale.string("settings.applehealth_import.progress_uploading"),
                     percent: nil
                 )
             case let .polling(status):
@@ -143,7 +143,7 @@ struct SettingsAppleHealthImportScreen: View {
 
     private var ctaButton: some View {
         HLButton(
-            String(localized: "settings.applehealth_import.cta"),
+            AppLocale.string("settings.applehealth_import.cta"),
             icon: "tray.and.arrow.down.fill",
             // R9 — „Import ausführen" ist die Commit-Aktion dieses Screens.
             variant: .primary
@@ -156,7 +156,7 @@ struct SettingsAppleHealthImportScreen: View {
 
     private var importAnotherButton: some View {
         HLButton(
-            String(localized: "settings.applehealth_import.import_another"),
+            AppLocale.string("settings.applehealth_import.import_another"),
             icon: "arrow.clockwise",
             variant: .secondary
         ) {
@@ -202,12 +202,12 @@ struct SettingsAppleHealthImportScreen: View {
             let totals = status.result?.totals
             summaryRow(
                 icon: "checkmark.circle.fill",
-                label: String(localized: "settings.applehealth_import.summary_records"),
+                label: AppLocale.string("settings.applehealth_import.summary_records"),
                 value: formattedCount(totals?.recordsRead)
             )
             summaryRow(
                 icon: "square.and.arrow.down.fill",
-                label: String(localized: "settings.applehealth_import.summary_upserted"),
+                label: AppLocale.string("settings.applehealth_import.summary_upserted"),
                 value: formattedCount(totals?.rowsUpserted)
             )
 
@@ -257,22 +257,22 @@ struct SettingsAppleHealthImportScreen: View {
             } else {
                 summaryRow(
                     icon: "waveform.path.ecg",
-                    label: String(localized: "settings.applehealth_import.ecg_discovered"),
+                    label: AppLocale.string("settings.applehealth_import.ecg_discovered"),
                     value: formattedCount(ecg.discovered)
                 )
                 summaryRow(
                     icon: "square.and.arrow.down.fill",
-                    label: String(localized: "settings.applehealth_import.ecg_imported"),
+                    label: AppLocale.string("settings.applehealth_import.ecg_imported"),
                     value: formattedCount(ecg.imported)
                 )
                 summaryRow(
                     icon: "arrow.triangle.2.circlepath",
-                    label: String(localized: "settings.applehealth_import.ecg_updated"),
+                    label: AppLocale.string("settings.applehealth_import.ecg_updated"),
                     value: formattedCount(ecg.updated)
                 )
                 summaryRow(
                     icon: "minus.circle",
-                    label: String(localized: "settings.applehealth_import.ecg_skipped"),
+                    label: AppLocale.string("settings.applehealth_import.ecg_skipped"),
                     value: formattedCount(ecg.skipped)
                 )
             }
@@ -283,7 +283,7 @@ struct SettingsAppleHealthImportScreen: View {
             if (ecg.failed ?? 0) > 0 {
                 summaryRow(
                     icon: "exclamationmark.triangle.fill",
-                    label: String(localized: "settings.applehealth_import.ecg_failed"),
+                    label: AppLocale.string("settings.applehealth_import.ecg_failed"),
                     value: formattedCount(ecg.failed)
                 )
             }
@@ -358,11 +358,11 @@ struct SettingsAppleHealthImportScreen: View {
 
     private func phaseLabel(_ phase: AppleHealthImportPhase) -> String {
         switch phase {
-        case .queued: String(localized: "settings.applehealth_import.phase_queued")
-        case .unpacking: String(localized: "settings.applehealth_import.phase_unpacking")
-        case .parsing: String(localized: "settings.applehealth_import.phase_parsing")
-        case .upserting: String(localized: "settings.applehealth_import.phase_upserting")
-        case .done, .failed, .other: String(localized: "settings.applehealth_import.phase_queued")
+        case .queued: AppLocale.string("settings.applehealth_import.phase_queued")
+        case .unpacking: AppLocale.string("settings.applehealth_import.phase_unpacking")
+        case .parsing: AppLocale.string("settings.applehealth_import.phase_parsing")
+        case .upserting: AppLocale.string("settings.applehealth_import.phase_upserting")
+        case .done, .failed, .other: AppLocale.string("settings.applehealth_import.phase_queued")
         }
     }
 

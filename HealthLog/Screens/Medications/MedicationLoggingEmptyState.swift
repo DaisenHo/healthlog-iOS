@@ -146,7 +146,7 @@ struct MedicationLoggingEmptyStateView: View {
         VStack(spacing: HLSpace.sm) {
             if descriptor.primaryAction == .addMedication {
                 HLButton(
-                    String(localized: "Add medication"),
+                    AppLocale.string("Add medication"),
                     icon: "plus",
                     variant: .restrained,
                     size: .regular
@@ -157,7 +157,7 @@ struct MedicationLoggingEmptyStateView: View {
             }
             if descriptor.offersManualLog, let onLogManually {
                 HLButton(
-                    String(localized: "med.freelog.open"),
+                    AppLocale.string("med.freelog.open"),
                     icon: "square.and.pencil",
                     variant: .restrained,
                     size: .regular
@@ -168,7 +168,7 @@ struct MedicationLoggingEmptyStateView: View {
             }
             if let onClose {
                 HLButton(
-                    String(localized: "meds.quick.empty.close"),
+                    AppLocale.string("meds.quick.empty.close"),
                     variant: .secondary,
                     size: .regular
                 ) {

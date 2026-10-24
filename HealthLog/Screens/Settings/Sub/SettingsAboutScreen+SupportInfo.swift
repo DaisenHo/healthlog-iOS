@@ -52,7 +52,7 @@ extension SettingsAboutScreen {
             build: Self.buildMetadata(),
             osVersion: Self.osVersion,
             deviceClass: Self.deviceClass,
-            appLanguage: Bundle.main.preferredLocalizations.first,
+            appLanguage: AppLocale.shared.serverCode,
             server: server,
             lastKnownServerVersion: UserDefaults.standard.string(forKey: KnownServerVersion.defaultsKey),
             failures: RecentFailureLog.shared.snapshot()

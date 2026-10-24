@@ -66,8 +66,8 @@ struct AskCoachHeroCard: View {
             .buttonStyle(.plain)
             .sensoryFeedback(.impact(weight: .light), trigger: tapPulse)
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel(String(localized: "Ask the coach"))
-            .accessibilityHint(String(localized: "What would you like to know today?"))
+            .accessibilityLabel(AppLocale.string("Ask the coach"))
+            .accessibilityHint(AppLocale.string("What would you like to know today?"))
             .accessibilityAddTraits(.isButton)
             .accessibilityIdentifier("InsightsScreen.askCoachHeroCard")
 
@@ -106,8 +106,8 @@ struct AskCoachHeroCard: View {
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(String(localized: "Hide hero card"))
-        .accessibilityHint(String(localized: "Hide the coach card; a coach button appears in the top right."))
+        .accessibilityLabel(AppLocale.string("Hide hero card"))
+        .accessibilityHint(AppLocale.string("Hide the coach card; a coach button appears in the top right."))
         .accessibilityIdentifier("InsightsScreen.askCoachHeroCard.dismiss")
     }
 
@@ -155,12 +155,12 @@ struct AskCoachHeroCard: View {
             // gradient breathes around the lockup.
             VStack(alignment: .leading, spacing: HLSpace.sm) {
                 sparklesGlyph
-                Text(String(localized: "Ask the coach"))
+                Text(AppLocale.string("Ask the coach"))
                     .font(.system(.title2, design: .rounded, weight: .bold))
                     .foregroundStyle(HLColor.aiHeroInk)
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
-                Text(String(localized: "Your data, explained. Ask anything about your trends, scores, or what to watch."))
+                Text(AppLocale.string("Your data, explained. Ask anything about your trends, scores, or what to watch."))
                     .font(.hlSubhead)
                     .foregroundStyle(HLColor.aiHeroInk.opacity(0.82))
                     .lineLimit(3)
@@ -205,7 +205,7 @@ struct AskCoachHeroCard: View {
 
     private var ctaPill: some View {
         HStack(spacing: HLSpace.xs) {
-            Text(String(localized: "Ask your question"))
+            Text(AppLocale.string("Ask your question"))
                 .font(.hlFootnote.weight(.semibold))
                 .foregroundStyle(HLColor.aiHeroInk)
             HLDisclosureChevron(tint: HLColor.aiHeroInk)

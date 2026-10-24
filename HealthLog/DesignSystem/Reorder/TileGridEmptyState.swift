@@ -25,7 +25,7 @@ struct TileGridEmptyState: View {
                 message: "You've hidden every tile. Add some back to see your metrics at a glance."
             ) {
                 HLButton(
-                    String(localized: "Add tiles"),
+                    AppLocale.string("Add tiles"),
                     icon: "plus",
                     variant: .primary,
                     size: .regular,

@@ -190,7 +190,7 @@ struct SettingsPersonalizationCard: View {
                 label: "Appearance",
                 identifier: "settings.dashboard.appearancePicker"
             ) {
-                Picker(String(localized: "Appearance"), selection: bindable(\.appearance)) {
+                Picker(AppLocale.string("Appearance"), selection: bindable(\.appearance)) {
                     ForEach(AppearanceMode.allCases) { mode in
                         Text(LocalizedStringKey(mode.label)).tag(mode)
                     }
@@ -209,7 +209,7 @@ struct SettingsPersonalizationCard: View {
                 identifier: "settings.dashboard.complianceHeatmapWeeksPicker"
             ) {
                 Picker(
-                    String(localized: "Compliance heatmap"),
+                    AppLocale.string("Compliance heatmap"),
                     selection: bindable(\.complianceHeatmapWeeks)
                 ) {
                     ForEach(ComplianceHeatmapWeeks.allCases) { option in

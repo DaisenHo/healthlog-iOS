@@ -212,7 +212,7 @@ struct IntradayPulseBlock: View {
     /// day. Parsed in the PROFILE zone so the label names the day the server
     /// answered for.
     private var dayLabel: String {
-        if isOnToday { return String(localized: "insights.intraday.today") }
+        if isOnToday { return AppLocale.string("insights.intraday.today") }
         let key = store.visibleDateKey(in: zone)
         guard let date = Self.keyParser(zone).date(from: key) else { return key }
         return HLDateFormat.dayMonth(date)

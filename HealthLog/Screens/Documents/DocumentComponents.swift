@@ -37,7 +37,7 @@ struct DocumentUsageBar: View {
     }
 
     private var usedLabel: String {
-        let template = String(localized: "documents.upload.quotaUsed")
+        let template = AppLocale.string("documents.upload.quotaUsed")
         return String(format: template, DocumentFormat.bytes(usage.usedBytes), DocumentFormat.bytes(usage.quotaBytes))
     }
 }
@@ -229,7 +229,7 @@ struct DocumentCardRow: View {
             }
             if document.servingClass == .attachment {
                 HLBadge(
-                    String(localized: "documents.card.attachmentBadge"),
+                    AppLocale.string("documents.card.attachmentBadge"),
                     icon: "arrow.down.circle",
                     tone: .neutral
                 )
@@ -239,14 +239,14 @@ struct DocumentCardRow: View {
             // permanently-unindexed document never shows a stuck chip.
             if isProcessing {
                 HLBadge(
-                    String(localized: "documents.card.processing"),
+                    AppLocale.string("documents.card.processing"),
                     icon: "clock.arrow.circlepath",
                     tone: .neutral
                 )
                 .accessibilityIdentifier("documents.card.processing")
             } else if isReady {
                 HLBadge(
-                    String(localized: "documents.card.ready"),
+                    AppLocale.string("documents.card.ready"),
                     icon: "checkmark.circle",
                     tone: .success
                 )
@@ -256,7 +256,7 @@ struct DocumentCardRow: View {
     }
 
     private var titleText: String {
-        document.resolvedTitle ?? String(localized: "documents.card.untitled")
+        document.resolvedTitle ?? AppLocale.string("documents.card.untitled")
     }
 
     /// The filename as a secondary line — shown only when it differs from the

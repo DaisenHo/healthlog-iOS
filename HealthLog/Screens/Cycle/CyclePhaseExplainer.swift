@@ -78,10 +78,10 @@ struct CyclePhaseExplainer: View {
     }
 
     private var chipText: String {
-        let phaseName = String(localized: Self.nameKey(for: phase))
+        let phaseName = AppLocale.string(AppLocale.shared.resource(Self.nameKey(for: phase)))
         if let day = dayOfCycle {
             return String(
-                format: String(localized: "cycle.explain.chip.dayPhase"),
+                format: AppLocale.string("cycle.explain.chip.dayPhase"),
                 day, phaseName
             )
         }

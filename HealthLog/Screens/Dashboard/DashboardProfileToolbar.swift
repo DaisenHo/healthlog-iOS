@@ -72,7 +72,7 @@ private struct DashboardAccountSheet: View {
             SettingsAccountScreen()
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
-                        Button(String(localized: "Done")) { dismiss() }
+                        Button(AppLocale.string("Done")) { dismiss() }
                             .accessibilityIdentifier("dashboard.accountSheet.done")
                     }
                 }

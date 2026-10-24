@@ -102,7 +102,7 @@ struct SettingsAIScreen: View {
                 // operative controls; this placeholder explains the server
                 // provider chain is paired-only + offers the shared CTA.
                 HLCloudDerivedPlaceholder(
-                    surfaceName: String(localized: "cloud_derived.surface.ai_provider"),
+                    surfaceName: AppLocale.string("cloud_derived.surface.ai_provider"),
                     onConnect: { authStore.beginServerPairing() }
                 )
             }

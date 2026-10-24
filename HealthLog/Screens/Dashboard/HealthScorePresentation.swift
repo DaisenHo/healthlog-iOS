@@ -65,7 +65,7 @@ enum HealthScorePresentation {
     /// Short label for a score pillar. An id this client does not know yet gets
     /// a neutral placeholder instead of a raw server token.
     static func label(for pillar: HealthScorePillar) -> String {
-        String(localized: String.LocalizationValue(labelKey(for: pillar)))
+        AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(labelKey(for: pillar))))
     }
 
     // MARK: - Score basis (#103 / #115 · 1.3)
@@ -74,18 +74,18 @@ enum HealthScorePresentation {
     /// A one-area score and a full one share the arithmetic; this line is what
     /// tells them apart, so it rides every surface that shows the number.
     static func basisLine(_ basis: HealthScoreBasis) -> String {
-        String(
-            localized: "healthScore.basis \(basis.domains) \(basis.recommended)",
+        AppLocale.string(LocalizedStringResource(
+            "healthScore.basis \(basis.domains) \(basis.recommended)",
             comment: "Health Score — how many distinct areas the score rests on, of the recommended number"
-        )
+        ))
     }
 
     /// Scope statement when no physiological measurement counted.
     static var basisWithoutPhysiology: String {
-        String(
-            localized: "healthScore.basis.noPhysiological",
+        AppLocale.string(LocalizedStringResource(
+            "healthScore.basis.noPhysiological",
             comment: "Health Score — the score rests on activity/wellbeing only"
-        )
+        ))
     }
 
     /// Lines for a composition notice the server still reports as open.
@@ -93,12 +93,18 @@ enum HealthScorePresentation {
         guard notice.isShowable else { return [] }
         var lines: [String] = []
         if !notice.joined.isEmpty {
-            let names = notice.joined.map(label(for:)).formatted(.list(type: .and))
-            lines.append(String(localized: "healthScore.notice.joined \(names)", comment: "Health Score — pillars that joined"))
+            let names = notice.joined.map(label(for:)).formatted(.list(type: .and).locale(AppLocale.shared.current))
+            lines.append(AppLocale.string(LocalizedStringResource(
+                "healthScore.notice.joined \(names)",
+                comment: "Health Score — pillars that joined"
+            )))
         }
         if !notice.left.isEmpty {
-            let names = notice.left.map(label(for:)).formatted(.list(type: .and))
-            lines.append(String(localized: "healthScore.notice.left \(names)", comment: "Health Score — pillars that left"))
+            let names = notice.left.map(label(for:)).formatted(.list(type: .and).locale(AppLocale.shared.current))
+            lines.append(AppLocale.string(LocalizedStringResource(
+                "healthScore.notice.left \(names)",
+                comment: "Health Score — pillars that left"
+            )))
         }
         return lines
     }
@@ -117,10 +123,10 @@ enum HealthScorePresentation {
     /// and a bare noun phrase would blur into it. Since 25-02 this is the
     /// ONLY tile-level carrier of the statement (the painted mark is gone).
     static var chosenCompositionA11y: String {
-        String(
-            localized: "The pillars behind this score were chosen by you.",
+        AppLocale.string(LocalizedStringResource(
+            "The pillars behind this score were chosen by you.",
             comment: "Health Score a11y — the composition was chosen by the person"
-        )
+        ))
     }
 
     /// **Why a score built on one composition cannot be read against another.**
@@ -132,10 +138,10 @@ enum HealthScorePresentation {
     /// that is about to change one. One definition site, so the two placements
     /// cannot drift apart.
     static var chosenCompositionExplanation: String {
-        String(
-            localized: "A score built from a different selection measures something else, so the two numbers cannot be compared.",
+        AppLocale.string(LocalizedStringResource(
+            "A score built from a different selection measures something else, so the two numbers cannot be compared.",
             comment: "Health Score — what a self-chosen composition means for comparisons"
-        )
+        ))
     }
 
     // MARK: - Refused selections
@@ -151,22 +157,28 @@ enum HealthScorePresentation {
     static func explanation(for reason: HealthScoreBreadthReason) -> String {
         switch reason {
         case .threeDomainsRequired:
-            String(
-                // swiftlint:disable:next line_length
-                localized: "This selection covers fewer than three different areas of health. A composite built from one or two areas would not be an overall score, only that one area under another name — and several pillars can describe the same area, in which case they count together as one.",
+            AppLocale.string(LocalizedStringResource(
+                """
+                This selection covers fewer than three different areas of health. A composite built from one or \
+                two areas would not be an overall score, only that one area under another name — and several \
+                pillars can describe the same area, in which case they count together as one.
+                """,
                 comment: "Health Score composition refused — too few distinct health domains"
-            )
+            ))
         case .measuredPhysiologicalDomainRequired:
-            String(
-                // swiftlint:disable:next line_length
-                localized: "This selection contains no pillar that is physically measured. Without a measurement taken on your body the number would only summarise what you record about yourself, so keep at least one measured pillar in the selection.",
+            AppLocale.string(LocalizedStringResource(
+                """
+                This selection contains no pillar that is physically measured. Without a measurement taken on \
+                your body the number would only summarise what you record about yourself, so keep at least one \
+                measured pillar in the selection.
+                """,
                 comment: "Health Score composition refused — no measured physiological pillar"
-            )
+            ))
         case .unknown:
-            String(
-                localized: "No score can be built from this selection. Add another pillar and try again.",
+            AppLocale.string(LocalizedStringResource(
+                "No score can be built from this selection. Add another pillar and try again.",
                 comment: "Health Score composition refused — reason this client does not know"
-            )
+            ))
         }
     }
 
@@ -175,11 +187,11 @@ enum HealthScorePresentation {
     /// Qualitative confidence label.
     static func label(for band: HealthScoreConfidenceBand) -> String {
         switch band {
-        case .high: String(localized: "High confidence", comment: "Health Score confidence band")
-        case .medium: String(localized: "Medium confidence", comment: "Health Score confidence band")
-        case .low: String(localized: "Low confidence", comment: "Health Score confidence band")
-        case .draft: String(localized: "Provisional", comment: "Health Score confidence band")
-        case .unknown: String(localized: "Confidence unknown", comment: "Health Score confidence band")
+        case .high: AppLocale.string(LocalizedStringResource("High confidence", comment: "Health Score confidence band"))
+        case .medium: AppLocale.string(LocalizedStringResource("Medium confidence", comment: "Health Score confidence band"))
+        case .low: AppLocale.string(LocalizedStringResource("Low confidence", comment: "Health Score confidence band"))
+        case .draft: AppLocale.string(LocalizedStringResource("Provisional", comment: "Health Score confidence band"))
+        case .unknown: AppLocale.string(LocalizedStringResource("Confidence unknown", comment: "Health Score confidence band"))
         }
     }
 
@@ -189,19 +201,19 @@ enum HealthScorePresentation {
     static func shortLabel(for reason: HealthScoreDeltaReason) -> String {
         switch reason {
         case .algorithmChanged:
-            String(localized: "Calculation changed", comment: "Health Score delta reason")
+            AppLocale.string(LocalizedStringResource("Calculation changed", comment: "Health Score delta reason"))
         case .compositionChanged:
-            String(localized: "Different basis", comment: "Health Score delta reason")
+            AppLocale.string(LocalizedStringResource("Different basis", comment: "Health Score delta reason"))
         case .firstEligibilityWindow:
-            String(localized: "First full week", comment: "Health Score delta reason")
+            AppLocale.string(LocalizedStringResource("First full week", comment: "Health Score delta reason"))
         case .belowNoiseFloor:
-            String(localized: "Within normal variation", comment: "Health Score delta reason")
+            AppLocale.string(LocalizedStringResource("Within normal variation", comment: "Health Score delta reason"))
         case .noPreviousWindow:
-            String(localized: "No previous week", comment: "Health Score delta reason")
+            AppLocale.string(LocalizedStringResource("No previous week", comment: "Health Score delta reason"))
         case .noCurrentScore:
-            String(localized: "No current value", comment: "Health Score delta reason")
+            AppLocale.string(LocalizedStringResource("No current value", comment: "Health Score delta reason"))
         case .unknown:
-            String(localized: "No comparison", comment: "Health Score delta reason")
+            AppLocale.string(LocalizedStringResource("No comparison", comment: "Health Score delta reason"))
         }
     }
 
@@ -213,40 +225,40 @@ enum HealthScorePresentation {
     static func explanation(for reason: HealthScoreDeltaReason) -> String {
         switch reason {
         case .algorithmChanged:
-            String(
-                localized: "The way this score is calculated changed. Any step you see is a change in the method, not a change in you — so this week is not compared with the last one.",
+            AppLocale.string(LocalizedStringResource(
+                "The way this score is calculated changed. Any step you see is a change in the method, not a change in you — so this week is not compared with the last one.",
                 comment: "Health Score delta reason explanation"
-            )
+            ))
         case .compositionChanged:
-            String(
-                localized: "Other pillars carried the score than last week, so the two numbers are not measuring the same thing. No comparison is shown.",
+            AppLocale.string(LocalizedStringResource(
+                "Other pillars carried the score than last week, so the two numbers are not measuring the same thing. No comparison is shown.",
                 comment: "Health Score delta reason explanation"
-            )
+            ))
         case .firstEligibilityWindow:
-            String(
-                localized: "This is the first week with enough data for a score. There is nothing before it to compare against yet.",
+            AppLocale.string(LocalizedStringResource(
+                "This is the first week with enough data for a score. There is nothing before it to compare against yet.",
                 comment: "Health Score delta reason explanation"
-            )
+            ))
         case .belowNoiseFloor:
-            String(
-                localized: "The change stayed smaller than this score's own margin of variation, so it is not reported as a change.",
+            AppLocale.string(LocalizedStringResource(
+                "The change stayed smaller than this score's own margin of variation, so it is not reported as a change.",
                 comment: "Health Score delta reason explanation"
-            )
+            ))
         case .noPreviousWindow:
-            String(
-                localized: "There is no previous week to compare against.",
+            AppLocale.string(LocalizedStringResource(
+                "There is no previous week to compare against.",
                 comment: "Health Score delta reason explanation"
-            )
+            ))
         case .noCurrentScore:
-            String(
-                localized: "There is no current value to compare.",
+            AppLocale.string(LocalizedStringResource(
+                "There is no current value to compare.",
                 comment: "Health Score delta reason explanation"
-            )
+            ))
         case .unknown:
-            String(
-                localized: "No week-over-week comparison is available for this score.",
+            AppLocale.string(LocalizedStringResource(
+                "No week-over-week comparison is available for this score.",
                 comment: "Health Score delta reason explanation"
-            )
+            ))
         }
     }
 
@@ -255,10 +267,10 @@ enum HealthScorePresentation {
     /// Which pillar set the colour — an explanation of the band, never a
     /// verdict about the pillar.
     static func bandSetterLine(for pillar: HealthScorePillar) -> String {
-        String(
-            localized: "\(label(for: pillar)) set the colour of this score.",
+        AppLocale.string(LocalizedStringResource(
+            "\(label(for: pillar)) set the colour of this score.",
             comment: "Health Score band setter explanation"
-        )
+        ))
     }
 
     // MARK: - Rest mode
@@ -267,15 +279,15 @@ enum HealthScorePresentation {
     /// was measured in and never changes the number.
     static func restModeLine(for restMode: RestModeAnnotation) -> String {
         guard let since = restMode.since else {
-            return String(
-                localized: "A rest phase is running. It frames this score, it does not change it.",
+            return AppLocale.string(LocalizedStringResource(
+                "A rest phase is running. It frames this score, it does not change it.",
                 comment: "Health Score rest mode explanation"
-            )
+            ))
         }
-        let date = since.formatted(.dateTime.day().month(.abbreviated))
-        return String(
-            localized: "A rest phase has been running since \(date). It frames this score, it does not change it.",
+        let date = since.formatted(.dateTime.day().month(.abbreviated).locale(AppLocale.shared.current))
+        return AppLocale.string(LocalizedStringResource(
+            "A rest phase has been running since \(date). It frames this score, it does not change it.",
             comment: "Health Score rest mode explanation with onset"
-        )
+        ))
     }
 }

@@ -94,22 +94,22 @@ struct MoodHeroSummary: View {
         let delta = avg30 - prior
         let magnitude = abs(delta).formatted(.number.precision(.fractionLength(1)))
         let signed = delta >= 0 ? "+\(magnitude)" : "−\(magnitude)"
-        return String(localized: "\(signed) vs last month")
+        return AppLocale.string("\(signed) vs last month")
     }
 
     private var accessibilityValue: String {
         var parts: [String] = []
         if let score = insights.latestScore {
-            parts.append(String(localized: "Latest \(MoodCopy.scoreLabel(score))"))
+            parts.append(AppLocale.string("Latest \(MoodCopy.scoreLabel(score))"))
         }
         if let avg30 = insights.avg30 {
-            parts.append(String(localized: "30-day average \(avg30.formatted(.number.precision(.fractionLength(1))))"))
+            parts.append(AppLocale.string("30-day average \(avg30.formatted(.number.precision(.fractionLength(1))))"))
         }
         if let slope = insights.slope30 ?? insights.slope7 {
             let dir = slope > 0.02
-                ? String(localized: "rising")
-                : (slope < -0.02 ? String(localized: "falling") : String(localized: "steady"))
-            parts.append(String(localized: "trend \(dir)"))
+                ? AppLocale.string("rising")
+                : (slope < -0.02 ? AppLocale.string("falling") : AppLocale.string("steady"))
+            parts.append(AppLocale.string("trend \(dir)"))
         }
         if let line = deltaLine { parts.append(line) }
         return parts.joined(separator: ". ")

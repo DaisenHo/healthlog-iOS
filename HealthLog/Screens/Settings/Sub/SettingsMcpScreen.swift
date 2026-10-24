@@ -34,7 +34,7 @@ struct SettingsMcpScreen: View {
             } else {
                 HLCloudDerivedPlaceholder(
                     variant: .inline,
-                    surfaceName: String(localized: "the MCP connector"),
+                    surfaceName: AppLocale.string("the MCP connector"),
                     onConnect: { authStore.beginServerPairing() }
                 )
             }
@@ -42,10 +42,10 @@ struct SettingsMcpScreen: View {
         .navigationTitle("MCP connector")
         .navigationBarTitleDisplayMode(.inline)
         .alert(
-            String(localized: "Could not update modules. Please try again."),
+            AppLocale.string("Could not update modules. Please try again."),
             isPresented: $showModuleError
         ) {
-            Button(String(localized: "OK"), role: .cancel) {}
+            Button(AppLocale.string("OK"), role: .cancel) {}
         }
         .task {
             guard backend.hasServer, store == nil, let api = container?.api else { return }
@@ -368,12 +368,12 @@ private struct McpConnectionRow: View {
 
     private var scopeText: String {
         let tokens = connection.scopeTokens
-        return tokens.isEmpty ? String(localized: "Unknown scope") : tokens.joined(separator: ", ")
+        return tokens.isEmpty ? AppLocale.string("Unknown scope") : tokens.joined(separator: ", ")
     }
 
     private var lastUsedText: String {
         guard let date = connection.lastUsedAt else {
-            return String(localized: "Never used")
+            return AppLocale.string("Never used")
         }
         return HLDateFormat.date(date, style: .abbreviated)
     }
@@ -448,12 +448,12 @@ struct ApiTokenRow: View {
     }
 
     private var createdText: String {
-        guard let date = token.createdAt else { return String(localized: "Created recently") }
+        guard let date = token.createdAt else { return AppLocale.string("Created recently") }
         return HLDateFormat.date(date, style: .abbreviated)
     }
 
     private var lastUsedText: String {
-        guard let date = token.lastUsedAt else { return String(localized: "Never used") }
+        guard let date = token.lastUsedAt else { return AppLocale.string("Never used") }
         return HLDateFormat.date(date, style: .abbreviated)
     }
 }

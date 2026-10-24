@@ -140,7 +140,7 @@ struct ServerURLStep: View {
                             .fixedSize(horizontal: false, vertical: true)
                             .frame(maxWidth: .infinity, alignment: .leading)
                         HLButton(
-                            String(localized: "onboarding.serverurl.continueAnyway"),
+                            AppLocale.string("onboarding.serverurl.continueAnyway"),
                             variant: .ghost
                         ) {
                             trustBoundaryURL = IdentifiableURL(url: staged)
@@ -221,7 +221,7 @@ struct ServerURLStep: View {
                 Text("Address")
                     .font(.hlCaption)
                     .foregroundStyle(HLText.secondary)
-                TextField(String(localized: "onboarding.serverurl.placeholder"), text: $customURLString)
+                TextField(AppLocale.string("onboarding.serverurl.placeholder"), text: $customURLString)
                     .accessibilityIdentifier("onboarding.serverCustom")
                     .focused($urlFocused)
                     .textInputAutocapitalization(.never)
@@ -238,7 +238,7 @@ struct ServerURLStep: View {
                         probeState = .idle
                         lastValidatedURL = nil
                     }
-                Text(String(localized: "https:// is added automatically. Self-signed certificates are currently not supported."))
+                Text(AppLocale.string("https:// is added automatically. Self-signed certificates are currently not supported."))
                     .font(.hlCaption)
                     .foregroundStyle(HLText.secondary)
             }
@@ -259,10 +259,10 @@ struct ServerURLStep: View {
 
     private func errorMessage(for err: AppEnvironment.URLValidationError) -> String {
         switch err {
-        case .empty: String(localized: "onboarding.serverurl.error.empty")
-        case .malformed: String(localized: "onboarding.serverurl.error.malformed")
-        case .missingHost: String(localized: "onboarding.serverurl.error.missingHost")
-        case .insecureScheme: String(localized: "Only https:// is supported (no http://).")
+        case .empty: AppLocale.string("onboarding.serverurl.error.empty")
+        case .malformed: AppLocale.string("onboarding.serverurl.error.malformed")
+        case .missingHost: AppLocale.string("onboarding.serverurl.error.missingHost")
+        case .insecureScheme: AppLocale.string("Only https:// is supported (no http://).")
         }
     }
 
@@ -302,7 +302,7 @@ struct ServerURLStep: View {
             lastValidatedURL = url
         case .probing, .idle:
             // Impossible by construction; treat as failure.
-            probeState = .unreachable(String(localized: "onboarding.serverurl.probe.unknown"))
+            probeState = .unreachable(AppLocale.string("onboarding.serverurl.probe.unknown"))
         }
     }
 
@@ -317,7 +317,7 @@ struct ServerURLStep: View {
                 await container.reloadEnvironment()
             } catch {
                 probeState = .unreachable(
-                    String(format: String(localized: "onboarding.serverurl.saveFailed"), error.localizedDescription)
+                    String(format: AppLocale.string("onboarding.serverurl.saveFailed"), error.localizedDescription)
                 )
                 trustBoundaryURL = nil
                 return
@@ -340,17 +340,17 @@ struct ServerURLStep: View {
         let outcome = await ServerReachabilityProbe().probe(url: url, userAgent: "HealthLog-iOS-Onboarding/1")
         switch outcome {
         case .malformedURL:
-            return .unreachable(String(localized: "onboarding.serverurl.probe.expandFailed"))
+            return .unreachable(AppLocale.string("onboarding.serverurl.probe.expandFailed"))
         case .reachable:
             return .reachable
         case .notHealthLogServer:
-            return .unreachable(String(localized: "onboarding.serverurl.probe.notHealthLog"))
+            return .unreachable(AppLocale.string("onboarding.serverurl.probe.notHealthLog"))
         case let .unexpectedStatus(code):
-            return .unreachable(String(format: String(localized: "onboarding.serverurl.probe.status"), code))
+            return .unreachable(String(format: AppLocale.string("onboarding.serverurl.probe.status"), code))
         case .nonHTTPResponse:
-            return .unreachable(String(localized: "onboarding.serverurl.probe.nonHTTP"))
+            return .unreachable(AppLocale.string("onboarding.serverurl.probe.nonHTTP"))
         case let .transportFailure(description):
-            return .unreachable(String(format: String(localized: "onboarding.serverurl.probe.transport"), description))
+            return .unreachable(String(format: AppLocale.string("onboarding.serverurl.probe.transport"), description))
         }
     }
 }
@@ -409,7 +409,7 @@ private struct TrustBoundarySheet: View {
 
             VStack(spacing: HLSpace.sm) {
                 HLButton(
-                    String(localized: "onboarding.trustboundary.confirm"),
+                    AppLocale.string("onboarding.trustboundary.confirm"),
                     icon: "checkmark.shield.fill",
                     variant: .primary,
                     size: .large,
@@ -418,7 +418,7 @@ private struct TrustBoundarySheet: View {
                 .accessibilityIdentifier("onboarding.trustboundary.confirm")
 
                 HLButton(
-                    String(localized: "onboarding.trustboundary.cancel"),
+                    AppLocale.string("onboarding.trustboundary.cancel"),
                     variant: .ghost,
                     action: onCancel
                 )

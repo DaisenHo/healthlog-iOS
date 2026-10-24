@@ -175,21 +175,21 @@ enum NotificationsSystemStatus: Equatable {
 
     var title: String {
         switch self {
-        case .authorized: String(localized: "Push notifications active")
-        case .provisional: String(localized: "Provisionally active")
-        case .denied: String(localized: "Push notifications blocked")
-        case .notDetermined: String(localized: "Not decided yet")
-        case .unknown: String(localized: "Status unknown")
+        case .authorized: AppLocale.string("Push notifications active")
+        case .provisional: AppLocale.string("Provisionally active")
+        case .denied: AppLocale.string("Push notifications blocked")
+        case .notDetermined: AppLocale.string("Not decided yet")
+        case .unknown: AppLocale.string("Status unknown")
         }
     }
 
     var subtitle: String {
         switch self {
-        case .authorized: String(localized: "You receive banners, sounds + badges.")
-        case .provisional: String(localized: "Silent delivery to Notification Center.")
-        case .denied: String(localized: "iOS is not showing banners right now. Re-enable them below.")
-        case .notDetermined: String(localized: "iOS will ask you the first time.")
-        case .unknown: String(localized: "iOS hasn't delivered anything yet.")
+        case .authorized: AppLocale.string("You receive banners, sounds + badges.")
+        case .provisional: AppLocale.string("Silent delivery to Notification Center.")
+        case .denied: AppLocale.string("iOS is not showing banners right now. Re-enable them below.")
+        case .notDetermined: AppLocale.string("iOS will ask you the first time.")
+        case .unknown: AppLocale.string("iOS hasn't delivered anything yet.")
         }
     }
 
@@ -271,13 +271,13 @@ enum NotificationEventLocalization {
         // generic label so a leak is impossible; the raw code is unsuitable as
         // UI copy.
         guard let resource = titleByEvent[eventType] else {
-            return String(localized: "Notification")
+            return AppLocale.string("Notification")
         }
-        return String(localized: resource)
+        return AppLocale.string(AppLocale.shared.resource(resource))
     }
 
     static func hint(for eventType: String) -> String? {
-        hintByEvent[eventType].map { String(localized: $0) }
+        hintByEvent[eventType].map { AppLocale.string(AppLocale.shared.resource($0)) }
     }
 }
 
@@ -300,8 +300,8 @@ enum TestPushVariant: String, CaseIterable, Identifiable, Hashable {
 
     var menuTitle: String {
         switch self {
-        case .standard: String(localized: "Standard")
-        case .moodReminder: String(localized: "Mood reminder")
+        case .standard: AppLocale.string("Standard")
+        case .moodReminder: AppLocale.string("Mood reminder")
         }
     }
 
@@ -314,15 +314,15 @@ enum TestPushVariant: String, CaseIterable, Identifiable, Hashable {
 
     var title: String {
         switch self {
-        case .standard: String(localized: "HealthLog — Test")
-        case .moodReminder: String(localized: "How are you feeling right now?")
+        case .standard: AppLocale.string("HealthLog — Test")
+        case .moodReminder: AppLocale.string("How are you feeling right now?")
         }
     }
 
     var body: String {
         switch self {
-        case .standard: String(localized: "If you see this, your notifications work.")
-        case .moodReminder: String(localized: "Log your mood quickly — takes less than 30 seconds.")
+        case .standard: AppLocale.string("If you see this, your notifications work.")
+        case .moodReminder: AppLocale.string("Log your mood quickly — takes less than 30 seconds.")
         }
     }
 

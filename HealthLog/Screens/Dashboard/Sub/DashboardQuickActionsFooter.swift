@@ -24,7 +24,7 @@ struct DashboardQuickActionsFooter: View {
         HLCard {
             actionRow(
                 icon: "slider.horizontal.3",
-                title: String(localized: "Customize dashboard"),
+                title: AppLocale.string("Customize dashboard"),
                 identifier: "dashboard.quickAction.customize",
                 action: onShowCustomize
             )

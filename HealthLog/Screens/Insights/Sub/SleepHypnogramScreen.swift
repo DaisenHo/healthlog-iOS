@@ -487,12 +487,12 @@ struct SleepHypnogramScreen: View {
     }
 
     private func bedtimeText(for session: SleepSession) -> String {
-        session.start.formatted(.dateTime.hour().minute())
+        session.start.formatted(.dateTime.hour().minute().locale(AppLocale.shared.current))
     }
 
     private func napTimeRange(for nap: SleepSession) -> String {
-        let start = nap.start.formatted(.dateTime.hour().minute())
-        let end = nap.end.formatted(.dateTime.hour().minute())
+        let start = nap.start.formatted(.dateTime.hour().minute().locale(AppLocale.shared.current))
+        let end = nap.end.formatted(.dateTime.hour().minute().locale(AppLocale.shared.current))
         return HLNumberFormat.range(start, end)
     }
 }

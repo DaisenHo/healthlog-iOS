@@ -125,7 +125,7 @@
             let catalogue = try Self.stringCatalogue()
             let languages = Self.languages(in: catalogue)
             #expect(
-                languages == ["de", "en"],
+                languages == ["de", "en", "zh-Hans"],
                 "the catalogue's language set moved; extend this census before shipping"
             )
 

@@ -111,7 +111,7 @@ struct LabResultDetailScreen: View {
             cancel: Text("labs.action.cancel"),
             action: {
                 Task {
-                    await store.deleteLab(id: resultID, undoMessage: String(localized: "labs.delete.undo"))
+                    await store.deleteLab(id: resultID, undoMessage: AppLocale.string("labs.delete.undo"))
                     dismiss()
                 }
             }
@@ -191,11 +191,11 @@ struct LabResultDetailScreen: View {
     private var metaCard: some View {
         HLCard {
             VStack(alignment: .leading, spacing: HLSpace.sm) {
-                metaRow(label: String(localized: "labs.detail.takenAt"), value: LabsDateFormat.mediumDateTime(takenAt))
+                metaRow(label: AppLocale.string("labs.detail.takenAt"), value: LabsDateFormat.mediumDateTime(takenAt))
                 if let panel, !panel.isEmpty {
-                    metaRow(label: String(localized: "labs.detail.panel"), value: panel)
+                    metaRow(label: AppLocale.string("labs.detail.panel"), value: panel)
                 }
-                metaRow(label: String(localized: "labs.detail.source"), value: source)
+                metaRow(label: AppLocale.string("labs.detail.source"), value: source)
                 if let loadError {
                     HLFormErrorText(loadError)
                 }
@@ -229,13 +229,13 @@ struct LabResultDetailScreen: View {
         let unitSuffix = unit.isEmpty ? "" : " \(unit)"
         switch (referenceLow, referenceHigh) {
         case let (low?, high?):
-            let template = String(localized: "labs.detail.range.both")
+            let template = AppLocale.string("labs.detail.range.both")
             return String(format: template, num(low), num(high)) + unitSuffix
         case let (low?, nil):
-            let template = String(localized: "labs.detail.range.min")
+            let template = AppLocale.string("labs.detail.range.min")
             return String(format: template, num(low)) + unitSuffix
         case let (nil, high?):
-            let template = String(localized: "labs.detail.range.max")
+            let template = AppLocale.string("labs.detail.range.max")
             return String(format: template, num(high)) + unitSuffix
         case (nil, nil):
             return nil
@@ -251,7 +251,7 @@ struct LabResultDetailScreen: View {
         } catch {
             // The summary already renders; a detail (note) load failure is
             // non-fatal — surface a quiet inline note.
-            loadError = String(localized: "labs.detail.loadFailed")
+            loadError = AppLocale.string("labs.detail.loadFailed")
         }
     }
 }

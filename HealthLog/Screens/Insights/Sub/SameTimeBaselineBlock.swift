@@ -253,11 +253,11 @@ struct SameTimeBaselineBlock: View {
         points: [SameTimeBaseline.Point]
     ) -> AXChartDescriptor {
         HLChartAX.singleSeries(
-            title: String(localized: "insights.sameTimeBaseline.title"),
+            title: AppLocale.string("insights.sameTimeBaseline.title"),
             summary: chartSummary(baseline),
-            xAxisTitle: String(localized: "insights.sameTimeBaseline.axis.hour"),
-            yAxisTitle: String(localized: "insights.sameTimeBaseline.axis.total"),
-            seriesName: String(localized: "insights.sameTimeBaseline.today"),
+            xAxisTitle: AppLocale.string("insights.sameTimeBaseline.axis.hour"),
+            yAxisTitle: AppLocale.string("insights.sameTimeBaseline.axis.total"),
+            seriesName: AppLocale.string("insights.sameTimeBaseline.today"),
             points: points.map { (x: Double($0.hour), y: $0.today, xLabel: "\($0.hour)") },
             yValueLabel: { number($0) }
         )
@@ -266,9 +266,8 @@ struct SameTimeBaselineBlock: View {
     /// A spoken summary built from the SERVER's figures only — same factual,
     /// non-diagnostic framing the visible card carries.
     private func chartSummary(_ baseline: SameTimeBaseline) -> String {
-        String(
-            localized: "insights.sameTimeBaseline.a11y \(baseline.asOfHour) \(number(baseline.todayValue)) \(number(baseline.typicalValue))"
-        )
+        AppLocale
+            .string("insights.sameTimeBaseline.a11y \(baseline.asOfHour) \(number(baseline.todayValue)) \(number(baseline.typicalValue))")
     }
 
     // MARK: - The gated arms

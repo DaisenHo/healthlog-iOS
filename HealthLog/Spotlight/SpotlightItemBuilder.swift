@@ -103,11 +103,11 @@ enum SpotlightItemBuilder {
 
             let attributes = CSSearchableItemAttributeSet(contentType: .text)
             attributes.title = title
-            attributes.contentDescription = String(
-                localized: "spotlight.medication.subtitle",
+            attributes.contentDescription = AppLocale.string(LocalizedStringResource(
+                "spotlight.medication.subtitle",
                 defaultValue: "Medication in HealthLog",
                 comment: "CoreSpotlight — medication item subtitle (neutral, no PHI)"
-            )
+            ))
             attributes.keywords = medicationKeywords(name: title)
             return CSSearchableItem(
                 uniqueIdentifier: deepLink,
@@ -127,11 +127,11 @@ enum SpotlightItemBuilder {
 
             let attributes = CSSearchableItemAttributeSet(contentType: .text)
             attributes.title = trimmed
-            attributes.contentDescription = String(
-                localized: "spotlight.measurement.subtitle",
+            attributes.contentDescription = AppLocale.string(LocalizedStringResource(
+                "spotlight.measurement.subtitle",
                 defaultValue: "Open in HealthLog Insights",
                 comment: "CoreSpotlight — measurement-kind item subtitle (neutral, no PHI)"
-            )
+            ))
             attributes.keywords = measurementKeywords(title: trimmed)
             return CSSearchableItem(
                 uniqueIdentifier: deepLink,
@@ -147,8 +147,16 @@ enum SpotlightItemBuilder {
     static func medicationKeywords(name: String) -> [String] {
         [
             name,
-            String(localized: "spotlight.keyword.medication", defaultValue: "medication", comment: "CoreSpotlight keyword — medication"),
-            String(localized: "spotlight.keyword.dose", defaultValue: "dose", comment: "CoreSpotlight keyword — dose"),
+            AppLocale.string(LocalizedStringResource(
+                "spotlight.keyword.medication",
+                defaultValue: "medication",
+                comment: "CoreSpotlight keyword — medication"
+            )),
+            AppLocale.string(LocalizedStringResource(
+                "spotlight.keyword.dose",
+                defaultValue: "dose",
+                comment: "CoreSpotlight keyword — dose"
+            )),
             "HealthLog"
         ]
     }
@@ -157,8 +165,16 @@ enum SpotlightItemBuilder {
     static func measurementKeywords(title: String) -> [String] {
         [
             title,
-            String(localized: "spotlight.keyword.measurement", defaultValue: "measurement", comment: "CoreSpotlight keyword — measurement"),
-            String(localized: "spotlight.keyword.insights", defaultValue: "insights", comment: "CoreSpotlight keyword — insights"),
+            AppLocale.string(LocalizedStringResource(
+                "spotlight.keyword.measurement",
+                defaultValue: "measurement",
+                comment: "CoreSpotlight keyword — measurement"
+            )),
+            AppLocale.string(LocalizedStringResource(
+                "spotlight.keyword.insights",
+                defaultValue: "insights",
+                comment: "CoreSpotlight keyword — insights"
+            )),
             "HealthLog"
         ]
     }

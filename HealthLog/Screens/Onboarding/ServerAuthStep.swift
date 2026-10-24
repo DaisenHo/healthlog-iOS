@@ -280,7 +280,7 @@ struct ServerAuthStep: View {
                             // the string catalog; the fallback is already
                             // resolved by `String(localized:)`.
                             HLButton(
-                                verbatim: oidcStatus.buttonLabel ?? String(localized: "onboarding.sso.title"),
+                                verbatim: oidcStatus.buttonLabel ?? AppLocale.string("onboarding.sso.title"),
                                 icon: "person.badge.key.fill",
                                 variant: .ghost
                             ) {
@@ -294,7 +294,7 @@ struct ServerAuthStep: View {
                     // CTA here leads nowhere.
                     if registrationEnabled, !oidcStatus.hidesPasswordAffordances {
                         HLButton(
-                            String(localized: "onboarding.auth.createAccount"),
+                            AppLocale.string("onboarding.auth.createAccount"),
                             icon: "person.crop.circle.badge.plus",
                             variant: .ghost
                         ) {
@@ -397,7 +397,7 @@ struct ServerAuthStep: View {
         private var webHandoffSection: some View {
             VStack(spacing: HLSpace.xs) {
                 HLButton(
-                    String(localized: "onboarding.webLogin.cta"),
+                    AppLocale.string("onboarding.webLogin.cta"),
                     icon: "safari",
                     variant: .primary,
                     size: .large,
@@ -444,7 +444,7 @@ struct ServerAuthStep: View {
         private var passkeyPrimaryCTA: some View {
             VStack(spacing: HLSpace.xs) {
                 HLButton(
-                    String(localized: "onboarding.passkey.title"),
+                    AppLocale.string("onboarding.passkey.title"),
                     icon: "faceid",
                     variant: .primary,
                     size: .large,
@@ -489,9 +489,9 @@ struct ServerAuthStep: View {
         VStack(spacing: HLSpace.sm) {
             HLCard {
                 VStack(spacing: HLSpace.md) {
-                    HLTextField(title: String(localized: "onboarding.auth.field.email"), text: $email, kind: .email)
+                    HLTextField(title: AppLocale.string("onboarding.auth.field.email"), text: $email, kind: .email)
                         .focused($focused, equals: .email)
-                    HLTextField(title: String(localized: "onboarding.auth.field.password"), text: $password, kind: .password)
+                    HLTextField(title: AppLocale.string("onboarding.auth.field.password"), text: $password, kind: .password)
                         .focused($focused, equals: .password)
                 }
             }
@@ -605,9 +605,10 @@ private struct RegistrationSheet: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: HLSpace.lg) {
                     Text(
-                        String(
-                            localized: "Create your HealthLog account on the selected server. You can then sign in with passkey, email, or both."
-                        )
+                        AppLocale
+                            .string(
+                                "Create your HealthLog account on the selected server. You can then sign in with passkey, email, or both."
+                            )
                     )
                     .font(.hlBody)
                     .foregroundStyle(HLText.secondary)
@@ -624,12 +625,12 @@ private struct RegistrationSheet: View {
 
                     HLCard {
                         VStack(spacing: HLSpace.md) {
-                            HLTextField(title: String(localized: "onboarding.auth.field.email"), text: $email, kind: .email)
+                            HLTextField(title: AppLocale.string("onboarding.auth.field.email"), text: $email, kind: .email)
                                 .focused($focused, equals: .email)
-                            HLTextField(title: String(localized: "onboarding.auth.field.displayName"), text: $username, kind: .plain)
+                            HLTextField(title: AppLocale.string("onboarding.auth.field.displayName"), text: $username, kind: .plain)
                                 .focused($focused, equals: .username)
                             HLTextField(
-                                title: String(localized: "onboarding.auth.field.passwordMin"),
+                                title: AppLocale.string("onboarding.auth.field.passwordMin"),
                                 text: $password,
                                 kind: .newPassword
                             )
@@ -651,7 +652,7 @@ private struct RegistrationSheet: View {
                     }
 
                     HLButton(
-                        String(localized: "onboarding.registration.submit"),
+                        AppLocale.string("onboarding.registration.submit"),
                         variant: .primary,
                         size: .large,
                         isLoading: authStore.isWorking
@@ -665,7 +666,7 @@ private struct RegistrationSheet: View {
                 }
             }
             .background(HLColor.background)
-            .navigationTitle(String(localized: "onboarding.registration.navTitle"))
+            .navigationTitle(AppLocale.string("onboarding.registration.navTitle"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -688,15 +689,15 @@ private struct RegistrationSheet: View {
         // and a rate-limit hit. RegistrationEmailValidator runs the canonical
         // RFC-shaped regex pre-POST so the user sees the failure inline.
         guard RegistrationEmailValidator.isValid(email) else {
-            localError = String(localized: "onboarding.registration.email.invalid")
+            localError = AppLocale.string("onboarding.registration.email.invalid")
             return
         }
         guard username.trimmingCharacters(in: .whitespacesAndNewlines).count >= 3 else {
-            localError = String(localized: "onboarding.registration.displayNameTooShort")
+            localError = AppLocale.string("onboarding.registration.displayNameTooShort")
             return
         }
         guard password.count >= 8 else {
-            localError = String(localized: "onboarding.registration.passwordTooShort")
+            localError = AppLocale.string("onboarding.registration.passwordTooShort")
             return
         }
         await authStore.register(
@@ -720,7 +721,7 @@ private struct RegistrationSheet: View {
             // instance + invalid/expired/exhausted invite), surface a clear
             // localized inline message instead of the raw server string.
             if prefilledInviteToken != nil, authStore.lastError?.isInvalidInviteError == true {
-                localError = String(localized: "onboarding.registration.invite.invalid")
+                localError = AppLocale.string("onboarding.registration.invite.invalid")
             }
         }
     }

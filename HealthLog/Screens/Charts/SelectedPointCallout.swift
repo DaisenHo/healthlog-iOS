@@ -88,6 +88,7 @@ public struct SelectedPointCallout: View {
     private var formattedDate: String {
         point.at.formatted(
             .dateTime.weekday(.abbreviated).day().month().hour().minute()
+                .locale(AppLocale.shared.current)
         )
     }
 
@@ -112,7 +113,7 @@ public struct SelectedPointCallout: View {
 
     private var accessibilityDescription: Text {
         // L1 — the record note comes from the catalog (was a fixed German suffix).
-        let recordNote = isPersonalRecord ? ", " + String(localized: "Personal best") : ""
+        let recordNote = isPersonalRecord ? ", " + AppLocale.string("Personal best") : ""
         return Text("\(formattedDate), \(formattedValue) \(resolvedUnit)\(recordNote)")
     }
 }

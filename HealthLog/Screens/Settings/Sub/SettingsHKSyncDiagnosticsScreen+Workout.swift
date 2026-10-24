@@ -60,11 +60,11 @@ extension SettingsHKSyncDiagnosticsScreen {
     private var registrationLabel: String {
         switch diagnostics.workout.registrationState {
         case .succeeded:
-            String(localized: "settings.hkdiag.status_ok")
+            AppLocale.string("settings.hkdiag.status_ok")
         case .failed:
-            String(localized: "settings.hkdiag.status_stuck")
+            AppLocale.string("settings.hkdiag.status_stuck")
         case .attempted, .notAttempted:
-            String(localized: "settings.hkdiag.status_idle")
+            AppLocale.string("settings.hkdiag.status_idle")
         }
     }
 
@@ -80,19 +80,19 @@ extension SettingsHKSyncDiagnosticsScreen {
     /// Static so the reworked diagnostics surface can reuse it unchanged.
     static func historyImportLabel(_ status: HKSyncDiagnostics.WorkoutHistoryImportStatus) -> String {
         guard status.isImporting else {
-            return String(localized: "settings.hkdiag.workout_history_complete")
+            return AppLocale.string("settings.hkdiag.workout_history_complete")
         }
         guard let remaining = status.remainingEstimate else {
-            return String(localized: "settings.hkdiag.workout_history_importing")
+            return AppLocale.string("settings.hkdiag.workout_history_importing")
         }
-        return String(localized: "settings.hkdiag.workout_history_importing_remaining \(remaining)")
+        return AppLocale.string("settings.hkdiag.workout_history_importing_remaining \(remaining)")
     }
 
     private var workoutOutcomeLabel: String {
         guard let failure = diagnostics.workout.lastFailure else {
             return diagnostics.workout.lastCompletedUsefulAt == nil
-                ? String(localized: "settings.hkdiag.status_idle")
-                : String(localized: "settings.hkdiag.status_ok")
+                ? AppLocale.string("settings.hkdiag.status_idle")
+                : AppLocale.string("settings.hkdiag.status_ok")
         }
         return HKSyncDiagnosticsVocabulary.workoutFailure(failure)
     }

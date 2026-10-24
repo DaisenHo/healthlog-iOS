@@ -59,10 +59,7 @@ struct ManualSyncStatusRow: View {
             Self.rateLimitedMessage(retryAfter: retryAfter)
         case .upstreamUnavailable:
             String(
-                format: NSLocalizedString(
-                    "integration.sync.upstreamUnavailable",
-                    comment: "502 on a manual sync; %@ is the provider name."
-                ),
+                format: AppLocale.string("integration.sync.upstreamUnavailable"),
                 providerName
             )
         case let .finished(result):
@@ -77,13 +74,10 @@ struct ManualSyncStatusRow: View {
     /// `nil` simply means we stay unspecific rather than inventing a number.
     private static func rateLimitedMessage(retryAfter: TimeInterval?) -> String {
         guard let retryAfter, retryAfter > 0 else {
-            return String(localized: "integration.sync.rateLimited")
+            return AppLocale.string("integration.sync.rateLimited")
         }
         return String(
-            format: NSLocalizedString(
-                "integration.sync.rateLimited.seconds",
-                comment: "429 on a manual sync; %lld is the wait in seconds."
-            ),
+            format: AppLocale.string("integration.sync.rateLimited.seconds"),
             Int(retryAfter.rounded(.up))
         )
     }
@@ -93,13 +87,13 @@ struct ManualSyncStatusRow: View {
     private static func finishedMessage(_ result: ManualSyncResult) -> String {
         switch result.outcome {
         case .empty:
-            String(localized: "integration.sync.empty")
+            AppLocale.string("integration.sync.empty")
         case .success:
-            String(localized: "integration.sync.success \(result.imported)")
+            AppLocale.string("integration.sync.success \(result.imported)")
         case .partial:
-            String(localized: "integration.sync.partial \(result.imported)")
+            AppLocale.string("integration.sync.partial \(result.imported)")
         case .failed:
-            String(localized: "integration.sync.nothingLanded")
+            AppLocale.string("integration.sync.nothingLanded")
         }
     }
 

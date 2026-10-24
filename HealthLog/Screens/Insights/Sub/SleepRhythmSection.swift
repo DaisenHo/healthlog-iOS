@@ -78,14 +78,14 @@ private struct SleepDebtCard: View {
 
     private var headline: String {
         debt.isCaughtUp
-            ? String(localized: "sleep.debt.clearValue")
-            : String(localized: "sleep.debt.value \(SleepDurationFormat.hoursMinutes(debt.debtMinutes))")
+            ? AppLocale.string("sleep.debt.clearValue")
+            : AppLocale.string("sleep.debt.value \(SleepDurationFormat.hoursMinutes(debt.debtMinutes))")
     }
 
     private var caption: String {
         debt.isCaughtUp
-            ? String(localized: "sleep.debt.clearCaption \(debt.windowNights)")
-            : String(localized: "sleep.debt.caption \(debt.windowNights)")
+            ? AppLocale.string("sleep.debt.clearCaption \(debt.windowNights)")
+            : AppLocale.string("sleep.debt.caption \(debt.windowNights)")
     }
 
     /// Discloses that a `COMPUTED` figure is HealthLog's OWN estimate, so it is
@@ -192,13 +192,13 @@ private struct ChronotypeCard: View {
         }
         if let jetlag = chronotype.socialJetlagMinutes {
             detailRow(
-                value: String(localized: "sleep.chronotype.socialJetlagValue \(SleepDurationFormat.hoursMinutes(jetlag))"),
+                value: AppLocale.string("sleep.chronotype.socialJetlagValue \(SleepDurationFormat.hoursMinutes(jetlag))"),
                 caption: "sleep.chronotype.socialJetlagCaption"
             )
         }
         if let msfSc = chronotype.msfScMinutes {
             detailRow(
-                value: String(localized: "sleep.chronotype.msfScValue \(SleepDurationFormat.clockTime(minutesOfDay: msfSc))"),
+                value: AppLocale.string("sleep.chronotype.msfScValue \(SleepDurationFormat.clockTime(minutesOfDay: msfSc))"),
                 caption: "sleep.chronotype.msfScCaption"
             )
         }

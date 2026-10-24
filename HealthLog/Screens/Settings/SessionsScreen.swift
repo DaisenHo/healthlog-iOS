@@ -54,8 +54,8 @@ struct SessionsScreen: View {
                 set: { if !$0 { pendingRevokeID = nil } }
             ),
             message: Text("sessions.revoke.confirmBody"),
-            confirm: Text(String(localized: "sessions.revoke.confirmAction")),
-            cancel: Text(String(localized: "Cancel")),
+            confirm: Text(AppLocale.string("sessions.revoke.confirmAction")),
+            cancel: Text(AppLocale.string("Cancel")),
             onCancel: { pendingRevokeID = nil },
             action: {
                 if let id = pendingRevokeID {
@@ -71,8 +71,8 @@ struct SessionsScreen: View {
             // also drops this phone's refresh token. Never promise "except
             // this device" on a server that does not honour it.
             message: Text(SignOutEverywhereCopy.confirmBody(store)),
-            confirm: Text(String(localized: "sessions.signOutAll.confirmAction")),
-            cancel: Text(String(localized: "Cancel")),
+            confirm: Text(AppLocale.string("sessions.signOutAll.confirmAction")),
+            cancel: Text(AppLocale.string("Cancel")),
             action: {
                 Task { await store.revokeOthers() }
             }
@@ -84,7 +84,7 @@ struct SessionsScreen: View {
                 set: { if !$0 { store.clearRevokedOthersConfirmation() } }
             )
         ) {
-            Button(String(localized: "OK")) { store.clearRevokedOthersConfirmation() }
+            Button(AppLocale.string("OK")) { store.clearRevokedOthersConfirmation() }
         } message: {
             SignOutEverywhereCopy.doneMessage(store)
         }
@@ -96,7 +96,7 @@ struct SessionsScreen: View {
             ),
             presenting: store.error
         ) { _ in
-            Button(String(localized: "OK")) { store.clearError() }
+            Button(AppLocale.string("OK")) { store.clearError() }
         } message: { err in
             Text(err.localizedDescription)
         }
@@ -169,7 +169,7 @@ struct SessionsScreen: View {
             Button(role: .destructive) {
                 pendingRevokeID = session.id
             } label: {
-                Label(String(localized: "sessions.revoke.action"), systemImage: "xmark.circle")
+                Label(AppLocale.string("sessions.revoke.action"), systemImage: "xmark.circle")
             }
         }
         .accessibilityIdentifier("sessions.row")
@@ -178,10 +178,10 @@ struct SessionsScreen: View {
     /// Two distinct captions so a session with no recorded activity is never
     /// mislabelled "last active". `hasRecordedActivity` is the pure predicate.
     private func activityCaption(for session: SessionEntry) -> String {
-        let when = session.effectiveActivityDate.formatted(.relative(presentation: .named))
+        let when = session.effectiveActivityDate.formatted(.relative(presentation: .named).locale(AppLocale.shared.current))
         return session.hasRecordedActivity
-            ? String(localized: "sessions.row.lastActive \(when)")
-            : String(localized: "sessions.row.signedIn \(when)")
+            ? AppLocale.string("sessions.row.lastActive \(when)")
+            : AppLocale.string("sessions.row.signedIn \(when)")
     }
 
     private var signOutEverywhereSection: some View {
@@ -202,7 +202,7 @@ struct SessionsScreen: View {
             } label: {
                 HStack {
                     Label(
-                        String(localized: "sessions.signOutAll.action"),
+                        AppLocale.string("sessions.signOutAll.action"),
                         systemImage: "rectangle.portrait.and.arrow.right"
                     )
                     Spacer(minLength: 0)

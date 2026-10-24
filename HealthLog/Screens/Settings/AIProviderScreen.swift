@@ -157,7 +157,7 @@ struct AIProviderSection: View { // swiftlint:disable:this type_body_length
             // Footer der Detail-Karte. Heimat ist die Detail-Karte, wo sie beim
             // Eingabefeld steht; in der Status-Zeile trug sie nichts, was der
             // Footer derselben Karte zwei Zeilen tiefer nicht sagt.
-            Text(store.usesProviderOpaqueAIConsent ? String(localized: "External AI") : store.serverProvider.label)
+            Text(store.usesProviderOpaqueAIConsent ? AppLocale.string("External AI") : store.serverProvider.label)
                 .font(.hlSubhead.weight(.semibold))
                 .foregroundStyle(HLText.primary)
             Spacer(minLength: HLSpace.sm)
@@ -170,7 +170,7 @@ struct AIProviderSection: View { // swiftlint:disable:this type_body_length
     @ViewBuilder
     private var statusBadge: some View {
         if store.didJustSave {
-            HLBadge(String(localized: "aiprovider.badge.saved"), icon: "checkmark", tone: .success)
+            HLBadge(AppLocale.string("aiprovider.badge.saved"), icon: "checkmark", tone: .success)
                 .accessibilityIdentifier(Self.savedBadgeIdentifier)
         } else if store.isLoading || store.config == nil {
             // Bug 4 (v0.14.8) — "Not configured" must mean "the server genuinely
@@ -180,13 +180,13 @@ struct AIProviderSection: View { // swiftlint:disable:this type_body_length
             // must add a provider.
             ProgressView().controlSize(.small)
         } else if store.isServerFullyConfigured {
-            HLBadge(String(localized: "aiprovider.badge.configured"), icon: "checkmark.seal.fill", tone: .success)
+            HLBadge(AppLocale.string("aiprovider.badge.configured"), icon: "checkmark.seal.fill", tone: .success)
                 .accessibilityIdentifier(Self.configuredBadgeIdentifier)
         } else if store.serverProvider == .unconfigured {
-            HLBadge(String(localized: "Not configured"), icon: "circle.slash", tone: .warning)
+            HLBadge(AppLocale.string("Not configured"), icon: "circle.slash", tone: .warning)
                 .accessibilityIdentifier(Self.notConfiguredBadgeIdentifier)
         } else {
-            HLBadge(String(localized: "Key missing"), icon: "exclamationmark.triangle.fill", tone: .warning)
+            HLBadge(AppLocale.string("Key missing"), icon: "exclamationmark.triangle.fill", tone: .warning)
                 .accessibilityIdentifier(Self.missingKeyBadgeIdentifier)
         }
     }
@@ -345,7 +345,7 @@ struct AIProviderSection: View { // swiftlint:disable:this type_body_length
                     .disabled(store.isSaving)
                 }
             }
-            SecureField(String(localized: "New API key"), text: $bindable.draftAPIKey)
+            SecureField(AppLocale.string("New API key"), text: $bindable.draftAPIKey)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .accessibilityIdentifier(Self.apiKeyFieldIdentifier)
@@ -355,7 +355,7 @@ struct AIProviderSection: View { // swiftlint:disable:this type_body_length
     @ViewBuilder
     private var localKeyField: some View {
         @Bindable var bindable = store
-        SecureField(String(localized: "Local API key (optional)"), text: $bindable.draftAPIKey)
+        SecureField(AppLocale.string("Local API key (optional)"), text: $bindable.draftAPIKey)
             .textInputAutocapitalization(.never)
             .autocorrectionDisabled()
             .accessibilityIdentifier(Self.localKeyFieldIdentifier)
@@ -364,7 +364,7 @@ struct AIProviderSection: View { // swiftlint:disable:this type_body_length
     @ViewBuilder
     private var baseURLField: some View {
         @Bindable var bindable = store
-        TextField(String(localized: "aiprovider.baseUrl.placeholder"), text: $bindable.draftBaseUrl)
+        TextField(AppLocale.string("aiprovider.baseUrl.placeholder"), text: $bindable.draftBaseUrl)
             .keyboardType(.URL)
             .textContentType(.URL)
             .textInputAutocapitalization(.never)
@@ -375,7 +375,7 @@ struct AIProviderSection: View { // swiftlint:disable:this type_body_length
     @ViewBuilder
     private var modelOverrideField: some View {
         @Bindable var bindable = store
-        TextField(String(localized: "aiprovider.model.placeholder"), text: $bindable.draftModel)
+        TextField(AppLocale.string("aiprovider.model.placeholder"), text: $bindable.draftModel)
             .textInputAutocapitalization(.never)
             .autocorrectionDisabled()
             .accessibilityIdentifier(Self.modelFieldIdentifier)
@@ -400,17 +400,17 @@ struct AIProviderSection: View { // swiftlint:disable:this type_body_length
                 chainStep(
                     index: 1,
                     label: store.usesProviderOpaqueAIConsent
-                        ? String(localized: "External AI")
+                        ? AppLocale.string("External AI")
                         : store.serverProvider == .unconfigured
-                        ? String(localized: "No assistant provider active")
-                        : String(localized: "Primary: \(store.serverProvider.label)"),
+                        ? AppLocale.string("No assistant provider active")
+                        : AppLocale.string("Primary: \(store.serverProvider.label)"),
                     isActive: store.isServerAIAvailable,
                     tint: store.usesProviderOpaqueAIConsent ? HLColor.cyan : store.serverProvider.iconTint
                 )
                 chainArrow
                 chainStep(
                     index: 2,
-                    label: String(localized: "aiprovider.fallback.label"),
+                    label: AppLocale.string("aiprovider.fallback.label"),
                     isActive: true,
                     tint: HLText.secondary
                 )
@@ -458,7 +458,7 @@ struct AIProviderSection: View { // swiftlint:disable:this type_body_length
         // der Assistent-Seite (siehe die Begründung an `BYOKeyEntryCard`).
         VStack(spacing: 0) {
             HLButton(
-                String(localized: "Save"),
+                AppLocale.string("Save"),
                 icon: store.isSaving ? nil : "checkmark.circle.fill",
                 variant: .primary,
                 isLoading: store.isSaving

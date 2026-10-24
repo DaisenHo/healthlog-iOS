@@ -186,7 +186,7 @@ struct RecordCard: View {
         // RelativeDateTimeFormatter — the footer timestamp now renders per
         // device locale. `.named` + `.abbreviated` mirror the prior natural
         // "vor 5 Tagen"/"5 days ago" abbreviated phrasing.
-        record.base.achievedAt.formatted(.relative(presentation: .named, unitsStyle: .abbreviated))
+        record.base.achievedAt.formatted(.relative(presentation: .named, unitsStyle: .abbreviated).locale(AppLocale.shared.current))
     }
 
     static func deltaLabel(delta: PersonalRecord.Delta) -> String {
@@ -194,7 +194,7 @@ struct RecordCard: View {
             let signed = percent * 100
             let prefix = signed >= 0 ? "+" : ""
             let percentText = prefix + HLNumberFormat.percent(Int(signed.rounded()))
-            return String(localized: "records.delta.vsPrevious \(percentText)")
+            return AppLocale.string("records.delta.vsPrevious \(percentText)")
         }
         let signed = delta.absolute
         let prefix = signed >= 0 ? "+" : ""
@@ -215,15 +215,15 @@ struct RecordCard: View {
         let value = "\(formattedValue) \(unitLabel)"
         let date = HLDateFormat.date(record.base.achievedAt, style: .abbreviated)
         let deltaText: String = {
-            guard let delta = record.delta else { return String(localized: "records.a11y.newRecord") }
-            return String(localized: "records.a11y.change \(Self.deltaLabel(delta: delta))")
+            guard let delta = record.delta else { return AppLocale.string("records.a11y.newRecord") }
+            return AppLocale.string("records.a11y.change \(Self.deltaLabel(delta: delta))")
         }()
         return Text("\(metric): \(value), reached on \(date). \(deltaText)")
     }
 
     private static let numberFormatter: NumberFormatter = {
         let f = NumberFormatter()
-        f.locale = Locale.current
+        f.locale = AppLocale.shared.current
         f.numberStyle = .decimal
         f.maximumFractionDigits = 1
         f.minimumFractionDigits = 0

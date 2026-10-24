@@ -69,7 +69,7 @@ public extension Double {
         let totalMinutes = max(0, rawMinutes)
         let hours = totalMinutes / 60
         let minutes = totalMinutes % 60
-        return String(localized: "\(hours)h \(minutes)m", comment: "Sleep duration — hours and minutes")
+        return AppLocale.string(LocalizedStringResource("\(hours)h \(minutes)m", comment: "Sleep duration — hours and minutes"))
     }
 
     /// Crash-safe `sys/dia` whole-number blood-pressure string. Returns the

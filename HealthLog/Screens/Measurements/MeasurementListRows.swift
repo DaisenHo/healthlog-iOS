@@ -38,7 +38,7 @@ struct MeasurementRow: View {
                 // isn't from the current year (else the day+month is ambiguous).
                 Text(HLDateFormat.appendingYearIfNeeded(
                     measurement.recordedAt,
-                    base: .dateTime.weekday(.abbreviated).day().month().hour().minute()
+                    base: .dateTime.weekday(.abbreviated).day().month().hour().minute().locale(AppLocale.shared.current)
                 ))
                 .font(.hlFootnote)
                 .foregroundStyle(HLText.secondary)
@@ -65,7 +65,7 @@ struct MeasurementRow: View {
 
     private var sourceLabel: String {
         switch measurement.source {
-        case .manual: String(localized: "Manual")
+        case .manual: AppLocale.string("Manual")
         case .appleHealth: "Apple Health"
         case .withings: "Withings"
         case .whoop: "WHOOP"
@@ -78,10 +78,10 @@ struct MeasurementRow: View {
         case .healthConnect: "Health Connect"
         case .telegram: "Telegram"
         case .mcp: "MCP"
-        case .external: String(localized: "measurement.source.external")
-        case .computed: String(localized: "measurement.source.computed")
+        case .external: AppLocale.string("measurement.source.external")
+        case .computed: AppLocale.string("measurement.source.computed")
         case .import_: "Import"
-        case .unknown: String(localized: "measurement.source.unknown")
+        case .unknown: AppLocale.string("measurement.source.unknown")
         }
     }
 
@@ -243,8 +243,8 @@ struct MeasurementSummaryRow: View {
         .accessibilityLabel(accessibilityLabel)
         .accessibilityAddTraits(.isButton)
         .accessibilityHint(Text(isExpanded
-                ? String(localized: "Double-tap to hide the entries")
-                : String(localized: "Double-tap to show the entries")))
+                ? AppLocale.string("Double-tap to hide the entries")
+                : AppLocale.string("Double-tap to show the entries")))
     }
 
     /// Audit B-4 — `nil` when the bucket has no band to state (unknown rows).
@@ -308,7 +308,7 @@ struct MeasurementListEmptyState: View {
         ) {
             if let onLog {
                 HLButton(
-                    String(localized: "Log a measurement"),
+                    AppLocale.string("Log a measurement"),
                     icon: "plus",
                     variant: .restrained,
                     action: onLog

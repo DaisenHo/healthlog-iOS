@@ -329,7 +329,7 @@ public actor AnalyticsRepository {
             throw HLError.server(
                 status: 200,
                 code: "no_health_score",
-                message: String(localized: "Not enough data for your Health Score yet.")
+                message: AppLocale.string("Not enough data for your Health Score yet.")
             )
         }
         return score

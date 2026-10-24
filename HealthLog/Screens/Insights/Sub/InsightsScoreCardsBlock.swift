@@ -321,7 +321,7 @@ struct InsightsScoreCardsBlock: View {
                             .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
-                    .accessibilityLabel(Text(String(localized: "Choose which scores to show")))
+                    .accessibilityLabel(Text(AppLocale.string("Choose which scores to show")))
                     .accessibilityIdentifier("insights.scoreCards.edit")
                 }
                 // v0.14.1 §4 — half-width tiles, two per row: bigger ring +
@@ -467,18 +467,16 @@ private struct SignalsOfTheDayCard: View {
 
     private var bodyText: String {
         if summary.fired {
-            return String(
-                localized: "\(summary.contributingCount) of your vitals are outside their usual range today."
-            )
+            return AppLocale.string("\(summary.contributingCount) of your vitals are outside their usual range today.")
         }
-        return String(localized: "Your vitals are all within their usual range today.")
+        return AppLocale.string("Your vitals are all within their usual range today.")
     }
 
     /// Lists the contributing vitals as POSSIBLE factors — never a named cause,
     /// never a diagnosis (Apple Vitals pattern).
     private var factorsText: String {
         let names = summary.contributing.map(WellnessScorePresentation.vitalLabel).joined(separator: ", ")
-        return String(localized: "Possible factors: \(names)")
+        return AppLocale.string("Possible factors: \(names)")
     }
 }
 

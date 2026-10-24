@@ -29,10 +29,10 @@ public enum ScoreRingID: String, Codable, Sendable, CaseIterable, Hashable {
     /// the Insights score cards read the same names.
     public var label: String {
         switch self {
-        case .readiness: String(localized: "Daily condition")
-        case .recovery: String(localized: "Recovery")
-        case .sleepScore: String(localized: "Sleep score")
-        case .medCompliance: String(localized: "Medication")
+        case .readiness: AppLocale.string("Daily condition")
+        case .recovery: AppLocale.string("Recovery")
+        case .sleepScore: AppLocale.string("Sleep score")
+        case .medCompliance: AppLocale.string("Medication")
         }
     }
 }
@@ -72,7 +72,7 @@ public enum HeroRingID: String, Codable, Sendable, CaseIterable, Hashable {
 
     /// Localized label — the anchor's own name, else the score ring's.
     public var label: String {
-        scoreRing?.label ?? String(localized: "Health score", comment: "Hero anchor ring label")
+        scoreRing?.label ?? AppLocale.string(LocalizedStringResource("Health score", comment: "Hero anchor ring label"))
     }
 
     /// Server `resolveHeroRingOrder` (`dashboard-layout.ts:457-478`) mirrored

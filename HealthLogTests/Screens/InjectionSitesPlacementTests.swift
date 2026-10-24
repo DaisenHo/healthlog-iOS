@@ -56,7 +56,7 @@ struct InjectionSitesPlacementTests {
         #expect(!sheet.contains("showManageSites"))
         #expect(sheet.contains("destination: { SettingsInjectionSitesScreen() }"))
         #expect(sheet.contains("NavigationStack {"))
-        let manage = try #require(sheet.range(of: "String(localized: \"Manage sites\")"))
+        let manage = try #require(sheet.range(of: "AppLocale.string(\"Manage sites\")"))
         let call = sheet[manage.lowerBound...].prefix(400)
         #expect(call.contains("variant: .secondary"))
         #expect(call.contains("size: .compact"))

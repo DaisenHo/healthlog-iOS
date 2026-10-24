@@ -31,15 +31,16 @@ public extension AppContainer {
         // still unknown). Fail-quiet: an offline foreground keeps the persisted
         // last-known verdict rather than reverting to the unknown default.
         async let slots: Void = refreshMedicationSlotGate()
+        async let language: Void = settingsStore.refreshAccountLanguage()
         // #30 — the proactive cadence suggestions are inline-sourced (routed from
         // a live coach turn into `coachCadenceSuggestionsStore`), so there is no
         // foreground refresh leg — the dead `GET /api/coach/reminder-suggestions`
         // (always 404) was retired.
         #if canImport(UserNotifications) && canImport(UIKit)
             async let push: Void = notifications.registerForRemoteNotificationsIfAuthorized()
-            _ = await (modules, nudge, slots, push)
+            _ = await (modules, nudge, slots, language, push)
         #else
-            _ = await (modules, nudge, slots)
+            _ = await (modules, nudge, slots, language)
         #endif
     }
 

@@ -82,7 +82,7 @@ public struct ApiTokenDTO: Decodable, Sendable, Equatable, Identifiable {
     /// token never renders as a blank, untappable-looking row.
     public var displayName: String {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmed.isEmpty ? String(localized: "Unnamed token") : trimmed
+        return trimmed.isEmpty ? AppLocale.string("Unnamed token") : trimmed
     }
 
     /// Whether this credential carries the MCP write scope. Drives the "can
@@ -205,7 +205,7 @@ public struct McpConnectionDTO: Decodable, Sendable, Equatable, Identifiable {
     /// identifiable enough to revoke with confidence.
     public var displayName: String {
         let trimmed = clientName.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmed.isEmpty ? String(localized: "Unknown assistant") : trimmed
+        return trimmed.isEmpty ? AppLocale.string("Unknown assistant") : trimmed
     }
 
     /// Individual scope tokens, for badge rendering.

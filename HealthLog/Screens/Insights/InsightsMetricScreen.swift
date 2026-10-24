@@ -296,13 +296,13 @@ struct InsightsMetricScreen: View {
                         let prefs = settingsStore.unitPreferences
                         VStack(alignment: .leading, spacing: HLSpace.sm) {
                             labelledStatsRow(
-                                title: String(localized: "insights.bp.stats.systolic"),
+                                title: AppLocale.string("insights.bp.stats.systolic"),
                                 stats: store.stats,
                                 median: store.median,
                                 units: prefs
                             )
                             labelledStatsRow(
-                                title: String(localized: "insights.bp.stats.diastolic"),
+                                title: AppLocale.string("insights.bp.stats.diastolic"),
                                 stats: store.diastolicStats,
                                 median: store.diastolicMedian,
                                 units: prefs

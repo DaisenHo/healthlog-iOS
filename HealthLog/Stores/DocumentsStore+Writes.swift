@@ -155,7 +155,7 @@ public extension DocumentsStore {
         } catch {
             guard sessionLease.isCurrent else { return }
             if DocumentsRepository.isRestoreConflict(error) {
-                lastError = String(localized: "documents.toast.restoreFailed")
+                lastError = AppLocale.string("documents.toast.restoreFailed")
             } else {
                 applyError(error)
             }
@@ -248,7 +248,7 @@ public extension DocumentsStore {
             return
         }
         lastError = String(
-            format: String(localized: "documents.bulk.partialFailure"),
+            format: AppLocale.string("documents.bulk.partialFailure"),
             refused.count
         )
     }
@@ -267,14 +267,14 @@ public extension DocumentsStore {
             await load()
             try sessionLease.requireCurrent()
             if restore.results.contains(where: { !$0.ok }) {
-                lastError = String(localized: "documents.toast.restoreFailed")
+                lastError = AppLocale.string("documents.toast.restoreFailed")
             }
         } catch {
             guard sessionLease.isCurrent else { return }
             await load()
             guard sessionLease.isCurrent else { return }
             if DocumentsRepository.isRestoreConflict(error) {
-                lastError = String(localized: "documents.toast.restoreFailed")
+                lastError = AppLocale.string("documents.toast.restoreFailed")
             } else {
                 applyError(error)
             }

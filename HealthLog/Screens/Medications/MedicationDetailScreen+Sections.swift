@@ -13,7 +13,7 @@ struct RetroMutateQueuedBanner: View {
         HStack(spacing: HLSpace.sm) {
             Image(systemName: "arrow.triangle.2.circlepath")
                 .foregroundStyle(HLText.secondary)
-            Text(String(localized: "medication.quick_mark.queued"))
+            Text(AppLocale.string("medication.quick_mark.queued"))
                 .font(.hlSubhead)
                 .foregroundStyle(HLText.primary)
             Spacer()
@@ -108,7 +108,7 @@ struct MedicationHeroSection: View {
                         HLBadge(cls, tone: .neutral)
                     }
                     if medication.active {
-                        HLBadge(String(localized: "Active"), icon: "checkmark", tone: .success)
+                        HLBadge(AppLocale.string("Active"), icon: "checkmark", tone: .success)
                     }
                     if !medication.tracksIntake { RecordOnlyMedicationBadge() }
                     if let course = MedicationCourseBadge.resolve(medication) { MedicationCourseStatusBadge(badge: course) }
@@ -119,7 +119,7 @@ struct MedicationHeroSection: View {
 
     private func heroScheduleRow(labelKey: String.LocalizationValue, value: String) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: HLSpace.sm) {
-            Text(String(localized: labelKey))
+            Text(AppLocale.string(AppLocale.shared.resource(labelKey)))
                 .font(.hlSubhead)
                 .foregroundStyle(HLText.secondary)
             Spacer(minLength: HLSpace.sm)
@@ -134,36 +134,36 @@ struct MedicationHeroSection: View {
 
     private var categoryLabel: String {
         guard let raw = medication.category, !raw.isEmpty else {
-            return String(localized: "med.card.category.fallback")
+            return AppLocale.string("med.card.category.fallback")
         }
         return MedicationCard.localizedCategory(raw, label: medication.categoryLabel)
     }
 
     private var lastValue: String {
         guard let last = medication.lastTakenAt else {
-            return String(localized: "med.card.schedule.value.unset")
+            return AppLocale.string("med.card.schedule.value.unset")
         }
         return MedicationCard.relativeDateTime(last)
     }
 
     private var nextValue: String {
         // v1.39.1 (#1033) — nothing is due on a medication kept as a record.
-        guard medication.tracksIntake else { return String(localized: "med.card.schedule.not_tracked") }
+        guard medication.tracksIntake else { return AppLocale.string("med.card.schedule.not_tracked") }
         guard let next = MedicationCard.computeNextDose(
             medication: medication,
             timeZone: profileTimeZone,
             now: .now
         ) else {
-            return String(localized: "med.card.schedule.value.unset")
+            return AppLocale.string("med.card.schedule.value.unset")
         }
         return MedicationCard.relativeDateTime(next)
     }
 
     private func frequencyLabel(_ freq: GLP1DrugCatalog.InjectionFrequency) -> String {
         switch freq {
-        case .daily: String(localized: "Daily")
-        case .twiceDaily: String(localized: "2× daily")
-        case .weekly: String(localized: "Weekly")
+        case .daily: AppLocale.string("Daily")
+        case .twiceDaily: AppLocale.string("2× daily")
+        case .weekly: AppLocale.string("Weekly")
         }
     }
 }
@@ -339,20 +339,20 @@ struct IntakeHistorySection: View {
     private func timeEditor(for event: PaginatedIntakeEvent) -> some View {
         VStack(alignment: .leading, spacing: HLSpace.sm) {
             DatePicker(
-                String(localized: "med.history.edit_time.label"),
+                AppLocale.string("med.history.edit_time.label"),
                 selection: $draftTime,
                 in: Date.now.addingTimeInterval(-MedicationsStore.takenAtMaxAge) ... Date.now,
                 displayedComponents: [.date, .hourAndMinute]
             )
             .datePickerStyle(.compact)
             HStack(spacing: HLSpace.md) {
-                Button(String(localized: "Cancel")) {
+                Button(AppLocale.string("Cancel")) {
                     timeEditTarget = nil
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(HLText.secondary)
                 Spacer(minLength: HLSpace.sm)
-                Button(String(localized: "Save")) {
+                Button(AppLocale.string("Save")) {
                     timeEditTarget = nil
                     onEditTime(event, draftTime)
                 }
@@ -364,7 +364,7 @@ struct IntakeHistorySection: View {
         }
         .padding(.vertical, HLSpace.sm)
         .accessibilityElement(children: .contain)
-        .accessibilityLabel(Text(String(localized: "med.history.edit_time.action")))
+        .accessibilityLabel(Text(AppLocale.string("med.history.edit_time.action")))
     }
 
     /// True when there are more loaded rows than the collapsed 7-entry window
@@ -412,7 +412,7 @@ struct IntakeHistorySection: View {
                 } else {
                     // v0.6.1.2 Y4 (D-026) — link flips from .tint to
                     // HLText.primary mono.
-                    Text(String(localized: titleKey))
+                    Text(AppLocale.string(AppLocale.shared.resource(titleKey)))
                         .font(.hlSubhead)
                         .foregroundStyle(HLText.primary)
                 }
@@ -432,10 +432,10 @@ struct IntakeHistorySection: View {
         Menu {
             Picker(
                 selection: $filter,
-                label: Text(String(localized: "Filter history"))
+                label: Text(AppLocale.string("Filter history"))
             ) {
-                Text(String(localized: "All")).tag(VerlaufFilter.alle)
-                Text(String(localized: "Not taken")).tag(VerlaufFilter.nichtGenommen)
+                Text(AppLocale.string("All")).tag(VerlaufFilter.alle)
+                Text(AppLocale.string("Not taken")).tag(VerlaufFilter.nichtGenommen)
             }
         } label: {
             HStack(spacing: HLSpace.xxs) {
@@ -446,7 +446,7 @@ struct IntakeHistorySection: View {
             }
             .foregroundStyle(HLText.secondary)
             .contentShape(Rectangle())
-            .accessibilityLabel(Text(String(localized: "Filter history")))
+            .accessibilityLabel(Text(AppLocale.string("Filter history")))
             .accessibilityValue(Text(filterLabel))
         }
         .menuStyle(.borderlessButton)
@@ -455,17 +455,17 @@ struct IntakeHistorySection: View {
 
     private var filterLabel: String {
         switch filter {
-        case .alle: String(localized: "All")
-        case .nichtGenommen: String(localized: "Not taken")
+        case .alle: AppLocale.string("All")
+        case .nichtGenommen: AppLocale.string("Not taken")
         }
     }
 
     private var emptyLabel: String {
         switch filter {
         case .alle:
-            String(localized: "No intakes logged yet.")
+            AppLocale.string("No intakes logged yet.")
         case .nichtGenommen:
-            String(localized: "No missed intakes in your history.")
+            AppLocale.string("No missed intakes in your history.")
         }
     }
 }
@@ -496,7 +496,7 @@ struct InventorySection: View {
                             // central sanity gate; a corrupt count renders "—".
                             if let pens = inventory.pensRemaining {
                                 Text(InventorySanity.validCount(pens).map {
-                                    String(format: String(localized: "%d Pens"), $0)
+                                    String(format: AppLocale.string("%d Pens"), $0)
                                 } ?? InventorySanity.placeholder)
                                     .font(.hlHeadline)
                                     .foregroundStyle(HLText.primary)
@@ -504,7 +504,7 @@ struct InventorySection: View {
                             }
                             if let weeks = inventory.weeksOfSupply {
                                 Text(InventorySanity.validCount(weeks).map {
-                                    String(format: String(localized: "≈ %d weeks of supply"), $0)
+                                    String(format: AppLocale.string("≈ %d weeks of supply"), $0)
                                 } ?? InventorySanity.placeholder)
                                     .font(.hlSubhead)
                                     .foregroundStyle(HLText.secondary)
@@ -514,7 +514,7 @@ struct InventorySection: View {
                         Spacer()
                     }
                     if inventory.lowStock {
-                        Text(String(localized: "Supply is running low."))
+                        Text(AppLocale.string("Supply is running low."))
                             .font(.hlCaption)
                             .foregroundStyle(HLColor.statusWarn)
                     }
@@ -551,15 +551,14 @@ struct UnknownGLP1BrandSection: View {
         HLCard(style: .ghost) {
             VStack(alignment: .leading, spacing: HLSpace.sm) {
                 Label(
-                    String(localized: "Drug level curve not available"),
+                    AppLocale.string("Drug level curve not available"),
                     systemImage: "info.circle"
                 )
                 .font(.hlHeadline)
                 .foregroundStyle(HLText.primary)
                 Text(String(
-                    format: String(
-                        localized: "%@ is not in the EMA catalog. A drug level curve is only available for approved GLP-1 medicines."
-                    ),
+                    format: AppLocale
+                        .string("%@ is not in the EMA catalog. A drug level curve is only available for approved GLP-1 medicines."),
                     brand
                 ))
                 .font(.hlSubhead)

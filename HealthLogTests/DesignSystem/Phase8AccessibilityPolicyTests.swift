@@ -219,7 +219,7 @@
             } else {
                 violations.append("ProgressIndicator no longer exists — restate this contract")
             }
-            if source.contains("String(localized: \"Step 1 of 6") {
+            if source.contains("String(localized: \"Step 1 of 6") || source.contains("AppLocale.string(\"Step 1 of 6") {
                 violations.append("the spoken step count is a literal that no route length produces")
             }
             if !source.contains("static func progress(") {

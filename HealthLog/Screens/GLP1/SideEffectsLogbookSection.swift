@@ -46,14 +46,14 @@ public struct SideEffectsLogbookSection: View {
                 showingAdd = true
             } label: {
                 Label(
-                    String(localized: "Add entry"),
+                    AppLocale.string("Add entry"),
                     systemImage: "plus.circle.fill"
                 )
                 .labelStyle(.iconOnly)
                 .font(.hlTitle3)
                 .foregroundStyle(.tint)
             }
-            .accessibilityLabel(Text(String(localized: "Log side effect")))
+            .accessibilityLabel(Text(AppLocale.string("Log side effect")))
         }
     }
 
@@ -73,17 +73,15 @@ public struct SideEffectsLogbookSection: View {
         HLCard(style: .ghost) {
             VStack(alignment: .leading, spacing: HLSpace.sm) {
                 Label(
-                    String(localized: "No entries yet"),
+                    AppLocale.string("No entries yet"),
                     systemImage: "list.bullet.rectangle"
                 )
                 .font(.hlHeadline)
                 .foregroundStyle(HLText.primary)
-                Text(String(
-                    localized: "Log the side effects you notice to keep a record of tolerability over time."
-                ))
-                .font(.hlSubhead)
-                .foregroundStyle(HLText.secondary)
-                .fixedSize(horizontal: false, vertical: true)
+                Text(AppLocale.string("Log the side effects you notice to keep a record of tolerability over time."))
+                    .font(.hlSubhead)
+                    .foregroundStyle(HLText.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
     }
@@ -94,7 +92,7 @@ public struct SideEffectsLogbookSection: View {
                 ForEach(store.summaryByKind, id: \.kind) { row in
                     HLBadge(
                         String(
-                            format: String(localized: "%@ · %dx"),
+                            format: AppLocale.string("%@ · %dx"),
                             SideEffectsLogbookSection.kindLabel(row.kind),
                             row.count
                         ),
@@ -121,15 +119,15 @@ public struct SideEffectsLogbookSection: View {
 
     static func kindLabel(_ kind: SideEffectKind) -> String {
         switch kind {
-        case .nausea: String(localized: "Nausea")
-        case .vomiting: String(localized: "Vomiting")
-        case .constipation: String(localized: "Constipation")
-        case .diarrhea: String(localized: "Diarrhea")
-        case .fatigue: String(localized: "Fatigue")
-        case .appetiteLoss: String(localized: "Appetite loss")
-        case .injectionSiteReaction: String(localized: "Reaction at injection site")
-        case .headache: String(localized: "Headache")
-        case .unknown: String(localized: "glp1.sideEffect.kind.unknown")
+        case .nausea: AppLocale.string("Nausea")
+        case .vomiting: AppLocale.string("Vomiting")
+        case .constipation: AppLocale.string("Constipation")
+        case .diarrhea: AppLocale.string("Diarrhea")
+        case .fatigue: AppLocale.string("Fatigue")
+        case .appetiteLoss: AppLocale.string("Appetite loss")
+        case .injectionSiteReaction: AppLocale.string("Reaction at injection site")
+        case .headache: AppLocale.string("Headache")
+        case .unknown: AppLocale.string("glp1.sideEffect.kind.unknown")
         }
     }
 
@@ -147,10 +145,10 @@ public struct SideEffectsLogbookSection: View {
 
     static func severityLabel(_ severity: Int) -> String {
         switch severity {
-        case 1: String(localized: "Mild")
-        case 2: String(localized: "Moderate")
-        case 3: String(localized: "Severe")
-        default: String(localized: "—")
+        case 1: AppLocale.string("Mild")
+        case 2: AppLocale.string("Moderate")
+        case 3: AppLocale.string("Severe")
+        default: AppLocale.string("—")
         }
     }
 }
@@ -183,10 +181,10 @@ private struct DayBlock: View {
         // localized "Today"/"Yesterday" or an absolute `day.formatted(...)`), so
         // the alloc was dead weight on every row access. Output is unchanged.
         if Calendar.current.isDateInToday(day) {
-            return String(localized: "Today")
+            return AppLocale.string("Today")
         }
         if Calendar.current.isDateInYesterday(day) {
-            return String(localized: "Yesterday")
+            return AppLocale.string("Yesterday")
         }
         return HLDateFormat.date(day, style: .abbreviated)
     }
@@ -211,7 +209,7 @@ private struct LogRow: View {
                         .foregroundStyle(HLText.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
-                Text(row.loggedAt.formatted(date: .omitted, time: .shortened))
+                Text(row.loggedAt.formatted(Date.FormatStyle(date: .omitted, time: .shortened, locale: AppLocale.shared.current)))
                     .font(.hlCaption)
                     .foregroundStyle(HLText.tertiary)
                     .monospacedDigit()
@@ -219,13 +217,13 @@ private struct LogRow: View {
             Spacer()
             Menu {
                 Button(role: .destructive, action: onDelete) {
-                    Label(String(localized: "Delete"), systemImage: "trash")
+                    Label(AppLocale.string("Delete"), systemImage: "trash")
                 }
             } label: {
                 Image(systemName: "ellipsis.circle")
                     .foregroundStyle(HLText.secondary)
             }
-            .accessibilityLabel(Text(String(localized: "Entry actions")))
+            .accessibilityLabel(Text(AppLocale.string("Entry actions")))
         }
         .padding(.vertical, HLSpace.sm)
         .accessibilityElement(children: .combine)
@@ -235,7 +233,7 @@ private struct LogRow: View {
         if let kind = row.kind {
             return SideEffectsLogbookSection.kindLabel(kind)
         }
-        return String(localized: "Unknown")
+        return AppLocale.string("Unknown")
     }
 
     @ViewBuilder
@@ -264,21 +262,21 @@ struct SideEffectLogSheet: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section(String(localized: "When")) {
+                Section(AppLocale.string("When")) {
                     DatePicker(
-                        String(localized: "Date"),
+                        AppLocale.string("Date"),
                         selection: $loggedAt,
                         displayedComponents: [.date, .hourAndMinute]
                     )
                 }
-                Section(String(localized: "What")) {
-                    Picker(String(localized: "Type"), selection: $kind) {
+                Section(AppLocale.string("What")) {
+                    Picker(AppLocale.string("Type"), selection: $kind) {
                         ForEach(SideEffectKind.pickerCases, id: \.self) { kind in
                             Text(SideEffectsLogbookSection.kindLabel(kind)).tag(kind)
                         }
                     }
                 }
-                Section(String(localized: "Severity")) {
+                Section(AppLocale.string("Severity")) {
                     VStack(alignment: .leading, spacing: HLSpace.xs) {
                         Slider(
                             value: $severity,
@@ -290,19 +288,19 @@ struct SideEffectLogSheet: View {
                             .foregroundStyle(HLText.secondary)
                     }
                 }
-                Section(String(localized: "Note")) {
-                    TextField(String(localized: "Optional"), text: $note, axis: .vertical)
+                Section(AppLocale.string("Note")) {
+                    TextField(AppLocale.string("Optional"), text: $note, axis: .vertical)
                         .lineLimit(3 ... 6)
                 }
             }
-            .navigationTitle(String(localized: "Log side effect"))
+            .navigationTitle(AppLocale.string("Log side effect"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "Cancel")) { dismiss() }
+                    Button(AppLocale.string("Cancel")) { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(String(localized: "Save")) {
+                    Button(AppLocale.string("Save")) {
                         let cleaned = note.trimmingCharacters(in: .whitespacesAndNewlines)
                         onSave(loggedAt, kind, Int(severity), cleaned.isEmpty ? nil : cleaned)
                         dismiss()

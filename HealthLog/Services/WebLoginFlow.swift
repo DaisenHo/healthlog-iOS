@@ -39,11 +39,11 @@ public enum WebLoginErrorReason: Sendable, Equatable {
     /// Localized, user-facing message (de+en) surfaced on the auth step.
     public var localizedMessage: String {
         switch self {
-        case .invalidState: String(localized: "onboarding.webLogin.error.invalidState")
-        case .noSession: String(localized: "onboarding.webLogin.error.noSession")
-        case .staleSession: String(localized: "onboarding.webLogin.error.staleSession")
-        case .rateLimited: String(localized: "onboarding.webLogin.error.rateLimited")
-        case .unknown: String(localized: "onboarding.webLogin.error.generic")
+        case .invalidState: AppLocale.string("onboarding.webLogin.error.invalidState")
+        case .noSession: AppLocale.string("onboarding.webLogin.error.noSession")
+        case .staleSession: AppLocale.string("onboarding.webLogin.error.staleSession")
+        case .rateLimited: AppLocale.string("onboarding.webLogin.error.rateLimited")
+        case .unknown: AppLocale.string("onboarding.webLogin.error.generic")
         }
     }
 

@@ -53,7 +53,7 @@ public extension MedicationsStore {
             let messageKey: LocalizedStringResource = status == .taken
                 ? "undo.medication.taken"
                 : "undo.medication.skipped"
-            undoCoordinator?.enqueue(message: String(localized: messageKey)) { [weak self] in
+            undoCoordinator?.enqueue(message: AppLocale.string(AppLocale.shared.resource(messageKey))) { [weak self] in
                 guard let self, sessionLease.isCurrent else { return }
                 await undoIntakeMark(undo)
             }

@@ -31,7 +31,7 @@ struct WhoopIntegrationScreen: View {
             ScrollView {
                 HLCloudDerivedPlaceholder(
                     variant: .hero,
-                    surfaceName: String(localized: "cloud_derived.surface.whoop"),
+                    surfaceName: AppLocale.string("cloud_derived.surface.whoop"),
                     onConnect: { authStore.beginServerPairing() }
                 )
                 .padding(HLSpace.lg)
@@ -87,20 +87,20 @@ struct WhoopIntegrationScreen: View {
     private var statusPill: some View {
         switch store.stage {
         case .loading:
-            HLStatusPill(.unknown(label: String(localized: "Checking")))
+            HLStatusPill(.unknown(label: AppLocale.string("Checking")))
         case .needsCredentials:
-            HLStatusPill(.disconnected(label: String(localized: "Not configured")))
+            HLStatusPill(.disconnected(label: AppLocale.string("Not configured")))
         case .needsConnect:
-            HLStatusPill(.disconnected(label: String(localized: "Not connected")))
+            HLStatusPill(.disconnected(label: AppLocale.string("Not connected")))
         case .tokenExpired:
-            HLStatusPill(.error(label: String(localized: "Reconnect needed")))
+            HLStatusPill(.error(label: AppLocale.string("Reconnect needed")))
         case .connected:
             // #139 — limited / degraded show as such; the plain "Connected"
             // stays for a server without `health`.
             if let health = store.status?.health {
                 HLStatusPill(ConnectionHealthPresentation(health: health).pill)
             } else {
-                HLStatusPill(.connected(label: String(localized: "Connected")))
+                HLStatusPill(.connected(label: AppLocale.string("Connected")))
             }
         }
     }
@@ -142,20 +142,20 @@ struct WhoopIntegrationScreen: View {
     private var statusSubtitle: String? {
         switch store.stage {
         case .loading:
-            return String(localized: "Loading WHOOP status.")
+            return AppLocale.string("Loading WHOOP status.")
         case .needsCredentials:
             return nil
         case .needsConnect:
-            return String(localized: "whoop.status.credentialsSaved")
+            return AppLocale.string("whoop.status.credentialsSaved")
         case .tokenExpired:
             // #139 — the server's own reason when it sends one.
             if let health = store.status?.health {
                 return ConnectionHealthPresentation(health: health).sentence
             }
-            return String(localized: "Your WHOOP authorization expired — sync is paused.")
+            return AppLocale.string("Your WHOOP authorization expired — sync is paused.")
         case .connected:
-            let last = store.status?.lastSyncedAt?.formatted(.relative(presentation: .named)) ?? "—"
-            return String(localized: "Last sync \(last)")
+            let last = store.status?.lastSyncedAt?.formatted(.relative(presentation: .named).locale(AppLocale.shared.current)) ?? "—"
+            return AppLocale.string("Last sync \(last)")
         }
     }
 
@@ -190,12 +190,12 @@ struct WhoopIntegrationScreen: View {
             .foregroundStyle(HLText.secondary)
             .fixedSize(horizontal: false, vertical: true)
 
-            TextField(String(localized: "Client ID"), text: $clientIdDraft)
+            TextField(AppLocale.string("Client ID"), text: $clientIdDraft)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .accessibilityIdentifier("settings.whoop.clientIdField")
 
-            SecureField(String(localized: "Client Secret"), text: $clientSecretDraft)
+            SecureField(AppLocale.string("Client Secret"), text: $clientSecretDraft)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .accessibilityIdentifier("settings.whoop.clientSecretField")
@@ -206,7 +206,7 @@ struct WhoopIntegrationScreen: View {
             // R9 — „Speichern" am Formularende ist das Commit dieses Schritts;
             // in dieser Stufe rendert kein zweites `.primary`.
             HLButton(
-                String(localized: "Save"),
+                AppLocale.string("Save"),
                 variant: .primary,
                 isLoading: store.isWorking
             ) {
@@ -240,7 +240,7 @@ struct WhoopIntegrationScreen: View {
             // R9 — „Verbinden" ist auf jedem Integrations-Screen das eine
             // `.primary`.
             HLButton(
-                String(localized: "Connect WHOOP"),
+                AppLocale.string("Connect WHOOP"),
                 icon: "link",
                 variant: .primary,
                 isLoading: store.isWorking
@@ -264,7 +264,7 @@ struct WhoopIntegrationScreen: View {
                 // Synchronisierung pausiert.") und zum Pill „Erneut verbinden
                 // nötig". Ersatzlos gefallen; die Statuszeile trägt die Folge.
                 HLButton(
-                    String(localized: "Reconnect WHOOP"),
+                    AppLocale.string("Reconnect WHOOP"),
                     icon: "link",
                     variant: .primary,
                     isLoading: store.isWorking
@@ -279,7 +279,7 @@ struct WhoopIntegrationScreen: View {
                     rateLimitedParkedNotice
                 }
                 HLButton(
-                    String(localized: "Resume sync"),
+                    AppLocale.string("Resume sync"),
                     icon: "play.circle",
                     variant: .secondary,
                     isLoading: store.isWorking
@@ -289,11 +289,11 @@ struct WhoopIntegrationScreen: View {
                 .accessibilityIdentifier("settings.whoop.resumeButton")
             }
             if let scope = store.status?.scope, !scope.isEmpty {
-                detailRow(label: String(localized: "Scope"), value: scope)
+                detailRow(label: AppLocale.string("Scope"), value: scope)
             }
 
             HLButton(
-                String(localized: "Sync now"),
+                AppLocale.string("Sync now"),
                 icon: "arrow.triangle.2.circlepath",
                 variant: .secondary,
                 isLoading: store.isWorking
@@ -303,7 +303,7 @@ struct WhoopIntegrationScreen: View {
             .accessibilityIdentifier("settings.whoop.syncButton")
 
             HLButton(
-                String(localized: "Test connection"),
+                AppLocale.string("Test connection"),
                 icon: "checkmark.shield",
                 variant: .secondary,
                 isLoading: store.isWorking
@@ -316,7 +316,7 @@ struct WhoopIntegrationScreen: View {
                 testOkRow(result)
             }
 
-            HLButton(String(localized: "Disconnect"), variant: .destructive) {
+            HLButton(AppLocale.string("Disconnect"), variant: .destructive) {
                 Task { await store.disconnect() }
             }
             .accessibilityIdentifier("settings.whoop.disconnectButton")
@@ -355,9 +355,9 @@ struct WhoopIntegrationScreen: View {
 
     private func testOkText(_ result: WhoopTestResult) -> String {
         if let ms = result.latencyMs {
-            String(localized: "Connection OK · \(ms) ms")
+            AppLocale.string("Connection OK · \(ms) ms")
         } else {
-            String(localized: "Connection OK")
+            AppLocale.string("Connection OK")
         }
     }
 
@@ -399,17 +399,17 @@ struct WhoopIntegrationScreen: View {
         if case let .server(_, code, message) = error {
             switch code {
             case "not_configured":
-                return String(localized: "Save your WHOOP credentials before testing.")
+                return AppLocale.string("Save your WHOOP credentials before testing.")
             case "credentials_rejected":
-                return String(localized: "WHOOP rejected these credentials. Check the Client ID and Secret.")
+                return AppLocale.string("WHOOP rejected these credentials. Check the Client ID and Secret.")
             case "rate_limited", "rate_limited_self":
-                return String(localized: "WHOOP is rate-limiting requests. Try again in a moment.")
+                return AppLocale.string("WHOOP is rate-limiting requests. Try again in a moment.")
             case "upstream_error":
-                return String(localized: "WHOOP returned an error. Try again later.")
+                return AppLocale.string("WHOOP returned an error. Try again later.")
             case "connection_failed":
-                return String(localized: "Couldn't reach WHOOP. Check your connection and retry.")
+                return AppLocale.string("Couldn't reach WHOOP. Check your connection and retry.")
             case "timeout":
-                return String(localized: "WHOOP took too long to respond. Try again.")
+                return AppLocale.string("WHOOP took too long to respond. Try again.")
             default:
                 return message
             }

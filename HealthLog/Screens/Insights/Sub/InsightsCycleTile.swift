@@ -89,7 +89,7 @@ struct InsightsCycleTile: View {
         // has no room for the caveat an overdue state needs, and the phase-tinted
         // dot would assert a phase the record does not hold.
         guard let phase = CycleScreenModel.phase(verdict) else { return nil }
-        let phaseName = String(localized: CyclePhaseExplainer.nameKey(for: phase))
+        let phaseName = AppLocale.string(AppLocale.shared.resource(CyclePhaseExplainer.nameKey(for: phase)))
         return Summary(phase: phase, phaseName: phaseName, subtitle: subtitleText(store: store, verdict: verdict))
     }
 
@@ -107,7 +107,7 @@ struct InsightsCycleTile: View {
     /// itself stays (it is observed, not predicted).
     private func subtitleText(store: CycleStore, verdict: CycleVerdictDTO) -> String {
         let dayLine = verdict.dayOfCycle.map {
-            String(format: String(localized: "cycle.home.center.cycleDay"), $0)
+            String(format: AppLocale.string("cycle.home.center.cycleDay"), $0)
         }
         if Self.isStillLearning(
             calendarCyclesObserved: store.calendar?.profile?.cyclesObserved,
@@ -115,15 +115,15 @@ struct InsightsCycleTile: View {
             confirmedCycleCount: store.cycles.filter { !$0.isPredicted }.count,
             stillLearning: store.prediction?.stillLearning
         ) {
-            return dayLine ?? String(localized: "cycle.insights.tile.learning")
+            return dayLine ?? AppLocale.string("cycle.insights.tile.learning")
         }
         // Z1 (#72) — the countdown is the verdict's `daysUntilNext`, resolved
         // server-side against the profile timezone. Nothing is subtracted here.
         if let days = verdict.daysUntilNext {
-            if days == 0 { return String(localized: "cycle.insights.tile.dueToday") }
-            return String(format: String(localized: "cycle.insights.tile.inDays"), days)
+            if days == 0 { return AppLocale.string("cycle.insights.tile.dueToday") }
+            return String(format: AppLocale.string("cycle.insights.tile.inDays"), days)
         }
-        return dayLine ?? String(localized: "cycle.insights.tile.learning")
+        return dayLine ?? AppLocale.string("cycle.insights.tile.learning")
     }
 
     /// Whether the cycle is still in its learning phase — the same maturity

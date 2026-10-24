@@ -169,19 +169,19 @@ public struct CycleStartNotice: Sendable, Equatable, Identifiable {
     }
 
     /// "Your start on 17 Sep was merged into 14 Sep." in the person's language.
-    public func sentence(locale: Locale = .current) -> String {
+    public func sentence(locale: Locale = AppLocale.shared.current) -> String {
         switch kind {
         case let .merged(absorbed, into):
             let from = Self.dayLabel(absorbed, locale: locale)
             let target = Self.dayLabel(into, locale: locale)
-            return String(localized: "cycle.startNotice.merged \(from) \(target)")
+            return AppLocale.string("cycle.startNotice.merged \(from) \(target)")
         case let .restored(dates):
             let days = dates.map { Self.dayLabel($0, locale: locale) }
             if days.count == 1 {
-                return String(localized: "cycle.startNotice.restoredOne \(days[0])")
+                return AppLocale.string("cycle.startNotice.restoredOne \(days[0])")
             }
             let list = days.formatted(.list(type: .and).locale(locale))
-            return String(localized: "cycle.startNotice.restoredMany \(list)")
+            return AppLocale.string("cycle.startNotice.restoredMany \(list)")
         }
     }
 

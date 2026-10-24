@@ -25,7 +25,7 @@ struct NightscoutIntegrationScreen: View {
             ScrollView {
                 HLCloudDerivedPlaceholder(
                     variant: .hero,
-                    surfaceName: String(localized: "cloud_derived.surface.nightscout"),
+                    surfaceName: AppLocale.string("cloud_derived.surface.nightscout"),
                     onConnect: { authStore.beginServerPairing() }
                 )
                 .padding(HLSpace.lg)
@@ -86,12 +86,12 @@ struct NightscoutIntegrationScreen: View {
             if let health = store.status?.health {
                 HLStatusPill(ConnectionHealthPresentation(health: health).pill)
             } else {
-                HLStatusPill(.connected(label: String(localized: "Connected")))
+                HLStatusPill(.connected(label: AppLocale.string("Connected")))
             }
         case .some(false):
-            HLStatusPill(.disconnected(label: String(localized: "Not connected")))
+            HLStatusPill(.disconnected(label: AppLocale.string("Not connected")))
         case .none:
-            HLStatusPill(.unknown(label: String(localized: "Checking")))
+            HLStatusPill(.unknown(label: AppLocale.string("Checking")))
         }
     }
 
@@ -141,14 +141,14 @@ struct NightscoutIntegrationScreen: View {
 
     private var connectForm: some View {
         VStack(alignment: .leading, spacing: HLSpace.md) {
-            TextField(String(localized: "nightscout.urlPlaceholder"), text: $urlDraft)
+            TextField(AppLocale.string("nightscout.urlPlaceholder"), text: $urlDraft)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .keyboardType(.URL)
                 .textContentType(.URL)
                 .accessibilityIdentifier("settings.nightscout.urlField")
 
-            SecureField(String(localized: "nightscout.tokenPlaceholder"), text: $tokenDraft)
+            SecureField(AppLocale.string("nightscout.tokenPlaceholder"), text: $tokenDraft)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .accessibilityIdentifier("settings.nightscout.tokenField")
@@ -160,7 +160,7 @@ struct NightscoutIntegrationScreen: View {
                 accessibilityID: "settings.nightscout.allowPrivateHostToggle"
             )
 
-            HLButton(String(localized: "Connect"), variant: .primary, isLoading: store.isWorking) {
+            HLButton(AppLocale.string("Connect"), variant: .primary, isLoading: store.isWorking) {
                 Task { await connect() }
             }
             .disabled(!canConnect || store.isWorking)
@@ -176,10 +176,7 @@ struct NightscoutIntegrationScreen: View {
                 Text(
                     // W-I18N: interpolates a runtime latency number.
                     verbatim: String(
-                        format: NSLocalizedString(
-                            "integration.test.ok_latency",
-                            comment: "Connection test OK; %d is the latency in ms."
-                        ),
+                        format: AppLocale.string("integration.test.ok_latency"),
                         latency
                     )
                 )

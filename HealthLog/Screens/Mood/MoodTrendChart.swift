@@ -96,7 +96,7 @@ struct MoodTrendChart: View {
         return Chart {
             // 1. Mean baseline.
             if let mean = overallMean {
-                RuleMark(y: .value(String(localized: "Average"), mean))
+                RuleMark(y: .value(AppLocale.string("Average"), mean))
                     .foregroundStyle(HLText.tertiary.opacity(0.35))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: HLChartGrid.thresholdDash))
                     .annotation(position: .top, alignment: .trailing) {
@@ -107,15 +107,15 @@ struct MoodTrendChart: View {
             }
             // Faint scale anchors at 1/3/5.
             ForEach([1, 3, 5], id: \.self) { level in
-                RuleMark(y: .value(String(localized: "Scale"), level))
+                RuleMark(y: .value(AppLocale.string("Scale"), level))
                     .foregroundStyle(HLText.tertiary.opacity(0.2))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: HLChartGrid.thresholdDash))
             }
             // 2. Raw daily line — the wobble (demoted).
             ForEach(series) { point in
                 LineMark(
-                    x: .value(String(localized: "Date"), point.date),
-                    y: .value(String(localized: "Mood"), point.score),
+                    x: .value(AppLocale.string("Date"), point.date),
+                    y: .value(AppLocale.string("Mood"), point.score),
                     series: .value("s", "raw")
                 )
                 .foregroundStyle(HLChartTints.seriesLow)
@@ -125,8 +125,8 @@ struct MoodTrendChart: View {
             // 3. 7-day moving average — the signal (promoted).
             ForEach(ma) { point in
                 LineMark(
-                    x: .value(String(localized: "Date"), point.date),
-                    y: .value(String(localized: "7-day average"), point.score),
+                    x: .value(AppLocale.string("Date"), point.date),
+                    y: .value(AppLocale.string("7-day average"), point.score),
                     series: .value("s", "ma")
                 )
                 .foregroundStyle(HLChartTints.series)
@@ -142,7 +142,7 @@ struct MoodTrendChart: View {
                 value: \.score
             ) { point in
                 HLScrubCallout(
-                    title: point.date.formatted(.dateTime.weekday(.abbreviated).day().month()),
+                    title: point.date.formatted(.dateTime.weekday(.abbreviated).day().month().locale(AppLocale.shared.current)),
                     value: MoodCopy.scoreLabel(Int(point.score.rounded())),
                     unit: point.score.formatted(.number.precision(.fractionLength(1)))
                 )
@@ -150,9 +150,10 @@ struct MoodTrendChart: View {
         }
         .hlChartScrub($selectedDate) { date in
             guard let nearest = HLChartScrubber.nearest(to: date, in: series, date: \.date) else { return nil }
-            return String(
-                localized: "\(nearest.date.formatted(.dateTime.day().month())): \(MoodCopy.scoreLabel(Int(nearest.score.rounded())))"
-            )
+            return AppLocale
+                .string(
+                    "\(nearest.date.formatted(.dateTime.day().month().locale(AppLocale.shared.current))): \(MoodCopy.scoreLabel(Int(nearest.score.rounded())))"
+                )
         }
         .chartYScale(domain: 0.5 ... 5.5)
         .chartYAxis {
@@ -220,22 +221,22 @@ extension MoodTrendChart: AXChartDescriptorRepresentable {
             AXDataPoint(x: Double(idx), y: p.score, label: MoodCopy.scoreLabel(Int(p.score.rounded())))
         }
         let dateAxis = AXNumericDataAxisDescriptor(
-            title: String(localized: "Date"),
+            title: AppLocale.string("Date"),
             range: 0 ... Double(max(series.count - 1, 0)),
             gridlinePositions: []
         ) { _ in "" }
         let scoreAxis = AXNumericDataAxisDescriptor(
-            title: String(localized: "Mood"),
+            title: AppLocale.string("Mood"),
             range: 1 ... 5,
             gridlinePositions: [1, 3, 5]
         ) { value in MoodCopy.scoreLabel(Int(value.rounded())) }
         let dataSeries = AXDataSeriesDescriptor(
-            name: String(localized: "Daily average"),
+            name: AppLocale.string("Daily average"),
             isContinuous: true,
             dataPoints: pts
         )
         return AXChartDescriptor(
-            title: String(localized: "Mood trend"),
+            title: AppLocale.string("Mood trend"),
             summary: nil,
             xAxis: dateAxis,
             yAxis: scoreAxis,

@@ -48,15 +48,15 @@ public enum CorrelationPair: CaseIterable, Sendable {
     public var coachSeed: String {
         switch self {
         case .bpMedication:
-            String(localized: "How does my medication adherence relate to my blood pressure?")
+            AppLocale.string("How does my medication adherence relate to my blood pressure?")
         case .weightBp:
-            String(localized: "Is there a link between my weight and my blood pressure?")
+            AppLocale.string("Is there a link between my weight and my blood pressure?")
         case .moodBp:
-            String(localized: "Is there a link between my mood and my blood pressure?")
+            AppLocale.string("Is there a link between my mood and my blood pressure?")
         case .moodPulse:
-            String(localized: "Is there a link between my mood and my heart rate?")
+            AppLocale.string("Is there a link between my mood and my heart rate?")
         case .moodWeight:
-            String(localized: "Is there a link between my mood and my weight?")
+            AppLocale.string("Is there a link between my mood and my weight?")
         }
     }
 }
@@ -87,7 +87,7 @@ public struct CorrelationsPanel: View {
     @Environment(\.unitPreferences) private var unitPreferences
 
     private var weightAxisTitle: String {
-        String(localized: "Weight (\(unitPreferences.unitLabel(for: .weight)))")
+        AppLocale.string("Weight (\(unitPreferences.unitLabel(for: .weight)))")
     }
 
     public var body: some View {
@@ -105,13 +105,13 @@ public struct CorrelationsPanel: View {
                scatter.count >= 5
             {
                 CorrelationCard(
-                    title: String(localized: "Blood pressure × medication compliance"),
+                    title: AppLocale.string("Blood pressure × medication compliance"),
                     strengthLabel: strengthLabel(corr.strength),
                     interpretation: bpMedicationInterpretation(corr: corr),
                     r: corr.r,
                     n: corr.n,
-                    xAxisTitle: String(localized: "Intake rate (%)"),
-                    yAxisTitle: String(localized: "Systolic (mmHg)"),
+                    xAxisTitle: AppLocale.string("Intake rate (%)"),
+                    yAxisTitle: AppLocale.string("Systolic (mmHg)"),
                     points: scatter,
                     xValue: { $0.continuityPct },
                     yValue: { $0.sysBP },
@@ -125,13 +125,13 @@ public struct CorrelationsPanel: View {
                scatter.count >= 5
             {
                 CorrelationCard(
-                    title: String(localized: "Weight × blood pressure"),
+                    title: AppLocale.string("Weight × blood pressure"),
                     strengthLabel: strengthLabel(corr.strength),
                     interpretation: "",
                     r: corr.r,
                     n: corr.n,
                     xAxisTitle: weightAxisTitle,
-                    yAxisTitle: String(localized: "Systolic (mmHg)"),
+                    yAxisTitle: AppLocale.string("Systolic (mmHg)"),
                     points: scatter,
                     xValue: { [unitPreferences] in unitPreferences.displayValue($0.weight, kind: .weight) },
                     yValue: { $0.sysBP },
@@ -145,13 +145,13 @@ public struct CorrelationsPanel: View {
                scatter.count >= 5
             {
                 CorrelationCard(
-                    title: String(localized: "Mood × blood pressure"),
+                    title: AppLocale.string("Mood × blood pressure"),
                     strengthLabel: strengthLabel(corr.strength),
                     interpretation: "",
                     r: corr.r,
                     n: corr.n,
-                    xAxisTitle: String(localized: "Mood (1–5)"),
-                    yAxisTitle: String(localized: "Systolic (mmHg)"),
+                    xAxisTitle: AppLocale.string("Mood (1–5)"),
+                    yAxisTitle: AppLocale.string("Systolic (mmHg)"),
                     points: scatter,
                     xValue: { $0.mood },
                     yValue: { $0.sysBP },
@@ -165,13 +165,13 @@ public struct CorrelationsPanel: View {
                scatter.count >= 5
             {
                 CorrelationCard(
-                    title: String(localized: "Mood × heart rate"),
+                    title: AppLocale.string("Mood × heart rate"),
                     strengthLabel: strengthLabel(corr.strength),
                     interpretation: "",
                     r: corr.r,
                     n: corr.n,
-                    xAxisTitle: String(localized: "Mood (1–5)"),
-                    yAxisTitle: String(localized: "Pulse (bpm)"),
+                    xAxisTitle: AppLocale.string("Mood (1–5)"),
+                    yAxisTitle: AppLocale.string("Pulse (bpm)"),
                     points: scatter,
                     xValue: { $0.mood },
                     yValue: { $0.pulse },
@@ -185,12 +185,12 @@ public struct CorrelationsPanel: View {
                scatter.count >= 5
             {
                 CorrelationCard(
-                    title: String(localized: "Mood × weight"),
+                    title: AppLocale.string("Mood × weight"),
                     strengthLabel: strengthLabel(corr.strength),
                     interpretation: "",
                     r: corr.r,
                     n: corr.n,
-                    xAxisTitle: String(localized: "Mood (1–5)"),
+                    xAxisTitle: AppLocale.string("Mood (1–5)"),
                     yAxisTitle: weightAxisTitle,
                     points: scatter,
                     xValue: { $0.mood },
@@ -283,10 +283,10 @@ public struct CorrelationsPanel: View {
     /// (pair label leading, strength trailing — like a settings row's value).
     private func strengthLabel(_ strength: CorrelationStrength?) -> String {
         switch strength ?? .keine {
-        case .stark: String(localized: "Strong")
-        case .moderat: String(localized: "Moderate")
-        case .schwach: String(localized: "Weak")
-        case .keine: String(localized: "correlations.strength.none")
+        case .stark: AppLocale.string("Strong")
+        case .moderat: AppLocale.string("Moderate")
+        case .schwach: AppLocale.string("Weak")
+        case .keine: AppLocale.string("correlations.strength.none")
         }
     }
 
@@ -306,15 +306,15 @@ public struct CorrelationsPanel: View {
         let strength = corr.strength ?? .keine
         switch (strength, corr.r < 0) {
         case (.stark, true):
-            return String(localized: "Days with a high intake rate were followed by markedly lower blood pressure.")
+            return AppLocale.string("Days with a high intake rate were followed by markedly lower blood pressure.")
         case (.moderat, true):
-            return String(localized: "Days with a high intake rate tended to be followed by lower blood pressure.")
+            return AppLocale.string("Days with a high intake rate tended to be followed by lower blood pressure.")
         case (.schwach, true):
-            return String(localized: "correlations.bpMedication.lowerOnIntakeDays")
+            return AppLocale.string("correlations.bpMedication.lowerOnIntakeDays")
         case (.stark, false), (.moderat, false), (.schwach, false):
-            return String(localized: "correlations.bpMedication.noDifference")
+            return AppLocale.string("correlations.bpMedication.noDifference")
         case (.keine, _):
-            return String(localized: "Too little spread for a clear statement yet.")
+            return AppLocale.string("Too little spread for a clear statement yet.")
         }
     }
 }
@@ -395,7 +395,7 @@ private struct CorrelationCard<Point: Sendable>: View {
             .frame(height: 160)
             .accessibilityChartDescriptor(HLChartDescriptor(chartDescriptor))
 
-            Text(String(localized: "r = \(r.formatted(.number.precision(.fractionLength(2)))) · based on \(n) days"))
+            Text(AppLocale.string("r = \(r.formatted(.number.precision(.fractionLength(2)))) · based on \(n) days"))
                 .font(.hlCaption)
                 .foregroundStyle(HLText.tertiary)
 
@@ -408,7 +408,7 @@ private struct CorrelationCard<Point: Sendable>: View {
                     HStack(spacing: HLSpace.xs) {
                         Image(systemName: "sparkles")
                             .font(.hlIcon(HLIconSize.sm))
-                        Text(String(localized: "Ask the coach about this"))
+                        Text(AppLocale.string("Ask the coach about this"))
                             .font(.hlFootnote)
                     }
                     .foregroundStyle(HLText.secondary)
@@ -454,14 +454,12 @@ private struct EmptyCorrelationCard: View {
                 HStack(spacing: HLSpace.xs) {
                     Image(systemName: "chart.dots.scatter")
                         .foregroundStyle(HLText.tertiary)
-                    Text(String(localized: "No correlations yet"))
+                    Text(AppLocale.string("No correlations yet"))
                         .font(.hlSubhead.weight(.semibold))
                         .foregroundStyle(HLText.primary)
                 }
                 Text(
-                    String(
-                        localized: "Once there are enough measurement pairs (at least 5 days per metric), correlations will appear here."
-                    )
+                    AppLocale.string("Once there are enough measurement pairs (at least 5 days per metric), correlations will appear here.")
                 )
                 .font(.hlCaption)
                 .foregroundStyle(HLText.secondary)

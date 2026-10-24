@@ -25,10 +25,10 @@ enum MedicationCourseBadge: Equatable {
     var title: String {
         switch self {
         case .ended:
-            return String(localized: "medications.course.ended.badge")
+            return AppLocale.string("medications.course.ended.badge")
         case let .startsOn(date):
-            let day = date.formatted(Date.FormatStyle(date: .abbreviated, time: .omitted, timeZone: .gmt))
-            return String(localized: "medications.course.upcoming.badge \(day)")
+            let day = date.formatted(Date.FormatStyle(date: .abbreviated, time: .omitted, locale: AppLocale.shared.current, timeZone: .gmt))
+            return AppLocale.string("medications.course.upcoming.badge \(day)")
         }
     }
 }

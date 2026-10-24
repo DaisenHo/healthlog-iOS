@@ -256,7 +256,7 @@ struct AchievementDetailSheet: View {
 
     private var visibleTitle: String {
         if achievement.isHiddenPlaceholder {
-            return String(localized: "Secret achievement")
+            return AppLocale.string("Secret achievement")
         }
         return achievement.title
     }
@@ -278,7 +278,7 @@ struct AchievementDetailSheet: View {
         case .percent:
             return "\(HLNumberFormat.percent(current)) / \(HLNumberFormat.percent(target))"
         case .days:
-            return String(localized: "\(currentText) / \(targetText) days")
+            return AppLocale.string("\(currentText) / \(targetText) days")
         case .count, .none:
             return "\(currentText) / \(targetText)"
         }
@@ -289,25 +289,19 @@ struct AchievementDetailSheet: View {
     /// playful operator voice — `🏆 HealthLog: ...`
     private var shareMessage: String {
         if let points = achievement.points, points > 0 {
-            return String(
-                localized: "achievement.share.withPoints \(achievement.title) \(points)"
-            )
+            return AppLocale.string("achievement.share.withPoints \(achievement.title) \(points)")
         }
-        return String(
-            localized: "achievement.share.noPoints \(achievement.title)"
-        )
+        return AppLocale.string("achievement.share.noPoints \(achievement.title)")
     }
 
     private var accessibilityLabel: Text {
         var parts: [String] = []
-        parts.append(String(localized: "achievement.a11y.prefix"))
+        parts.append(AppLocale.string("achievement.a11y.prefix"))
         parts.append(visibleTitle)
         if achievement.unlocked, let earnedAt = achievement.unlockedAt {
-            parts.append(String(
-                localized: "Earned on \(HLDateFormat.date(earnedAt, style: .long))"
-            ))
+            parts.append(AppLocale.string("Earned on \(HLDateFormat.date(earnedAt, style: .long))"))
         } else if !achievement.isHiddenPlaceholder {
-            parts.append(String(localized: "Not unlocked yet"))
+            parts.append(AppLocale.string("Not unlocked yet"))
         }
         if let points = achievement.points, points > 0 {
             parts.append("\(points) points")

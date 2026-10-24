@@ -139,8 +139,8 @@ import SwiftUI
             .sensoryFeedback(.impact(weight: .light), trigger: dictation.isRecording)
             .accessibilityLabel(
                 dictation.isRecording
-                    ? String(localized: "Stop dictation")
-                    : String(localized: "Dictate your question")
+                    ? AppLocale.string("Stop dictation")
+                    : AppLocale.string("Dictate your question")
             )
         }
 
@@ -151,8 +151,8 @@ import SwiftUI
         /// (QA-b198 Design-L5).
         private var fieldPrompt: String {
             dictation.isRecording
-                ? String(localized: "coach.composer.listening")
-                : String(localized: "Ask me something …")
+                ? AppLocale.string("coach.composer.listening")
+                : AppLocale.string("Ask me something …")
         }
 
         private var field: some View {
@@ -203,7 +203,7 @@ import SwiftUI
             .sensoryFeedback(.impact(weight: .light), trigger: isResponding) { _, responding in
                 responding
             }
-            .accessibilityLabel(String(localized: "Send question"))
+            .accessibilityLabel(AppLocale.string("Send question"))
         }
 
         // MARK: - Conditional / fallback plumbing

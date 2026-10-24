@@ -20,17 +20,17 @@ enum MoodPeriod: Int, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .days30: String(localized: "30d")
-        case .days90: String(localized: "90d")
-        case .year: String(localized: "1y")
+        case .days30: AppLocale.string("30d")
+        case .days90: AppLocale.string("90d")
+        case .year: AppLocale.string("1y")
         }
     }
 
     var rangeAccessibilityLabel: String {
         switch self {
-        case .days30: String(localized: "30 days")
-        case .days90: String(localized: "90 days")
-        case .year: String(localized: "1 year")
+        case .days30: AppLocale.string("30 days")
+        case .days90: AppLocale.string("90 days")
+        case .year: AppLocale.string("1 year")
         }
     }
 

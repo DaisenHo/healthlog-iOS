@@ -59,7 +59,7 @@ public struct SessionEntry: Decodable, Identifiable, Sendable, Equatable {
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         id = try c.decode(String.self, forKey: .id)
-        device = try c.decodeIfPresent(String.self, forKey: .device) ?? String(localized: "sessions.device.unknown")
+        device = try c.decodeIfPresent(String.self, forKey: .device) ?? AppLocale.string("sessions.device.unknown")
         ipMasked = try c.decodeIfPresent(String.self, forKey: .ipMasked)
         location = try c.decodeIfPresent(String.self, forKey: .location)
         lastActiveAt = try c.decodeIfPresent(Date.self, forKey: .lastActiveAt)

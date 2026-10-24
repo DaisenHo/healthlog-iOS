@@ -372,7 +372,7 @@ public final class CycleStore {
         guard gate.isCycleTrackingAvailable else { return nil }
         let trimmed = label.trimmingCharacters(in: .whitespacesAndNewlines)
         guard (1 ... 40).contains(trimmed.count) else {
-            customSymptomsError = String(localized: "cycle.custom.error.invalid")
+            customSymptomsError = AppLocale.string("cycle.custom.error.invalid")
             return nil
         }
         customSymptomsError = nil
@@ -390,7 +390,7 @@ public final class CycleStore {
     public func updateCustomSymptom(key: String, label: String, icon: RecordPatchField<String> = .unchanged) async -> Bool {
         let trimmed = label.trimmingCharacters(in: .whitespacesAndNewlines)
         guard gate.isCycleTrackingAvailable, (1 ... 40).contains(trimmed.count) else {
-            customSymptomsError = String(localized: "cycle.custom.error.invalid")
+            customSymptomsError = AppLocale.string("cycle.custom.error.invalid")
             return false
         }
         customSymptomsError = nil

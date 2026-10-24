@@ -356,11 +356,11 @@ enum InsightsSpecialPage: String, Hashable, CaseIterable {
     /// The localized pill / page title (reuses the existing web-parity nav keys).
     var title: String {
         switch self {
-        case .mood: String(localized: "Mood")
-        case .medications: String(localized: "Medications")
-        case .workouts: String(localized: "Workouts")
-        case .recovery: String(localized: "Recovery")
-        case .ecg: String(localized: "insights.ecg.title")
+        case .mood: AppLocale.string("Mood")
+        case .medications: AppLocale.string("Medications")
+        case .workouts: AppLocale.string("Workouts")
+        case .recovery: AppLocale.string("Recovery")
+        case .ecg: AppLocale.string("insights.ecg.title")
         }
     }
 }
@@ -377,7 +377,7 @@ enum InsightsTabSelection: Hashable {
     /// The localized pill / page title.
     var title: String {
         switch self {
-        case .overview: String(localized: "Overview")
+        case .overview: AppLocale.string("Overview")
         case let .metric(kind): kind.displayName
         case let .special(page): page.title
         }

@@ -139,7 +139,7 @@ public struct ErrorBanner: View {
 
     private func accessibilityValue(_ error: HLError, errorID: String?) -> String {
         guard let errorID else { return error.userFacingDescription }
-        let idLabel = String(localized: "error.id.label")
+        let idLabel = AppLocale.string("error.id.label")
         return "\(error.userFacingDescription), \(idLabel) \(ServerErrorID.short(errorID))"
     }
 }

@@ -128,12 +128,12 @@ import Foundation
                     // action is undo-able from the Today section.
                     UNNotificationAction(
                         identifier: Self.actionMedicationTaken,
-                        title: String(localized: "Taken"),
+                        title: AppLocale.string("Taken"),
                         options: []
                     ),
                     UNNotificationAction(
                         identifier: Self.actionMedicationSnooze,
-                        title: String(localized: "Snooze 15 min"),
+                        title: AppLocale.string("Snooze 15 min"),
                         options: []
                     ),
                     // "Übersprungen" — flagged destructive so iOS
@@ -144,7 +144,7 @@ import Foundation
                     // far more clearly than a plain action.
                     UNNotificationAction(
                         identifier: Self.actionMedicationSkipped,
-                        title: String(localized: "med.card.action.skipped"),
+                        title: AppLocale.string("med.card.action.skipped"),
                         options: [.destructive]
                     )
                 ],
@@ -156,7 +156,7 @@ import Foundation
                 actions: [
                     UNNotificationAction(
                         identifier: Self.actionBriefingOpen,
-                        title: String(localized: "Open"),
+                        title: AppLocale.string("Open"),
                         options: [.foreground]
                     )
                 ],
@@ -175,17 +175,17 @@ import Foundation
                 actions: [
                     UNNotificationAction(
                         identifier: Self.actionMoodLogNow,
-                        title: String(localized: "Log mood"),
+                        title: AppLocale.string("Log mood"),
                         options: [.foreground]
                     ),
                     UNNotificationAction(
                         identifier: Self.actionMoodSnooze,
-                        title: String(localized: "Snooze 1 h"),
+                        title: AppLocale.string("Snooze 1 h"),
                         options: []
                     ),
                     UNNotificationAction(
                         identifier: Self.actionMoodDismiss,
-                        title: String(localized: "Skip today"),
+                        title: AppLocale.string("Skip today"),
                         options: [.destructive]
                     )
                 ],
@@ -213,7 +213,7 @@ import Foundation
                 actions: [
                     UNNotificationAction(
                         identifier: Self.actionMeasurementDone,
-                        title: String(localized: "measurement.reminder.action.done"),
+                        title: AppLocale.string("measurement.reminder.action.done"),
                         options: [.foreground]
                     )
                 ],

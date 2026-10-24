@@ -142,8 +142,8 @@ struct CycleBBTChart: View {
             ForEach(model.lineSegments) { segment in
                 ForEach(segment.points) { point in
                     LineMark(
-                        x: .value(String(localized: "cycle.bbt.axis.date"), point.date),
-                        y: .value(String(localized: "cycle.bbt.axis.temperature"), point.value),
+                        x: .value(AppLocale.string("cycle.bbt.axis.date"), point.date),
+                        y: .value(AppLocale.string("cycle.bbt.axis.temperature"), point.value),
                         series: .value("segment", segment.id)
                     )
                     .foregroundStyle(HLChartTints.seriesMid)
@@ -152,15 +152,15 @@ struct CycleBBTChart: View {
             }
             ForEach(model.points) { point in
                 PointMark(
-                    x: .value(String(localized: "cycle.bbt.axis.date"), point.date),
-                    y: .value(String(localized: "cycle.bbt.axis.temperature"), point.value)
+                    x: .value(AppLocale.string("cycle.bbt.axis.date"), point.date),
+                    y: .value(AppLocale.string("cycle.bbt.axis.temperature"), point.value)
                 )
                 .foregroundStyle(pointColor(point))
                 .symbol(point.excluded ? .cross : .circle)
                 .symbolSize(point.excluded ? 70 : 42)
             }
             if !rawMode, let ovulation = model.ovulation {
-                RuleMark(x: .value(String(localized: "cycle.bbt.ovulation"), ovulation.date))
+                RuleMark(x: .value(AppLocale.string("cycle.bbt.ovulation"), ovulation.date))
                     .foregroundStyle(HLText.secondary)
                     .lineStyle(StrokeStyle(
                         lineWidth: HLChartGrid.thresholdWidth,
@@ -204,19 +204,19 @@ struct CycleBBTChart: View {
             (
                 x: Double(index),
                 y: point.value,
-                xLabel: point.date.formatted(.dateTime.day().month(.abbreviated))
+                xLabel: point.date.formatted(.dateTime.day().month(.abbreviated).locale(AppLocale.shared.current))
             )
         }
         return HLChartAX.singleSeries(
-            title: String(localized: "cycle.bbt.title"),
-            summary: String(localized: "cycle.bbt.accessibility.summary"),
-            xAxisTitle: String(localized: "cycle.bbt.axis.date"),
-            yAxisTitle: String(localized: "cycle.bbt.axis.temperature"),
-            seriesName: String(localized: "cycle.bbt.series"),
+            title: AppLocale.string("cycle.bbt.title"),
+            summary: AppLocale.string("cycle.bbt.accessibility.summary"),
+            xAxisTitle: AppLocale.string("cycle.bbt.axis.date"),
+            yAxisTitle: AppLocale.string("cycle.bbt.axis.temperature"),
+            seriesName: AppLocale.string("cycle.bbt.series"),
             points: points,
             yValueLabel: { [units] value in
                 guard let suffix = units.transform(for: .bodyTemperature).suffix else {
-                    return String(format: String(localized: "cycle.bbt.value"), value)
+                    return String(format: AppLocale.string("cycle.bbt.value"), value)
                 }
                 return "\(value.formatted(.number.precision(.fractionLength(2)))) \(suffix)"
             }

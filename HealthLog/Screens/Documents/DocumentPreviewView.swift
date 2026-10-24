@@ -79,7 +79,7 @@ struct DocumentPreviewView: View {
             Image(systemName: DocumentKindMeta.icon(document.kind))
                 .font(.hlLargeTitle)
                 .foregroundStyle(HLText.secondary)
-            Text(document.filename ?? String(localized: "documents.card.untitled"))
+            Text(document.filename ?? AppLocale.string("documents.card.untitled"))
                 .font(.hlSubhead)
                 .foregroundStyle(HLText.primary)
                 .lineLimit(2)
@@ -110,7 +110,7 @@ struct DocumentPreviewView: View {
     }
 
     private var previewUnavailableLine: String {
-        let template = String(localized: "documents.detail.previewUnavailable")
+        let template = AppLocale.string("documents.detail.previewUnavailable")
         return String(format: template, DocumentFormat.bytes(document.byteSize))
     }
 

@@ -121,8 +121,8 @@ struct IntakeHistoryRow: View {
     /// future/planned rows.
     private var menuAccessibilityHint: Text {
         canRetroMark
-            ? Text(String(localized: "Tap the menu to edit or delete"))
-            : Text(String(localized: "Tap the menu to delete the entry"))
+            ? Text(AppLocale.string("Tap the menu to edit or delete"))
+            : Text(AppLocale.string("Tap the menu to delete the entry"))
     }
 
     /// v0.6.1.18 Y10.4 — visible trailing menu button so retro-mutate
@@ -139,7 +139,7 @@ struct IntakeHistoryRow: View {
                     onEditTime()
                 } label: {
                     Label(
-                        String(localized: "med.history.edit_time.action"),
+                        AppLocale.string("med.history.edit_time.action"),
                         systemImage: "clock.arrow.circlepath"
                     )
                 }
@@ -153,7 +153,7 @@ struct IntakeHistoryRow: View {
                         onMarkTaken()
                     } label: {
                         Label(
-                            String(localized: "Mark as taken"),
+                            AppLocale.string("Mark as taken"),
                             systemImage: "checkmark.circle"
                         )
                     }
@@ -163,7 +163,7 @@ struct IntakeHistoryRow: View {
                         onMarkSkipped()
                     } label: {
                         Label(
-                            String(localized: "Mark as skipped"),
+                            AppLocale.string("Mark as skipped"),
                             systemImage: "xmark.circle"
                         )
                     }
@@ -178,7 +178,7 @@ struct IntakeHistoryRow: View {
                 onDelete()
             } label: {
                 Label(
-                    String(localized: "Delete entry"),
+                    AppLocale.string("Delete entry"),
                     systemImage: "trash"
                 )
             }
@@ -198,15 +198,15 @@ struct IntakeHistoryRow: View {
     /// retro-markable rows, delete-only on future/planned rows.
     private var menuButtonAccessibilityLabel: Text {
         canRetroMark
-            ? Text(String(localized: "Edit or delete entry"))
-            : Text(String(localized: "Delete entry"))
+            ? Text(AppLocale.string("Edit or delete entry"))
+            : Text(AppLocale.string("Delete entry"))
     }
 
     private var timestamp: String {
         let date = event.takenAt ?? event.scheduledFor
         // M3 — date part keeps the locale order; the clock honours the user's
         // time-format preference via the central `HLTimeFormat` helper.
-        let datePart = date.formatted(.dateTime.day().month(.abbreviated))
+        let datePart = date.formatted(.dateTime.day().month(.abbreviated).locale(AppLocale.shared.current))
         return "\(datePart), \(HLTimeFormat.time(date))"
     }
 
@@ -224,22 +224,22 @@ struct IntakeHistoryRow: View {
             Image(systemName: "xmark.circle.fill")
                 .font(.hlIcon(HLIconSize.rowAction))
                 .foregroundStyle(HLText.tertiary)
-                .accessibilityLabel(String(localized: "medications.history.intake.skipped_a11y"))
+                .accessibilityLabel(AppLocale.string("medications.history.intake.skipped_a11y"))
         } else if event.takenAt != nil {
             Image(systemName: "checkmark.circle.fill")
                 .font(.hlIcon(HLIconSize.rowAction))
                 .foregroundStyle(HLColor.statusOK)
-                .accessibilityLabel(String(localized: "medications.history.intake.taken_a11y"))
+                .accessibilityLabel(AppLocale.string("medications.history.intake.taken_a11y"))
         } else if event.scheduledFor > now {
             Image(systemName: "clock")
                 .font(.hlIcon(HLIconSize.rowAction))
                 .foregroundStyle(HLText.secondary)
-                .accessibilityLabel(String(localized: "medications.history.intake.scheduled_a11y"))
+                .accessibilityLabel(AppLocale.string("medications.history.intake.scheduled_a11y"))
         } else {
             Image(systemName: "circle.dotted")
                 .font(.hlIcon(HLIconSize.rowAction))
                 .foregroundStyle(HLText.tertiary)
-                .accessibilityLabel(String(localized: "medications.history.intake.pending_a11y"))
+                .accessibilityLabel(AppLocale.string("medications.history.intake.pending_a11y"))
         }
     }
 
@@ -280,7 +280,7 @@ private struct RetroMutateContextMenu: ViewModifier {
                     onEditTime()
                 } label: {
                     Label(
-                        String(localized: "med.history.edit_time.action"),
+                        AppLocale.string("med.history.edit_time.action"),
                         systemImage: "clock.arrow.circlepath"
                     )
                 }
@@ -291,7 +291,7 @@ private struct RetroMutateContextMenu: ViewModifier {
                         onMarkTaken()
                     } label: {
                         Label(
-                            String(localized: "Mark as taken"),
+                            AppLocale.string("Mark as taken"),
                             systemImage: "checkmark.circle"
                         )
                     }
@@ -301,7 +301,7 @@ private struct RetroMutateContextMenu: ViewModifier {
                         onMarkSkipped()
                     } label: {
                         Label(
-                            String(localized: "Mark as skipped"),
+                            AppLocale.string("Mark as skipped"),
                             systemImage: "xmark.circle"
                         )
                     }
@@ -312,7 +312,7 @@ private struct RetroMutateContextMenu: ViewModifier {
                 onDelete()
             } label: {
                 Label(
-                    String(localized: "Delete entry"),
+                    AppLocale.string("Delete entry"),
                     systemImage: "trash"
                 )
             }

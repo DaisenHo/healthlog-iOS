@@ -113,25 +113,23 @@ public enum StatistikModeBriefingService {
         calendar: Calendar
     ) -> String {
         let date = now.formatted(
-            Date.FormatStyle(date: .long, time: .omitted, locale: Locale.current)
+            Date.FormatStyle(date: .long, time: .omitted, locale: AppLocale.shared.current)
         )
         var pieces: [String] = [headline(date: date)]
 
         if !measurements.isEmpty {
             let topKindName = topKindLabel(measurements: measurements)
             pieces.append(
-                String(localized: "briefing.measurements \(measurements.count) \(topKindName)")
+                AppLocale.string("briefing.measurements \(measurements.count) \(topKindName)")
             )
         } else {
-            pieces.append(String(localized: "briefing.measurements.none"))
+            pieces.append(AppLocale.string("briefing.measurements.none"))
         }
 
         if let compliance, compliance.scheduledToday > 0 {
             let pct = Int(((Double(compliance.takenToday) / Double(compliance.scheduledToday)) * 100).rounded())
             pieces.append(
-                String(
-                    localized: "briefing.compliance.line \(compliance.takenToday) \(compliance.scheduledToday) \(pct)"
-                )
+                AppLocale.string("briefing.compliance.line \(compliance.takenToday) \(compliance.scheduledToday) \(pct)")
             )
         }
 
@@ -146,10 +144,10 @@ public enum StatistikModeBriefingService {
             let avgStr = String(format: "%.1f", avg)
             let isToday = calendar.isDateInToday(latestMood.entry.recordedAt)
             let prefix = isToday
-                ? String(localized: "briefing.mood.today")
-                : String(localized: "briefing.mood.latest")
+                ? AppLocale.string("briefing.mood.today")
+                : AppLocale.string("briefing.mood.latest")
             pieces.append(
-                String(localized: "briefing.mood.line \(prefix) \(latestMood.score) \(avgStr)")
+                AppLocale.string("briefing.mood.line \(prefix) \(latestMood.score) \(avgStr)")
             )
         }
 
@@ -157,7 +155,7 @@ public enum StatistikModeBriefingService {
     }
 
     private static func headline(date: String) -> String {
-        String(localized: "briefing.today \(date)")
+        AppLocale.string("briefing.today \(date)")
     }
 
     private static func topKindLabel(measurements: [Measurement]) -> String {
@@ -205,7 +203,7 @@ public enum StatistikModeBriefingService {
         let detail: String = if let latestValue {
             directionArrow.map { "\($0) \(latestValue)" } ?? latestValue
         } else {
-            String(localized: "briefing.entries \(bucket.samples)")
+            AppLocale.string("briefing.entries \(bucket.samples)")
         }
         return KeyFinding(
             tone: .info,
@@ -219,8 +217,8 @@ public enum StatistikModeBriefingService {
 
     private static func complianceFinding(compliance: ComplianceSnapshotInput) -> KeyFinding {
         let pct = Int(((Double(compliance.takenToday) / Double(compliance.scheduledToday)) * 100).rounded())
-        let headline = String(localized: "briefing.compliance.headline \(pct)")
-        let detail = String(localized: "briefing.compliance.detail \(compliance.takenToday) \(compliance.scheduledToday)")
+        let headline = AppLocale.string("briefing.compliance.headline \(pct)")
+        let detail = AppLocale.string("briefing.compliance.detail \(compliance.takenToday) \(compliance.scheduledToday)")
         return KeyFinding(
             tone: pct >= 80 ? .good : .info,
             headline: headline,
@@ -236,8 +234,8 @@ public enum StatistikModeBriefingService {
         guard let latest = MoodEntry.scored(entries).max(by: { $0.entry.recordedAt < $1.entry.recordedAt }),
               let avg = MoodEntry.averageScore(of: entries) else { return nil }
         let avgStr = String(format: "%.1f", avg)
-        let headline = String(localized: "briefing.mood.headline \(latest.score)")
-        let detail = String(localized: "briefing.mood.detail \(avgStr)")
+        let headline = AppLocale.string("briefing.mood.headline \(latest.score)")
+        let detail = AppLocale.string("briefing.mood.detail \(avgStr)")
         return KeyFinding(
             tone: .info,
             headline: headline,
@@ -249,14 +247,14 @@ public enum StatistikModeBriefingService {
     }
 
     private static func healthScoreFinding(score: HealthScore) -> KeyFinding {
-        let headline = String(localized: "briefing.healthscore.headline \(score.score)")
+        let headline = AppLocale.string("briefing.healthscore.headline \(score.score)")
         let detail: String
         if let delta = score.delta {
             let sign = delta >= 0 ? "+" : ""
             let deltaText = "\(sign)\(delta)"
-            detail = String(localized: "briefing.healthscore.delta \(deltaText)")
+            detail = AppLocale.string("briefing.healthscore.delta \(deltaText)")
         } else {
-            detail = String(localized: "briefing.healthscore.weekly")
+            detail = AppLocale.string("briefing.healthscore.weekly")
         }
         return KeyFinding(
             tone: .info,

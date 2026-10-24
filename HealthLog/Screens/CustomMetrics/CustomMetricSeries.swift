@@ -104,21 +104,21 @@ enum CustomMetricSeries {
 extension CustomMetricSeries.Range: HLRangeOption {
     var label: String {
         switch self {
-        case .day: String(localized: "labs.range.day.short")
-        case .week: String(localized: "labs.range.week.short")
-        case .month: String(localized: "labs.range.month.short")
-        case .year: String(localized: "labs.range.year.short")
-        case .all: String(localized: "labs.range.all.short")
+        case .day: AppLocale.string("labs.range.day.short")
+        case .week: AppLocale.string("labs.range.week.short")
+        case .month: AppLocale.string("labs.range.month.short")
+        case .year: AppLocale.string("labs.range.year.short")
+        case .all: AppLocale.string("labs.range.all.short")
         }
     }
 
     var rangeAccessibilityLabel: String {
         switch self {
-        case .day: String(localized: "labs.range.day")
-        case .week: String(localized: "labs.range.week")
-        case .month: String(localized: "labs.range.month")
-        case .year: String(localized: "labs.range.year")
-        case .all: String(localized: "labs.range.all")
+        case .day: AppLocale.string("labs.range.day")
+        case .week: AppLocale.string("labs.range.week")
+        case .month: AppLocale.string("labs.range.month")
+        case .year: AppLocale.string("labs.range.year")
+        case .all: AppLocale.string("labs.range.all")
         }
     }
 }

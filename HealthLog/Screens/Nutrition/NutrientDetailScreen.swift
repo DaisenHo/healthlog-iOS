@@ -101,9 +101,9 @@ struct NutrientDetailScreen: View {
         let directionKey = reference.direction == .upperGuidance
             ? "nutrients.reference.direction.upper"
             : "nutrients.reference.direction.target"
-        let direction = String(localized: String.LocalizationValue(directionKey))
+        let direction = AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(directionKey)))
         guard let kindKey else { return direction }
-        let kind = String(localized: String.LocalizationValue(kindKey))
+        let kind = AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(kindKey)))
         return "\(direction) (\(kind))"
     }
 

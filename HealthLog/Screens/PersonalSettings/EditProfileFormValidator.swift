@@ -10,10 +10,10 @@ enum EditProfileFormValidator {
     static func displayNameError(for displayName: String) -> String? {
         let trimmed = displayName.trimmingCharacters(in: .whitespacesAndNewlines)
         if trimmed.isEmpty {
-            return String(localized: "Please enter a display name.")
+            return AppLocale.string("Please enter a display name.")
         }
         if trimmed.count > 50 {
-            return String(localized: "50 characters max.")
+            return AppLocale.string("50 characters max.")
         }
         return nil
     }
@@ -22,10 +22,10 @@ enum EditProfileFormValidator {
         let trimmed = heightCm.trimmingCharacters(in: .whitespaces)
         guard !trimmed.isEmpty else { return nil }
         guard let parsed = Int(trimmed) else {
-            return String(localized: "Please enter a whole number.")
+            return AppLocale.string("Please enter a whole number.")
         }
         if !(50 ... 300).contains(parsed) {
-            return String(localized: "Value between 50 and 300 cm.")
+            return AppLocale.string("Value between 50 and 300 cm.")
         }
         return nil
     }
@@ -50,7 +50,7 @@ enum EditProfileFormValidator {
         let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
         if trimmed.count > identityTextMaxLength {
-            return String(localized: "120 characters max.")
+            return AppLocale.string("120 characters max.")
         }
         return nil
     }
@@ -66,7 +66,7 @@ enum EditProfileFormValidator {
         guard !trimmed.isEmpty else { return nil }
         let compact = trimmed.replacingOccurrences(of: " ", with: "")
         if compact.count > 16 {
-            return String(localized: "Please check the insurance number.")
+            return AppLocale.string("Please check the insurance number.")
         }
         return nil
     }
@@ -83,7 +83,7 @@ enum EditProfileFormValidator {
         let compact = trimmed.replacingOccurrences(of: " ", with: "")
         let isNineDigits = compact.count == 9 && compact.allSatisfy(\.isNumber)
         if !isNineDigits {
-            return String(localized: "The insurer ID must be 9 digits.")
+            return AppLocale.string("The insurer ID must be 9 digits.")
         }
         return nil
     }

@@ -43,7 +43,7 @@ extension OnboardingFlow {
             fraction = total > 0 ? Double(position) / Double(total) : 0
             label = Self.label(for: step)
             value = String(
-                format: String(localized: "onboarding.progress.position"),
+                format: AppLocale.string("onboarding.progress.position"),
                 position,
                 total
             )
@@ -72,18 +72,18 @@ extension OnboardingFlow {
 
         private static func label(for step: OnboardingFlow.Step) -> String {
             switch step {
-            case .welcome: String(localized: "onboarding.progress.welcome")
-            case .mode: String(localized: "onboarding.progress.mode")
-            case .serverURL: String(localized: "onboarding.progress.serverURL")
-            case .auth: String(localized: "onboarding.progress.auth")
-            case .checkingCompletion: String(localized: "onboarding.progress.checkingCompletion")
-            case .completionUnavailable: String(localized: "onboarding.progress.completionUnavailable")
-            case .healthKit: String(localized: "onboarding.progress.healthKit")
-            case .notifications: String(localized: "onboarding.progress.notifications")
-            case .aiSource: String(localized: "onboarding.progress.aiSource")
-            case .anamnesis: String(localized: "onboarding.progress.anamnesis")
-            case .baselineProfile: String(localized: "onboarding.progress.baselineProfile")
-            case .done: String(localized: "Done")
+            case .welcome: AppLocale.string("onboarding.progress.welcome")
+            case .mode: AppLocale.string("onboarding.progress.mode")
+            case .serverURL: AppLocale.string("onboarding.progress.serverURL")
+            case .auth: AppLocale.string("onboarding.progress.auth")
+            case .checkingCompletion: AppLocale.string("onboarding.progress.checkingCompletion")
+            case .completionUnavailable: AppLocale.string("onboarding.progress.completionUnavailable")
+            case .healthKit: AppLocale.string("onboarding.progress.healthKit")
+            case .notifications: AppLocale.string("onboarding.progress.notifications")
+            case .aiSource: AppLocale.string("onboarding.progress.aiSource")
+            case .anamnesis: AppLocale.string("onboarding.progress.anamnesis")
+            case .baselineProfile: AppLocale.string("onboarding.progress.baselineProfile")
+            case .done: AppLocale.string("Done")
             }
         }
     }

@@ -108,7 +108,7 @@ enum DidITakeMedicationCopy {
         switch verdict {
         case let .taken(at):
             if let at {
-                let time = at.formatted(date: .omitted, time: .shortened)
+                let time = at.formatted(Date.FormatStyle(date: .omitted, time: .shortened, locale: AppLocale.shared.current))
                 return LocalizedStringResource(
                     "intents.didITake.taken.at",
                     defaultValue: "Yes, you took \(name) at \(time).",

@@ -90,11 +90,11 @@ struct VascularDeltaRingCard: View {
     /// line" — so the ring reads "3 / yr above". Honest, whole-number framing.
     private var deltaUnit: String {
         guard let years = dto.value?.deltaYears, years.rounded() != 0 else {
-            return String(localized: "yr in line")
+            return AppLocale.string("yr in line")
         }
         return years < 0
-            ? String(localized: "yr below")
-            : String(localized: "yr above")
+            ? AppLocale.string("yr below")
+            : AppLocale.string("yr above")
     }
 
     private var accessibilityLabel: String {

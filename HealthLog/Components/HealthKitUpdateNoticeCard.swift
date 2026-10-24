@@ -122,21 +122,21 @@ struct HealthKitUpdateNoticeCard: View {
     private func title(for variant: HealthKitUpdateNotice.Variant) -> String {
         switch variant {
         case .connect:
-            String(localized: "Connect to Apple Health")
+            AppLocale.string("Connect to Apple Health")
         case .newTypes:
-            String(localized: "New: ECG and mood can sync")
+            AppLocale.string("New: ECG and mood can sync")
         }
     }
 
     private func subtitle(for variant: HealthKitUpdateNotice.Variant) -> String {
         switch variant {
         case .connect:
-            String(localized: """
+            AppLocale.string("""
             HealthLog has no access to your Apple Health data on this device. \
             Connect it so your values arrive automatically.
             """)
         case .newTypes:
-            String(localized: """
+            AppLocale.string("""
             This update can also sync ECGs and mood from Apple Health. \
             Allow access to turn both on.
             """)
@@ -175,9 +175,9 @@ struct HealthKitUpdateNoticeCard: View {
 
     private var connectButtonLabel: String {
         if case .denied = readiness.state {
-            return String(localized: "Open settings")
+            return AppLocale.string("Open settings")
         }
-        return String(localized: "Connect")
+        return AppLocale.string("Connect")
     }
 
     /// The ✕: per install, permanent, and deliberately its own accessibility

@@ -32,7 +32,7 @@ struct EmptyMedicationsState: View {
             message: "Add your first medication. Reminders, compliance heatmap and history follow automatically."
         ) {
             HLButton(
-                String(localized: "Add medication"),
+                AppLocale.string("Add medication"),
                 icon: "plus",
                 variant: .restrained,
                 action: onAdd

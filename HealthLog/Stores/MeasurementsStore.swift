@@ -422,7 +422,7 @@ public final class MeasurementsStore {
         // Queue undo BEFORE the network round-trip so a fast double-tap can
         // recover even while the DELETE is still in flight.
         undoCoordinator?.enqueue(
-            message: String(localized: "undo.measurement.removed")
+            message: AppLocale.string("undo.measurement.removed")
         ) { [weak self] in
             await self?.restoreDeletedMeasurement(removed)
         }

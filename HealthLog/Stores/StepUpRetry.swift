@@ -70,6 +70,6 @@ public final class StepUpRetry {
     /// The sentence a card shows while the sheet asks for proof (and after it
     /// was closed without one).
     public nonisolated static var requiredMessage: String {
-        String(localized: "stepUp.record.required")
+        AppLocale.string("stepUp.record.required")
     }
 }

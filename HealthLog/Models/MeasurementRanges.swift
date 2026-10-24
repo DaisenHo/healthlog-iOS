@@ -177,7 +177,7 @@ public enum MeasurementRanges {
         case .ok, .empty:
             return nil
         case .notANumber:
-            return String(localized: "Please enter a number.")
+            return AppLocale.string("Please enter a number.")
         case .belowMinimum, .aboveMaximum:
             let unit = kind.unit
             let rangeText: String
@@ -190,7 +190,7 @@ public enum MeasurementRanges {
                 return nil
             }
             return String(
-                format: String(localized: "Value outside the expected range (%@)."),
+                format: AppLocale.string("Value outside the expected range (%@)."),
                 rangeText
             )
         }

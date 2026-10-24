@@ -241,10 +241,10 @@ struct WorkoutDetailView: View {
     /// 178 bpm." so VoiceOver users get a description instead of drowning in
     /// the chart axis. L1 — catalog copy (was a fixed German sentence).
     static func hrAccessibilityLabel(samples: [WorkoutHRSample]) -> String {
-        guard !samples.isEmpty else { return String(localized: "workout.hr.a11y.unavailable") }
+        guard !samples.isEmpty else { return AppLocale.string("workout.hr.a11y.unavailable") }
         let min = Int((samples.map(\.bpm).min() ?? 0).rounded())
         let max = Int((samples.map(\.bpm).max() ?? 0).rounded())
-        return String(localized: "workout.hr.a11y.summary \(samples.count) \(min) \(max)")
+        return AppLocale.string("workout.hr.a11y.summary \(samples.count) \(min) \(max)")
     }
 
     // MARK: - Route map section (v0.5.4-SP5)
@@ -284,7 +284,7 @@ struct WorkoutDetailView: View {
     }
 
     static func routeAccessibilityLabel(count: Int) -> String {
-        String(localized: "workouts.detail.route.a11y \(count)")
+        AppLocale.string("workouts.detail.route.a11y \(count)")
     }
 
     // MARK: - Source card
@@ -333,21 +333,21 @@ struct WorkoutDetailView: View {
     /// hands back the catalogue key for `LocalizedStringKey` consumers.
     static func sourceLabel(_ raw: String) -> String {
         raw.uppercased() == "MANUAL"
-            ? String(localized: "Manual")
+            ? AppLocale.string("Manual")
             : SourcePriorityRow.displayLabel(forSource: raw)
     }
 
-    private static let heroDateFormatter: DateFormatter = {
+    private static var heroDateFormatter: DateFormatter {
         let f = DateFormatter()
         // Build 8 (8.6): follow the running UI locale instead of a hard `de_DE`
         // pin, so an English build renders an English full date instead of a
         // forced-German one. The string carries no German prefix, so no catalog
         // key is needed.
-        f.locale = Locale.current
+        f.locale = AppLocale.shared.current
         f.dateStyle = .full
         f.timeStyle = .short
         return f
-    }()
+    }
 }
 
 // MARK: - Stat tile
@@ -428,7 +428,7 @@ struct HRChart: View {
                 value: \.bpm
             ) { sample in
                 HLScrubCallout(
-                    title: sample.timestamp.formatted(.dateTime.hour().minute()),
+                    title: sample.timestamp.formatted(.dateTime.hour().minute().locale(AppLocale.shared.current)),
                     value: "\(Int(sample.bpm.rounded()))",
                     unit: "bpm"
                 )
@@ -458,7 +458,10 @@ struct HRChart: View {
         }
         .hlChartScrub($selectedDate) { date in
             guard let nearest = HLChartScrubber.nearest(to: date, in: samples, date: \.timestamp) else { return nil }
-            return String(localized: "\(nearest.timestamp.formatted(.dateTime.hour().minute())): \(Int(nearest.bpm.rounded())) bpm")
+            return AppLocale
+                .string(
+                    "\(nearest.timestamp.formatted(.dateTime.hour().minute().locale(AppLocale.shared.current))): \(Int(nearest.bpm.rounded())) bpm"
+                )
         }
         // v0.5.4 — ChartAXCoverageTests gate: every Chart must wire an
         // `AXChartDescriptor` so VoiceOver can audio-graph the series.
@@ -476,22 +479,20 @@ struct HRChart: View {
         }
         let summary: String = {
             if samples.isEmpty {
-                return String(localized: "No heart rate data")
+                return AppLocale.string("No heart rate data")
             }
             let count = samples.count
             if let avg, avg > 0 {
-                return String(
-                    localized: "workout.hr.chart.summary \(count) \(Int(avg.rounded()))"
-                )
+                return AppLocale.string("workout.hr.chart.summary \(count) \(Int(avg.rounded()))")
             }
-            return String(localized: "\(count) heart rate values")
+            return AppLocale.string("\(count) heart rate values")
         }()
         return HLChartAX.singleSeries(
-            title: String(localized: "Heart rate"),
+            title: AppLocale.string("Heart rate"),
             summary: summary,
-            xAxisTitle: String(localized: "Time"),
-            yAxisTitle: String(localized: "bpm"),
-            seriesName: String(localized: "Heart rate"),
+            xAxisTitle: AppLocale.string("Time"),
+            yAxisTitle: AppLocale.string("bpm"),
+            seriesName: AppLocale.string("Heart rate"),
             points: points,
             yValueLabel: { v in "\(Int(v.rounded())) bpm" }
         )

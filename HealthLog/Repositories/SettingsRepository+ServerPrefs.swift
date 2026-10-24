@@ -92,6 +92,7 @@ public struct GlucoseUnitDTO: Codable, Sendable, Equatable {
 /// not break the profile/settings load (five established precedents).
 public struct AuthMeServerPrefs: Decodable, Sendable, Equatable {
     public let avatarUrl: String?
+    public let locale: String?
     /// `"metric" | "imperial"` — resolved binary (never the raw DB `null`).
     public let unitPreference: String?
     /// `"mg/dL" | "mmol/L" | nil` — the RAW account column (`/me` sends
@@ -161,9 +162,11 @@ public struct AuthMeServerPrefs: Decodable, Sendable, Equatable {
         lastReportPracticeName: String? = nil,
         glucoseUnitPresent: Bool? = nil,
         timezone: String? = nil,
-        medicationReminderDelivery: MedicationReminderServerDelivery? = nil
+        medicationReminderDelivery: MedicationReminderServerDelivery? = nil,
+        locale: String? = nil
     ) {
         self.avatarUrl = avatarUrl
+        self.locale = locale
         self.unitPreference = unitPreference
         self.glucoseUnit = glucoseUnit
         self.glucoseUnitPresent = glucoseUnitPresent ?? (glucoseUnit != nil)
@@ -178,6 +181,7 @@ public struct AuthMeServerPrefs: Decodable, Sendable, Equatable {
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         avatarUrl = try c.decodeIfPresent(String.self, forKey: .avatarUrl)
+        locale = try? c.decodeIfPresent(String.self, forKey: .locale)
         unitPreference = try c.decodeIfPresent(String.self, forKey: .unitPreference)
         glucoseUnit = try c.decodeIfPresent(String.self, forKey: .glucoseUnit)
         glucoseUnitPresent = c.contains(.glucoseUnit)
@@ -197,7 +201,7 @@ public struct AuthMeServerPrefs: Decodable, Sendable, Equatable {
     }
 
     private enum CodingKeys: String, CodingKey {
-        case avatarUrl, unitPreference, glucoseUnit, disableCoach, cycleTrackingEnabled
+        case avatarUrl, unitPreference, glucoseUnit, disableCoach, cycleTrackingEnabled, locale
         case reportSelection, lastReportPracticeName, timezone, notificationPrefs
     }
 

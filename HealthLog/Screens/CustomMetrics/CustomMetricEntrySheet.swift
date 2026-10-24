@@ -168,7 +168,7 @@ struct CustomMetricEntrySheet: View {
         let trimmedNote = note.trimmingCharacters(in: .whitespaces)
         let resolvedNote: String? = trimmedNote.isEmpty ? nil : trimmedNote
         if trimmedNote.count > CustomMetricValidation.noteMaxLength {
-            inlineError = String(localized: "customMetric.validation.noteTooLong")
+            inlineError = AppLocale.string("customMetric.validation.noteTooLong")
             return
         }
         let iso = ISO8601DateFormatter.fractional.string(from: measuredAt)
@@ -189,7 +189,7 @@ struct CustomMetricEntrySheet: View {
         if ok {
             dismiss()
         } else {
-            inlineError = store.lastError ?? String(localized: "customMetric.save.failed")
+            inlineError = store.lastError ?? AppLocale.string("customMetric.save.failed")
         }
     }
 }

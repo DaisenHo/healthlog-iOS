@@ -13,23 +13,23 @@ enum SyncActivityCopy {
 
     /// "Zuletzt synchronisiert vor 5 Min." / "…, im Hintergrund", or
     /// "Noch nicht synchronisiert" when nothing has synced yet.
-    static func lastSyncLine(_ activity: SyncActivity?, now: Date, locale: Locale = .current) -> String {
-        guard let activity else { return String(localized: "sync.activity.never") }
+    static func lastSyncLine(_ activity: SyncActivity?, now: Date, locale: Locale = AppLocale.shared.current) -> String {
+        guard let activity else { return AppLocale.string("sync.activity.never") }
         let relative = relativeTime(activity.at, now: now, style: .short, locale: locale)
         return switch activity.channel {
-        case .foreground: String(localized: "sync.activity.lastSynced \(relative)")
-        case .background: String(localized: "sync.activity.lastSyncedBackground \(relative)")
+        case .foreground: AppLocale.string("sync.activity.lastSynced \(relative)")
+        case .background: AppLocale.string("sync.activity.lastSyncedBackground \(relative)")
         }
     }
 
     /// VoiceOver form: "Synchronisiert vor 5 Minuten" /
     /// "Im Hintergrund synchronisiert vor 5 Minuten".
-    static func lastSyncAccessibility(_ activity: SyncActivity?, now: Date, locale: Locale = .current) -> String {
-        guard let activity else { return String(localized: "sync.activity.never") }
+    static func lastSyncAccessibility(_ activity: SyncActivity?, now: Date, locale: Locale = AppLocale.shared.current) -> String {
+        guard let activity else { return AppLocale.string("sync.activity.never") }
         let relative = relativeTime(activity.at, now: now, style: .full, locale: locale)
         return switch activity.channel {
-        case .foreground: String(localized: "sync.activity.a11y.synced \(relative)")
-        case .background: String(localized: "sync.activity.a11y.syncedBackground \(relative)")
+        case .foreground: AppLocale.string("sync.activity.a11y.synced \(relative)")
+        case .background: AppLocale.string("sync.activity.a11y.syncedBackground \(relative)")
         }
     }
 
@@ -41,21 +41,21 @@ enum SyncActivityCopy {
     static func attention(_ attention: SyncAttention, now _: Date, locale _: Locale = .current) -> String {
         switch attention {
         case let .failedWrites(count):
-            String(localized: "sync.activity.attention.failedWrites \(count)")
+            AppLocale.string("sync.activity.attention.failedWrites \(count)")
         case .failed:
-            String(localized: "sync.activity.attention.failed")
+            AppLocale.string("sync.activity.attention.failed")
         case let .queued(count):
-            String(localized: "sync.activity.attention.queued \(count)")
+            AppLocale.string("sync.activity.attention.queued \(count)")
         case .stale:
-            String(localized: "sync.activity.attention.stale")
+            AppLocale.string("sync.activity.attention.stale")
         }
     }
 
     /// VoiceOver label of the slot next to the avatar.
     static func slot(_ glyph: SyncSlotGlyph, now: Date) -> String {
         switch glyph {
-        case .syncing: String(localized: "sync.status.syncing")
-        case .done: String(localized: "sync.activity.a11y.done")
+        case .syncing: AppLocale.string("sync.status.syncing")
+        case .done: AppLocale.string("sync.activity.a11y.done")
         case let .attention(state): attention(state, now: now)
         }
     }
@@ -67,7 +67,7 @@ enum SyncActivityCopy {
         locale: Locale
     ) -> String {
         if abs(now.timeIntervalSince(date)) < justNowWindow {
-            return String(localized: "sync.activity.justNow")
+            return AppLocale.string("sync.activity.justNow")
         }
         let formatter = RelativeDateTimeFormatter()
         formatter.locale = locale

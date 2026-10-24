@@ -108,7 +108,7 @@ struct SettingsExportScreen: View {
         } else {
             HLCloudDerivedPlaceholder(
                 variant: .inline,
-                surfaceName: String(localized: "the per-area CSV exports"),
+                surfaceName: AppLocale.string("the per-area CSV exports"),
                 onConnect: { authStore.beginServerPairing() }
             )
         }
@@ -182,7 +182,7 @@ private struct FullBackupExportCard: View {
                 // Karten-Aktionen auf einem Screen; „höchstens ein `.primary`
                 // pro Screen" heißt hier: beide `.secondary`.
                 HLButton(
-                    String(localized: "export.create.button"),
+                    AppLocale.string("export.create.button"),
                     icon: "square.and.arrow.down",
                     variant: .secondary,
                     isLoading: isWorking
@@ -239,7 +239,7 @@ private struct FullBackupExportCard: View {
                 ? StepUpRetry.requiredMessage
                 : error.userFacingDescription
         } catch {
-            errorMessage = String(localized: "Couldn't export. Please try again.")
+            errorMessage = AppLocale.string("Couldn't export. Please try again.")
         }
     }
 }
@@ -281,12 +281,12 @@ private struct EncryptedBackupExportCard: View {
             footer: "export.encrypted.footer"
         ) {
             VStack(alignment: .leading, spacing: HLSpace.md) {
-                SecureField(String(localized: "export.encrypted.passphrase.placeholder"), text: $passphrase)
+                SecureField(AppLocale.string("export.encrypted.passphrase.placeholder"), text: $passphrase)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .accessibilityIdentifier("export.encrypted.passphrase")
 
-                SecureField(String(localized: "export.encrypted.confirm.placeholder"), text: $confirmPassphrase)
+                SecureField(AppLocale.string("export.encrypted.confirm.placeholder"), text: $confirmPassphrase)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .accessibilityIdentifier("export.encrypted.confirm")
@@ -298,7 +298,7 @@ private struct EncryptedBackupExportCard: View {
                 }
 
                 HLButton(
-                    String(localized: "export.encrypted.button"),
+                    AppLocale.string("export.encrypted.button"),
                     icon: "lock.fill",
                     variant: .secondary,
                     isLoading: isWorking
@@ -360,7 +360,7 @@ private struct EncryptedBackupExportCard: View {
                 ? StepUpRetry.requiredMessage
                 : error.userFacingDescription
         } catch {
-            errorMessage = String(localized: "Couldn't export. Please try again.")
+            errorMessage = AppLocale.string("Couldn't export. Please try again.")
         }
     }
 }
@@ -471,7 +471,7 @@ private struct DomainCSVExportCard: View {
             // never a crash or a silent swallow.
             errorMessage = error.userFacingDescription
         } catch {
-            errorMessage = String(localized: "Couldn't export. Please try again.")
+            errorMessage = AppLocale.string("Couldn't export. Please try again.")
         }
     }
 }

@@ -92,14 +92,14 @@ public extension UnifiedSharingStore {
 
     private func produceLink(_ context: OutputContext) async {
         guard let body = shareLinkBody() else {
-            outcome = .failed(String(localized: "sharing.unified.error.link"))
+            outcome = .failed(AppLocale.string("sharing.unified.error.link"))
             return
         }
         if await context.linkStore.create(body) {
             didMintLink = true
             outcome = .produced
         } else {
-            outcome = .failed(context.linkStore.error ?? String(localized: "sharing.unified.error.link"))
+            outcome = .failed(context.linkStore.error ?? AppLocale.string("sharing.unified.error.link"))
         }
     }
 
@@ -141,7 +141,7 @@ public extension UnifiedSharingStore {
         guard context.localReportStore.pdfURL != nil, context.localReportStore.error == nil else {
             outcome = .failed(
                 context.localReportStore.error?.userFacingDescription
-                    ?? String(localized: "sharing.unified.error.pdf")
+                    ?? AppLocale.string("sharing.unified.error.pdf")
             )
             return
         }
@@ -154,7 +154,7 @@ public extension UnifiedSharingStore {
 
     private func produceZIP(_ context: OutputContext) async {
         guard let request = packageRequest() else {
-            outcome = .failed(String(localized: "sharing.unified.error.zip"))
+            outcome = .failed(AppLocale.string("sharing.unified.error.zip"))
             return
         }
         do {
@@ -167,7 +167,7 @@ public extension UnifiedSharingStore {
             }
             outcome = .failed(
                 (error as? HLError)?.userFacingDescription
-                    ?? String(localized: "sharing.unified.error.zip")
+                    ?? AppLocale.string("sharing.unified.error.zip")
             )
         }
     }
@@ -192,13 +192,13 @@ public extension UnifiedSharingStore {
                 artifactSource = assembly.source
                 outcome = .produced
             } catch {
-                outcome = .failed(String(localized: "sharing.unified.error.fhir"))
+                outcome = .failed(AppLocale.string("sharing.unified.error.fhir"))
             }
         case let .empty(hasSavedSelection):
             emptyBundleHasSelection = hasSavedSelection
             outcome = .idle
         case .unavailable:
-            outcome = .failed(String(localized: "sharing.unified.error.fhir"))
+            outcome = .failed(AppLocale.string("sharing.unified.error.fhir"))
         }
     }
 }

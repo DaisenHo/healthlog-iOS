@@ -590,7 +590,8 @@ public final class AppContainer {
             cycleRepo: cycleRepo,
             backend: backendAvailability,
             authenticatedSessionRegistry: authenticatedSessionRegistry,
-            userIDProvider: { [keychain] in keychain.getString(forKey: KeychainKey.userID) }
+            userIDProvider: { [keychain] in keychain.getString(forKey: KeychainKey.userID) },
+            accountLanguageKeychain: keychain
         )
         // v0.15 W-FRONTDOORS — app-wide Vorsorge reminder store (SWR-deduped),
         // shared by the Home next-due tile + the manage screen.

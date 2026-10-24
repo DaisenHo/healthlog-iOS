@@ -129,7 +129,7 @@ struct FamilyHistoryEditorSheet: View {
         if succeeded {
             dismiss()
         } else {
-            saveError = store.lastError ?? String(localized: "familyHistory.save.failed")
+            saveError = store.lastError ?? AppLocale.string("familyHistory.save.failed")
         }
     }
 

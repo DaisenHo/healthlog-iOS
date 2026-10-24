@@ -54,21 +54,18 @@ struct HeroItemKindSelectionSheet: View {
             }
             .hlScreenBackground()
             .hlScrollEdgeSoft()
-            .navigationTitle(Text(String(
-                localized: "Today highlights",
-                comment: "Today hero item picker title"
-            )))
+            .navigationTitle(Text(AppLocale.string(LocalizedStringResource("Today highlights", comment: "Today hero item picker title"))))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(String(localized: "Done")) {
+                    Button(AppLocale.string("Done")) {
                         onSave(HeroItemKind.allCases.filter(selection.contains))
                         dismiss()
                     }
                     .accessibilityIdentifier("settings.heroItems.done")
                 }
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "Cancel")) { dismiss() }
+                    Button(AppLocale.string("Cancel")) { dismiss() }
                 }
             }
         }
@@ -104,9 +101,9 @@ struct HeroItemKindSelectionSheet: View {
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Text(kind.label))
         .accessibilityValue(Text(isSelected
-                ? String(localized: "Selected")
-                : String(localized: "Not selected")))
-        .accessibilityHint(Text(String(localized: "Double-tap to toggle")))
+                ? AppLocale.string("Selected")
+                : AppLocale.string("Not selected")))
+        .accessibilityHint(Text(AppLocale.string("Double-tap to toggle")))
         .accessibilityIdentifier("settings.heroItems.\(kind.rawValue)")
     }
 
@@ -123,10 +120,10 @@ struct HeroItemKindSelectionSheet: View {
     @ViewBuilder
     private var footnotes: some View {
         if selection.isEmpty {
-            Text(String(
-                localized: "With nothing selected, Today shows no highlights at all.",
+            Text(AppLocale.string(LocalizedStringResource(
+                "With nothing selected, Today shows no highlights at all.",
                 comment: "Today hero item picker — empty-selection note"
-            ))
+            )))
             .font(.hlCaption)
             .foregroundStyle(HLText.secondary)
             .fixedSize(horizontal: false, vertical: true)

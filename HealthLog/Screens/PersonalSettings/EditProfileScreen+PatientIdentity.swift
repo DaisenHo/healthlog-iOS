@@ -20,7 +20,7 @@ extension EditProfileScreen {
         Section {
             LabeledContent {
                 TextField(
-                    String(localized: "Optional"),
+                    AppLocale.string("Optional"),
                     text: $fullName
                 )
                 .textContentType(.name)
@@ -31,7 +31,7 @@ extension EditProfileScreen {
             }
             LabeledContent {
                 TextField(
-                    String(localized: "Optional"),
+                    AppLocale.string("Optional"),
                     text: $insurerName
                 )
                 .textContentType(.organizationName)
@@ -42,7 +42,7 @@ extension EditProfileScreen {
             }
             LabeledContent {
                 TextField(
-                    String(localized: "Optional"),
+                    AppLocale.string("Optional"),
                     text: $insuranceNumber
                 )
                 // KVNR is an opaque identifier — no content-type hint, no
@@ -58,7 +58,7 @@ extension EditProfileScreen {
             }
             LabeledContent {
                 TextField(
-                    String(localized: "Optional"),
+                    AppLocale.string("Optional"),
                     text: $insurerIkNumber
                 )
                 // IKNR is a 9-digit opaque identifier — number-pad entry, no

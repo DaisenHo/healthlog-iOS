@@ -83,7 +83,7 @@ struct DocumentDetailScreen: View {
             .padding(HLSpace.lg)
         }
         .hlScreenBackground()
-        .navigationTitle(Text(verbatim: document.resolvedTitle ?? String(localized: "documents.card.untitled")))
+        .navigationTitle(Text(verbatim: document.resolvedTitle ?? AppLocale.string("documents.card.untitled")))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar { toolbar }
         .task { await onAppear() }
@@ -164,7 +164,7 @@ struct DocumentDetailScreen: View {
     }
 
     private var uploadedText: String {
-        let template = String(localized: "documents.detail.uploadedMeta")
+        let template = AppLocale.string("documents.detail.uploadedMeta")
         return String(format: template, DocumentFormat.mediumDate(document.createdAt), DocumentFormat.bytes(document.byteSize))
     }
 
@@ -250,7 +250,7 @@ struct DocumentDetailScreen: View {
             if DocumentsRepository.isModuleDisabled(error) {
                 dismiss()
             } else {
-                actionError = String(localized: "documents.detail.loadError")
+                actionError = AppLocale.string("documents.detail.loadError")
             }
         }
     }
@@ -294,7 +294,7 @@ struct DocumentDetailScreen: View {
     // MARK: - Actions
 
     private func performDelete() async {
-        await store.delete(document, undoMessage: String(localized: "documents.toast.deleted"))
+        await store.delete(document, undoMessage: AppLocale.string("documents.toast.deleted"))
         dismiss()
     }
 
@@ -302,7 +302,7 @@ struct DocumentDetailScreen: View {
         if let detail = await store.updateMetadata(id: documentId, .episodeIds(Array(ids))) {
             document = detail.document
         } else {
-            actionError = String(localized: "documents.detail.saveError")
+            actionError = AppLocale.string("documents.detail.saveError")
         }
     }
 
@@ -320,7 +320,7 @@ struct DocumentDetailScreen: View {
             try data.write(to: url)
             shareURL = url
         } catch {
-            actionError = String(localized: "documents.detail.downloadError")
+            actionError = AppLocale.string("documents.detail.downloadError")
         }
     }
 

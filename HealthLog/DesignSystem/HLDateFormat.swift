@@ -51,10 +51,10 @@ public enum HLDateFormat: String, CaseIterable, Sendable {
     /// Localised label for the Settings picker.
     public var label: String {
         switch self {
-        case .auto: String(localized: "settings.date_format.auto")
-        case .dayMonthYear: String(localized: "settings.date_format.dmy")
-        case .monthDayYear: String(localized: "settings.date_format.mdy")
-        case .yearMonthDay: String(localized: "settings.date_format.ymd")
+        case .auto: AppLocale.string("settings.date_format.auto")
+        case .dayMonthYear: AppLocale.string("settings.date_format.dmy")
+        case .monthDayYear: AppLocale.string("settings.date_format.mdy")
+        case .yearMonthDay: AppLocale.string("settings.date_format.ymd")
         }
     }
 
@@ -65,7 +65,7 @@ public enum HLDateFormat: String, CaseIterable, Sendable {
     /// server's `dateOrderLocale`.
     public var formattingLocale: Locale {
         switch self {
-        case .auto: .current
+        case .auto: AppLocale.shared.current
         case .dayMonthYear: Locale(identifier: "de_DE")
         case .monthDayYear: Locale(identifier: "en_US")
         case .yearMonthDay: Locale(identifier: "en_CA")
@@ -186,7 +186,7 @@ public enum HLDateFormat: String, CaseIterable, Sendable {
     public static func dayMonth(
         _ date: Date,
         relativeTo now: Date = Date(),
-        locale: Locale = .current,
+        locale: Locale = AppLocale.shared.current,
         calendar: Calendar = .current
     ) -> String {
         appendingYearIfNeeded(

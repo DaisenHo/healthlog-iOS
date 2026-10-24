@@ -113,15 +113,15 @@ public enum AnamnesisFactFailure: Error, Sendable, Equatable {
     public var userFacingDescription: String {
         switch self {
         case .conflict:
-            String(localized: "anamnesis.error.conflict")
+            AppLocale.string("anamnesis.error.conflict")
         case .staleRevision:
-            String(localized: "anamnesis.error.stale")
+            AppLocale.string("anamnesis.error.stale")
         case .invalidValue:
-            String(localized: "anamnesis.error.invalidValue")
+            AppLocale.string("anamnesis.error.invalidValue")
         case .currentExists:
-            String(localized: "anamnesis.error.currentExists")
+            AppLocale.string("anamnesis.error.currentExists")
         case .requestInFlight:
-            String(localized: "anamnesis.error.inFlight")
+            AppLocale.string("anamnesis.error.inFlight")
         case let .other(hlError):
             hlError.userFacingDescription
         }

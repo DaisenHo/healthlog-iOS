@@ -28,19 +28,17 @@ struct CoachReengageCard: View {
                         .symbolRenderingMode(.hierarchical)
                         .foregroundStyle(HLText.primary)
                         .accessibilityHidden(true)
-                    Text(String(localized: "Enable the coach"))
+                    Text(AppLocale.string("Enable the coach"))
                         .font(.hlHeadline)
                         .foregroundStyle(HLText.primary)
                 }
                 Text(
-                    String(
-                        localized: "Your data, explained. Turn the coach on to ask about your trends, scores, and what to watch."
-                    )
+                    AppLocale.string("Your data, explained. Turn the coach on to ask about your trends, scores, and what to watch.")
                 )
                 .font(.hlSubhead)
                 .foregroundStyle(HLText.secondary)
                 .fixedSize(horizontal: false, vertical: true)
-                HLButton(String(localized: "Enable the coach"), variant: .primary, size: .regular, action: action)
+                HLButton(AppLocale.string("Enable the coach"), variant: .primary, size: .regular, action: action)
                     .accessibilityIdentifier("InsightsScreen.coachReengageCard.button")
             }
         }

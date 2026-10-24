@@ -97,7 +97,7 @@ struct AnamnesisStep: View {
                         .accessibilityIdentifier("onboarding.anamnesis.saveFailed")
                 }
                 HLButton(
-                    String(localized: "Continue"),
+                    AppLocale.string("Continue"),
                     variant: .primary,
                     size: .large,
                     isLoading: isSaving
@@ -105,7 +105,7 @@ struct AnamnesisStep: View {
                     Task { await saveThenContinue() }
                 }
                 .accessibilityIdentifier("onboarding.anamnesis.continue")
-                HLButton(String(localized: "Later"), variant: .ghost) {
+                HLButton(AppLocale.string("Later"), variant: .ghost) {
                     onSkip()
                 }
                 .accessibilityIdentifier("onboarding.anamnesis.skip")
@@ -135,10 +135,10 @@ struct AnamnesisStep: View {
                 // Canonical onboarding hero glyph (`HLIconSize.display`, mono).
                 .font(.hlIcon(HLIconSize.display))
                 .foregroundStyle(HLText.primary)
-            Text(String(localized: "onboarding.anamnesis.title"))
+            Text(AppLocale.string("onboarding.anamnesis.title"))
                 .font(.hlTitle1)
                 .foregroundStyle(HLText.primary)
-            Text(String(localized: "onboarding.anamnesis.subtitle"))
+            Text(AppLocale.string("onboarding.anamnesis.subtitle"))
                 .font(.hlBody)
                 .foregroundStyle(HLText.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -149,26 +149,26 @@ struct AnamnesisStep: View {
         VStack(alignment: .leading, spacing: HLSpace.lg) {
             anamnesisCard(
                 icon: "scope",
-                title: String(localized: "onboarding.anamnesis.goals.title"),
-                prompt: String(localized: "onboarding.anamnesis.goals.prompt"),
+                title: AppLocale.string("onboarding.anamnesis.goals.title"),
+                prompt: AppLocale.string("onboarding.anamnesis.goals.prompt"),
                 text: $goals,
                 identifier: "onboarding.anamnesis.goals"
             )
             anamnesisCard(
                 icon: "stethoscope",
-                title: String(localized: "onboarding.anamnesis.conditions.title"),
-                prompt: String(localized: "onboarding.anamnesis.conditions.prompt"),
+                title: AppLocale.string("onboarding.anamnesis.conditions.title"),
+                prompt: AppLocale.string("onboarding.anamnesis.conditions.prompt"),
                 text: $conditions,
                 identifier: "onboarding.anamnesis.conditions"
             )
             anamnesisCard(
                 icon: "allergens",
-                title: String(localized: "onboarding.anamnesis.allergies.title"),
-                prompt: String(localized: "onboarding.anamnesis.allergies.prompt"),
+                title: AppLocale.string("onboarding.anamnesis.allergies.title"),
+                prompt: AppLocale.string("onboarding.anamnesis.allergies.prompt"),
                 text: $allergies,
                 identifier: "onboarding.anamnesis.allergies"
             )
-            Text(String(localized: "onboarding.anamnesis.footer"))
+            Text(AppLocale.string("onboarding.anamnesis.footer"))
                 .font(.hlCaption)
                 .foregroundStyle(HLText.tertiary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -321,7 +321,7 @@ struct AnamnesisStep: View {
     /// user's health data and are never composed into a message — they stay in
     /// the field, which is both the disclosure and the retry.
     nonisolated static func partialSaveMessage(failed: Int, attempted: Int) -> String {
-        String(format: String(localized: "onboarding.anamnesis.partialSave"), failed, attempted)
+        String(format: AppLocale.string("onboarding.anamnesis.partialSave"), failed, attempted)
     }
 
     /// Splits the allergies free-text into individual substances (one per line or

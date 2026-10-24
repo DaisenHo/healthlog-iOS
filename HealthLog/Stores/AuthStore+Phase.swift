@@ -287,7 +287,7 @@ extension AuthStore {
         } catch {
             // `lastError` is delivered towards UI (L1: `signInFacingDescription`
             // shows `.unknown` verbatim), so it carries catalog copy, never the error.
-            failAttempt(.unknown(String(localized: "Something went wrong. Please try again.")), for: attempt)
+            failAttempt(.unknown(AppLocale.string("Something went wrong. Please try again.")), for: attempt)
             HLLog.auth.error("Unbekannter Auth-Fehler: \(String(describing: error), privacy: .private)")
         }
     }

@@ -98,19 +98,18 @@ public enum CycleScreenModel {
     public nonisolated static func centerTitle(verdict: CycleVerdictDTO, hasPrediction: Bool) -> String {
         if verdict.stateValue == .overdue {
             guard let days = verdict.overdueDays else {
-                return String(localized: "cycle.home.center.late.title")
+                return AppLocale.string("cycle.home.center.late.title")
             }
-            return String(format: String(localized: "cycle.home.center.overdue.title"), days)
+            return String(format: AppLocale.string("cycle.home.center.overdue.title"), days)
         }
         guard let until = verdict.daysUntilNext else {
             // `daysUntilNext` is null both when no forecast ran and once the
             // predicted start has passed. A forecast on file means the latter.
-            return String(
-                localized: hasPrediction ? "cycle.home.center.dueWindow" : "cycle.home.center.learning.title"
-            )
+            return AppLocale
+                .string(hasPrediction ? "cycle.home.center.dueWindow" : "cycle.home.center.learning.title")
         }
-        if until == 0 { return String(localized: "cycle.home.center.dueToday") }
-        return String(format: String(localized: "cycle.home.center.inDays"), until)
+        if until == 0 { return AppLocale.string("cycle.home.center.dueToday") }
+        return String(format: AppLocale.string("cycle.home.center.inDays"), until)
     }
 
     public nonisolated static func centerSubtitle(verdict: CycleVerdictDTO) -> String {
@@ -119,17 +118,17 @@ public enum CycleScreenModel {
             // start remains a fact once the count stops, and it is the ground
             // the number above is measured from.
             guard let start = verdict.cycleStartDate, let date = dayKeyFormatter.date(from: start) else {
-                return String(localized: "cycle.home.center.overdue.subtitle.noStart")
+                return AppLocale.string("cycle.home.center.overdue.subtitle.noStart")
             }
             return String(
-                format: String(localized: "cycle.home.center.overdue.subtitle"),
+                format: AppLocale.string("cycle.home.center.overdue.subtitle"),
                 shortDayFormatter.string(from: date)
             )
         }
         guard let day = verdict.dayOfCycle else {
-            return String(localized: "cycle.home.center.learning.subtitle")
+            return AppLocale.string("cycle.home.center.learning.subtitle")
         }
-        return String(format: String(localized: "cycle.home.center.cycleDay"), day)
+        return String(format: AppLocale.string("cycle.home.center.cycleDay"), day)
     }
 
     /// `YYYY-MM-DD` day keys, POSIX + device zone (the same pair `CycleScreen`
@@ -144,13 +143,14 @@ public enum CycleScreenModel {
     }()
 
     /// Day + month only — a cycle start is a date, not a timestamp.
-    static let shortDayFormatter: DateFormatter = {
+    static var shortDayFormatter: DateFormatter {
         let f = DateFormatter()
         f.calendar = Calendar(identifier: .gregorian)
         f.timeZone = .current
         f.setLocalizedDateFormatFromTemplate("ddMMM")
+        f.locale = AppLocale.shared.current
         return f
-    }()
+    }
 
     // MARK: - Arithmetic (no judgement below this line)
 

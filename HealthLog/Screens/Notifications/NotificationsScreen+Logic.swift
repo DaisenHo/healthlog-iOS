@@ -82,12 +82,12 @@ extension NotificationsScreen {
         // "vor 2h", "vor 3d" (DE) / "5min ago", "2h ago", "3d ago" (EN).
         guard let s = store?.channelStatus(id: channel.id) else { return nil }
         if let last = s.lastSuccessAt {
-            return String(localized: "Last delivered \(CompactRelativeDate.string(from: last))")
+            return AppLocale.string("Last delivered \(CompactRelativeDate.string(from: last))")
         }
         if let last = s.lastFailureAt {
-            return String(localized: "Last error \(CompactRelativeDate.string(from: last))")
+            return AppLocale.string("Last error \(CompactRelativeDate.string(from: last))")
         }
-        return String(localized: "No delivery yet")
+        return AppLocale.string("No delivery yet")
     }
 
     /// REG-12 (v0.5.6): when the server flagged the channel as
@@ -105,7 +105,7 @@ extension NotificationsScreen {
         let raw = s.disabledReason ?? s.lastFailureReason
         guard let raw, !raw.isEmpty else { return nil }
         let reason = NotificationFailureReason.label(for: raw)
-        return String(localized: "notifications.channel.failureReason \(reason)")
+        return AppLocale.string("notifications.channel.failureReason \(reason)")
     }
 
     /// Resolve the effective channel state from the live `status`
@@ -121,9 +121,9 @@ extension NotificationsScreen {
                 // coloured tint — the distinct glyph + the state-line copy
                 // carry the meaning, no coloured bubble.
                 tint: HLText.secondary,
-                stateLine: String(localized: "Disabled globally"),
+                stateLine: AppLocale.string("Disabled globally"),
                 stateLineTint: HLText.secondary,
-                voiceOverLabel: String(localized: "notifications.channel.state.inactive"),
+                voiceOverLabel: AppLocale.string("notifications.channel.state.inactive"),
                 needsRetryAction: false
             )
         }
@@ -137,27 +137,27 @@ extension NotificationsScreen {
                 return ResolvedChannelState(
                     glyph: "exclamationmark.circle.fill",
                     tint: HLText.secondary,
-                    stateLine: String(localized: "Channel disabled automatically"),
+                    stateLine: AppLocale.string("Channel disabled automatically"),
                     stateLineTint: HLText.secondary,
-                    voiceOverLabel: String(localized: "notifications.channel.state.autoDisabled"),
+                    voiceOverLabel: AppLocale.string("notifications.channel.state.autoDisabled"),
                     needsRetryAction: true
                 )
             case .sendingPaused:
                 return ResolvedChannelState(
                     glyph: "pause.circle.fill",
                     tint: HLText.secondary,
-                    stateLine: String(localized: "Channel paused"),
+                    stateLine: AppLocale.string("Channel paused"),
                     stateLineTint: HLText.secondary,
-                    voiceOverLabel: String(localized: "notifications.channel.state.paused"),
+                    voiceOverLabel: AppLocale.string("notifications.channel.state.paused"),
                     needsRetryAction: true
                 )
             case .manuallyDisabled:
                 return ResolvedChannelState(
                     glyph: "circle",
                     tint: HLText.tertiary,
-                    stateLine: String(localized: "Channel disabled"),
+                    stateLine: AppLocale.string("Channel disabled"),
                     stateLineTint: HLText.secondary,
-                    voiceOverLabel: String(localized: "notifications.channel.state.inactive"),
+                    voiceOverLabel: AppLocale.string("notifications.channel.state.inactive"),
                     needsRetryAction: false
                 )
             case .unknown:
@@ -170,9 +170,9 @@ extension NotificationsScreen {
         return channel.enabled ? .activeState : ResolvedChannelState(
             glyph: "circle",
             tint: HLText.tertiary,
-            stateLine: String(localized: "Channel paused"),
+            stateLine: AppLocale.string("Channel paused"),
             stateLineTint: HLText.secondary,
-            voiceOverLabel: String(localized: "notifications.channel.state.inactive"),
+            voiceOverLabel: AppLocale.string("notifications.channel.state.inactive"),
             needsRetryAction: false
         )
     }

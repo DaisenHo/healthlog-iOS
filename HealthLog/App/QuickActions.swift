@@ -73,9 +73,9 @@ enum HLQuickAction: String, CaseIterable {
     /// take a plain `String`, not a `LocalizedStringKey`).
     var localizedTitle: String {
         switch self {
-        case .measurement: String(localized: "capture.picker.measurement.title")
-        case .medication: String(localized: "capture.picker.medication.title")
-        case .mood: String(localized: "capture.picker.mood.title")
+        case .measurement: AppLocale.string("capture.picker.measurement.title")
+        case .medication: AppLocale.string("capture.picker.medication.title")
+        case .mood: AppLocale.string("capture.picker.mood.title")
         }
     }
 

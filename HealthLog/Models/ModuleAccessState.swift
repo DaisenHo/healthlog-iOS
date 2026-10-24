@@ -122,7 +122,7 @@ public enum ModuleAccessState: String, Sendable, Equatable, Hashable, CaseIterab
     /// ``enabled``.
     public var offReason: String? {
         guard let offReasonKey else { return nil }
-        return String(localized: String.LocalizationValue(offReasonKey))
+        return AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(offReasonKey)))
     }
 }
 

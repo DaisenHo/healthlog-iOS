@@ -43,10 +43,10 @@ enum IllnessPresentation {
         // ARGUMENT, so the lookup key becomes `illness.daylog.impact.%lld`
         // (absent from the catalog) and the string never resolves.
         switch level {
-        case 0: String(localized: "illness.daylog.impact.0")
-        case 1: String(localized: "illness.daylog.impact.1")
-        case 2: String(localized: "illness.daylog.impact.2")
-        case 3: String(localized: "illness.daylog.impact.3")
+        case 0: AppLocale.string("illness.daylog.impact.0")
+        case 1: AppLocale.string("illness.daylog.impact.1")
+        case 2: AppLocale.string("illness.daylog.impact.2")
+        case 3: AppLocale.string("illness.daylog.impact.3")
         default: nil
         }
     }
@@ -83,13 +83,13 @@ extension IllnessType {
     /// Localized display label (`illness.type.*`).
     var localizedLabel: String {
         switch self {
-        case .infection: String(localized: "illness.type.infection")
-        case .allergy: String(localized: "illness.type.allergy")
-        case .injury: String(localized: "illness.type.injury")
-        case .mentalHealth: String(localized: "illness.type.mentalHealth")
-        case .autoimmune: String(localized: "illness.type.autoimmune")
-        case .chronic: String(localized: "illness.type.chronic")
-        case .other: String(localized: "illness.type.other")
+        case .infection: AppLocale.string("illness.type.infection")
+        case .allergy: AppLocale.string("illness.type.allergy")
+        case .injury: AppLocale.string("illness.type.injury")
+        case .mentalHealth: AppLocale.string("illness.type.mentalHealth")
+        case .autoimmune: AppLocale.string("illness.type.autoimmune")
+        case .chronic: AppLocale.string("illness.type.chronic")
+        case .other: AppLocale.string("illness.type.other")
         }
     }
 
@@ -110,11 +110,11 @@ extension IllnessLifecycle {
     /// Localized display label (`illness.lifecycle.*`).
     var localizedLabel: String {
         switch self {
-        case .acute: String(localized: "illness.lifecycle.acute")
-        case .chronicOngoing: String(localized: "illness.lifecycle.chronicOngoing")
-        case .recurring: String(localized: "illness.lifecycle.recurring")
-        case .flare: String(localized: "illness.lifecycle.flare")
-        case .unknown: String(localized: "illness.lifecycle.unknown")
+        case .acute: AppLocale.string("illness.lifecycle.acute")
+        case .chronicOngoing: AppLocale.string("illness.lifecycle.chronicOngoing")
+        case .recurring: AppLocale.string("illness.lifecycle.recurring")
+        case .flare: AppLocale.string("illness.lifecycle.flare")
+        case .unknown: AppLocale.string("illness.lifecycle.unknown")
         }
     }
 
@@ -138,14 +138,14 @@ enum IllnessVitalLabel {
     /// back to a title-cased rendering of the raw string (forward-compat).
     static func label(for type: String) -> String {
         switch type.uppercased() {
-        case "RESTING_HEART_RATE", "RHR": String(localized: "illness.vital.restingHeartRate")
-        case "RESPIRATORY_RATE": String(localized: "illness.vital.respiratoryRate")
-        case "BODY_TEMPERATURE", "TEMPERATURE": String(localized: "illness.vital.temperature")
-        case "HEART_RATE_VARIABILITY", "HRV": String(localized: "illness.vital.hrv")
-        case "OXYGEN_SATURATION", "SPO2": String(localized: "illness.vital.spo2")
+        case "RESTING_HEART_RATE", "RHR": AppLocale.string("illness.vital.restingHeartRate")
+        case "RESPIRATORY_RATE": AppLocale.string("illness.vital.respiratoryRate")
+        case "BODY_TEMPERATURE", "TEMPERATURE": AppLocale.string("illness.vital.temperature")
+        case "HEART_RATE_VARIABILITY", "HRV": AppLocale.string("illness.vital.hrv")
+        case "OXYGEN_SATURATION", "SPO2": AppLocale.string("illness.vital.spo2")
         // v1.21.0: the user-logged symptom-burden track (`FUNCTIONAL_IMPACT`)
         // can win `gapDriverType` — name it "your symptoms" (mirrors the web).
-        case "FUNCTIONAL_IMPACT": String(localized: "illness.vital.functionalImpact")
+        case "FUNCTIONAL_IMPACT": AppLocale.string("illness.vital.functionalImpact")
         default:
             type
                 .replacingOccurrences(of: "_", with: " ")
@@ -159,9 +159,9 @@ extension IllnessRedFlag {
     /// if this recurs"), never reassures.**
     var localizedHeadline: String {
         switch reason {
-        case "sustained_low_spo2": String(localized: "illness.redflag.sustainedLowSpo2")
-        case "sustained_fever": String(localized: "illness.redflag.sustainedFever")
-        default: String(localized: "illness.redflag.generic")
+        case "sustained_low_spo2": AppLocale.string("illness.redflag.sustainedLowSpo2")
+        case "sustained_fever": AppLocale.string("illness.redflag.sustainedFever")
+        default: AppLocale.string("illness.redflag.generic")
         }
     }
 }

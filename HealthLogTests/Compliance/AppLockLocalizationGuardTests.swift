@@ -59,8 +59,8 @@
         @Test("the LAContext texts are read from the catalog")
         func gateReadsCatalog() throws {
             let text = try source("HealthLog/Services/BiometricGate.swift")
-            #expect(text.contains(#"String(localized: "applock.prompt.reason")"#))
-            #expect(text.contains(#"String(localized: "applock.prompt.fallback")"#))
+            #expect(text.contains(#"AppLocale.string("applock.prompt.reason")"#))
+            #expect(text.contains(#"AppLocale.string("applock.prompt.fallback")"#))
             #expect(text.contains("context.localizedFallbackTitle = localizedFallbackTitle"))
             #expect(text.contains("reason: String = BiometricGate.localizedReason"))
         }

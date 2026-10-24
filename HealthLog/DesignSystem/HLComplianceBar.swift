@@ -75,7 +75,7 @@ public struct HLComplianceBar: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Text(String(
-            format: String(localized: "med.card.compliance.a11y"),
+            format: AppLocale.string("med.card.compliance.a11y"),
             label,
             rate
         )))

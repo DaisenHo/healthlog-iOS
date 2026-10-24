@@ -41,16 +41,16 @@ public final class TrendsOverlayStore {
             case .week: "W"
             case .month: "M"
             case .sixMonths: "6M"
-            case .year: String(localized: "range.label.year", defaultValue: "Y")
+            case .year: AppLocale.string(LocalizedStringResource("range.label.year", defaultValue: "Y"))
             }
         }
 
         public var accessibilityLabel: String {
             switch self {
-            case .week: String(localized: "Week")
-            case .month: String(localized: "Month")
-            case .sixMonths: String(localized: "6 months")
-            case .year: String(localized: "Year")
+            case .week: AppLocale.string("Week")
+            case .month: AppLocale.string("Month")
+            case .sixMonths: AppLocale.string("6 months")
+            case .year: AppLocale.string("Year")
             }
         }
     }
@@ -89,19 +89,19 @@ public final class TrendsOverlayStore {
 
         public var label: String {
             switch self {
-            case .none: String(localized: "trends.averaging.raw")
-            case .daily: String(localized: "Day")
-            case .weekly: String(localized: "Week")
-            case .monthly: String(localized: "Month")
+            case .none: AppLocale.string("trends.averaging.raw")
+            case .daily: AppLocale.string("Day")
+            case .weekly: AppLocale.string("Week")
+            case .monthly: AppLocale.string("Month")
             }
         }
 
         public var accessibilityLabel: String {
             switch self {
-            case .none: String(localized: "trends.averaging.raw.a11y")
-            case .daily: String(localized: "trends.averaging.daily.a11y")
-            case .weekly: String(localized: "trends.averaging.weekly.a11y")
-            case .monthly: String(localized: "trends.averaging.monthly.a11y")
+            case .none: AppLocale.string("trends.averaging.raw.a11y")
+            case .daily: AppLocale.string("trends.averaging.daily.a11y")
+            case .weekly: AppLocale.string("trends.averaging.weekly.a11y")
+            case .monthly: AppLocale.string("trends.averaging.monthly.a11y")
             }
         }
     }

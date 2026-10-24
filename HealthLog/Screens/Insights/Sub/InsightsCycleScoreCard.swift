@@ -35,7 +35,7 @@ struct CycleScoreRingCard: View {
             .hlPressable() // QOL-AUDIT H1: press feedback
             .accessibilityElement(children: .combine)
             .accessibilityLabel(Text(accessibilityLabel(phase: phase)))
-            .accessibilityHint(Text(String(localized: "Double-tap for the breakdown")))
+            .accessibilityHint(Text(AppLocale.string("Double-tap for the breakdown")))
             .accessibilityIdentifier("insights.scoreCard.CYCLE")
             .task { await store.load() }
         } else {
@@ -56,7 +56,7 @@ struct CycleScoreRingCard: View {
                     model: model,
                     motion: .none,
                     glow: .off,
-                    accessibilityLabel: String(localized: "cycle.home.title"),
+                    accessibilityLabel: AppLocale.string("cycle.home.title"),
                     accessibilityValue: model.centerSubtitle
                 )
                 .frame(width: 96, height: 96)
@@ -121,28 +121,28 @@ struct CycleScoreRingCard: View {
     /// the hero. Falls back to the learning copy when no next-period date.
     private var centerTitle: String {
         guard let n = verdict?.daysUntilNext else {
-            return String(localized: "cycle.home.center.learning.title")
+            return AppLocale.string("cycle.home.center.learning.title")
         }
-        if n == 0 { return String(localized: "cycle.home.center.dueToday") }
-        return String(format: String(localized: "cycle.home.center.inDays"), n)
+        if n == 0 { return AppLocale.string("cycle.home.center.dueToday") }
+        return String(format: AppLocale.string("cycle.home.center.inDays"), n)
     }
 
     private var centerSubtitle: String {
         if let day = verdict?.dayOfCycle {
-            return String(format: String(localized: "cycle.home.center.cycleDay"), day)
+            return String(format: AppLocale.string("cycle.home.center.cycleDay"), day)
         }
-        return String(localized: "cycle.insights.tile.learning")
+        return AppLocale.string("cycle.insights.tile.learning")
     }
 
     /// The under-ring label: "Zyklus · <Phase>" so the tile reads as a sibling
     /// with a short caption, matching the score tiles' single label line.
     private func label(for phase: CyclePhasePalette.Phase) -> String {
-        let phaseName = String(localized: CyclePhaseExplainer.nameKey(for: phase))
-        return String(format: String(localized: "insights.scoreCard.cycle.label"), phaseName)
+        let phaseName = AppLocale.string(AppLocale.shared.resource(CyclePhaseExplainer.nameKey(for: phase)))
+        return String(format: AppLocale.string("insights.scoreCard.cycle.label"), phaseName)
     }
 
     private func accessibilityLabel(phase: CyclePhasePalette.Phase) -> String {
-        let phaseName = String(localized: CyclePhaseExplainer.nameKey(for: phase))
-        return "\(String(localized: "cycle.home.title")), \(phaseName), \(centerTitle)"
+        let phaseName = AppLocale.string(AppLocale.shared.resource(CyclePhaseExplainer.nameKey(for: phase)))
+        return "\(AppLocale.string("cycle.home.title")), \(phaseName), \(centerTitle)"
     }
 }

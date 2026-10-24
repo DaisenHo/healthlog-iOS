@@ -38,9 +38,9 @@ public extension ChartDetailStore {
 
         public var shortLabel: String {
             switch self {
-            case .week: String(localized: "7d")
-            case .month: String(localized: "30d")
-            case .quarter: String(localized: "90d")
+            case .week: AppLocale.string("7d")
+            case .month: AppLocale.string("30d")
+            case .quarter: AppLocale.string("90d")
             }
         }
     }

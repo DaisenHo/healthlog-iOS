@@ -137,14 +137,14 @@ struct MoodFactorCrosstabRowView: View {
     nonisolated static func associationSentence(for row: FactorMetricCrosstabRow) -> String {
         let metric = metricLabel(for: row.metricKey)
         return row.delta >= 0
-            ? String(
-                localized: "On your worse \(row.labelKeyHumanFallback) days, your \(metric) tended to run higher.",
+            ? AppLocale.string(LocalizedStringResource(
+                "On your worse \(row.labelKeyHumanFallback) days, your \(metric) tended to run higher.",
                 comment: "Factor-crosstab association sentence: metric higher on low/worse factor days"
-            )
-            : String(
-                localized: "On your worse \(row.labelKeyHumanFallback) days, your \(metric) tended to run lower.",
+            ))
+            : AppLocale.string(LocalizedStringResource(
+                "On your worse \(row.labelKeyHumanFallback) days, your \(metric) tended to run lower.",
                 comment: "Factor-crosstab association sentence: metric lower on low/worse factor days"
-            )
+            ))
     }
 
     /// VoiceOver value: the averages + direction + sample size + confidence.
@@ -153,10 +153,10 @@ struct MoodFactorCrosstabRowView: View {
         let lowAvg = formatted(row.lowAvg, display: row.display)
         let highAvg = formatted(row.highAvg, display: row.display)
         let confidence = MoodConfidencePill.label(for: row.confidence)
-        return String(
-            localized: "On worse \(label) days your \(metric) averaged \(lowAvg); on better days \(highAvg). Based on \(row.minGroupDays) days each side. \(confidence) confidence.",
+        return AppLocale.string(LocalizedStringResource(
+            "On worse \(label) days your \(metric) averaged \(lowAvg); on better days \(highAvg). Based on \(row.minGroupDays) days each side. \(confidence) confidence.",
             comment: "VoiceOver value for one factor-crosstab row"
-        )
+        ))
     }
 
     /// Formatted metric value with its display-unit precision. Counts (steps)
@@ -175,12 +175,21 @@ struct MoodFactorCrosstabRowView: View {
     /// metric keys (`sleepDuration` vs `sleep`, `restingHeartRate` vs `pulse`).
     nonisolated static func metricLabel(for key: String) -> String {
         switch key {
-        case "sleepDuration": String(localized: "sleep duration", comment: "Factor-crosstab metric: sleep duration")
-        case "steps": String(localized: "step count", comment: "Factor-crosstab metric: steps")
-        case "restingHeartRate": String(localized: "resting heart rate", comment: "Factor-crosstab metric: resting heart rate")
-        case "heartRateVariability": String(localized: "heart-rate variability", comment: "Factor-crosstab metric: HRV")
-        case "weight": String(localized: "weight", comment: "Factor-crosstab metric: weight")
-        case "bloodPressureSystolic": String(localized: "blood pressure", comment: "Factor-crosstab metric: systolic blood pressure")
+        case "sleepDuration": AppLocale.string(LocalizedStringResource("sleep duration", comment: "Factor-crosstab metric: sleep duration"))
+        case "steps": AppLocale.string(LocalizedStringResource("step count", comment: "Factor-crosstab metric: steps"))
+        case "restingHeartRate": AppLocale.string(LocalizedStringResource(
+                "resting heart rate",
+                comment: "Factor-crosstab metric: resting heart rate"
+            ))
+        case "heartRateVariability": AppLocale.string(LocalizedStringResource(
+                "heart-rate variability",
+                comment: "Factor-crosstab metric: HRV"
+            ))
+        case "weight": AppLocale.string(LocalizedStringResource("weight", comment: "Factor-crosstab metric: weight"))
+        case "bloodPressureSystolic": AppLocale.string(LocalizedStringResource(
+                "blood pressure",
+                comment: "Factor-crosstab metric: systolic blood pressure"
+            ))
         default:
             key.lowercased()
                 .split(separator: "_")

@@ -81,7 +81,7 @@ public final class McpStore {
         } catch let err as HLError {
             return .failure(LoadFailure(message: err.userFacingDescription))
         } catch {
-            return .failure(LoadFailure(message: String(localized: "Couldn't load MCP connections. Please try again.")))
+            return .failure(LoadFailure(message: AppLocale.string("Couldn't load MCP connections. Please try again.")))
         }
     }
 
@@ -92,7 +92,7 @@ public final class McpStore {
         } catch let err as HLError {
             return .failure(LoadFailure(message: err.userFacingDescription))
         } catch {
-            return .failure(LoadFailure(message: String(localized: "Couldn't load MCP tokens. Please try again.")))
+            return .failure(LoadFailure(message: AppLocale.string("Couldn't load MCP tokens. Please try again.")))
         }
     }
 
@@ -113,7 +113,7 @@ public final class McpStore {
             error = err.userFacingDescription
         } catch {
             connections = previous
-            self.error = String(localized: "Couldn't revoke the connection. Please try again.")
+            self.error = AppLocale.string("Couldn't revoke the connection. Please try again.")
         }
     }
 
@@ -129,7 +129,7 @@ public final class McpStore {
         } catch let err as HLError {
             error = err.userFacingDescription
         } catch {
-            self.error = String(localized: "Couldn't revoke the token. Please try again.")
+            self.error = AppLocale.string("Couldn't revoke the token. Please try again.")
         }
     }
 
@@ -151,7 +151,7 @@ public final class McpStore {
             error = stepUp.requestIfProofRefusal(err) ? StepUpRetry.requiredMessage : err.userFacingDescription
             return false
         } catch {
-            self.error = String(localized: "Couldn't create the token. Please try again.")
+            self.error = AppLocale.string("Couldn't create the token. Please try again.")
             return false
         }
     }
@@ -212,7 +212,7 @@ public final class ApiTokenStore {
         } catch let err as HLError {
             error = err.userFacingDescription
         } catch {
-            self.error = String(localized: "Couldn't load API tokens. Please try again.")
+            self.error = AppLocale.string("Couldn't load API tokens. Please try again.")
         }
     }
 
@@ -227,7 +227,7 @@ public final class ApiTokenStore {
         } catch let err as HLError {
             error = err.userFacingDescription
         } catch {
-            self.error = String(localized: "Couldn't revoke the token. Please try again.")
+            self.error = AppLocale.string("Couldn't revoke the token. Please try again.")
         }
     }
 

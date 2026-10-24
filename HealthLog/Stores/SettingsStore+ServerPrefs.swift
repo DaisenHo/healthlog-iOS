@@ -40,6 +40,7 @@ extension SettingsStore {
     /// avatar simply falls back to initials and the mirror keeps its last value.
     func hydrateAuthMeExtras(sessionLease: AuthenticatedSessionLease) async {
         guard authenticatedEffectIsCurrent(sessionLease), profile != nil else { return }
+        let languageRevision = accountLanguageRevision
         let prefs: AuthMeServerPrefs
         do {
             try sessionLease.requireCurrent()
@@ -47,6 +48,12 @@ extension SettingsStore {
             try sessionLease.requireCurrent()
         } catch {
             return
+        }
+
+        if languageRevision == accountLanguageRevision, !isSavingAccountLanguage,
+           let raw = prefs.locale, let language = AccountLanguage(tag: raw)
+        {
+            adoptAccountLanguage(language, ownerID: sessionLease.ownerID)
         }
 
         // (1) Avatar splice — only into an avatar-less snapshot; re-read `profile`

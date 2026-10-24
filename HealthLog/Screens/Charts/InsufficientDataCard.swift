@@ -124,15 +124,15 @@ struct InsufficientDataCard: View {
 
     private var title: String {
         if hasOnePoint {
-            return String(localized: "Not enough data yet")
+            return AppLocale.string("Not enough data yet")
         }
-        return String(localized: "No data yet")
+        return AppLocale.string("No data yet")
     }
 
     private var subtitle: String {
         let metric = kind.displayName
         if hasOnePoint {
-            return String(localized: "Log another \(metric) measurement to see a trend.")
+            return AppLocale.string("Log another \(metric) measurement to see a trend.")
         }
         switch kind {
         case .steps, .sleep, .pulse, .bodyTemperature, .spo2, .restingHeartRate, .hrv, .vo2Max,
@@ -146,9 +146,9 @@ struct InsufficientDataCard: View {
              // v0.13.1 IC — v1.10.0 additive signals all arrive from Apple Health.
              .falls, .sixMinuteWalk, .stairAscentSpeed, .stairDescentSpeed,
              .breathingDisturbances, .cardioRecovery, .wristTemperature:
-            return String(localized: "Connect Apple Health so \(metric) data arrives automatically.")
+            return AppLocale.string("Connect Apple Health so \(metric) data arrives automatically.")
         case .weight, .bodyFat, .bodyWater, .boneMass, .bmi:
-            return String(localized: "Log a \(metric) measurement now — or connect Apple Health.")
+            return AppLocale.string("Log a \(metric) measurement now — or connect Apple Health.")
         case .bloodPressure, .glucose,
              // v0.11 W21 — Withings smart-scale body-composition + arterial metrics.
              .fatFreeMass, .leanBodyMass, .muscleMass, .pulseWaveVelocity,
@@ -180,12 +180,12 @@ struct InsufficientDataCard: View {
              // but it is a notification nobody logs or chooses to receive, so
              // the device CTA is the only honest one for it too.
              .audioExposureEvent:
-            return String(localized: "Log a \(metric) measurement now — or connect your device.")
+            return AppLocale.string("Log a \(metric) measurement now — or connect your device.")
         // Audit B-4 — no CTA for a kind this build cannot name: there is
         // nothing the user could log or connect that would fill it, and the
         // rows that put it on screen came from the server already.
         case .unknown:
-            return String(localized: "This app version doesn't know this measurement yet")
+            return AppLocale.string("This app version doesn't know this measurement yet")
         }
     }
 }

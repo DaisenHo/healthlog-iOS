@@ -146,7 +146,7 @@ struct ShareLinkTokenPanel: View {
                 .fixedSize(horizontal: false, vertical: true)
             if store.freshProtected {
                 HLBadge(
-                    String(localized: "share.protected.badge"),
+                    AppLocale.string("share.protected.badge"),
                     icon: "lock.shield.fill",
                     tone: .success
                 )

@@ -618,7 +618,7 @@ public enum MetricKind: String, Codable, CaseIterable, Sendable, Identifiable {
     /// EN review would have flagged this; the descriptor route fixes
     /// every ~46 call-site in one hop.
     public var displayName: String {
-        String(localized: descriptor.title)
+        AppLocale.string(AppLocale.shared.resource(descriptor.title))
     }
 }
 

@@ -72,7 +72,7 @@ struct MDRGatedDrugLevelSection: View {
 private struct DrugLevelLoadingPlaceholder: View {
     var body: some View {
         VStack(alignment: .leading, spacing: HLSpace.sm) {
-            Text(String(localized: "Estimated level (relative)"))
+            Text(AppLocale.string("Estimated level (relative)"))
                 .font(.hlCaption)
                 .foregroundStyle(HLText.tertiary)
             HLCard(style: .ghost) {
@@ -82,7 +82,7 @@ private struct DrugLevelLoadingPlaceholder: View {
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(String(localized: "Loading")))
+        .accessibilityLabel(Text(AppLocale.string("Loading")))
     }
 }
 
@@ -92,10 +92,10 @@ private struct EmptyDosesPlaceholder: View {
     var body: some View {
         HLCard(style: .ghost) {
             VStack(alignment: .leading, spacing: HLSpace.sm) {
-                Text(String(localized: "No intakes logged yet."))
+                Text(AppLocale.string("No intakes logged yet."))
                     .font(.hlHeadline)
                     .foregroundStyle(HLText.primary)
-                Text(String(localized: "Log your first intake to see the curve."))
+                Text(AppLocale.string("Log your first intake to see the curve."))
                     .font(.hlBody)
                     .foregroundStyle(HLText.secondary)
             }
@@ -113,7 +113,7 @@ private struct DisclaimerCaption: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: HLSpace.xxs) {
-            Text(String(localized: "Educational estimate from EMA-published population pharmacokinetics. Not a measurement."))
+            Text(AppLocale.string("Educational estimate from EMA-published population pharmacokinetics. Not a measurement."))
                 .font(.hlCaption)
                 .italic()
                 .foregroundStyle(HLText.tertiary)
@@ -157,7 +157,7 @@ private struct DrugLevelChartView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: HLSpace.sm) {
-            Text(String(localized: "Estimated level (relative)"))
+            Text(AppLocale.string("Estimated level (relative)"))
                 .font(.hlCaption)
                 .foregroundStyle(HLText.tertiary)
             HLCard(style: .ghost) {
@@ -205,7 +205,7 @@ private struct DrugLevelChartView: View {
                         .foregroundStyle(HLText.tertiary.opacity(0.6))
                         .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 3]))
                         .annotation(position: .top, alignment: .leading) {
-                            Text(String(localized: "Now"))
+                            Text(AppLocale.string("Now"))
                                 .font(.hlCaption)
                                 .foregroundStyle(HLText.tertiary)
                                 .padding(.horizontal, HLSpace.xs)
@@ -248,8 +248,8 @@ private struct DrugLevelChartView: View {
     ) -> AXChartDescriptor {
         let samples = curve.samples
         let asOf = curve.asOf
-        let title = String(localized: "Estimated drug level — \(drug.inn)")
-        let summary = String(localized: "Qualitative trend. Y axis without unit. Educational estimate.")
+        let title = AppLocale.string("Estimated drug level — \(drug.inn)")
+        let summary = AppLocale.string("Qualitative trend. Y axis without unit. Educational estimate.")
 
         // AUD-2 H3 — index-keyed x label gives VoiceOver a readable date for
         // each sample. The formatter is a static cached instance (was a fresh
@@ -275,8 +275,8 @@ private struct DrugLevelChartView: View {
         return HLChartAX.singleSeries(
             title: title,
             summary: summary,
-            xAxisTitle: String(localized: "Date"),
-            yAxisTitle: String(localized: "Estimated level (relative)"),
+            xAxisTitle: AppLocale.string("Date"),
+            yAxisTitle: AppLocale.string("Estimated level (relative)"),
             seriesName: drug.inn,
             points: points,
             yValueLabel: { value in
@@ -284,7 +284,7 @@ private struct DrugLevelChartView: View {
                 guard let nearest = samples.enumerated().min(
                     by: { abs($0.element.concentration - value) < abs($1.element.concentration - value) }
                 ) else {
-                    return String(localized: "undetermined")
+                    return AppLocale.string("undetermined")
                 }
                 return phaseLabels[nearest.offset]
             }
@@ -295,19 +295,20 @@ private struct DrugLevelChartView: View {
     /// accessibility chart descriptor's x-axis labels. Hoisted to a static
     /// `let` so the descriptor build path no longer allocates a `DateFormatter`
     /// per render. `DateFormatter` is thread-safe for read-only formatting.
-    private nonisolated static let axDateFormatter: DateFormatter = {
+    private nonisolated static var axDateFormatter: DateFormatter {
         let f = DateFormatter()
+        f.locale = AppLocale.shared.current
         f.dateStyle = .medium
         f.timeStyle = .short
         return f
-    }()
+    }
 
     private static func phaseLabel(_ phase: Glp1PK.ShotPhase) -> String {
         switch phase {
-        case .rising: String(localized: "rising")
-        case .peak: String(localized: "near peak")
-        case .fading: String(localized: "fading")
-        case .none: String(localized: "undetermined")
+        case .rising: AppLocale.string("rising")
+        case .peak: AppLocale.string("near peak")
+        case .fading: AppLocale.string("fading")
+        case .none: AppLocale.string("undetermined")
         }
     }
 

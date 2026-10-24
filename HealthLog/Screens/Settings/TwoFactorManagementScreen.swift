@@ -60,7 +60,7 @@ struct TwoFactorManagementScreen: View {
                     .font(.hlSubhead)
                     .foregroundStyle(HLColor.statusBad)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                HLButton(String(localized: "settings.security.twoFactor.retry"), variant: .secondary) {
+                HLButton(AppLocale.string("settings.security.twoFactor.retry"), variant: .secondary) {
                     Task { await store.loadTwoFactor() }
                 }
             }
@@ -108,7 +108,7 @@ struct TwoFactorManagementScreen: View {
             } else {
                 // R9 — namentlich als `.primary` sanktioniert: solange 2FA aus
                 // ist, will dieser Screen genau diese eine Sache.
-                HLButton(String(localized: "settings.security.twoFactor.enable"), variant: .primary) {
+                HLButton(AppLocale.string("settings.security.twoFactor.enable"), variant: .primary) {
                     showEnable = true
                 }
             }
@@ -255,14 +255,14 @@ struct StepUpArmPicker: View {
 
             // Passkey is always offered — a 409 (no passkey on the account) is
             // the honest discovery path and points the user at another arm.
-            HLButton(String(localized: "settings.security.twoFactor.stepUp.passkey"), variant: .primary, isLoading: busy) {
+            HLButton(AppLocale.string("settings.security.twoFactor.stepUp.passkey"), variant: .primary, isLoading: busy) {
                 Task { await mintPasskey() }
             }
             .disabled(busy)
 
             if hasTotp {
                 codeField("settings.security.twoFactor.stepUp.totpLabel", text: $totpCode)
-                HLButton(String(localized: "settings.security.twoFactor.stepUp.totpSubmit"), variant: .secondary, isLoading: busy) {
+                HLButton(AppLocale.string("settings.security.twoFactor.stepUp.totpSubmit"), variant: .secondary, isLoading: busy) {
                     Task { await mint { try await store.mint(totp: totpCode) } }
                 }
                 .disabled(busy || totpCode.isEmpty)
@@ -290,7 +290,7 @@ struct StepUpArmPicker: View {
 
             if !requiresFresh {
                 secureField("settings.security.twoFactor.stepUp.passwordLabel", text: $password)
-                HLButton(String(localized: "settings.security.twoFactor.stepUp.passwordSubmit"), variant: .secondary, isLoading: busy) {
+                HLButton(AppLocale.string("settings.security.twoFactor.stepUp.passwordSubmit"), variant: .secondary, isLoading: busy) {
                     Task { await mint { try await store.mint(password: password) } }
                 }
                 .disabled(busy || password.isEmpty)

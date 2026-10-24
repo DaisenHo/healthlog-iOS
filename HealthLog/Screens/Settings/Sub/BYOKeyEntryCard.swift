@@ -96,13 +96,13 @@ struct BYOKeyEntryCard: View {
 
     @ViewBuilder
     private var entryFields: some View {
-        SecureField(String(localized: "API key"), text: $model.keyDraft)
+        SecureField(AppLocale.string("API key"), text: $model.keyDraft)
             .textInputAutocapitalization(.never)
             .autocorrectionDisabled()
             .accessibilityIdentifier("BYOKeyEntryCard.keyField")
 
         TextField(
-            String(localized: "Model (optional, default \(model.provider.defaultModel))"),
+            AppLocale.string("Model (optional, default \(model.provider.defaultModel))"),
             text: $model.modelDraft
         )
         .textInputAutocapitalization(.never)
@@ -110,7 +110,7 @@ struct BYOKeyEntryCard: View {
         .accessibilityIdentifier("BYOKeyEntryCard.modelField")
 
         if model.provider.requiresBaseURL {
-            TextField(String(localized: "Base URL (https)"), text: $model.baseURLDraft)
+            TextField(AppLocale.string("Base URL (https)"), text: $model.baseURLDraft)
                 .keyboardType(.URL)
                 .textContentType(.URL)
                 .textInputAutocapitalization(.never)
@@ -128,7 +128,7 @@ struct BYOKeyEntryCard: View {
             statusRow(
                 symbol: "arrow.triangle.2.circlepath",
                 tint: HLText.secondary,
-                text: String(localized: "Checking your key…")
+                text: AppLocale.string("Checking your key…")
             )
         case let .invalid(message):
             statusRow(symbol: "exclamationmark.triangle.fill", tint: HLColor.statusBad, text: message)
@@ -136,7 +136,7 @@ struct BYOKeyEntryCard: View {
             statusRow(
                 symbol: "checkmark.seal.fill",
                 tint: HLColor.statusOK,
-                text: String(localized: "Saved. Your key is ready.")
+                text: AppLocale.string("Saved. Your key is ready.")
             )
         case .editing, .awaitingConsent:
             EmptyView()
@@ -167,7 +167,7 @@ struct BYOKeyEntryCard: View {
     /// akademisch.
     private var validateButton: some View {
         HLButton(
-            String(localized: "Validate & save"),
+            AppLocale.string("Validate & save"),
             variant: .secondary,
             isLoading: model.phase == .validating
         ) {
@@ -190,7 +190,7 @@ struct BYOKeyEntryCard: View {
                         .font(.hlSubhead.weight(.semibold))
                         .foregroundStyle(HLText.primary)
                     if let last4 = model.savedKeyLast4 {
-                        Text(String(localized: "Key ····\(last4) · \(model.resolvedModel)"))
+                        Text(AppLocale.string("Key ····\(last4) · \(model.resolvedModel)"))
                             .font(.hlCaption)
                             .foregroundStyle(HLText.secondary)
                     } else {

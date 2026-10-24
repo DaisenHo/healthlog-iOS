@@ -105,7 +105,7 @@ struct HLUndoToast: View {
     }
 
     private var combinedAccessibilityLabel: String {
-        let template = String(localized: "undo.toast.a11y.label")
+        let template = AppLocale.string("undo.toast.a11y.label")
         return String(format: template, message, ttlSeconds)
     }
 }

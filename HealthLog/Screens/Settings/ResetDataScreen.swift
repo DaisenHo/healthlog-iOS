@@ -44,7 +44,10 @@ struct ResetDataScreen: View {
     /// Per-locale fixed: `LÖSCHEN` (DE) / `DELETE` (EN). Same key the account
     /// deletion screen uses, so the app has exactly one type-confirm vocabulary.
     private var requiredConfirmation: String {
-        String(localized: "DELETE", comment: "Type-confirm phrase the user must enter literally to delete their account")
+        AppLocale.string(LocalizedStringResource(
+            "DELETE",
+            comment: "Type-confirm phrase the user must enter literally to delete their account"
+        ))
     }
 
     var body: some View {
@@ -119,7 +122,7 @@ struct ResetDataScreen: View {
 
             VStack(spacing: HLSpace.sm) {
                 HLButton(
-                    String(localized: "Continue"),
+                    AppLocale.string("Continue"),
                     icon: "chevron.right",
                     variant: .destructive,
                     size: .compact
@@ -129,7 +132,7 @@ struct ResetDataScreen: View {
                 .disabled(!consentChecked)
                 .accessibilityIdentifier(Self.continueButtonIdentifier)
 
-                HLButton(String(localized: "Cancel"), variant: .secondary, size: .regular) {
+                HLButton(AppLocale.string("Cancel"), variant: .secondary, size: .regular) {
                     dismiss()
                 }
             }
@@ -167,7 +170,7 @@ struct ResetDataScreen: View {
 
             VStack(spacing: HLSpace.sm) {
                 HLButton(
-                    String(localized: "resetData.confirmAction"),
+                    AppLocale.string("resetData.confirmAction"),
                     icon: "trash.fill",
                     variant: .destructive,
                     size: .compact,
@@ -178,7 +181,7 @@ struct ResetDataScreen: View {
                 .disabled(isResetting || typedConfirmation != requiredConfirmation)
                 .accessibilityIdentifier(Self.resetButtonIdentifier)
 
-                HLButton(String(localized: "Back"), variant: .secondary, size: .regular) {
+                HLButton(AppLocale.string("Back"), variant: .secondary, size: .regular) {
                     resetError = nil
                     typedConfirmation = ""
                     step = .explain
@@ -209,7 +212,7 @@ struct ResetDataScreen: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
-            HLButton(String(localized: "Done"), variant: .primary, size: .compact) {
+            HLButton(AppLocale.string("Done"), variant: .primary, size: .compact) {
                 dismiss()
             }
             .accessibilityIdentifier(Self.doneButtonIdentifier)
@@ -252,7 +255,7 @@ struct ResetDataScreen: View {
 
             VStack(spacing: HLSpace.sm) {
                 HLButton(
-                    String(localized: "resetData.stepUp.openButton"),
+                    AppLocale.string("resetData.stepUp.openButton"),
                     icon: "safari",
                     variant: .primary,
                     size: .compact
@@ -261,7 +264,7 @@ struct ResetDataScreen: View {
                 }
                 .accessibilityIdentifier(Self.stepUpOpenButtonIdentifier)
 
-                HLButton(String(localized: "Cancel"), variant: .secondary, size: .regular) {
+                HLButton(AppLocale.string("Cancel"), variant: .secondary, size: .regular) {
                     dismiss()
                 }
             }
@@ -309,7 +312,7 @@ struct ResetDataScreen: View {
             }
             resetError = err.localizedDescription
         } catch {
-            resetError = String(localized: "Unknown error")
+            resetError = AppLocale.string("Unknown error")
         }
     }
 

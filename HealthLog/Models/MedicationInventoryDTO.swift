@@ -95,13 +95,13 @@ public enum MedicationContainerType: String, Codable, Sendable, Hashable, CaseIt
     /// Localized label for the register-container picker + supply list.
     public var localizedLabel: String {
         switch self {
-        case .pen: String(localized: "med.inventory.container.pen")
-        case .ampoule: String(localized: "med.inventory.container.ampoule")
-        case .blister: String(localized: "med.inventory.container.blister")
-        case .inhaler: String(localized: "med.inventory.container.inhaler")
-        case .bottle: String(localized: "med.inventory.container.bottle")
-        case .other: String(localized: "med.inventory.container.other")
-        case .unknown: String(localized: "med.inventory.container.unknown")
+        case .pen: AppLocale.string("med.inventory.container.pen")
+        case .ampoule: AppLocale.string("med.inventory.container.ampoule")
+        case .blister: AppLocale.string("med.inventory.container.blister")
+        case .inhaler: AppLocale.string("med.inventory.container.inhaler")
+        case .bottle: AppLocale.string("med.inventory.container.bottle")
+        case .other: AppLocale.string("med.inventory.container.other")
+        case .unknown: AppLocale.string("med.inventory.container.unknown")
         }
     }
 
@@ -130,8 +130,8 @@ public enum MedicationContainerType: String, Codable, Sendable, Hashable, CaseIt
     /// first. All other forms: the printed date alone.
     public var localizedExpiryRule: String {
         usesFirstUseExpiryClock
-            ? String(localized: "med.inventory.expiry.rule.firstUseClock")
-            : String(localized: "med.inventory.expiry.rule.printedOnly")
+            ? AppLocale.string("med.inventory.expiry.rule.firstUseClock")
+            : AppLocale.string("med.inventory.expiry.rule.printedOnly")
     }
 
     /// Rule copy for a possibly-absent container type. A row without a

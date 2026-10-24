@@ -23,6 +23,8 @@ extension AppContainer {
         sharedPrefs: SharedAccountPrefs = .live,
         onGlucoseUnitChange: @escaping @MainActor () -> Void
     ) {
+        settingsStore.onAccountLanguageChange = { AppLocale.shared.apply($0) }
+        AppLocale.shared.apply(settingsStore.accountLanguage)
         settingsStore.onGlucoseUnitChange = { unit in
             sharedPrefs.setGlucoseUnit(unit)
             onGlucoseUnitChange()

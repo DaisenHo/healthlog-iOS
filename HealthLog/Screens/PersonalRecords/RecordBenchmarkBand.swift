@@ -70,9 +70,9 @@ struct RecordBenchmarkBand: Equatable, Sendable {
     /// The one-line summary under the bar: a position, never a verdict.
     var summary: String {
         switch region {
-        case .inside: String(localized: "records.comparison.insideBand")
-        case .below: String(localized: "records.comparison.belowCentered")
-        case .above: String(localized: "records.comparison.aboveCentered")
+        case .inside: AppLocale.string("records.comparison.insideBand")
+        case .below: AppLocale.string("records.comparison.belowCentered")
+        case .above: AppLocale.string("records.comparison.aboveCentered")
         }
     }
 

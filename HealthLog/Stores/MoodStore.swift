@@ -222,7 +222,7 @@ public final class MoodStore {
         removeEntry(id: entry.id)
         onEntriesDidChange?()
         undoCoordinator?.enqueue(
-            message: String(localized: "undo.mood.removed")
+            message: AppLocale.string("undo.mood.removed")
         ) { [weak self] in
             await self?.restoreDeletedEntry(removed)
         }
@@ -511,7 +511,7 @@ public final class MoodStore {
             score: score, tags: [], note: nil, recordedAt: recordedAt
         ) else { return nil }
         undoCoordinator?.enqueue(
-            message: String(localized: "undo.mood.logged")
+            message: AppLocale.string("undo.mood.logged")
         ) { [weak self] in
             await self?.removeLoggedEntry(saved)
         }

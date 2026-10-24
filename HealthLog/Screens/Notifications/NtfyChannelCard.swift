@@ -56,7 +56,7 @@ struct NtfyChannelCard: View {
                     Text("notifications.ntfy.topic")
                         .font(.hlCaption)
                         .foregroundStyle(HLText.secondary)
-                    TextField(String(localized: "notifications.ntfy.topicPlaceholder"), text: $topic)
+                    TextField(AppLocale.string("notifications.ntfy.topicPlaceholder"), text: $topic)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .accessibilityIdentifier("notifications.ntfy.topicField")
@@ -82,7 +82,7 @@ struct NtfyChannelCard: View {
             }
 
             HLButton(
-                String(localized: "notifications.channel.save"),
+                AppLocale.string("notifications.channel.save"),
                 variant: .secondary,
                 isLoading: store.ntfyWorking
             ) {
@@ -93,7 +93,7 @@ struct NtfyChannelCard: View {
 
             if enabled {
                 HLButton(
-                    String(localized: "notifications.channel.test"),
+                    AppLocale.string("notifications.channel.test"),
                     icon: "paperplane",
                     // UI-Standard R9 (U6) — „Verbindung testen" ist überall
                     // `.secondary`; „Speichern" darüber ebenso, weil auf
@@ -134,9 +134,9 @@ struct NtfyChannelCard: View {
 
     private var tokenPlaceholder: String {
         if store.ntfy?.hasAuthToken == true {
-            return String(localized: "notifications.channel.token.stored")
+            return AppLocale.string("notifications.channel.token.stored")
         }
-        return String(localized: "notifications.ntfy.tokenPlaceholder")
+        return AppLocale.string("notifications.ntfy.tokenPlaceholder")
     }
 
     /// Mirrors the server required-field rule: when enabled, serverUrl + topic
@@ -146,7 +146,7 @@ struct NtfyChannelCard: View {
         let url = serverUrl.trimmingCharacters(in: .whitespaces)
         let t = topic.trimmingCharacters(in: .whitespaces)
         if url.isEmpty || t.isEmpty {
-            return String(localized: "notifications.ntfy.validation.required")
+            return AppLocale.string("notifications.ntfy.validation.required")
         }
         return nil
     }

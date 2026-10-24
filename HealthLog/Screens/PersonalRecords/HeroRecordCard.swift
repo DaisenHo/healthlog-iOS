@@ -190,7 +190,7 @@ struct HeroRecordCard: View {
     }
 
     private var achievedAtLabel: String {
-        String(localized: "records.hero.since \(Self.dateFormatter.string(from: record.base.achievedAt))")
+        AppLocale.string("records.hero.since \(Self.dateFormatter.string(from: record.base.achievedAt))")
     }
 
     private var accessibilityLabel: Text {
@@ -201,19 +201,19 @@ struct HeroRecordCard: View {
 
     private static let numberFormatter: NumberFormatter = {
         let f = NumberFormatter()
-        f.locale = Locale.current
+        f.locale = AppLocale.shared.current
         f.numberStyle = .decimal
         f.maximumFractionDigits = 1
         f.minimumFractionDigits = 0
         return f
     }()
 
-    private static let dateFormatter: DateFormatter = {
+    private static var dateFormatter: DateFormatter {
         let f = DateFormatter()
-        f.locale = Locale.current
+        f.locale = AppLocale.shared.current
         f.dateStyle = .long
         return f
-    }()
+    }
 }
 
 #Preview("HeroRecordCard") {

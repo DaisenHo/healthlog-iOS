@@ -90,7 +90,7 @@ enum RecordShareImage {
 
         private var formattedValue: String {
             let f = NumberFormatter()
-            f.locale = Locale.current
+            f.locale = AppLocale.shared.current
             f.numberStyle = .decimal
             f.maximumFractionDigits = 1
             f.minimumFractionDigits = 0
@@ -100,7 +100,7 @@ enum RecordShareImage {
 
         private var dateLabel: String {
             let f = DateFormatter()
-            f.locale = Locale.current
+            f.locale = AppLocale.shared.current
             f.dateStyle = .long
             return f.string(from: record.base.achievedAt)
         }

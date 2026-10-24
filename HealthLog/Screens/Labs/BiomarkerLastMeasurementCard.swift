@@ -46,9 +46,9 @@ struct BiomarkerLastMeasurementCard: View {
         guard let date = LabsDateFormat.parse(latest.takenAt) else {
             return LabsDateFormat.mediumDate(latest.takenAt)
         }
-        let relative = date.formatted(.relative(presentation: .named))
+        let relative = date.formatted(.relative(presentation: .named).locale(AppLocale.shared.current))
         let absolute = LabsDateFormat.mediumDate(latest.takenAt)
-        let template = String(localized: "biomarker.detail.taken.dated")
+        let template = AppLocale.string("biomarker.detail.taken.dated")
         return String(format: template, relative, absolute)
     }
 
@@ -57,7 +57,7 @@ struct BiomarkerLastMeasurementCard: View {
     /// has no separate name line, so a dedicated 2-placeholder string keeps
     /// VoiceOver to a single, non-redundant utterance.
     private var accessibilityText: String {
-        let template = String(localized: "biomarker.detail.lastMeasurement.a11y")
+        let template = AppLocale.string("biomarker.detail.lastMeasurement.a11y")
         return String(format: template, valueLabel, latest.rangeStatus.localizedLabel)
     }
 }

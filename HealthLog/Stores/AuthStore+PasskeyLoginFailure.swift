@@ -53,7 +53,7 @@ extension AuthStore {
     ///   renders those through ``HLError/signInFacingDescription``.
     nonisolated static func passkeyLoginFailure(_ error: HLError) -> HLError {
         if case let .server(status, code?, _) = error, let key = passkeyErrorKeys[code] {
-            return .server(status: status, code: code, message: String(localized: String.LocalizationValue(key)))
+            return .server(status: status, code: code, message: AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(key))))
         }
         return switch error {
         case .unauthorized:
@@ -64,7 +64,7 @@ extension AuthStore {
             .server(
                 status: 403,
                 code: "oidc_only",
-                message: String(localized: "auth.passkey.error.ssoOnly")
+                message: AppLocale.string("auth.passkey.error.ssoOnly")
             )
         case let .rateLimited(retryAfter):
             rateLimitedSignIn(retryAfter: retryAfter)
@@ -87,7 +87,7 @@ extension AuthStore {
         .server(
             status: 401,
             code: code,
-            message: String(localized: "auth.passkey.error.rejected")
+            message: AppLocale.string("auth.passkey.error.rejected")
         )
     }
 }
@@ -116,7 +116,7 @@ public extension HLError {
              .network(.sslPinning),
              .network(.writeCancelled),
              .network(.other):
-            String(localized: "auth.error.unreachable")
+            AppLocale.string("auth.error.unreachable")
         case let .unknown(message) where !message.isEmpty:
             message
         default:

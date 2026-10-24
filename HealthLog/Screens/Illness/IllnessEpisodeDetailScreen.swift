@@ -75,7 +75,7 @@ struct IllnessEpisodeDetailScreen: View {
             confirm: Text("illness.delete.action"),
             action: {
                 Task {
-                    await store.deleteEpisode(current, undoMessage: String(localized: "illness.delete.undo"))
+                    await store.deleteEpisode(current, undoMessage: AppLocale.string("illness.delete.undo"))
                     dismiss()
                 }
             }
@@ -117,14 +117,14 @@ struct IllnessEpisodeDetailScreen: View {
                     IllnessNeutralBadge(title: current.type.localizedLabel, icon: current.type.icon)
                     IllnessNeutralBadge(title: current.lifecycle.localizedLabel, tone: .info)
                     if !current.isActive {
-                        IllnessNeutralBadge(title: String(localized: "illness.status.resolved"), icon: "checkmark")
+                        IllnessNeutralBadge(title: AppLocale.string("illness.status.resolved"), icon: "checkmark")
                     }
                 }
                 Label(onsetCaption, systemImage: "calendar")
                     .font(.hlSubhead)
                     .foregroundStyle(HLText.secondary)
                 if let resolvedAt = current.resolvedAt, !resolvedAt.isEmpty {
-                    let template = String(localized: "illness.detail.resolvedAt")
+                    let template = AppLocale.string("illness.detail.resolvedAt")
                     Label(String(format: template, IllnessDateFormat.mediumDate(resolvedAt)), systemImage: "checkmark.seal")
                         .font(.hlSubhead)
                         .foregroundStyle(HLText.secondary)
@@ -166,7 +166,7 @@ struct IllnessEpisodeDetailScreen: View {
     }
 
     private var onsetCaption: String {
-        let template = String(localized: "illness.detail.onsetAt")
+        let template = AppLocale.string("illness.detail.onsetAt")
         return String(format: template, IllnessDateFormat.mediumDate(current.onsetAt))
     }
 
@@ -180,9 +180,9 @@ struct IllnessEpisodeDetailScreen: View {
         if ok, let updated = store.selectedEpisode {
             current = updated
         } else if store.lastErrorWasChronicNoResolve {
-            actionError = String(localized: "illness.resolve.chronicError")
+            actionError = AppLocale.string("illness.resolve.chronicError")
         } else {
-            actionError = store.lastError ?? String(localized: "illness.resolve.failed")
+            actionError = store.lastError ?? AppLocale.string("illness.resolve.failed")
         }
     }
 }

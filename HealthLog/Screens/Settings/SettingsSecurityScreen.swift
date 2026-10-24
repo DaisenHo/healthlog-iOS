@@ -127,7 +127,7 @@ struct SettingsSecurityScreen: View {
                 .accessibilityIdentifier("settings.security.twoFactorNote")
             // R9 — „Erneut versuchen" ist app-weit `.secondary`.
             HLButton(
-                String(localized: "settings.security.twoFactor.retry"),
+                AppLocale.string("settings.security.twoFactor.retry"),
                 variant: .secondary,
                 action: { Task { await store.loadTwoFactor() } }
             )

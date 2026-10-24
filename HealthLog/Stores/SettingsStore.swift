@@ -57,6 +57,15 @@ public final class SettingsStore {
 
     /// #115 1.5 — the `/api/auth/me` zone (see `resolvedProfileTimeZone`).
     public internal(set) var accountTimeZoneIdentifier: String?
+    public internal(set) var accountLanguage: AccountLanguage? {
+        didSet { onAccountLanguageChange?(accountLanguage) }
+    }
+
+    public internal(set) var isSavingAccountLanguage = false
+    public internal(set) var accountLanguageNotice: AccountLanguageNotice?
+    var onAccountLanguageChange: ((AccountLanguage?) -> Void)?
+    @ObservationIgnored var accountLanguageKeychain: KeychainStoring?
+    @ObservationIgnored var accountLanguageRevision: UInt64 = 0
 
     public private(set) var hkConfig: HealthKitSyncConfig?
     public private(set) var isLoading: Bool = false
@@ -263,11 +272,14 @@ public final class SettingsStore {
         cycleRepo: CycleRepository? = nil,
         backend: BackendAvailability? = nil,
         authenticatedSessionRegistry: AuthenticatedSessionLeaseRegistry,
-        userIDProvider: @escaping @Sendable () -> String?
+        userIDProvider: @escaping @Sendable () -> String?,
+        accountLanguageKeychain: KeychainStoring? = nil
     ) {
         self.init(repo: repo, defaults: defaults, swr: swr, cycleRepo: cycleRepo, backend: backend)
         self.authenticatedSessionRegistry = authenticatedSessionRegistry
         self.userIDProvider = userIDProvider
+        self.accountLanguageKeychain = accountLanguageKeychain
+        restoreCachedAccountLanguage()
     }
 
     func captureAuthenticatedSessionLease() -> AuthenticatedSessionLease? {
@@ -611,6 +623,7 @@ public final class SettingsStore {
 
     /// Resets in-memory state on logout. Keychain entries are wiped by `AuthStore`.
     public func clearOnLogout() {
+        clearAccountLanguage()
         profile = nil
         hkConfig = nil
         error = nil
@@ -674,27 +687,13 @@ public enum ComplianceHeatmapWeeks: Int, CaseIterable, Identifiable, Sendable {
     }
 }
 
-// MARK: - Environment plumbing (v0.11 N1)
-
-//
-// The `UnitPreferences` value type + the three unit enums live in
-// `Models/UnitPreferences.swift` (HealthLogCore) so the platform-free metric
-// formatters can read them. This SwiftUI environment bridge stays app-side.
-
-private struct UnitPreferencesKey: EnvironmentKey {
-    static let defaultValue: UnitPreferences = .standard
-}
-
 public extension EnvironmentValues {
     /// The user's display-unit prefs, injected at the dashboard/measurement
     /// root from `SettingsStore.unitPreferences`. Tiles read it via
     /// `@Environment(\.unitPreferences)` so the conversion seam needs no
     /// prop-drilling. Defaults to `.standard` (canonical SI, no conversion)
     /// for previews/tests that don't inject it.
-    var unitPreferences: UnitPreferences {
-        get { self[UnitPreferencesKey.self] }
-        set { self[UnitPreferencesKey.self] = newValue }
-    }
+    @Entry var unitPreferences: UnitPreferences = .standard
 }
 
 public enum DashboardLayout: String, CaseIterable, Identifiable, Sendable {

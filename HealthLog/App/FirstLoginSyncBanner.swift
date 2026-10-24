@@ -83,13 +83,13 @@ struct FirstLoginSyncBanner: View {
     /// HK initial backfill stays indeterminate by design (spec §4.5).
     private var bannerText: String {
         guard isActivelySyncing else {
-            return String(localized: "sync.status.preparing")
+            return AppLocale.string("sync.status.preparing")
         }
         let pending = syncState.pendingSyncCount
         guard pending > 0 else {
-            return String(localized: "sync.status.syncing")
+            return AppLocale.string("sync.status.syncing")
         }
-        return String(localized: "sync.status.syncingCount \(pending)")
+        return AppLocale.string("sync.status.syncingCount \(pending)")
     }
 
     var body: some View {
@@ -110,7 +110,7 @@ struct FirstLoginSyncBanner: View {
                 .accessibilityIdentifier("sync.firstLogin.banner")
             case .done:
                 HLSyncBanner(
-                    text: String(localized: "sync.banner.done"),
+                    text: AppLocale.string("sync.banner.done"),
                     symbol: "checkmark.circle.fill"
                 )
                 .accessibilityIdentifier("sync.firstLogin.done")

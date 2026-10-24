@@ -49,7 +49,7 @@ struct CourseWindowRow: View {
                 )
                 .environment(\.timeZone, Self.anchorTimeZone)
                 if !isRangeValid {
-                    HLFormErrorText(String(localized: "med.schedule.course.invalidRange"))
+                    HLFormErrorText(AppLocale.string("med.schedule.course.invalidRange"))
                         .font(.hlCaption)
                 }
             }

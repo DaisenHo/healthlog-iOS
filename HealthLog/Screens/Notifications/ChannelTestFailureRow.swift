@@ -32,27 +32,27 @@ struct ChannelTestFailureRow: View {
     static func sentence(for failure: NotificationChannelTestFailure) -> String {
         let reason = reasonText(failure.reason)
         if let status = failure.upstreamStatus {
-            return reason + " " + String(localized: "notifications.channel.testFailure.httpStatus \(status)")
+            return reason + " " + AppLocale.string("notifications.channel.testFailure.httpStatus \(status)")
         }
         if let smtp = failure.smtpCode {
-            return reason + " " + String(localized: "notifications.channel.testFailure.smtpCode \(smtp)")
+            return reason + " " + AppLocale.string("notifications.channel.testFailure.smtpCode \(smtp)")
         }
         return reason
     }
 
     static func reasonText(_ reason: NotificationChannelTestFailure.Reason) -> String {
         switch reason {
-        case .credentialsRejected: String(localized: "notifications.channel.testFailure.credentialsRejected")
-        case .endpointNotFound: String(localized: "notifications.channel.testFailure.endpointNotFound")
-        case .rateLimited: String(localized: "notifications.channel.testFailure.rateLimited")
-        case .upstreamError: String(localized: "notifications.channel.testFailure.upstreamError")
-        case .upstreamRejected: String(localized: "notifications.channel.testFailure.upstreamRejected")
-        case .redirected: String(localized: "notifications.channel.testFailure.redirected")
-        case .timeout: String(localized: "notifications.channel.testFailure.timeout")
-        case .connectionFailed: String(localized: "notifications.channel.testFailure.connectionFailed")
-        case .privateOriginNotApproved: String(localized: "notifications.channel.testFailure.privateOriginNotApproved")
-        case .privateOriginNotGrantable: String(localized: "notifications.channel.testFailure.privateOriginNotGrantable")
-        case .unknown: String(localized: "notifications.channel.testFailure.unknown")
+        case .credentialsRejected: AppLocale.string("notifications.channel.testFailure.credentialsRejected")
+        case .endpointNotFound: AppLocale.string("notifications.channel.testFailure.endpointNotFound")
+        case .rateLimited: AppLocale.string("notifications.channel.testFailure.rateLimited")
+        case .upstreamError: AppLocale.string("notifications.channel.testFailure.upstreamError")
+        case .upstreamRejected: AppLocale.string("notifications.channel.testFailure.upstreamRejected")
+        case .redirected: AppLocale.string("notifications.channel.testFailure.redirected")
+        case .timeout: AppLocale.string("notifications.channel.testFailure.timeout")
+        case .connectionFailed: AppLocale.string("notifications.channel.testFailure.connectionFailed")
+        case .privateOriginNotApproved: AppLocale.string("notifications.channel.testFailure.privateOriginNotApproved")
+        case .privateOriginNotGrantable: AppLocale.string("notifications.channel.testFailure.privateOriginNotGrantable")
+        case .unknown: AppLocale.string("notifications.channel.testFailure.unknown")
         }
     }
 }

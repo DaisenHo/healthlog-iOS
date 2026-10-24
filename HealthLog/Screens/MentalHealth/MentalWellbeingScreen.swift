@@ -192,11 +192,11 @@ private struct MentalHealthInstrumentCard: View {
                 if let last {
                     VStack(spacing: HLSpace.xs) {
                         labelValueRow(
-                            label: String(localized: "mentalHealth.lastResult"),
+                            label: AppLocale.string("mentalHealth.lastResult"),
                             value: MentalHealthDateFormat.short(last.takenAt)
                         )
                         labelValueRow(
-                            label: String(localized: "mentalHealth.lastScore"),
+                            label: AppLocale.string("mentalHealth.lastScore"),
                             value: "\(last.totalScore) (\(bandLabel(last)))"
                         )
                     }
@@ -234,18 +234,15 @@ private struct MentalHealthInstrumentCard: View {
     }
 
     private func bandLabel(_ row: MentalHealthAssessmentDTO) -> String {
-        NSLocalizedString(
-            "mentalHealth.band.\(row.instrument.rawValue).\(row.severityBand)",
-            comment: "Mental-health severity band label"
-        )
+        AppLocale
+            .string(AppLocale.shared
+                .resource(String.LocalizationValue(String("mentalHealth.band.\(row.instrument.rawValue).\(row.severityBand)"))))
     }
 
     private var detailAccessibilityLabel: String {
-        let title = NSLocalizedString(
-            "mentalHealth.instrument.\(instrument.keySegment)",
-            comment: "Mental-health instrument title"
-        )
-        return "\(title), \(String(localized: "mentalHealth.openDetail"))"
+        let title = AppLocale
+            .string(AppLocale.shared.resource(String.LocalizationValue(String("mentalHealth.instrument.\(instrument.keySegment)"))))
+        return "\(title), \(AppLocale.string("mentalHealth.openDetail"))"
     }
 
     private func localizedKey(_ key: String) -> LocalizedStringKey {
@@ -364,11 +361,11 @@ private struct MentalHealthInstrumentDetail: View {
     private func lastResult(_ row: MentalHealthAssessmentDTO) -> some View {
         VStack(spacing: HLSpace.xs) {
             detailValueRow(
-                label: String(localized: "mentalHealth.lastResult"),
+                label: AppLocale.string("mentalHealth.lastResult"),
                 value: MentalHealthDateFormat.short(row.takenAt)
             )
             detailValueRow(
-                label: String(localized: "mentalHealth.lastScore"),
+                label: AppLocale.string("mentalHealth.lastScore"),
                 value: "\(row.totalScore) (\(bandLabel(row)))"
             )
         }
@@ -388,17 +385,13 @@ private struct MentalHealthInstrumentDetail: View {
     }
 
     private var localizedTitle: String {
-        NSLocalizedString(
-            "mentalHealth.instrument.\(instrument.keySegment)",
-            comment: "Mental-health instrument title"
-        )
+        AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(String("mentalHealth.instrument.\(instrument.keySegment)"))))
     }
 
     private func bandLabel(_ row: MentalHealthAssessmentDTO) -> String {
-        NSLocalizedString(
-            "mentalHealth.band.\(row.instrument.rawValue).\(row.severityBand)",
-            comment: "Mental-health severity band label"
-        )
+        AppLocale
+            .string(AppLocale.shared
+                .resource(String.LocalizationValue(String("mentalHealth.band.\(row.instrument.rawValue).\(row.severityBand)"))))
     }
 }
 
@@ -426,8 +419,8 @@ private struct MentalHealthHistoryChart: View {
             title: "mentalHealth.history.chartTitle",
             points: points,
             yDomain: 0 ... Double(instrument.maxScore),
-            xValueLabel: String(localized: "mentalHealth.lastResult"),
-            yValueLabel: String(localized: "mentalHealth.history.totalLabel"),
+            xValueLabel: AppLocale.string("mentalHealth.lastResult"),
+            yValueLabel: AppLocale.string("mentalHealth.history.totalLabel"),
             annotation: { point in
                 bandByID[point.id].map { "\(Int(point.value)) (\($0))" } ?? "\(Int(point.value))"
             },
@@ -438,10 +431,7 @@ private struct MentalHealthHistoryChart: View {
     }
 
     private func bandLabel(_ band: String) -> String {
-        NSLocalizedString(
-            "mentalHealth.band.\(instrument.rawValue).\(band)",
-            comment: "Mental-health severity band label"
-        )
+        AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(String("mentalHealth.band.\(instrument.rawValue).\(band)"))))
     }
 }
 
@@ -490,10 +480,9 @@ private struct MentalHealthDetailHistoryRow: View {
     }
 
     private var bandLabel: String {
-        NSLocalizedString(
-            "mentalHealth.band.\(row.instrument.rawValue).\(row.severityBand)",
-            comment: "Mental-health severity band label"
-        )
+        AppLocale
+            .string(AppLocale.shared
+                .resource(String.LocalizationValue(String("mentalHealth.band.\(row.instrument.rawValue).\(row.severityBand)"))))
     }
 }
 

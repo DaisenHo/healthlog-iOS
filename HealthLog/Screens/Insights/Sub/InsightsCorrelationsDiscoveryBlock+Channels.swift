@@ -18,7 +18,7 @@ extension InsightsCorrelationsDiscoveryBlock {
     /// Stable VoiceOver state for the overview disclosure.
     nonisolated static func disclosureAccessibilityValue(
         isExpanded: Bool,
-        locale: Locale = .current
+        locale: Locale = AppLocale.shared.current
     ) -> String {
         localized(isExpanded ? "Expanded" : "Collapsed", locale: locale)
     }
@@ -49,7 +49,7 @@ extension InsightsCorrelationsDiscoveryBlock {
     /// Human-readable label per curated channel id (behaviour OR outcome).
     /// Unknown ids fall back to a de-snaked form of the raw id so a later
     /// server channel still renders legibly (forward-compatible).
-    nonisolated static func label(for channel: String, locale: Locale = .current) -> String {
+    nonisolated static func label(for channel: String, locale: Locale = AppLocale.shared.current) -> String {
         guard let key = channelKeys[channel] else { return prettify(channel) }
         return localized(key, locale: locale)
     }
@@ -102,7 +102,7 @@ extension InsightsCorrelationsDiscoveryBlock {
     nonisolated static func channelLabel(
         serverLabel raw: String?,
         channel: String,
-        locale: Locale = .current
+        locale: Locale = AppLocale.shared.current
     ) -> String {
         if channelKeys[channel] != nil {
             return label(for: channel, locale: locale)
@@ -120,12 +120,7 @@ extension InsightsCorrelationsDiscoveryBlock {
     /// resource. `String(localized:locale:)` only applies the locale while
     /// formatting and can otherwise inherit the process language in tests.
     private nonisolated static func localized(_ key: String, locale: Locale) -> String {
-        String(
-            localized: LocalizedStringResource(
-                String.LocalizationValue(key),
-                locale: locale
-            )
-        )
+        AppLocale.string(LocalizedStringResource(String.LocalizationValue(key)), locale: locale)
     }
 
     // MARK: - C1 — a row that looks pursuable is pursuable

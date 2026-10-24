@@ -78,7 +78,7 @@ public struct OnDeviceBriefingHero: View {
             case .loading:
                 ProgressView()
                     .padding()
-                    .accessibilityLabel(Text(String(localized: "Daily briefing is being prepared")))
+                    .accessibilityLabel(Text(AppLocale.string("Daily briefing is being prepared")))
             case let .onDevice(mapped):
                 // v0.9.0 W2 — provenance ON: genuinely the on-device
                 // FoundationModels output (RA2 §6 honesty). v0.10.0 — loud

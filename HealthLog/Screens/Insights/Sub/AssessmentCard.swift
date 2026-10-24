@@ -60,7 +60,7 @@ struct AssessmentCard: View {
             section {
                 HLCloudDerivedPlaceholder(
                     variant: .inline,
-                    surfaceName: String(localized: "insights.metric.assessment.title"),
+                    surfaceName: AppLocale.string("insights.metric.assessment.title"),
                     onConnect: onConnectServer
                 )
             }
@@ -280,15 +280,15 @@ private struct AssessmentBody: View {
             // self-suppress when absent. U5 (1.1.1): a comma joins label and
             // time (no middle dot); the cached glyph closes the line.
             HStack(spacing: HLSpace.xxs) {
-                let label = String(localized: "insights.metric.assessment.aiLabel")
+                let label = AppLocale.string("insights.metric.assessment.aiLabel")
                 Text(verbatim: updatedAt == nil ? label : label + ",")
                 if let updatedAt {
-                    Text(verbatim: String(localized: "insights.briefingHero.generatedPrefix").localizedLowercase)
+                    Text(verbatim: AppLocale.string("insights.briefingHero.generatedPrefix").localizedLowercase)
                     Text(updatedAt, format: .relative(presentation: .named))
                 }
                 if cached {
                     Image(systemName: "tray.and.arrow.down")
-                        .accessibilityLabel(Text(String(localized: "Cached")))
+                        .accessibilityLabel(Text(AppLocale.string("Cached")))
                 }
             }
             .font(.hlCaption)
@@ -299,7 +299,7 @@ private struct AssessmentBody: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(Text(String(localized: "AI finding: \(text)")))
+        .accessibilityLabel(Text(AppLocale.string("AI finding: \(text)")))
     }
 }
 
@@ -321,6 +321,6 @@ private struct AssessmentSkeleton: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .accessibilityLabel(Text(String(localized: "Preparing the assistant's explanation")))
+        .accessibilityLabel(Text(AppLocale.string("Preparing the assistant's explanation")))
     }
 }

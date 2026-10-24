@@ -216,6 +216,8 @@ struct NotificationDiagnosticsLiteralGuardTests {
             #"\bfooter:\s*"((?:[^"\\]|\\.)*)""#,
             #"\bText\(\s*"((?:[^"\\]|\\.)*)""#,
             #"\bLabel\(\s*"((?:[^"\\]|\\.)*)""#,
+            #"\bAppLocale\.string\(\s*"((?:[^"\\]|\\.)*)""#,
+            #"\bLocalizedStringResource\(\s*"((?:[^"\\]|\\.)*)""#,
             // Deckt `String(localized: "…")` in einer Zeile **und** die über
             // drei Zeilen umbrochene Form, bei der `localized:` allein steht.
             #"\blocalized:\s*"((?:[^"\\]|\\.)*)""#
@@ -480,5 +482,13 @@ struct NotificationDiagnosticsLiteralGuardTests {
             `multiline_value`-Rekonstruktion in scripts/check-strings.sh).
             """
         )
+    }
+}
+
+extension NotificationDiagnosticsLiteralGuardTests {
+    @Test("Account-language lookups remain visible to the catalog guard")
+    func accountLanguageLookupsAreScanned() {
+        let source = #"AppLocale.string("diagnostics.sample")"#
+        #expect(Self.userFacingKeys(in: source).map(\.value) == ["diagnostics.sample"])
     }
 }

@@ -35,10 +35,10 @@ extension LabRangeStatus {
     /// Localized short label for the badge / VoiceOver.
     var localizedLabel: String {
         switch self {
-        case .inRange: String(localized: "labs.range.inRange")
-        case .below: String(localized: "labs.range.below")
-        case .above: String(localized: "labs.range.above")
-        case .unknown: String(localized: "labs.range.unknown")
+        case .inRange: AppLocale.string("labs.range.inRange")
+        case .below: AppLocale.string("labs.range.below")
+        case .above: AppLocale.string("labs.range.above")
+        case .unknown: AppLocale.string("labs.range.unknown")
         }
     }
 }

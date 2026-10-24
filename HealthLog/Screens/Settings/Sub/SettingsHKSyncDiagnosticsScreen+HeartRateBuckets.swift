@@ -62,18 +62,18 @@ extension SettingsHKSyncDiagnosticsScreen {
 
     private var hrBucketCutoverLabel: String {
         guard let cutover = hrBucketSnapshot?.cutover else {
-            return String(localized: "settings.hkdiag.hrbuckets.not_armed")
+            return AppLocale.string("settings.hkdiag.hrbuckets.not_armed")
         }
         return cutover.formatted(Date.ISO8601FormatStyle().year().month().day())
     }
 
     private func hrBucketDateLabel(_ date: Date?) -> String {
-        guard let date else { return String(localized: "settings.hkdiag.never") }
-        return date.formatted(.dateTime.day().month().hour().minute())
+        guard let date else { return AppLocale.string("settings.hkdiag.never") }
+        return date.formatted(.dateTime.day().month().hour().minute().locale(AppLocale.shared.current))
     }
 
     private func hrBucketEventLabel(_ event: HRBucketSyncLedger.Event?) -> String {
-        guard let event else { return String(localized: "settings.hkdiag.never") }
+        guard let event else { return AppLocale.string("settings.hkdiag.never") }
         let gate = HKSyncDiagnosticsVocabulary.heartRateBucketGate(event.gate)
         return "\(gate), \(relativeOrNever(event.at))"
     }

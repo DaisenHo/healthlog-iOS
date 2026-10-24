@@ -514,7 +514,7 @@
                 // — only the human-readable PHI on the lock screen is hidden.
                 // Default OFF → no behaviour change unless the user opts in.
                 if LockScreenPrivacy.hideMedicationName() {
-                    content.title = String(localized: "Medication reminder")
+                    content.title = AppLocale.string("Medication reminder")
                     content.body = ""
                 }
 
@@ -523,7 +523,7 @@
                 // local reminder; say so instead of falling silent. The line names
                 // no medication, so it stays under the lock-screen redaction.
                 if isRunwayTail {
-                    let hint = String(localized: "notif.med.runwayTail.hint")
+                    let hint = AppLocale.string("notif.med.runwayTail.hint")
                     content.body = content.body.isEmpty ? hint : "\(content.body)\n\(hint)"
                 }
 

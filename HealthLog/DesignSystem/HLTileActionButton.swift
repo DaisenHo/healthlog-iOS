@@ -98,7 +98,7 @@ struct HLTileActionButton: View {
     }
 
     var body: some View {
-        let label = String(localized: titleKey)
+        let label = AppLocale.string(AppLocale.shared.resource(titleKey))
         return Button(action: action) {
             HStack(spacing: HLSpace.sm) {
                 if let icon {

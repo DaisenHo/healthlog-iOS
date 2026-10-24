@@ -146,12 +146,18 @@ struct MoodBetterDayRowView: View {
     nonisolated static func directionCaption(for factor: BetterDayFactor) -> String {
         switch factor.direction {
         case .up:
-            String(localized: "Tends to go with higher mood", comment: "Better-days factor: positive association caption")
+            AppLocale.string(LocalizedStringResource(
+                "Tends to go with higher mood",
+                comment: "Better-days factor: positive association caption"
+            ))
         case .down:
-            String(localized: "Tends to go with lower mood", comment: "Better-days factor: negative association caption")
+            AppLocale.string(LocalizedStringResource(
+                "Tends to go with lower mood",
+                comment: "Better-days factor: negative association caption"
+            ))
         // #115 · 1.7 — used to decode to `.up` and claim "higher mood".
         case .unknown:
-            String(localized: "mood.betterDays.direction.unknown")
+            AppLocale.string("mood.betterDays.direction.unknown")
         }
     }
 
@@ -168,10 +174,10 @@ struct MoodBetterDayRowView: View {
     nonisolated static func accessibilityValue(_ factor: BetterDayFactor, label: String) -> String {
         let caption = directionCaption(for: factor)
         let confidence = MoodConfidencePill.label(for: factor.confidence)
-        return String(
-            localized: "\(caption), based on \(factor.n) days. \(confidence) confidence.",
+        return AppLocale.string(LocalizedStringResource(
+            "\(caption), based on \(factor.n) days. \(confidence) confidence.",
             comment: "VoiceOver value for one better-days factor row"
-        )
+        ))
     }
 
     // MARK: - Metric channel resolution
@@ -180,11 +186,14 @@ struct MoodBetterDayRowView: View {
     /// `mood-aggregates.ts`). Unknown future keys fall back to a de-snaked form.
     nonisolated static func metricLabel(for key: String) -> String {
         switch key {
-        case "sleep": String(localized: "Sleep", comment: "Better-days metric: sleep duration")
-        case "steps": String(localized: "Steps", comment: "Better-days metric: step count")
-        case "pulse": String(localized: "Resting pulse", comment: "Better-days metric: pulse")
-        case "weight": String(localized: "Weight", comment: "Better-days metric: body weight")
-        case "bloodPressureSystolic": String(localized: "Blood pressure", comment: "Better-days metric: systolic blood pressure")
+        case "sleep": AppLocale.string(LocalizedStringResource("Sleep", comment: "Better-days metric: sleep duration"))
+        case "steps": AppLocale.string(LocalizedStringResource("Steps", comment: "Better-days metric: step count"))
+        case "pulse": AppLocale.string(LocalizedStringResource("Resting pulse", comment: "Better-days metric: pulse"))
+        case "weight": AppLocale.string(LocalizedStringResource("Weight", comment: "Better-days metric: body weight"))
+        case "bloodPressureSystolic": AppLocale.string(LocalizedStringResource(
+                "Blood pressure",
+                comment: "Better-days metric: systolic blood pressure"
+            ))
         default:
             // Forward-compatible de-snake: `FUTURE_CHANNEL` → `future channel`.
             key.lowercased()

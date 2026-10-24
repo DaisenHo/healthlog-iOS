@@ -85,12 +85,12 @@ struct AISourceStep: View {
         .background(HLColor.background)
         .safeAreaInset(edge: .bottom) {
             VStack(spacing: HLSpace.sm) {
-                HLButton(String(localized: "Continue"), variant: .primary, size: .large) {
+                HLButton(AppLocale.string("Continue"), variant: .primary, size: .large) {
                     commit(selection)
                     onNext()
                 }
                 .accessibilityIdentifier("onboarding.aiSource.continue")
-                HLButton(String(localized: "Later"), variant: .ghost) {
+                HLButton(AppLocale.string("Later"), variant: .ghost) {
                     onSkip()
                 }
                 .accessibilityIdentifier("onboarding.aiSource.skip")
@@ -139,13 +139,14 @@ struct AISourceStep: View {
                 // so the header rhythm reads identical step-to-step.
                 .font(.hlIcon(HLIconSize.display))
                 .foregroundStyle(HLText.primary)
-            Text(String(localized: "Choose your assistant"))
+            Text(AppLocale.string("Choose your assistant"))
                 .font(.hlTitle1)
                 .foregroundStyle(HLText.primary)
             Text(
-                String(
-                    localized: "HealthLog can add findings and a coach. Pick how — privately on your device, online from your provider, or not at all. You can change this anytime in Settings."
-                )
+                AppLocale
+                    .string(
+                        "HealthLog can add findings and a coach. Pick how — privately on your device, online from your provider, or not at all. You can change this anytime in Settings."
+                    )
             )
             .font(.hlBody)
             .foregroundStyle(HLText.secondary)
@@ -164,9 +165,7 @@ struct AISourceStep: View {
                 .foregroundStyle(HLText.secondary)
                 .accessibilityHidden(true)
             Text(
-                String(
-                    localized: "You'll finish connecting your online provider in Settings → Assistant after setup."
-                )
+                AppLocale.string("You'll finish connecting your online provider in Settings → Assistant after setup.")
             )
             .font(.hlCaption)
             .foregroundStyle(HLText.secondary)
@@ -188,9 +187,7 @@ struct AISourceStep: View {
                 .foregroundStyle(HLText.secondary)
                 .accessibilityHidden(true)
             Text(
-                String(
-                    localized: "You'll add your API key in Settings → Assistant after setup."
-                )
+                AppLocale.string("You'll add your API key in Settings → Assistant after setup.")
             )
             .font(.hlCaption)
             .foregroundStyle(HLText.secondary)

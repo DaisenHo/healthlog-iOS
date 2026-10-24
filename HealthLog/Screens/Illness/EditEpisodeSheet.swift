@@ -154,7 +154,7 @@ struct EditEpisodeSheet: View {
             }
             dismiss()
         } else {
-            saveError = store.lastError ?? String(localized: "illness.save.failed")
+            saveError = store.lastError ?? AppLocale.string("illness.save.failed")
         }
     }
 

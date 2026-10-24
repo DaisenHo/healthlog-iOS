@@ -21,11 +21,11 @@ struct ConnectionHealthPresentation: Equatable {
     /// The state in one or two words (the pill's label).
     var stateLabel: String {
         switch health.state {
-        case .ok: String(localized: "Connected")
-        case .limited: String(localized: "integration.health.pill.limited")
-        case .degraded: String(localized: "integration.health.pill.degraded")
-        case .actionRequired: String(localized: "integration.health.pill.actionRequired")
-        case .unknown: String(localized: "integration.health.pill.unknown")
+        case .ok: AppLocale.string("Connected")
+        case .limited: AppLocale.string("integration.health.pill.limited")
+        case .degraded: AppLocale.string("integration.health.pill.degraded")
+        case .actionRequired: AppLocale.string("integration.health.pill.actionRequired")
+        case .unknown: AppLocale.string("integration.health.pill.unknown")
         }
     }
 
@@ -61,7 +61,7 @@ struct ConnectionHealthPresentation: Equatable {
     }
 
     var sentence: String {
-        String(localized: String.LocalizationValue(sentenceKey))
+        AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(sentenceKey)))
     }
 
     /// The button this surface offers, or `nil`. `supported` is what the
@@ -85,15 +85,15 @@ struct ConnectionHealthPresentation: Equatable {
     var unavailableLine: String? {
         let items = health.unavailable.map(\.item).filter { !$0.isEmpty }
         guard !items.isEmpty else { return nil }
-        let list = items.formatted(.list(type: .and))
-        return String(localized: "integration.health.unavailable \(list)")
+        let list = items.formatted(.list(type: .and).locale(AppLocale.shared.current))
+        return AppLocale.string("integration.health.unavailable \(list)")
     }
 
     /// "Since 15 Oct 2026 at 08:00" for a degraded or action-required state.
     var sinceLine: String? {
         guard let since = health.since else { return nil }
-        let when = since.formatted(date: .abbreviated, time: .shortened)
-        return String(localized: "integration.health.since \(when)")
+        let when = since.formatted(Date.FormatStyle(date: .abbreviated, time: .shortened, locale: AppLocale.shared.current))
+        return AppLocale.string("integration.health.since \(when)")
     }
 }
 

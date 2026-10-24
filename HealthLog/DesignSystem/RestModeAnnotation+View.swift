@@ -82,7 +82,7 @@ struct RestModeAnnotationPill: View {
     }
 
     private var accessibilityLabel: String {
-        String(localized: "illness.restMode.pill.a11y")
+        AppLocale.string("illness.restMode.pill.a11y")
     }
 }
 

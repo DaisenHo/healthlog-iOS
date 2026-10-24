@@ -28,7 +28,7 @@ extension AskCoachSheet {
                 welcomeLockup
                 HLCloudDerivedPlaceholder(
                     variant: .hero,
-                    surfaceName: String(localized: "cloud_derived.surface.server_coach"),
+                    surfaceName: AppLocale.string("cloud_derived.surface.server_coach"),
                     onConnect: { authStore.beginServerPairing() }
                 )
                 Spacer(minLength: HLSpace.xxxl)
@@ -72,24 +72,21 @@ extension AskCoachSheet {
             EmptyView() // handled upstream
         case .appleIntelligenceNotEnabled:
             unavailableSurface(
-                title: String(localized: "Apple Intelligence is off"),
-                message: String(
-                    localized: "Turn on Apple Intelligence in Settings so the Coach can answer on-device."
-                )
+                title: AppLocale.string("Apple Intelligence is off"),
+                message: AppLocale.string("Turn on Apple Intelligence in Settings so the Coach can answer on-device.")
             )
         case .modelNotReady:
             unavailableSurface(
-                title: String(localized: "Model is preparing"),
-                message: String(
-                    localized: "Apple is downloading the on-device model. As soon as it is ready, the Coach can answer."
-                )
+                title: AppLocale.string("Model is preparing"),
+                message: AppLocale.string("Apple is downloading the on-device model. As soon as it is ready, the Coach can answer.")
             )
         case .deviceNotEligible, .unsupported:
             unavailableSurface(
-                title: String(localized: "Coach requires Apple Intelligence"),
-                message: String(
-                    localized: "The Coach answers exclusively on-device and requires an iPhone with Apple Intelligence (iPhone 15 Pro or newer)."
-                )
+                title: AppLocale.string("Coach requires Apple Intelligence"),
+                message: AppLocale
+                    .string(
+                        "The Coach answers exclusively on-device and requires an iPhone with Apple Intelligence (iPhone 15 Pro or newer)."
+                    )
             )
         }
     }
@@ -213,17 +210,17 @@ extension AskCoachSheet {
                             .font(.hlLargeTitle.weight(.light))
                             .foregroundStyle(HLText.primary)
                             .frame(maxWidth: .infinity, alignment: .center)
-                        Text(String(localized: "A server provider is required"))
+                        Text(AppLocale.string("A server provider is required"))
                             .font(.hlLargeTitle)
                             .foregroundStyle(HLText.primary)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .accessibilityElement(children: .combine)
                     Text(
-                        String(
-                            // swiftlint:disable:next line_length
-                            localized: "The External AI coach answers through your server's AI provider — but none is configured yet. Set up a server provider (or your own key) to use it."
-                        )
+                        AppLocale
+                            .string(
+                                "The External AI coach answers through your server's AI provider — but none is configured yet. Set up a server provider (or your own key) to use it."
+                            )
                     )
                     .font(.hlBody)
                     .foregroundStyle(HLText.secondary)
@@ -236,11 +233,11 @@ extension AskCoachSheet {
             }
             .hlScrollEdgeSoft()
             .hlScreenBackground()
-            .navigationTitle(String(localized: "External AI"))
+            .navigationTitle(AppLocale.string("External AI"))
             .navigationBarTitleDisplayMode(.inline)
             .safeAreaInset(edge: .bottom) {
                 HLButton(
-                    String(localized: "Set up a provider"),
+                    AppLocale.string("Set up a provider"),
                     variant: .primary,
                     size: .large
                 ) {
@@ -334,7 +331,7 @@ private struct CoachSourceChoiceView: View {
                     action: commitSelection
                 )
                 .tint(HLAccent.primary)
-                Text(String(localized: "You can change this anytime in Settings."))
+                Text(AppLocale.string("You can change this anytime in Settings."))
                     .font(.hlCaption)
                     .foregroundStyle(HLText.tertiary)
                     .multilineTextAlignment(.center)
@@ -366,12 +363,12 @@ private struct CoachSourceChoiceView: View {
     /// required (the CTA then routes to setup, never a silent-bounce consent).
     private var heroTitle: String {
         if onDeviceCapable {
-            return String(localized: "Choose your coach")
+            return AppLocale.string("Choose your coach")
         }
         if hasServerProvider {
-            return String(localized: "Coach via your server")
+            return AppLocale.string("Coach via your server")
         }
-        return String(localized: "A server provider is required")
+        return AppLocale.string("A server provider is required")
     }
 
     /// The single primary CTA label. Capable device commits the picked source; a
@@ -379,12 +376,12 @@ private struct CoachSourceChoiceView: View {
     /// device with no provider routes to setup (v0.14.1 — never a consent noop).
     private var primaryTitle: String {
         if onDeviceCapable {
-            return String(localized: "Start the coach")
+            return AppLocale.string("Start the coach")
         }
         if hasServerProvider {
-            return String(localized: "Consent and continue")
+            return AppLocale.string("Consent and continue")
         }
-        return String(localized: "Set up a provider")
+        return AppLocale.string("Set up a provider")
     }
 
     /// v0.14.1 — the two chooser cards (On-device + External AI). External AI is
@@ -431,28 +428,28 @@ private struct CoachSourceChoiceView: View {
     /// changing its catalogue identity, so the one over-long line carries a local
     /// disable.
     private var serverConsentExplanation: String {
-        String(
-            // swiftlint:disable:next line_length
-            localized: "Your iPhone has no on-device Coach. Your configured server provider can answer instead — your values leave the device for this. Consent once to use the Coach."
-        )
+        AppLocale
+            .string(
+                "Your iPhone has no on-device Coach. Your configured server provider can answer instead — your values leave the device for this. Consent once to use the Coach."
+            )
     }
 
     /// v0.14.1 — copy for the non-capable device with NO server provider: the
     /// Coach cannot answer on-device and there is no provider to route through,
     /// so the user is told plainly that a provider must be set up first.
     private var providerNeededExplanation: String {
-        String(
-            // swiftlint:disable:next line_length
-            localized: "Your iPhone has no on-device Coach, and no server AI provider is configured yet. Set up a provider (or your own key) to use the Coach."
-        )
+        AppLocale
+            .string(
+                "Your iPhone has no on-device Coach, and no server AI provider is configured yet. Set up a provider (or your own key) to use the Coach."
+            )
     }
 
     /// Honest copy for the capable-device case: the user CAN stay private
     /// on-device, or opt into the richer server answer.
     private var serverChoiceExplanation: String {
-        String(
-            // swiftlint:disable:next line_length
-            localized: "Your iPhone can answer privately on-device, or your server's AI can give richer answers — your values leave the device for the server path. Your choice."
-        )
+        AppLocale
+            .string(
+                "Your iPhone can answer privately on-device, or your server's AI can give richer answers — your values leave the device for the server path. Your choice."
+            )
     }
 }

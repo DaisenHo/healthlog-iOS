@@ -89,7 +89,7 @@ struct InjectionBodyMap: View {
         // Centre the body in the card without stretching the calibrated frame.
         .frame(maxWidth: .infinity)
         .accessibilityElement(children: .contain)
-        .accessibilityLabel(Text(String(localized: "Body overview")))
+        .accessibilityLabel(Text(AppLocale.string("Body overview")))
     }
 
     /// **v0.14.1 ITEM-C** — dashed = recommended (rotation suggestion),
@@ -97,7 +97,7 @@ struct InjectionBodyMap: View {
     private var legend: some View {
         HStack(spacing: HLSpace.md) {
             legendItem(
-                label: String(localized: "med.injection.legend.recommended"),
+                label: AppLocale.string("med.injection.legend.recommended"),
                 swatch: AnyView(
                     Circle()
                         .strokeBorder(
@@ -108,7 +108,7 @@ struct InjectionBodyMap: View {
                 )
             )
             legendItem(
-                label: String(localized: "med.injection.legend.last_used"),
+                label: AppLocale.string("med.injection.legend.last_used"),
                 swatch: AnyView(
                     Circle()
                         .fill(HLColor.statusWarn.opacity(HLOpacity.surfaceTintWeak))
@@ -188,11 +188,11 @@ struct InjectionBodyMap: View {
 
     private func hint(for site: InjectionSite) -> String {
         if suggested == site {
-            return String(localized: "Empfohlene Stelle laut Rotationsplan")
+            return AppLocale.string("Empfohlene Stelle laut Rotationsplan")
         }
         if lastUsed == site {
-            return String(localized: "Last used site")
+            return AppLocale.string("Last used site")
         }
-        return String(localized: "Double-tap to select")
+        return AppLocale.string("Double-tap to select")
     }
 }

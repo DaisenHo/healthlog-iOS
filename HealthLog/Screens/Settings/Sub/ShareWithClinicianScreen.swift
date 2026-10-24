@@ -32,7 +32,7 @@ struct ShareWithClinicianScreen: View {
             } else {
                 HLCloudDerivedPlaceholder(
                     variant: .inline,
-                    surfaceName: String(localized: "clinician sharing"),
+                    surfaceName: AppLocale.string("clinician sharing"),
                     onConnect: { authStore.beginServerPairing() }
                 )
             }
@@ -261,10 +261,10 @@ private struct ShareLinkRow: View {
 
     private var expiryText: String {
         guard let date = ShareLinkDateFormat.parse(link.expiresAt) else {
-            return String(localized: "Expires soon")
+            return AppLocale.string("Expires soon")
         }
         let formatted = HLDateFormat.date(date, style: .abbreviated)
-        return String(localized: "Until \(formatted)")
+        return AppLocale.string("Until \(formatted)")
     }
 }
 

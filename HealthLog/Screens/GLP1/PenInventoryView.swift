@@ -51,14 +51,14 @@ public struct PenInventoryView: View {
                 showingAdd = true
             } label: {
                 Label(
-                    String(localized: "Add pen"),
+                    AppLocale.string("Add pen"),
                     systemImage: "plus.circle.fill"
                 )
                 .labelStyle(.iconOnly)
                 .font(.hlTitle3)
                 .foregroundStyle(.tint)
             }
-            .accessibilityLabel(Text(String(localized: "Add pen")))
+            .accessibilityLabel(Text(AppLocale.string("Add pen")))
         }
     }
 
@@ -81,17 +81,15 @@ public struct PenInventoryView: View {
         HLCard(style: .ghost) {
             VStack(alignment: .leading, spacing: HLSpace.sm) {
                 Label(
-                    String(localized: "No pen logged yet"),
+                    AppLocale.string("No pen logged yet"),
                     systemImage: "tray"
                 )
                 .font(.hlHeadline)
                 .foregroundStyle(HLText.primary)
-                Text(String(
-                    localized: "Log your pens to keep track of supply and prescriptions."
-                ))
-                .font(.hlSubhead)
-                .foregroundStyle(HLText.secondary)
-                .fixedSize(horizontal: false, vertical: true)
+                Text(AppLocale.string("Log your pens to keep track of supply and prescriptions."))
+                    .font(.hlSubhead)
+                    .foregroundStyle(HLText.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
                 // #52 — the "Hersteller + Dosisstärke werden lokal gespeichert"
                 // footnote is GONE: since server v1.31.0 the inventory row carries
                 // both fields, so nothing about a pen is device-local any more.
@@ -108,7 +106,7 @@ public struct PenInventoryView: View {
                         .font(.hlIcon(HLIconSize.lg))
                         .foregroundStyle(.tint)
                     VStack(alignment: .leading, spacing: HLSpace.xxs) {
-                        Text(String(localized: "Currently in use"))
+                        Text(AppLocale.string("Currently in use"))
                             .font(.hlCaption)
                             .foregroundStyle(HLText.tertiary)
                         // #52 — a server row may carry only one of the two detail
@@ -128,7 +126,7 @@ public struct PenInventoryView: View {
                 }
                 if let firstUsed = pen.firstUsedAt {
                     Text(String(
-                        format: String(localized: "Started on %@"),
+                        format: AppLocale.string("Started on %@"),
                         HLDateFormat.date(firstUsed, style: .abbreviated)
                     ))
                     .font(.hlCaption)
@@ -138,14 +136,14 @@ public struct PenInventoryView: View {
                     Task { await store.markFinished(id: pen.id) }
                 } label: {
                     Label(
-                        String(localized: "Mark as used up"),
+                        AppLocale.string("Mark as used up"),
                         systemImage: "checkmark.circle"
                     )
                     .font(.hlSubhead)
                     .foregroundStyle(.tint)
                 }
                 .buttonStyle(.plain)
-                .accessibilityHint(Text(String(localized: "Marks the active pen as used up.")))
+                .accessibilityHint(Text(AppLocale.string("Marks the active pen as used up.")))
             }
         }
     }
@@ -153,12 +151,12 @@ public struct PenInventoryView: View {
     private var stockSummary: some View {
         HStack(spacing: HLSpace.md) {
             HLBadge(
-                String(format: String(localized: "%d unread"), store.unopenedCount),
+                String(format: AppLocale.string("%d unread"), store.unopenedCount),
                 icon: "tray.full",
                 tone: store.unopenedCount == 0 ? .warning : .neutral
             )
             HLBadge(
-                String(format: String(localized: "%d used up"), store.finishedPens.count),
+                String(format: AppLocale.string("%d used up"), store.finishedPens.count),
                 icon: "tray.full.fill",
                 tone: .neutral
             )
@@ -171,7 +169,7 @@ public struct PenInventoryView: View {
             VStack(spacing: 0) {
                 let nonActive = store.pens.filter { !$0.isActive }
                 if nonActive.isEmpty {
-                    Text(String(localized: "No further pens logged."))
+                    Text(AppLocale.string("No further pens logged."))
                         .font(.hlSubhead)
                         .foregroundStyle(HLText.secondary)
                 } else {
@@ -215,7 +213,7 @@ private struct PenRow: View {
                         .foregroundStyle(HLText.secondary)
                 }
                 Text(String(
-                    format: String(localized: "Received %@"),
+                    format: AppLocale.string("Received %@"),
                     HLDateFormat.date(pen.dispensedAt, style: .abbreviated)
                 ))
                 .font(.hlCaption)
@@ -234,19 +232,19 @@ private struct PenRow: View {
                         onMarkFinished()
                     } label: {
                         Label(
-                            String(localized: "Mark as used up"),
+                            AppLocale.string("Mark as used up"),
                             systemImage: "checkmark.circle"
                         )
                     }
                 }
                 Button(role: .destructive, action: onDelete) {
-                    Label(String(localized: "Delete"), systemImage: "trash")
+                    Label(AppLocale.string("Delete"), systemImage: "trash")
                 }
             } label: {
                 Image(systemName: "ellipsis.circle")
                     .foregroundStyle(HLText.secondary)
             }
-            .accessibilityLabel(Text(String(localized: "Pen actions")))
+            .accessibilityLabel(Text(AppLocale.string("Pen actions")))
         }
         .padding(.vertical, HLSpace.sm)
         .accessibilityElement(children: .combine)
@@ -255,9 +253,9 @@ private struct PenRow: View {
     @ViewBuilder
     private var statusBadge: some View {
         if pen.isFinished {
-            HLBadge(String(localized: "Used up"), tone: .neutral)
+            HLBadge(AppLocale.string("Used up"), tone: .neutral)
         } else {
-            HLBadge(String(localized: "In stock"), tone: .info)
+            HLBadge(AppLocale.string("In stock"), tone: .info)
         }
     }
 }
@@ -299,31 +297,31 @@ struct PenInventoryEditSheet: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section(String(localized: "med.inventory.container.pen")) {
-                    TextField(String(localized: "Manufacturer / brand"), text: $manufacturer)
-                    TextField(String(localized: "Dose strength"), text: $doseStrength)
+                Section(AppLocale.string("med.inventory.container.pen")) {
+                    TextField(AppLocale.string("Manufacturer / brand"), text: $manufacturer)
+                    TextField(AppLocale.string("Dose strength"), text: $doseStrength)
                 }
-                Section(String(localized: "Procured")) {
+                Section(AppLocale.string("Procured")) {
                     DatePicker(
-                        String(localized: "Date"),
+                        AppLocale.string("Date"),
                         selection: $dispensedAt,
                         displayedComponents: [.date]
                     )
-                    Toggle(String(localized: "Get started now"), isOn: $markActiveNow)
+                    Toggle(AppLocale.string("Get started now"), isOn: $markActiveNow)
                 }
-                Section(String(localized: "Note")) {
-                    TextField(String(localized: "Optional"), text: $notes, axis: .vertical)
+                Section(AppLocale.string("Note")) {
+                    TextField(AppLocale.string("Optional"), text: $notes, axis: .vertical)
                         .lineLimit(3 ... 6)
                 }
             }
-            .navigationTitle(String(localized: "Log pen"))
+            .navigationTitle(AppLocale.string("Log pen"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "Cancel")) { dismiss() }
+                    Button(AppLocale.string("Cancel")) { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(String(localized: "Save")) { save() }
+                    Button(AppLocale.string("Save")) { save() }
                         .disabled(!isValid)
                 }
             }

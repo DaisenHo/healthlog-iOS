@@ -95,7 +95,11 @@ public final class MentalHealthStore {
     /// used to resolve the bundled crisis fallback. Mirrors the web sending its
     /// i18n locale (NOT the region), so a plain-"en" user gets the international
     /// set, a "de" user gets TelefonSeelsorge (server-confirmed mapping).
-    private let presentedLocale: String
+    private let explicitPresentedLocale: String?
+    private var presentedLocale: String {
+        explicitPresentedLocale ?? Self.deviceDisplayLocale()
+    }
+
     private var isReloading = false
     private var detailLoadID: UUID?
 
@@ -105,16 +109,17 @@ public final class MentalHealthStore {
 
     public init(
         repository: MentalHealthRepository,
-        presentedLocale: String = MentalHealthStore.deviceDisplayLocale()
+        presentedLocale: String? = nil
     ) {
         self.repository = repository
-        self.presentedLocale = presentedLocale
+        explicitPresentedLocale = presentedLocale
     }
 
     /// The app's effective UI language ("de" / "en") — the bundle's first
     /// preferred localization. Matches what the questionnaire wording is shown in.
     public static func deviceDisplayLocale() -> String {
-        Bundle.main.preferredLocalizations.first ?? "en"
+        // Only the licensed English and German questionnaire wording is bundled.
+        AppLocale.shared.current.language.languageCode?.identifier == "de" ? "de" : "en"
     }
 
     // MARK: - Load

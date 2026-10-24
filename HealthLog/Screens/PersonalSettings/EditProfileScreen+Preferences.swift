@@ -30,7 +30,7 @@ extension EditProfileScreen {
             // through `setUnitPreference` (optimistic mirror + PATCH). With no
             // explicit weight override, the weight picker follows this binary.
             Picker(
-                String(localized: "settings.unitSystem.title"),
+                AppLocale.string("settings.unitSystem.title"),
                 selection: unitSystemBinding
             ) {
                 ForEach(HLUnitPreference.allCases, id: \.self) { pref in
@@ -40,7 +40,7 @@ extension EditProfileScreen {
             .pickerStyle(.segmented)
             .accessibilityIdentifier("settings.units.systemPicker")
             unitRow(label: "Weight", identifier: "settings.units.weightPicker") {
-                Picker(String(localized: "Weight"), selection: bindable(\.weightUnit)) {
+                Picker(AppLocale.string("Weight"), selection: bindable(\.weightUnit)) {
                     ForEach(WeightUnit.allCases) { unit in
                         Text(unit.unitSuffix).tag(unit)
                     }
@@ -48,7 +48,7 @@ extension EditProfileScreen {
                 .labelsHidden()
             }
             unitRow(label: "Blood pressure", identifier: "settings.units.bloodPressurePicker") {
-                Picker(String(localized: "Blood pressure"), selection: bindable(\.bloodPressureUnit)) {
+                Picker(AppLocale.string("Blood pressure"), selection: bindable(\.bloodPressureUnit)) {
                     ForEach(BloodPressureUnit.allCases) { unit in
                         Text(unit.unitSuffix).tag(unit)
                     }
@@ -59,7 +59,7 @@ extension EditProfileScreen {
                 // #108 — the glucose unit belongs to the account: the pick
                 // PATCHes `/api/auth/me/glucose-unit` (optimistic, reverted on
                 // failure) so the server converts the series into the same unit.
-                Picker(String(localized: "Blood glucose"), selection: glucoseUnitBinding) {
+                Picker(AppLocale.string("Blood glucose"), selection: glucoseUnitBinding) {
                     ForEach(GlucoseUnit.allCases) { unit in
                         Text(unit.unitSuffix).tag(unit)
                     }
@@ -81,7 +81,7 @@ extension EditProfileScreen {
     var timeFormatSection: some View {
         Section {
             Picker(
-                String(localized: "settings.time_format.title"),
+                AppLocale.string("settings.time_format.title"),
                 selection: timeFormatBinding
             ) {
                 ForEach(HLTimeFormat.allCases, id: \.self) { format in
@@ -114,7 +114,7 @@ extension EditProfileScreen {
     var dateFormatSection: some View {
         Section {
             Picker(
-                String(localized: "settings.date_format.title"),
+                AppLocale.string("settings.date_format.title"),
                 selection: dateFormatBinding
             ) {
                 ForEach(HLDateFormat.allCases, id: \.self) { format in

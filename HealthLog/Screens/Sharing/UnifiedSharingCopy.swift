@@ -13,14 +13,14 @@ enum UnifiedSharingCopy {
     /// about the scope without the user opening the drawer.
     static func countSummary(_ store: UnifiedSharingStore) -> String {
         String(
-            format: String(localized: "report.selection.count"),
+            format: AppLocale.string("report.selection.count"),
             store.chosen.count,
             store.offeredLeaves.count
         )
     }
 
     static func droppedSummary(_ store: UnifiedSharingStore) -> String {
-        String(format: String(localized: "sharing.unified.dropped"), store.droppedForForm.count)
+        String(format: AppLocale.string("sharing.unified.dropped"), store.droppedForForm.count)
     }
 
     static func periodLabel(_ days: Int) -> LocalizedStringKey {
@@ -63,10 +63,10 @@ enum UnifiedSharingCopy {
     /// rendered PDF on one path and the canonical FHIR bundle on the other.
     static func sourceLabel(_ source: FHIRExportSource, form: UnifiedSharingStore.OutputForm) -> String {
         switch (source, form) {
-        case (.server, .fhir): String(localized: "Source: your server (canonical FHIR).")
-        case (.local, .fhir): String(localized: "Source: this device (offline FHIR).")
-        case (.server, _): String(localized: "Source: your server (rendered PDF).")
-        case (.local, _): String(localized: "Source: this device (offline PDF).")
+        case (.server, .fhir): AppLocale.string("Source: your server (canonical FHIR).")
+        case (.local, .fhir): AppLocale.string("Source: this device (offline FHIR).")
+        case (.server, _): AppLocale.string("Source: your server (rendered PDF).")
+        case (.local, _): AppLocale.string("Source: this device (offline PDF).")
         }
     }
 
@@ -76,9 +76,9 @@ enum UnifiedSharingCopy {
     static func noticeText(_ notice: ReportSelectionStore.Notice) -> String {
         switch notice {
         case .rebuiltFromCapabilities:
-            String(localized: "report.selection.notice.rebuilt")
+            AppLocale.string("report.selection.notice.rebuilt")
         case let .droppedRetiredLeaves(count):
-            String(format: String(localized: "report.selection.notice.dropped"), count)
+            String(format: AppLocale.string("report.selection.notice.dropped"), count)
         }
     }
 }

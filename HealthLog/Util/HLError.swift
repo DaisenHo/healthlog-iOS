@@ -243,7 +243,7 @@ public extension HLError {
         switch self {
         case let .network(u):
             let detail = "\(u)"
-            return String(localized: "error.detail.network \(detail)")
+            return AppLocale.string("error.detail.network \(detail)")
         // v0.14.1 #3 — defense in depth: a 5xx carries an internal server
         // message (e.g. a leaked JS "x.map is not a function" TypeError) that
         // must never reach a user-facing surface. Mirror `userFacingDescription`
@@ -252,18 +252,18 @@ public extension HLError {
         // they carry server-localised, user-safe copy.
         case let .server(status, _, m):
             return (500 ... 599).contains(status) ? userFacingDescription : m
-        case let .decoding(s): return String(localized: "error.detail.decoding \(s)")
-        case .unauthorized: return String(localized: "error.detail.unauthorized")
-        case .rateLimited: return String(localized: "error.detail.rateLimited")
-        case .idempotencyReplayInFlight: return String(localized: "error.detail.replayInFlight")
-        case .offline: return String(localized: "error.detail.offline")
-        case .canceled: return String(localized: "error.detail.canceled")
-        case let .aiUnavailable(refusal): return String(localized: "error.detail.aiUnavailable \(refusal.errorCode)")
-        case let .moduleDisabled(module): return String(localized: "error.detail.moduleDisabled \(module)")
-        case let .notPersisted(s): return String(localized: "error.detail.notPersisted \(s)")
-        case let .writeConflictUnresolved(code): return String(localized: "error.detail.writeConflict \(code)")
-        case let .refusedWithReason(code, reason): return String(localized: "error.detail.refused \(code) \(reason)")
-        case .serverNotConfigured: return String(localized: "error.detail.serverNotConfigured")
+        case let .decoding(s): return AppLocale.string("error.detail.decoding \(s)")
+        case .unauthorized: return AppLocale.string("error.detail.unauthorized")
+        case .rateLimited: return AppLocale.string("error.detail.rateLimited")
+        case .idempotencyReplayInFlight: return AppLocale.string("error.detail.replayInFlight")
+        case .offline: return AppLocale.string("error.detail.offline")
+        case .canceled: return AppLocale.string("error.detail.canceled")
+        case let .aiUnavailable(refusal): return AppLocale.string("error.detail.aiUnavailable \(refusal.errorCode)")
+        case let .moduleDisabled(module): return AppLocale.string("error.detail.moduleDisabled \(module)")
+        case let .notPersisted(s): return AppLocale.string("error.detail.notPersisted \(s)")
+        case let .writeConflictUnresolved(code): return AppLocale.string("error.detail.writeConflict \(code)")
+        case let .refusedWithReason(code, reason): return AppLocale.string("error.detail.refused \(code) \(reason)")
+        case .serverNotConfigured: return AppLocale.string("error.detail.serverNotConfigured")
         case let .unknown(s): return s
         }
     }
@@ -279,73 +279,73 @@ public extension HLError {
     var userFacingDescription: String {
         switch self {
         case .network(.timeout):
-            String(localized: "Connection took too long. Please try again.")
+            AppLocale.string("Connection took too long. Please try again.")
         case .network:
-            String(localized: "No connection. We'll retry automatically.")
+            AppLocale.string("No connection. We'll retry automatically.")
         case .offline:
-            String(localized: "Offline — showing cached values.")
+            AppLocale.string("Offline — showing cached values.")
         case .unauthorized:
-            String(localized: "Sign-in expired. Please sign in again.")
+            AppLocale.string("Sign-in expired. Please sign in again.")
         case .rateLimited:
-            String(localized: "Too many requests. Please try again shortly.")
+            AppLocale.string("Too many requests. Please try again shortly.")
         case .idempotencyReplayInFlight:
             // Audit B-2 — the write is not lost and not refused; the server is
             // still finishing the first attempt of this very request.
-            String(localized: "This is still being processed. We'll retry automatically.")
+            AppLocale.string("This is still being processed. We'll retry automatically.")
         case .canceled:
             ""
         case .server where isServerKeyMismatch:
-            String(localized: "error.server.keyMismatch")
+            AppLocale.string("error.server.keyMismatch")
         case .server where isMedicationIntakeNotTracked:
-            String(localized: "med.intake.error.notTracked")
+            AppLocale.string("med.intake.error.notTracked")
         case let .server(status, _, message) where (400 ... 499).contains(status):
             // 4xx envelopes carry a user-friendly message string from the server
             // (`apiError` already localises). Surface it verbatim.
             message
         case .server:
-            String(localized: "Server error. We're looking into it.")
+            AppLocale.string("Server error. We're looking into it.")
         case .decoding:
             // CRITICAL: never expose raw DecodingError text. The full text is
             // still logged via HLLog.api elsewhere with `LogSanitizer.redact`.
-            String(localized: "Couldn't read the data. Please try again.")
+            AppLocale.string("Couldn't read the data. Please try again.")
         case .aiUnavailable:
             // Surface placeholder owns the user-facing copy
             // (`feature_disabled.title` / `feature_disabled.subtitle`).
             // Banner copy stays neutral so it can't render twice if a
             // caller both throws into the banner AND mounts the
             // placeholder card.
-            String(localized: "feature_disabled.title")
+            AppLocale.string("feature_disabled.title")
         case .moduleDisabled:
             // #30 — the surface is hidden structurally once ModuleGate
             // mirrors the disabled key; the banner copy stays neutral so a
             // mid-flight caller doesn't surface a scary error for what is
             // simply a switched-off module.
-            String(localized: "feature_disabled.title")
+            AppLocale.string("feature_disabled.title")
         case .notPersisted:
             // The write reached neither the server nor the durable outbox. Be
             // honest: the user's change was NOT saved and they should retry.
-            String(localized: "Couldn't save your change. Please try again.")
+            AppLocale.string("Couldn't save your change. Please try again.")
         case .writeConflictUnresolved:
             // CU-20 — nothing was written because the surface changed elsewhere
             // (another device / the web session) while the edit was open. Be
             // honest and specific: a plain "try again" would read as a network
             // blip, when the actual instruction is "reopen, the data moved".
-            String(localized: "This was changed somewhere else while you were editing. Reopen the screen and make your change again.")
+            AppLocale.string("This was changed somewhere else while you were editing. Reopen the screen and make your change again.")
         case .refusedWithReason:
             // The refusal is specific, and the surface that made the request
             // owns the sentence that explains it (it knows the domain, this
             // enum does not). This banner copy is the honest floor for a caller
             // that did NOT handle its own refusal: it says the entry was
             // refused, and never invents a reason.
-            String(localized: "The server didn't accept this. Please check your entry and try again.")
+            AppLocale.string("The server didn't accept this. Please check your entry and try again.")
         case .serverNotConfigured:
             // Kein Transportfehler, sondern ein Einrichtungszustand: die App
             // kennt noch keine Serveradresse. Die Kopie sagt genau das und
             // nennt den Weg dorthin, statt einen Verbindungsfehler zu
             // behaupten, den es nicht gibt.
-            String(localized: "error.serverNotConfigured")
+            AppLocale.string("error.serverNotConfigured")
         case .unknown:
-            String(localized: "Something went wrong. Please try again.")
+            AppLocale.string("Something went wrong. Please try again.")
         }
     }
 
@@ -366,6 +366,6 @@ public extension HLError {
     /// sanitized log line the caller writes — never through this string.
     static func userFacingText(for error: Error) -> String {
         (error as? HLError)?.userFacingDescription
-            ?? String(localized: "Something went wrong. Please try again.")
+            ?? AppLocale.string("Something went wrong. Please try again.")
     }
 }

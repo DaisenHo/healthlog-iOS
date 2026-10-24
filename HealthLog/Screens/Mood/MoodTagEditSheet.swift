@@ -53,7 +53,7 @@ struct MoodTagEditSheet: View {
                             .accessibilityIdentifier("mood.tags.edit.error")
                     }
                     HLButton(
-                        String(localized: isEditing ? "Save" : "mood.tags.edit.create"),
+                        AppLocale.string(isEditing ? "Save" : "mood.tags.edit.create"),
                         variant: .primary,
                         isLoading: store.isMutating
                     ) {
@@ -72,7 +72,7 @@ struct MoodTagEditSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button(String(localized: "Cancel")) { dismiss() }
+                    Button(AppLocale.string("Cancel")) { dismiss() }
                 }
             }
             .onAppear(perform: seed)
@@ -92,7 +92,7 @@ struct MoodTagEditSheet: View {
             footer: "mood.tags.edit.label.footer"
         ) {
             VStack(alignment: .leading, spacing: HLSpace.md) {
-                TextField(String(localized: "mood.tags.edit.label.placeholder"), text: $label)
+                TextField(AppLocale.string("mood.tags.edit.label.placeholder"), text: $label)
                     .textFieldStyle(.plain)
                     .focused($labelFocused)
                     .submitLabel(.done)

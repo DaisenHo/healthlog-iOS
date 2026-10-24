@@ -116,7 +116,7 @@ import Foundation
             guard let challengeData = Data(base64URLEncoded: challenge),
                   let userIDData = Data(base64URLEncoded: userID) ?? userID.data(using: .utf8) else
             {
-                throw HLError.unknown(String(localized: "auth.passkey.error.invalidChallenge"))
+                throw HLError.unknown(AppLocale.string("auth.passkey.error.invalidChallenge"))
             }
             let resolvedAnchor = anchor.anchor()
             try Self.requirePresentableAnchor(resolvedAnchor)
@@ -143,7 +143,7 @@ import Foundation
             anchor: ASPresentationAnchorProvider
         ) async throws -> PasskeyAssertion {
             guard let challengeData = Data(base64URLEncoded: challenge) else {
-                throw HLError.unknown(String(localized: "auth.passkey.error.invalidChallenge"))
+                throw HLError.unknown(AppLocale.string("auth.passkey.error.invalidChallenge"))
             }
             let resolvedAnchor = anchor.anchor()
             try Self.requirePresentableAnchor(resolvedAnchor)
@@ -205,7 +205,7 @@ import Foundation
         @MainActor
         private static func requirePresentableAnchor(_ anchor: ASPresentationAnchor) throws {
             guard anchor.windowScene != nil else {
-                throw HLError.unknown(String(localized: "auth.passkey.error.noWindow"))
+                throw HLError.unknown(AppLocale.string("auth.passkey.error.noWindow"))
             }
         }
     }
@@ -257,9 +257,11 @@ import Foundation
                 try? await Task.sleep(for: timeout)
                 guard !Task.isCancelled, let self, continuation != nil else { return }
                 HLLog.auth.error("Passkey: Watchdog-Timeout — Flow abgebrochen.")
-                fail(HLError.unknown(String(
-                    localized: "No matching passkey found on this device. Sign in with email, then add a passkey under Settings → Security."
-                )))
+                fail(HLError
+                    .unknown(AppLocale
+                        .string(
+                            "No matching passkey found on this device. Sign in with email, then add a passkey under Settings → Security."
+                        )))
             }
         }
 
@@ -293,7 +295,7 @@ import Foundation
                 cont.resume(returning: result)
                 return
             }
-            fail(HLError.unknown(String(localized: "auth.passkey.error.unexpectedResponse")))
+            fail(HLError.unknown(AppLocale.string("auth.passkey.error.unexpectedResponse")))
         }
 
         func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
@@ -366,14 +368,14 @@ import Foundation
             userID: String, userName: String, displayName: String,
             anchor: ASPresentationAnchorProvider
         ) async throws -> PasskeyRegistration {
-            throw HLError.unknown(String(localized: "auth.passkey.error.unavailable"))
+            throw HLError.unknown(AppLocale.string("auth.passkey.error.unavailable"))
         }
 
         @MainActor public func assert(
             challenge: String, rpId: String, allowCredentialIDs: [String],
             anchor: ASPresentationAnchorProvider
         ) async throws -> PasskeyAssertion {
-            throw HLError.unknown(String(localized: "auth.passkey.error.unavailable"))
+            throw HLError.unknown(AppLocale.string("auth.passkey.error.unavailable"))
         }
     }
 #endif

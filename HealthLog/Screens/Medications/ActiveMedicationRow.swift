@@ -208,17 +208,17 @@ struct MedicationCard: View {
         .accessibilityIdentifier("medications.card.\(medication.id)")
         .accessibilityElement(children: .contain)
         .accessibilityLabel(Text(accessibilityCardLabel))
-        .accessibilityHint(Text(String(localized: "medications.row.detail_hint")))
+        .accessibilityHint(Text(AppLocale.string("medications.row.detail_hint")))
         .contextMenu {
             Button {
                 onEdit()
             } label: {
-                Label(String(localized: "medications.row.action.edit"), systemImage: "pencil")
+                Label(AppLocale.string("medications.row.action.edit"), systemImage: "pencil")
             }
             Button(role: .destructive) {
                 onArchive()
             } label: {
-                Label(String(localized: "medications.row.action.archive"), systemImage: "archivebox")
+                Label(AppLocale.string("medications.row.action.archive"), systemImage: "archivebox")
             }
         }
     }
@@ -273,12 +273,12 @@ struct MedicationCard: View {
             HStack(spacing: 0) {
                 IconButton(
                     systemName: "clock.arrow.circlepath",
-                    accessibilityLabel: String(localized: "med.card.action.history_a11y"),
+                    accessibilityLabel: AppLocale.string("med.card.action.history_a11y"),
                     action: onHistory
                 )
                 IconButton(
                     systemName: "pencil",
-                    accessibilityLabel: String(localized: "med.card.action.edit_a11y"),
+                    accessibilityLabel: AppLocale.string("med.card.action.edit_a11y"),
                     action: onEdit
                 )
             }
@@ -305,7 +305,7 @@ struct MedicationCard: View {
     /// server-emitted `category` field is missing.
     private var categoryLabel: String {
         guard let raw = medication.category, !raw.isEmpty else {
-            return String(localized: "med.card.category.fallback")
+            return AppLocale.string("med.card.category.fallback")
         }
         return Self.localizedCategory(raw, label: medication.categoryLabel)
     }
@@ -464,7 +464,7 @@ struct MedicationCard: View {
                 ForEach(compliance.displayRows, id: \.days) { row in
                     HLComplianceBar(
                         label: String(
-                            format: String(localized: "med.card.compliance.window.label"),
+                            format: AppLocale.string("med.card.compliance.window.label"),
                             row.days
                         ),
                         rate: row.rate
@@ -476,7 +476,7 @@ struct MedicationCard: View {
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .contain)
-        .accessibilityHint(Text(String(localized: "med.card.compliance.tap_hint")))
+        .accessibilityHint(Text(AppLocale.string("med.card.compliance.tap_hint")))
         .accessibilityIdentifier("medications.card.compliance.\(medication.id)")
     }
 
@@ -489,7 +489,7 @@ struct MedicationCard: View {
             ForEach([7, 30], id: \.self) { days in
                 HLComplianceBar(
                     label: String(
-                        format: String(localized: "med.card.compliance.window.label"),
+                        format: AppLocale.string("med.card.compliance.window.label"),
                         days
                     ),
                     rate: 0
@@ -498,7 +498,7 @@ struct MedicationCard: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .redacted(reason: .placeholder)
-        .accessibilityLabel(Text(String(localized: "med.compliance.loading")))
+        .accessibilityLabel(Text(AppLocale.string("med.compliance.loading")))
         .accessibilityIdentifier("medications.card.compliance.skeleton.\(medication.id)")
     }
 
@@ -607,14 +607,14 @@ struct MedicationCard: View {
                 windowStatus: windowStatus
             )
         ]
-        if !medication.tracksIntake { parts.append(String(localized: "medications.recordOnly.badge")) }
+        if !medication.tracksIntake { parts.append(AppLocale.string("medications.recordOnly.badge")) }
         if let course = MedicationCourseBadge.resolve(medication) { parts.append(course.title) }
         if !scheduleSummary.isEmpty { parts.append(scheduleSummary) }
         if medication.tracksIntake, let longRow = compliance?.displayRows.last {
             parts.append(
                 String(
-                    format: String(localized: "med.card.compliance.a11y"),
-                    String(format: String(localized: "med.card.compliance.window.label"), longRow.days),
+                    format: AppLocale.string("med.card.compliance.a11y"),
+                    String(format: AppLocale.string("med.card.compliance.window.label"), longRow.days),
                     longRow.rate
                 )
             )
@@ -639,15 +639,15 @@ struct MedicationCard: View {
         // helper so every med-time clock reads the same way.
         let time = HLTimeFormat.time(date)
         if day == today {
-            return String(format: "%@, %@", String(localized: "medications.today"), time)
+            return String(format: "%@, %@", AppLocale.string("medications.today"), time)
         }
         if day == yesterday {
-            return String(format: "%@, %@", String(localized: "medications.yesterday"), time)
+            return String(format: "%@, %@", AppLocale.string("medications.yesterday"), time)
         }
         if day == tomorrow {
-            return String(format: "%@, %@", String(localized: "medications.tomorrow"), time)
+            return String(format: "%@, %@", AppLocale.string("medications.tomorrow"), time)
         }
-        let dateLabel = date.formatted(.dateTime.weekday(.abbreviated).day().month(.abbreviated))
+        let dateLabel = date.formatted(.dateTime.weekday(.abbreviated).day().month(.abbreviated).locale(AppLocale.shared.current))
         return "\(dateLabel), \(time)"
     }
 
@@ -675,7 +675,7 @@ struct MedicationCard: View {
             return label
         }
         if raw.hasPrefix("custom:") {
-            return String(localized: "medications.categoryCustom")
+            return AppLocale.string("medications.categoryCustom")
         }
         return localizedCategory(raw)
     }
@@ -683,7 +683,7 @@ struct MedicationCard: View {
     nonisolated static func localizedCategory(_ raw: String) -> String {
         if let key = categoryStringKeys[raw] {
             // String.LocalizationValue routes through the xcstrings catalog.
-            return String(localized: key)
+            return AppLocale.string(AppLocale.shared.resource(key))
         }
         // Unknown / new server category — surface the raw token so the
         // operator can still read it; missing-key noise will be picked up
@@ -716,9 +716,9 @@ struct ComplianceSlotNote: View {
 
         var text: String {
             switch self {
-            case .unknown: String(localized: "med.compliance.unavailable")
-            case .asNeeded: String(localized: "med.card.compliance.as_needed")
-            case .notTracked: String(localized: "med.card.compliance.not_tracked")
+            case .unknown: AppLocale.string("med.compliance.unavailable")
+            case .asNeeded: AppLocale.string("med.card.compliance.as_needed")
+            case .notTracked: AppLocale.string("med.card.compliance.not_tracked")
             }
         }
 
@@ -823,8 +823,8 @@ private struct MedicationCategoryStatusRow: View {
         guard let windowStatus, windowStatus != .inWindow else { return category }
         let status = switch windowStatus {
         case .inWindow: ""
-        case .late: String(localized: "med.card.status.overdue")
-        case .veryLate: String(localized: "med.card.status.very_overdue")
+        case .late: AppLocale.string("med.card.status.overdue")
+        case .veryLate: AppLocale.string("med.card.status.very_overdue")
         }
         return "\(category). \(status)"
     }
@@ -898,7 +898,7 @@ private struct MedicationStatusPill: View {
         HStack(spacing: HLSpace.xs) {
             Image(systemName: symbol)
                 .font(.hlCaption2.weight(.semibold))
-            Text(String(localized: labelKey))
+            Text(AppLocale.string(AppLocale.shared.resource(labelKey)))
                 .font(.hlCaption)
                 .fontWeight(.semibold)
         }
@@ -907,7 +907,7 @@ private struct MedicationStatusPill: View {
         .padding(.vertical, HLSpace.xs)
         .background(HLSurface.tertiary, in: Capsule())
         .accessibilityElement()
-        .accessibilityLabel(Text(String(localized: labelKey)))
+        .accessibilityLabel(Text(AppLocale.string(AppLocale.shared.resource(labelKey))))
         .accessibilityAddTraits(status == .inWindow ? [] : .isHeader)
     }
 
@@ -990,8 +990,8 @@ public enum ActiveMedicationDisplayState: Equatable, Sendable {
     public var badgeTitle: String? {
         switch self {
         case .aktiv: nil
-        case .pausiert: String(localized: "medications.row.state.paused")
-        case .beendet: String(localized: "medications.row.state.ended")
+        case .pausiert: AppLocale.string("medications.row.state.paused")
+        case .beendet: AppLocale.string("medications.row.state.ended")
         }
     }
 }
@@ -1043,14 +1043,14 @@ struct MedicationCardSchedule: Equatable {
         let isAsNeeded = medication.asNeeded
         return MedicationCardSchedule(
             last: Line(
-                label: String(localized: "med.card.schedule.daily.last.label"),
+                label: AppLocale.string("med.card.schedule.daily.last.label"),
                 value: lastValue(lastTakenAt: lastTakenAt, isAsNeeded: isAsNeeded, now: now)
             ),
             // B4, the operator's own rule: a next intake is meaningless for an
             // as-needed medication, so the card does not claim one. Every
             // scheduled medication keeps the line it always had.
             next: isAsNeeded ? nil : Line(
-                label: String(localized: "med.card.schedule.daily.next.label"),
+                label: AppLocale.string("med.card.schedule.daily.next.label"),
                 // v1.39.1 (#1033) — nothing is due on a record; the line says
                 // so instead of reading the stored schedule as a plan.
                 value: medication.tracksIntake
@@ -1060,7 +1060,7 @@ struct MedicationCardSchedule: Equatable {
                         scheduleSummary: scheduleSummary,
                         now: now
                     )
-                    : String(localized: "med.card.schedule.not_tracked")
+                    : AppLocale.string("med.card.schedule.not_tracked")
             )
         )
     }
@@ -1070,7 +1070,7 @@ struct MedicationCardSchedule: Equatable {
             // B4 — on a scheduled card the em-dash reads "not yet, the plan
             // says when". A PRN card has no plan to fall back on: its last
             // intake is the whole record, so an absent one is stated.
-            return String(localized: isAsNeeded
+            return AppLocale.string(isAsNeeded
                 ? "med.card.schedule.last.none"
                 : "med.card.schedule.value.unset")
         }
@@ -1086,11 +1086,11 @@ struct MedicationCardSchedule: Equatable {
         // v0.11 #24 — a dose that is due now reads "Jetzt fällig" instead of a
         // time, and the separate due-now pill is dropped.
         if windowStatus == .inWindow {
-            return String(localized: "med.card.status.take_now")
+            return AppLocale.string("med.card.status.take_now")
         }
         guard let next = nextDose else {
             return scheduleSummary.isEmpty
-                ? String(localized: "med.card.schedule.value.unset")
+                ? AppLocale.string("med.card.schedule.value.unset")
                 : scheduleSummary
         }
         return MedicationCard.relativeDateTime(next, now: now)
@@ -1156,13 +1156,13 @@ private struct DeviatingDoseAffordance: ViewModifier {
                         onSelect(target)
                     } label: {
                         Label(
-                            String(localized: "med.card.action.deviating_dose"),
+                            AppLocale.string("med.card.action.deviating_dose"),
                             systemImage: "square.and.pencil"
                         )
                     }
                 }
                 // Long-press has no VoiceOver equivalent by default.
-                .accessibilityAction(named: Text(String(localized: "med.card.action.deviating_dose"))) {
+                .accessibilityAction(named: Text(AppLocale.string("med.card.action.deviating_dose"))) {
                     onSelect(target)
                 }
         } else {

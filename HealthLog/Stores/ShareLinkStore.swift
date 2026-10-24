@@ -82,7 +82,7 @@ public final class ShareLinkStore {
         } catch let err as HLError {
             error = err.userFacingDescription
         } catch {
-            self.error = String(localized: "Couldn't load share links. Please try again.")
+            self.error = AppLocale.string("Couldn't load share links. Please try again.")
         }
     }
 
@@ -135,7 +135,7 @@ public final class ShareLinkStore {
             error = stepUp.requestIfProofRefusal(err) ? StepUpRetry.requiredMessage : err.userFacingDescription
             return false
         } catch {
-            self.error = String(localized: "Couldn't create the share link. Please try again.")
+            self.error = AppLocale.string("Couldn't create the share link. Please try again.")
             return false
         }
     }
@@ -150,7 +150,7 @@ public final class ShareLinkStore {
         } catch let err as HLError {
             error = err.userFacingDescription
         } catch {
-            self.error = String(localized: "Couldn't revoke the share link. Please try again.")
+            self.error = AppLocale.string("Couldn't revoke the share link. Please try again.")
         }
     }
 

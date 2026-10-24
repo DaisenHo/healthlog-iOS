@@ -67,7 +67,7 @@ public actor InsightsPrefetchService {
         insightsRepo: InsightsRepository,
         shouldWarm: @escaping @Sendable () async -> Bool,
         resolveLocale: @escaping @Sendable () -> String = {
-            Locale.autoupdatingCurrent.language.languageCode?.identifier ?? "de"
+            AppLocale.shared.serverCode
         }
     ) {
         self.metricInsightsRepo = metricInsightsRepo

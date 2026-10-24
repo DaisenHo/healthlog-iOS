@@ -47,8 +47,8 @@ enum MeasurementChronoModel {
         /// so the strip shares the Insights vocabulary.
         var label: String {
             switch self {
-            case .all: String(localized: "All")
-            case .core: String(localized: "General")
+            case .all: AppLocale.string("All")
+            case .core: AppLocale.string("General")
             case let .category(category): category.label
             }
         }
@@ -239,7 +239,7 @@ enum MeasurementChronoModel {
     static func collapsedValueLabel(for samples: [Measurement], unit: String) -> String {
         let values = samples.map(\.primaryValue)
         let count = samples.count
-        let countLabel = String(localized: "· \(count)×")
+        let countLabel = AppLocale.string(", \(count)×")
         let lo = values.min() ?? 0
         let hi = values.max() ?? 0
         let loRounded = lo.rounded()

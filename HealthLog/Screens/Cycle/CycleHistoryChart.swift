@@ -67,21 +67,21 @@ struct CycleHistoryChart: View {
         Chart {
             ForEach(model.cycles) { cycle in
                 BarMark(
-                    x: .value(String(localized: "cycle.history.axis.cycle"), cycle.startDate),
-                    yStart: .value(String(localized: "cycle.history.axis.days"), 0),
-                    yEnd: .value(String(localized: "cycle.history.period"), cycle.periodDays)
+                    x: .value(AppLocale.string("cycle.history.axis.cycle"), cycle.startDate),
+                    yStart: .value(AppLocale.string("cycle.history.axis.days"), 0),
+                    yEnd: .value(AppLocale.string("cycle.history.period"), cycle.periodDays)
                 )
                 .foregroundStyle(HLChartTints.series)
                 BarMark(
-                    x: .value(String(localized: "cycle.history.axis.cycle"), cycle.startDate),
-                    yStart: .value(String(localized: "cycle.history.period"), cycle.periodDays),
-                    yEnd: .value(String(localized: "cycle.history.axis.days"), cycle.lengthDays)
+                    x: .value(AppLocale.string("cycle.history.axis.cycle"), cycle.startDate),
+                    yStart: .value(AppLocale.string("cycle.history.period"), cycle.periodDays),
+                    yEnd: .value(AppLocale.string("cycle.history.axis.days"), cycle.lengthDays)
                 )
                 .foregroundStyle(HLChartTints.seriesLow)
                 if let ovulationDay = cycle.confirmedOvulationDay {
                     PointMark(
-                        x: .value(String(localized: "cycle.history.axis.cycle"), cycle.startDate),
-                        y: .value(String(localized: "cycle.history.ovulation.confirmed"), ovulationDay)
+                        x: .value(AppLocale.string("cycle.history.axis.cycle"), cycle.startDate),
+                        y: .value(AppLocale.string("cycle.history.ovulation.confirmed"), ovulationDay)
                     )
                     .foregroundStyle(HLText.primary)
                     .symbol(.diamond)
@@ -89,14 +89,14 @@ struct CycleHistoryChart: View {
                 }
             }
             if let average = model.averageLength {
-                RuleMark(y: .value(String(localized: "cycle.history.average"), average))
+                RuleMark(y: .value(AppLocale.string("cycle.history.average"), average))
                     .foregroundStyle(HLText.secondary)
                     .lineStyle(StrokeStyle(
                         lineWidth: HLChartGrid.thresholdWidth,
                         dash: HLChartGrid.thresholdDash
                     ))
                     .annotation(position: .top, alignment: .trailing) {
-                        Text(String(format: String(localized: "cycle.history.average"), average))
+                        Text(String(format: AppLocale.string("cycle.history.average"), average))
                             .font(.hlCaption)
                             .foregroundStyle(HLText.secondary)
                     }
@@ -116,13 +116,13 @@ struct CycleHistoryChart: View {
             )
         }
         return HLChartAX.singleSeries(
-            title: String(localized: "cycle.history.title"),
-            summary: String(localized: "cycle.history.accessibility.summary"),
-            xAxisTitle: String(localized: "cycle.history.axis.cycle"),
-            yAxisTitle: String(localized: "cycle.history.axis.days"),
-            seriesName: String(localized: "cycle.history.series"),
+            title: AppLocale.string("cycle.history.title"),
+            summary: AppLocale.string("cycle.history.accessibility.summary"),
+            xAxisTitle: AppLocale.string("cycle.history.axis.cycle"),
+            yAxisTitle: AppLocale.string("cycle.history.axis.days"),
+            seriesName: AppLocale.string("cycle.history.series"),
             points: points,
-            yValueLabel: { value in String(format: String(localized: "cycle.history.days.value"), Int(value)) }
+            yValueLabel: { value in String(format: AppLocale.string("cycle.history.days.value"), Int(value)) }
         )
     }
 }

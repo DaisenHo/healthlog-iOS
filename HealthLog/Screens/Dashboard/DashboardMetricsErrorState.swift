@@ -24,7 +24,7 @@ struct DashboardMetricsErrorState: View {
                 message: "The rest of your dashboard is up to date. This part didn't load — please try again."
             ) {
                 HLButton(
-                    String(localized: "Try again"),
+                    AppLocale.string("Try again"),
                     icon: "arrow.clockwise",
                     variant: .restrained,
                     action: onRetry

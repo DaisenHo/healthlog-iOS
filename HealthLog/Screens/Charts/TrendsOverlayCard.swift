@@ -61,16 +61,16 @@ struct TrendsOverlayCard: View {
     private var insightText: String {
         let count = store.selectedMetrics.count
         if count == 0 {
-            return String(localized: "Pick a metric below to compare trends.")
+            return AppLocale.string("Pick a metric below to compare trends.")
         }
         if count == 1, let only = store.selectedMetrics.first {
             let unit = only.unit
             if unit.isEmpty {
-                return String(localized: "\(only.displayName) — values over time.")
+                return AppLocale.string("\(only.displayName) — values over time.")
             }
-            return String(localized: "\(only.displayName) — values in \(unit).")
+            return AppLocale.string("\(only.displayName) — values in \(unit).")
         }
-        return String(localized: "\(count) metrics compared — z-scores against each metric's mean.")
+        return AppLocale.string("\(count) metrics compared — z-scores against each metric's mean.")
     }
 
     // MARK: - Chip row
@@ -111,7 +111,7 @@ struct TrendsOverlayCard: View {
     /// `TrendsOverlayStore.averaging`. Re-render only — no re-fetch.
     private var averagingPicker: some View {
         // v0.6.1.6 — Y6 — AP-005: same monochrome lock as `picker` above.
-        Picker(String(localized: "chart.aggregation.label"), selection: $store.averaging) {
+        Picker(AppLocale.string("chart.aggregation.label"), selection: $store.averaging) {
             ForEach(TrendsOverlayStore.Averaging.allCases) { mode in
                 Text(mode.label)
                     .accessibilityLabel(Text(mode.accessibilityLabel))
@@ -148,10 +148,10 @@ struct TrendsOverlayCard: View {
                 .font(.hlIcon(HLIconSize.hero, weight: .regular))
                 .foregroundStyle(HLText.tertiary)
             Text(store.isLoading
-                ? String(localized: "Loading history …")
+                ? AppLocale.string("Loading history …")
                 : (store.selectedMetrics.isEmpty
-                    ? String(localized: "No metrics selected")
-                    : String(localized: "No data in this period")))
+                    ? AppLocale.string("No metrics selected")
+                    : AppLocale.string("No data in this period")))
                 .font(.hlFootnote)
                 .foregroundStyle(HLText.secondary)
         }
@@ -167,7 +167,7 @@ struct TrendsOverlayCard: View {
         return Chart {
             ForEach(points) { p in
                 LineMark(
-                    x: .value(String(localized: "Time"), p.at),
+                    x: .value(AppLocale.string("Time"), p.at),
                     y: .value(kind.unit, p.value)
                 )
                 .foregroundStyle(tint)
@@ -184,9 +184,9 @@ struct TrendsOverlayCard: View {
                 // sits visually behind it via the opacity ramp.
                 if let secondary = p.secondary {
                     LineMark(
-                        x: .value(String(localized: "Time"), p.at),
+                        x: .value(AppLocale.string("Time"), p.at),
                         y: .value(kind.unit, secondary),
-                        series: .value(String(localized: "Diastolic"), "diastolic")
+                        series: .value(AppLocale.string("Diastolic"), "diastolic")
                     )
                     .foregroundStyle(HLChartTints.seriesMid)
                     .interpolationMethod(.catmullRom)
@@ -207,9 +207,10 @@ struct TrendsOverlayCard: View {
         }
         .hlChartScrub($selectedDate) { date in
             guard let nearest = HLChartScrubber.nearest(to: date, in: points, date: \.at) else { return nil }
-            return String(
-                localized: "\(nearest.at.formatted(.dateTime.day().month())): \(nearest.value.formatted(.number.precision(.fractionLength(0 ... 1)))) \(kind.unit)"
-            )
+            return AppLocale
+                .string(
+                    "\(nearest.at.formatted(.dateTime.day().month().locale(AppLocale.shared.current))): \(nearest.value.formatted(.number.precision(.fractionLength(0 ... 1)))) \(kind.unit)"
+                )
         }
         .chartYAxis {
             AxisMarks(position: .leading) { value in
@@ -254,14 +255,14 @@ struct TrendsOverlayCard: View {
             return (x: Double(idx), y: p.value, xLabel: xLabel)
         }
         let summary = if payload.isEmpty {
-            String(localized: "No data")
+            AppLocale.string("No data")
         } else {
-            String(localized: "\(kind.displayName), \(payload.count) values in \(kind.unit)")
+            AppLocale.string("\(kind.displayName), \(payload.count) values in \(kind.unit)")
         }
         return HLChartAX.singleSeries(
-            title: String(localized: "Trend overview"),
+            title: AppLocale.string("Trend overview"),
             summary: summary,
-            xAxisTitle: String(localized: "Time"),
+            xAxisTitle: AppLocale.string("Time"),
             yAxisTitle: kind.unit.isEmpty ? kind.displayName : kind.unit,
             seriesName: kind.displayName,
             points: payload,
@@ -276,11 +277,11 @@ struct TrendsOverlayCard: View {
             ForEach(store.normalisedSeries) { series in
                 ForEach(series.normalisedPoints, id: \.at) { point in
                     LineMark(
-                        x: .value(String(localized: "Time"), point.at),
-                        y: .value(String(localized: "chart.axis.zscore"), point.z),
+                        x: .value(AppLocale.string("Time"), point.at),
+                        y: .value(AppLocale.string("chart.axis.zscore"), point.z),
                         series: .value("metric", series.kind.rawValue)
                     )
-                    .foregroundStyle(by: .value(String(localized: "Metric"), series.kind.displayName))
+                    .foregroundStyle(by: .value(AppLocale.string("Metric"), series.kind.displayName))
                     .interpolationMethod(.catmullRom)
                     .lineStyle(StrokeStyle(lineWidth: HLChartStyle.lineWidth, lineCap: .round))
                 }
@@ -367,12 +368,12 @@ struct TrendsOverlayCard: View {
 
     // MARK: - AX descriptor
 
-    private static let axDateFormatter: DateFormatter = {
+    private static var axDateFormatter: DateFormatter {
         let f = DateFormatter()
-        f.locale = .autoupdatingCurrent
+        f.locale = AppLocale.shared.current
         f.setLocalizedDateFormatFromTemplate("dMMM")
         return f
-    }()
+    }
 
     private func makeAXDescriptor() -> AXChartDescriptor {
         let allDates = store.normalisedSeries.flatMap(\.normalisedPoints).map(\.at)
@@ -388,16 +389,16 @@ struct TrendsOverlayCard: View {
             }
 
         let summary = if store.normalisedSeries.isEmpty {
-            String(localized: "No data")
+            AppLocale.string("No data")
         } else {
-            String(localized: "\(store.normalisedSeries.count) metrics compared, z-scores against the mean")
+            AppLocale.string("\(store.normalisedSeries.count) metrics compared, z-scores against the mean")
         }
 
         return HLChartAX.multiSeries(
-            title: String(localized: "Trend overview"),
+            title: AppLocale.string("Trend overview"),
             summary: summary,
-            xAxisTitle: String(localized: "Time"),
-            yAxisTitle: String(localized: "chart.axis.zscore"),
+            xAxisTitle: AppLocale.string("Time"),
+            yAxisTitle: AppLocale.string("chart.axis.zscore"),
             xRange: xLower ... xUpper,
             yRange: -3.0 ... 3.0,
             series: series,
@@ -442,8 +443,8 @@ private struct MetricToggleChip: View {
         .accessibilityLabel(Text(kind.displayName))
         .accessibilityAddTraits(isActive ? [.isSelected, .isButton] : .isButton)
         .accessibilityHint(Text(isActive
-                ? String(localized: "Double-tap to deselect")
-                : String(localized: "Double-tap to select")))
+                ? AppLocale.string("Double-tap to deselect")
+                : AppLocale.string("Double-tap to select")))
     }
 
     // Visual-Polish-1: chip swatch routes through the same per-metric ramp

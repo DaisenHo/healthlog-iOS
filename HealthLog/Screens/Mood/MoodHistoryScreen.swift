@@ -24,12 +24,12 @@ struct MoodHistoryScreen: View {
         let entries: [MoodEntry]
     }
 
-    private static let monthFormatter: DateFormatter = {
+    private static var monthFormatter: DateFormatter {
         let formatter = DateFormatter()
-        formatter.locale = .autoupdatingCurrent
+        formatter.locale = AppLocale.shared.current
         formatter.setLocalizedDateFormatFromTemplate("MMMMyyyy")
         return formatter
-    }()
+    }
 
     private var buckets: [MonthBucket] {
         let calendar = Calendar.current

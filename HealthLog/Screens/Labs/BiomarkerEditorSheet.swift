@@ -244,9 +244,9 @@ struct BiomarkerEditorSheet: View {
         if ok {
             dismiss()
         } else if store.lastErrorWasDuplicateName {
-            inlineError = String(localized: "biomarker.duplicate.error")
+            inlineError = AppLocale.string("biomarker.duplicate.error")
         } else {
-            inlineError = store.lastError ?? String(localized: "labs.save.failed")
+            inlineError = store.lastError ?? AppLocale.string("labs.save.failed")
         }
     }
 }

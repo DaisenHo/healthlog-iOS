@@ -86,8 +86,8 @@ private struct DeviationRow: View {
             Self.format(deviation.high)
         )
         let direction = deviation.isAbove
-            ? String(localized: "clinicalSignals.healthStatus.deviation.above")
-            : String(localized: "clinicalSignals.healthStatus.deviation.below")
+            ? AppLocale.string("clinicalSignals.healthStatus.deviation.above")
+            : AppLocale.string("clinicalSignals.healthStatus.deviation.below")
         return "\(direction), \(band)"
     }
 
@@ -128,7 +128,7 @@ private struct ShiftRow: View {
         let key = shift.isUp
             ? "clinicalSignals.healthStatus.shift.up"
             : "clinicalSignals.healthStatus.shift.down"
-        return String(format: String(localized: String.LocalizationValue(key)), shift.breakDate)
+        return String(format: AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(key))), shift.breakDate)
     }
 }
 
@@ -138,7 +138,7 @@ extension InsightsHealthStatusCard {
     /// so; `day`, `nil` and a word this build does not know keep the day band.
     static func bandTemplate(basis: String?) -> String {
         basis == "sameHours"
-            ? String(localized: "clinicalSignals.healthStatus.band.sameHours")
-            : String(localized: "clinicalSignals.healthStatus.band")
+            ? AppLocale.string("clinicalSignals.healthStatus.band.sameHours")
+            : AppLocale.string("clinicalSignals.healthStatus.band")
     }
 }

@@ -31,7 +31,7 @@ struct SettingsApiTokensScreen: View {
             } else {
                 HLCloudDerivedPlaceholder(
                     variant: .inline,
-                    surfaceName: String(localized: "API tokens"),
+                    surfaceName: AppLocale.string("API tokens"),
                     onConnect: { authStore.beginServerPairing() }
                 )
             }

@@ -47,7 +47,7 @@ struct AnamnesisFactHistoryList: View {
                         .foregroundStyle(HLText.primary)
                     if let provenanceKey = row.provenanceKey {
                         HLBadge(
-                            String(localized: String.LocalizationValue(provenanceKey)),
+                            AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(provenanceKey))),
                             tone: row.isCorrection ? .info : .neutral
                         )
                     }
@@ -113,12 +113,12 @@ struct AnamnesisHistoryRow: Hashable, Identifiable {
     var validityText: String {
         guard let validUntil else {
             return String(
-                format: String(localized: String.LocalizationValue(AnamnesisCopy.validitySince)),
+                format: AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(AnamnesisCopy.validitySince))),
                 HLDateFormat.date(validFrom)
             )
         }
         return String(
-            format: String(localized: String.LocalizationValue(AnamnesisCopy.validityRange)),
+            format: AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(AnamnesisCopy.validityRange))),
             HLDateFormat.date(validFrom),
             HLDateFormat.date(validUntil)
         )

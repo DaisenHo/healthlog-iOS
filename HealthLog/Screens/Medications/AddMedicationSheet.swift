@@ -185,7 +185,7 @@ struct AddMedicationSheet: View {
             ForEach(Array(times.enumerated()), id: \.element.id) { idx, row in
                 HStack {
                     DatePicker(
-                        String(localized: "med.form.time.label \(idx + 1)"),
+                        AppLocale.string("med.form.time.label \(idx + 1)"),
                         selection: bindingForTime(rowID: row.id),
                         displayedComponents: [.hourAndMinute]
                     )
@@ -536,20 +536,20 @@ enum MedicationCategoryOption: String, CaseIterable, Identifiable {
     /// `medications.category*` family (en + de); the picker now reads it.
     var displayName: String {
         switch self {
-        case .bloodPressure: String(localized: "medications.categoryBloodPressure")
-        case .vitamin: String(localized: "medications.categoryVitamin")
-        case .supplement: String(localized: "medications.categorySupplement")
-        case .painRelief: String(localized: "medications.categoryPainRelief")
-        case .allergy: String(localized: "medications.categoryAllergy")
-        case .digestive: String(localized: "medications.categoryDigestive")
-        case .thyroid: String(localized: "medications.categoryThyroid")
-        case .hormone: String(localized: "medications.categoryHormone")
-        case .skin: String(localized: "medications.categorySkin")
-        case .sleepAid: String(localized: "medications.categorySleepAid")
-        case .diabetes: String(localized: "medications.categoryDiabetes")
-        case .antibiotic: String(localized: "medications.categoryAntibiotic")
-        case .mentalHealth: String(localized: "medications.categoryMentalHealth")
-        case .other: String(localized: "medications.categoryOther")
+        case .bloodPressure: AppLocale.string("medications.categoryBloodPressure")
+        case .vitamin: AppLocale.string("medications.categoryVitamin")
+        case .supplement: AppLocale.string("medications.categorySupplement")
+        case .painRelief: AppLocale.string("medications.categoryPainRelief")
+        case .allergy: AppLocale.string("medications.categoryAllergy")
+        case .digestive: AppLocale.string("medications.categoryDigestive")
+        case .thyroid: AppLocale.string("medications.categoryThyroid")
+        case .hormone: AppLocale.string("medications.categoryHormone")
+        case .skin: AppLocale.string("medications.categorySkin")
+        case .sleepAid: AppLocale.string("medications.categorySleepAid")
+        case .diabetes: AppLocale.string("medications.categoryDiabetes")
+        case .antibiotic: AppLocale.string("medications.categoryAntibiotic")
+        case .mentalHealth: AppLocale.string("medications.categoryMentalHealth")
+        case .other: AppLocale.string("medications.categoryOther")
         }
     }
 }
@@ -569,7 +569,7 @@ enum MedicationTreatmentClassOption: String, CaseIterable, Identifiable {
 
     var displayName: String {
         switch self {
-        case .generic: String(localized: "med.treatmentClass.generic")
+        case .generic: AppLocale.string("med.treatmentClass.generic")
         case .glp1: "GLP-1" // drug-class name, identical in every locale
         }
     }

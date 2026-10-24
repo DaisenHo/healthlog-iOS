@@ -142,7 +142,7 @@ struct InsightsVitalsDashboard: View {
                 .pinToHomeContextMenu(kind: tile.kind, container: container)
                 .accessibilityElement(children: .combine)
                 .accessibilityLabel(Text(tile.accessibilityLabel))
-                .accessibilityHint(Text(String(localized: "Double-tap to open detail view")))
+                .accessibilityHint(Text(AppLocale.string("Double-tap to open detail view")))
                 .accessibilityIdentifier("insights.vital.\(tile.kind.rawValue)")
         } else {
             body
@@ -187,12 +187,12 @@ struct InsightsVitalsDashboard: View {
             guard !excludedKinds.contains(kind) else { return nil }
             guard let metric = byKind[kind], let latest = metric.latestValue else { return nil }
             let descriptor = kind.descriptor
-            let title = String(localized: descriptor.title)
+            let title = AppLocale.string(AppLocale.shared.resource(descriptor.title))
             // #115 P2 — the summary value is canonical SI; a converted family
             // reads in the account's unit (the identity branch keeps the
             // summary's own label and the 0…1-dp text).
             let unit = units.transform(for: kind).suffix
-                ?? (metric.unit.isEmpty ? String(localized: descriptor.unitLabel) : metric.unit)
+                ?? (metric.unit.isEmpty ? AppLocale.string(AppLocale.shared.resource(descriptor.unitLabel)) : metric.unit)
             let value = MetricValueFormatter.formatScalar(latest, kind: kind, units: units)
             let valueText = unit.isEmpty ? value : "\(value) \(unit)"
             return VitalTile(
@@ -342,14 +342,14 @@ struct InsightsDerivedBlock: View {
         // v0.14.1 §4 — clearer, "wertig" wellness names. "Readiness"/"Strain"
         // were unclear (operator feedback); renamed to plain "daily condition /
         // daily load". EN+DE in Localizable.xcstrings.
-        case "READINESS": String(localized: "Daily condition")
-        case "SLEEP_SCORE": String(localized: "Sleep score")
-        case "RECOVERY_SCORE": String(localized: "Recovery")
-        case "STRESS_SCORE": String(localized: "Stress")
-        case "STRAIN_SCORE": String(localized: "Daily load")
-        case "FITNESS_AGE": String(localized: "Cardio fitness")
-        case "VASCULAR_AGE_DELTA": String(localized: "Vascular age")
-        case "HRV_BALANCE": String(localized: "HRV balance")
+        case "READINESS": AppLocale.string("Daily condition")
+        case "SLEEP_SCORE": AppLocale.string("Sleep score")
+        case "RECOVERY_SCORE": AppLocale.string("Recovery")
+        case "STRESS_SCORE": AppLocale.string("Stress")
+        case "STRAIN_SCORE": AppLocale.string("Daily load")
+        case "FITNESS_AGE": AppLocale.string("Cardio fitness")
+        case "VASCULAR_AGE_DELTA": AppLocale.string("Vascular age")
+        case "HRV_BALANCE": AppLocale.string("HRV balance")
         default: metric
         }
     }
@@ -388,39 +388,39 @@ struct InsightsDerivedBlock: View {
         }
         guard let delta = metric.value?.trendDelta, let mag = Int(safeServer: abs(delta)) else { return nil }
         if mag == 0 {
-            return String(localized: "Level with your recent baseline")
+            return AppLocale.string("Level with your recent baseline")
         }
         return delta > 0
-            ? String(localized: "+\(mag) vs your recent baseline")
-            : String(localized: "−\(mag) vs your recent baseline")
+            ? AppLocale.string("+\(mag) vs your recent baseline")
+            : AppLocale.string("−\(mag) vs your recent baseline")
     }
 
     /// FITNESS_AGE re-frame sentence (web `vitals.fitness*` copy).
     nonisolated static func fitnessHeadline(_ years: Double?) -> String {
         guard let years, years != 0, let mag = Int(safeServer: abs(years)) else {
-            return String(localized: "Cardio fitness typical for your age")
+            return AppLocale.string("Cardio fitness typical for your age")
         }
         return years < 0
-            ? String(localized: "Cardio fitness of someone ~\(mag) yr younger")
-            : String(localized: "Cardio fitness ~\(mag) yr above your age")
+            ? AppLocale.string("Cardio fitness of someone ~\(mag) yr younger")
+            : AppLocale.string("Cardio fitness ~\(mag) yr above your age")
     }
 
     /// VASCULAR_AGE_DELTA re-frame sentence (web `vitals.vascular*` copy).
     nonisolated static func vascularHeadline(_ years: Double?) -> String {
         guard let years, years != 0, let mag = Int(safeServer: abs(years)) else {
-            return String(localized: "In line with your age")
+            return AppLocale.string("In line with your age")
         }
         return years < 0
-            ? String(localized: "\(mag) yr below your age")
-            : String(localized: "\(mag) yr above your age")
+            ? AppLocale.string("\(mag) yr below your age")
+            : AppLocale.string("\(mag) yr above your age")
     }
 
     /// HRV_BALANCE band sentence (web `vitals.hrvBand.*` copy).
     nonisolated static func hrvHeadline(_ band: String?) -> String? {
         switch band {
-        case "balanced": String(localized: "Balanced for you")
-        case "unbalanced": String(localized: "Above your usual range")
-        case "low": String(localized: "Below your usual range")
+        case "balanced": AppLocale.string("Balanced for you")
+        case "unbalanced": AppLocale.string("Above your usual range")
+        case "low": AppLocale.string("Below your usual range")
         default: nil
         }
     }
@@ -436,7 +436,7 @@ struct InsightsDerivedBlock: View {
     nonisolated static func caveat(for dto: DerivedMetricDTO) -> String? {
         guard dto.metric == "RECOVERY_SCORE" else { return caveat(for: dto.metric) }
         if WellnessScorePresentation.isWhoopNativeRecovery(dto) {
-            return String(localized: "From your WHOOP recovery — descriptive, not a clinical recovery measure.")
+            return AppLocale.string("From your WHOOP recovery — descriptive, not a clinical recovery measure.")
         }
         return caveat(for: dto.metric)
     }
@@ -447,12 +447,13 @@ struct InsightsDerivedBlock: View {
     /// the WHOOP-native wording when the server resolved a WHOOP recovery.
     nonisolated static func caveat(for metric: String) -> String? {
         switch metric {
-        case "READINESS": String(localized: "A wellness proxy, not a recovery or clinical score.")
-        case "RECOVERY_SCORE": String(localized: "A descriptive wellness proxy, not a training-grade or clinical recovery measure.")
-        case "STRESS_SCORE": String(
-                localized: "An HRV-derived proxy, NOT an EDA / galvanic-skin stress measurement — your watch has no EDA sensor. Descriptive, not clinical."
+        case "READINESS": AppLocale.string("A wellness proxy, not a recovery or clinical score.")
+        case "RECOVERY_SCORE": AppLocale.string("A descriptive wellness proxy, not a training-grade or clinical recovery measure.")
+        case "STRESS_SCORE": AppLocale
+            .string(
+                "An HRV-derived proxy, NOT an EDA / galvanic-skin stress measurement — your watch has no EDA sensor. Descriptive, not clinical."
             )
-        case "STRAIN_SCORE": String(localized: "A descriptive activity-load proxy, not a clinical or training-grade load measure.")
+        case "STRAIN_SCORE": AppLocale.string("A descriptive activity-load proxy, not a clinical or training-grade load measure.")
         // GH-Standard R4 — die vier Geschwister oben grenzen jeweils gegen
         // eine KONKURRIERENDE Kategorie ab (WHOOP-Recovery, trainingsreife
         // Last, EDA-Sensorik) und korrigieren damit eine sonst unkorrigierbare
@@ -462,9 +463,7 @@ struct InsightsDerivedBlock: View {
         // (`disclaimer.ack.intro.body`) und nicht auf jeder Flaeche wiederholt
         // gehoert. Was bleibt, ist die Herkunft — und die ist hier die
         // eigentliche Auskunft: die Zahl kommt vom Geraet, nicht von uns.
-        case "VASCULAR_AGE_DELTA": String(
-                localized: "Your device's own estimate — HealthLog only re-frames it, it does not compute it."
-            )
+        case "VASCULAR_AGE_DELTA": AppLocale.string("Your device's own estimate — HealthLog only re-frames it, it does not compute it.")
         default: nil
         }
     }
@@ -479,9 +478,7 @@ struct InsightsDerivedBlock: View {
     nonisolated static func whatIs(for dto: DerivedMetricDTO) -> String? {
         guard dto.metric == "RECOVERY_SCORE" else { return whatIs(for: dto.metric) }
         if WellnessScorePresentation.isWhoopNativeRecovery(dto) {
-            return String(
-                localized: "How well your body has bounced back, taken straight from your WHOOP recovery."
-            )
+            return AppLocale.string("How well your body has bounced back, taken straight from your WHOOP recovery.")
         }
         return whatIs(for: dto.metric)
     }
@@ -496,22 +493,18 @@ struct InsightsDerivedBlock: View {
     /// wording when the server resolved a WHOOP recovery.
     nonisolated static func whatIs(for metric: String) -> String? {
         switch metric {
-        case "READINESS": String(localized: "How ready your body looks for the day, blended from your resting heart rate, HRV and sleep.")
-        case "SLEEP_SCORE": String(localized: "A single 0–100 read on last night's sleep — its length, depth and how settled it was.")
-        case "RECOVERY_SCORE": String(
-                localized: "How well your body has bounced back, read mainly from your heart-rate variability versus your own baseline."
-            )
-        case "STRESS_SCORE": String(
-                localized: "An HRV-derived read of physiological load — how taxed your nervous system looks compared with your calm baseline."
-            )
-        case "STRAIN_SCORE": String(
-                localized: "How much physical load you put on your body today, from your activity and elevated heart rate."
-            )
-        case "FITNESS_AGE": String(localized: "What your cardio fitness (VO₂max) suggests your body's age is, compared with your real age.")
-        case "VASCULAR_AGE_DELTA": String(
-                localized: "What your blood-pressure pattern suggests your arteries' age is, compared with your real age."
-            )
-        case "HRV_BALANCE": String(localized: "Whether your heart-rate variability is sitting in, above or below your own usual range.")
+        case "READINESS": AppLocale.string("How ready your body looks for the day, blended from your resting heart rate, HRV and sleep.")
+        case "SLEEP_SCORE": AppLocale.string("A single 0–100 read on last night's sleep — its length, depth and how settled it was.")
+        case "RECOVERY_SCORE": AppLocale
+            .string("How well your body has bounced back, read mainly from your heart-rate variability versus your own baseline.")
+        case "STRESS_SCORE": AppLocale
+            .string("An HRV-derived read of physiological load — how taxed your nervous system looks compared with your calm baseline.")
+        case "STRAIN_SCORE": AppLocale
+            .string("How much physical load you put on your body today, from your activity and elevated heart rate.")
+        case "FITNESS_AGE": AppLocale.string("What your cardio fitness (VO₂max) suggests your body's age is, compared with your real age.")
+        case "VASCULAR_AGE_DELTA": AppLocale
+            .string("What your blood-pressure pattern suggests your arteries' age is, compared with your real age.")
+        case "HRV_BALANCE": AppLocale.string("Whether your heart-rate variability is sitting in, above or below your own usual range.")
         default: nil
         }
     }
@@ -519,16 +512,16 @@ struct InsightsDerivedBlock: View {
     /// "Was ist [Metrik]?" heading for the explainer — pairs the localized metric
     /// title into a question. EN+DE.
     nonisolated static func whatIsTitle(for metric: String) -> String {
-        String(localized: "What is \(title(for: metric))?")
+        AppLocale.string("What is \(title(for: metric))?")
     }
 
     /// Localized confidence-band label (`high/medium/low/draft`).
     nonisolated static func bandLabel(_ band: String) -> String {
         switch band {
-        case "high": String(localized: "High confidence")
-        case "medium": String(localized: "Medium confidence")
-        case "low": String(localized: "Low confidence")
-        case "draft": String(localized: "Provisional")
+        case "high": AppLocale.string("High confidence")
+        case "medium": AppLocale.string("Medium confidence")
+        case "low": AppLocale.string("Low confidence")
+        case "draft": AppLocale.string("Provisional")
         default: band
         }
     }
@@ -536,17 +529,17 @@ struct InsightsDerivedBlock: View {
     /// The provenance transparency line: "From your last N days · <source> data".
     nonisolated static func provenanceLine(for provenance: DerivedMetricDTO.Provenance) -> String {
         let source = Self.sourceLabel(provenance.source)
-        return String(localized: "From your last \(provenance.windowDays) days · \(source) data")
+        return AppLocale.string("From your last \(provenance.windowDays) days · \(source) data")
     }
 
     /// Human granularity label for the provenance `source`.
     nonisolated static func sourceLabel(_ source: String) -> String {
         switch source {
-        case "DAY": String(localized: "daily")
-        case "WEEK": String(localized: "weekly")
-        case "MONTH": String(localized: "monthly")
-        case "YEAR": String(localized: "yearly")
-        case "live": String(localized: "live")
+        case "DAY": AppLocale.string("daily")
+        case "WEEK": AppLocale.string("weekly")
+        case "MONTH": AppLocale.string("monthly")
+        case "YEAR": AppLocale.string("yearly")
+        case "live": AppLocale.string("live")
         default: source.lowercased()
         }
     }

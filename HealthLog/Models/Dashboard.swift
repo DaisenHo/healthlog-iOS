@@ -105,11 +105,9 @@ public struct ComplianceSnapshot: Codable, Sendable, Equatable {
     /// SwiftUI host.
     public var ringAccessibilityLabel: String {
         guard hasSchedule else {
-            return String(localized: "Medication compliance today: nothing scheduled")
+            return AppLocale.string("Medication compliance today: nothing scheduled")
         }
-        return String(
-            localized: "Medication compliance today, \(takenToday) of \(scheduledToday) taken"
-        )
+        return AppLocale.string("Medication compliance today, \(takenToday) of \(scheduledToday) taken")
     }
 }
 
@@ -273,7 +271,7 @@ public struct DashboardMetric: Codable, Sendable, Identifiable, Hashable {
     /// 3. else empty string (a brand-new metric with neither field).
     static func resolve(key: String?, legacy: String?) -> String {
         if let key, !key.isEmpty {
-            return String(localized: String.LocalizationValue(key))
+            return AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(key)))
         }
         return legacy ?? ""
     }

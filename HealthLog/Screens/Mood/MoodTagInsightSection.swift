@@ -86,7 +86,7 @@ struct MoodTagInsightSection: View {
     nonisolated static func accessibilityValue(_ delta: MoodTagDelta) -> String {
         let avg = delta.average.formatted(.number.precision(.fractionLength(1)))
         let signed = deltaString(delta.delta)
-        return String(localized: "Average \(avg), \(signed) versus your baseline")
+        return AppLocale.string("Average \(avg), \(signed) versus your baseline")
     }
 }
 

@@ -413,13 +413,13 @@ public struct MedicationDetailScreen: View {
                 .allowsHitTesting(false)
                 .accessibilityHidden(true)
                 .hlConfirmDestructive(
-                    Text(String(localized: "Delete entry?")),
+                    Text(AppLocale.string("Delete entry?")),
                     presenting: $pendingDelete,
                     message: { _ in
-                        Text(String(localized: "The history entry will be removed. This action cannot be undone."))
+                        Text(AppLocale.string("The history entry will be removed. This action cannot be undone."))
                     },
-                    confirm: Text(String(localized: "Delete")),
-                    cancel: Text(String(localized: "Cancel")),
+                    confirm: Text(AppLocale.string("Delete")),
+                    cancel: Text(AppLocale.string("Cancel")),
                     onCancel: { pendingDelete = nil },
                     action: { event in
                         deleteIntake(event)
@@ -435,7 +435,7 @@ public struct MedicationDetailScreen: View {
                     editing = store.medication
                 } label: {
                     Image(systemName: "pencil")
-                        .accessibilityLabel(Text(String(localized: "Edit")))
+                        .accessibilityLabel(Text(AppLocale.string("Edit")))
                 }
                 .tint(HLText.primary)
             }

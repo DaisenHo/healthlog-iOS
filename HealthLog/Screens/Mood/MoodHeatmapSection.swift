@@ -77,15 +77,15 @@ struct MoodHeatmapSection: View {
     private static let cellSpacing: CGFloat = HLSpace.xxs
 
     /// Locale-aware Mon-first weekday labels (ported from compliance).
-    private nonisolated static let weekdayLabels: [String] = {
+    private nonisolated static var weekdayLabels: [String] {
         let formatter = DateFormatter()
-        formatter.locale = .autoupdatingCurrent
+        formatter.locale = AppLocale.shared.current
         let veryShort: [String] = formatter.veryShortWeekdaySymbols ?? []
         let short: [String] = formatter.shortWeekdaySymbols ?? []
         let raw: [String] = veryShort.count == 7 ? veryShort : short
         guard raw.count == 7 else { return Array(repeating: "", count: 7) }
         return [raw[1], raw[2], raw[3], raw[4], raw[5], raw[6], raw[0]]
-    }()
+    }
 
     /// Fast `startOfDay → bucket` lookup built once per render.
     private var bucketByDay: [Date: Int] {
@@ -392,12 +392,12 @@ struct MoodHeatmapSection: View {
     private var meanLabel: String {
         guard !dailyAverages.isEmpty else { return "" }
         let mean = dailyAverages.map(\.average).reduce(0, +) / Double(dailyAverages.count)
-        return String(localized: "Ø \(mean.formatted(.number.precision(.fractionLength(1))))")
+        return AppLocale.string("Ø \(mean.formatted(.number.precision(.fractionLength(1))))")
     }
 
     private func accessibilityLabel(for date: Date?, bucket: Int?) -> Text {
         guard let date else { return Text(verbatim: "") }
-        let dateStr = date.formatted(.dateTime.day().month())
+        let dateStr = date.formatted(.dateTime.day().month().locale(AppLocale.shared.current))
         if let bucket {
             return Text("\(dateStr): \(MoodCopy.levelLabel(bucket))")
         }

@@ -66,7 +66,7 @@ struct LabsChangesCard: View {
 
     private var sinceLine: String? {
         guard let latest = changes?.latestDate, let previous = changes?.previousDate else { return nil }
-        return String(format: String(localized: "clinicalSignals.labs.since"), latest, previous)
+        return String(format: AppLocale.string("clinicalSignals.labs.since"), latest, previous)
     }
 }
 
@@ -115,7 +115,7 @@ private struct ChangeRow: View {
         }
         let signed = (change.delta > 0 ? "+" : "") + Self.format(change.delta)
         let previous = Self.format(change.previous)
-        return "\(glyph) \(signed), \(String(localized: "clinicalSignals.labs.previous")) \(previous)"
+        return "\(glyph) \(signed), \(AppLocale.string("clinicalSignals.labs.previous")) \(previous)"
     }
 
     private var accessibilityText: String {

@@ -41,9 +41,9 @@ public enum HLTimeFormat: String, CaseIterable, Sendable {
     /// Localised label for the Settings picker.
     public var label: String {
         switch self {
-        case .auto: String(localized: "settings.time_format.auto")
-        case .twelveHour: String(localized: "settings.time_format.h12")
-        case .twentyFourHour: String(localized: "settings.time_format.h24")
+        case .auto: AppLocale.string("settings.time_format.auto")
+        case .twelveHour: AppLocale.string("settings.time_format.h12")
+        case .twentyFourHour: AppLocale.string("settings.time_format.h24")
         }
     }
 

@@ -104,7 +104,7 @@ struct ComparisonBand: View {
                     .font(.hlSubhead)
                     .foregroundStyle(HLText.primary)
                     .fixedSize(horizontal: false, vertical: true)
-                Text(String(localized: "records.comparison.range \(band.formattedRange)"))
+                Text(AppLocale.string("records.comparison.range \(band.formattedRange)"))
                     .font(.hlCaption)
                     .foregroundStyle(HLText.secondary)
                     .monospacedDigit()

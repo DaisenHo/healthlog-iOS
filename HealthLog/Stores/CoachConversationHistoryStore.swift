@@ -72,7 +72,7 @@ public final class CoachConversationHistoryStore {
         } catch let err as HLError {
             error = err.userFacingDescription
         } catch {
-            self.error = String(localized: "Couldn't load your past conversations. Please try again.")
+            self.error = AppLocale.string("Couldn't load your past conversations. Please try again.")
         }
     }
 
@@ -91,7 +91,7 @@ public final class CoachConversationHistoryStore {
         } catch let err as HLError {
             error = err.userFacingDescription
         } catch {
-            self.error = String(localized: "Couldn't load more conversations. Please try again.")
+            self.error = AppLocale.string("Couldn't load more conversations. Please try again.")
         }
     }
 
@@ -109,7 +109,7 @@ public final class CoachConversationHistoryStore {
         } catch let err as HLError {
             error = err.userFacingDescription
         } catch {
-            self.error = String(localized: "Couldn't open that conversation. Please try again.")
+            self.error = AppLocale.string("Couldn't open that conversation. Please try again.")
         }
     }
 
@@ -133,7 +133,7 @@ public final class CoachConversationHistoryStore {
             // have shifted under a concurrent load).
             let insertAt = min(index, conversations.count)
             conversations.insert(removed, at: insertAt)
-            deleteError = String(localized: "Couldn't delete that conversation. Please try again.")
+            deleteError = AppLocale.string("Couldn't delete that conversation. Please try again.")
         }
     }
 

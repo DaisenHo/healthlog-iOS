@@ -397,7 +397,7 @@ struct DocumentsScreen: View {
     }
 
     private func deleteRow(_ document: InboundDocument, store: DocumentsStore) async {
-        await store.delete(document, undoMessage: String(localized: "documents.toast.deleted"))
+        await store.delete(document, undoMessage: AppLocale.string("documents.toast.deleted"))
     }
 }
 

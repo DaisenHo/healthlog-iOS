@@ -360,9 +360,9 @@ enum MoodTagCatalogL10n {
         // tag is no longer in the catalog (e.g. purged) — render a neutral word
         // rather than echoing the raw `custom:uuid`.
         if key.hasPrefix("custom:") {
-            return String(localized: "mood.tag.customFallback")
+            return AppLocale.string("mood.tag.customFallback")
         }
-        let resolved = String(localized: String.LocalizationValue(key))
+        let resolved = AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(key)))
         // `String(localized:)` echoes the key back verbatim when it is not in
         // the catalog — fall through to a humanized last path component so an
         // un-ported future server key still reads as words, not `mood.tag.x`.

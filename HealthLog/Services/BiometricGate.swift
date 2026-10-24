@@ -19,12 +19,12 @@ public enum BiometricGate {
     /// dem Reviewer also deutschen Text im System-Prompt. Beide Texte kommen
     /// jetzt aus dem String-Katalog (en + de).
     public static var localizedReason: String {
-        String(localized: "applock.prompt.reason")
+        AppLocale.string("applock.prompt.reason")
     }
 
     /// Titel des Ausweich-Knopfs im Face-ID-Dialog (Gerätecode).
     public static var localizedFallbackTitle: String {
-        String(localized: "applock.prompt.fallback")
+        AppLocale.string("applock.prompt.fallback")
     }
 
     /// Trigger Face ID / Touch ID. Wirft nicht — Caller handled `Result`.

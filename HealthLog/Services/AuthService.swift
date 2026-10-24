@@ -81,13 +81,13 @@ public actor AuthService {
             // explicit error instead of falling through to the old "no Bearer
             // token" message (which misleads the user into a credentials retry).
             guard let ticket = meta.mfaTicket else {
-                throw HLError.unknown(String(localized: "auth.error.incompleteResponse")) // mfaRequired, no ticket
+                throw HLError.unknown(AppLocale.string("auth.error.incompleteResponse")) // mfaRequired, no ticket
             }
             let methods = (meta.methods ?? []).compactMap(MfaMethod.init(rawValue:))
             return .mfaRequired(ticket: ticket, methods: methods)
         }
         guard let payload else {
-            throw HLError.unknown(String(localized: "auth.error.incompleteResponse")) // no token in the body
+            throw HLError.unknown(AppLocale.string("auth.error.incompleteResponse")) // no token in the body
         }
         let session = try payload.asAuthSession()
         try persist(session)
@@ -303,7 +303,7 @@ public actor AuthService {
         case let .session(session):
             return session
         case .mfaRequired:
-            throw HLError.unknown(String(localized: "auth.error.incompleteResponse")) // MFA on a new account
+            throw HLError.unknown(AppLocale.string("auth.error.incompleteResponse")) // MFA on a new account
         }
     }
 
@@ -647,12 +647,12 @@ public actor AuthService {
             group.addTask { try await operation() }
             group.addTask {
                 try await Task.sleep(for: .seconds(seconds))
-                throw HLError.unknown(String(localized: "Server unreachable — passkey sign-in failed."))
+                throw HLError.unknown(AppLocale.string("Server unreachable — passkey sign-in failed."))
             }
             // First child to finish wins; `next()` rethrows its error (timeout
             // or network). Cancel the remaining child before returning.
             guard let result = try await group.next() else {
-                throw HLError.unknown(String(localized: "Server unreachable — passkey sign-in failed."))
+                throw HLError.unknown(AppLocale.string("Server unreachable — passkey sign-in failed."))
             }
             group.cancelAll()
             return result

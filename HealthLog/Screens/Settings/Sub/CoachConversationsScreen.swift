@@ -40,7 +40,7 @@ struct CoachConversationsScreen: View {
                 List {
                     HLCloudDerivedPlaceholder(
                         variant: .inline,
-                        surfaceName: String(localized: "your past conversations"),
+                        surfaceName: AppLocale.string("your past conversations"),
                         onConnect: { authStore.beginServerPairing() }
                     )
                     .listRowSeparator(.hidden)
@@ -119,7 +119,7 @@ struct CoachConversationsScreen: View {
             List {
                 HLCloudDerivedPlaceholder(
                     variant: .inline,
-                    surfaceName: String(localized: "the coach")
+                    surfaceName: AppLocale.string("the coach")
                 )
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
@@ -194,15 +194,15 @@ struct CoachConversationsScreen: View {
 
     private func conversationRow(_ conversation: CoachConversationSummaryDTO) -> some View {
         VStack(alignment: .leading, spacing: HLSpace.xxs) {
-            Text(conversation.title.isEmpty ? String(localized: "Conversation") : conversation.title)
+            Text(conversation.title.isEmpty ? AppLocale.string("Conversation") : conversation.title)
                 .font(.hlBody.weight(.semibold))
                 .foregroundStyle(HLText.primary)
                 .lineLimit(2)
             Text(
-                String(
-                    localized: "\(conversation.messageCount) messages",
+                AppLocale.string(LocalizedStringResource(
+                    "\(conversation.messageCount) messages",
                     comment: "Coach conversation row subtitle: number of messages"
-                )
+                ))
             )
             .font(.hlCaption)
             .foregroundStyle(HLText.secondary)
@@ -235,7 +235,7 @@ private struct CoachConversationDetailView: View {
                 .containerCentered()
             }
         }
-        .navigationTitle(conversation.title.isEmpty ? String(localized: "Conversation") : conversation.title)
+        .navigationTitle(conversation.title.isEmpty ? AppLocale.string("Conversation") : conversation.title)
         .navigationBarTitleDisplayMode(.inline)
         .task(id: conversation.id) {
             await store.openConversation(id: conversation.id)

@@ -27,8 +27,8 @@ public enum WeightUnit: String, CaseIterable, Identifiable, Sendable {
     /// Full picker label, e.g. "Kilograms (kg)".
     public var label: String {
         switch self {
-        case .kg: String(localized: "Kilograms (kg)", comment: "Weight unit — kilograms")
-        case .lb: String(localized: "Pounds (lb)", comment: "Weight unit — pounds")
+        case .kg: AppLocale.string(LocalizedStringResource("Kilograms (kg)", comment: "Weight unit — kilograms"))
+        case .lb: AppLocale.string(LocalizedStringResource("Pounds (lb)", comment: "Weight unit — pounds"))
         }
     }
 
@@ -80,8 +80,8 @@ public enum HLUnitPreference: String, CaseIterable, Sendable {
     /// Localised label for the Settings segmented picker.
     public var label: String {
         switch self {
-        case .metric: String(localized: "settings.unitSystem.metric", comment: "Unit system — metric")
-        case .imperial: String(localized: "settings.unitSystem.imperial", comment: "Unit system — imperial")
+        case .metric: AppLocale.string(LocalizedStringResource("settings.unitSystem.metric", comment: "Unit system — metric"))
+        case .imperial: AppLocale.string(LocalizedStringResource("settings.unitSystem.imperial", comment: "Unit system — imperial"))
         }
     }
 }
@@ -97,8 +97,8 @@ public enum BloodPressureUnit: String, CaseIterable, Identifiable, Sendable {
 
     public var label: String {
         switch self {
-        case .mmHg: String(localized: "Millimeters of mercury (mmHg)", comment: "Blood-pressure unit — mmHg")
-        case .kPa: String(localized: "Kilopascals (kPa)", comment: "Blood-pressure unit — kPa")
+        case .mmHg: AppLocale.string(LocalizedStringResource("Millimeters of mercury (mmHg)", comment: "Blood-pressure unit — mmHg"))
+        case .kPa: AppLocale.string(LocalizedStringResource("Kilopascals (kPa)", comment: "Blood-pressure unit — kPa"))
         }
     }
 
@@ -126,8 +126,8 @@ public enum GlucoseUnit: String, CaseIterable, Identifiable, Sendable {
 
     public var label: String {
         switch self {
-        case .mgdL: String(localized: "Milligrams per deciliter (mg/dL)", comment: "Glucose unit — mg/dL")
-        case .mmolL: String(localized: "Millimoles per liter (mmol/L)", comment: "Glucose unit — mmol/L")
+        case .mgdL: AppLocale.string(LocalizedStringResource("Milligrams per deciliter (mg/dL)", comment: "Glucose unit — mg/dL"))
+        case .mmolL: AppLocale.string(LocalizedStringResource("Millimoles per liter (mmol/L)", comment: "Glucose unit — mmol/L"))
         }
     }
 

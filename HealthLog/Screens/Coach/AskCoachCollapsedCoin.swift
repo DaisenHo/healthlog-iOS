@@ -93,8 +93,8 @@ struct AskCoachCollapsedCoin: View {
         }
         .buttonStyle(.plain)
         .sensoryFeedback(.impact(weight: .light), trigger: tapPulse)
-        .accessibilityLabel(String(localized: "Ask the coach"))
-        .accessibilityHint(String(localized: "Opens the coach card."))
+        .accessibilityLabel(AppLocale.string("Ask the coach"))
+        .accessibilityHint(AppLocale.string("Opens the coach card."))
         .accessibilityAddTraits(.isButton)
         .accessibilityIdentifier("InsightsScreen.askCoachCollapsedCoin")
     }

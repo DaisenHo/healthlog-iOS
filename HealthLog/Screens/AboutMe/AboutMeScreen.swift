@@ -183,18 +183,18 @@ struct AboutMeScreen: View {
         if settingsStore.unitPreference == .imperial,
            let imperial = UnitPreferences.feetAndInches(fromCentimetres: Double(cm))
         {
-            return String(localized: "aboutMe.body.heightValue.imperial \(imperial.feet) \(imperial.inches)")
+            return AppLocale.string("aboutMe.body.heightValue.imperial \(imperial.feet) \(imperial.inches)")
         }
-        return String(format: String(localized: "aboutMe.body.heightValue"), cm)
+        return String(format: AppLocale.string("aboutMe.body.heightValue"), cm)
     }
 
     /// Biological sex label (male / female / other). A nil / unspecified server
     /// value collapses to the empty placeholder rather than "Prefer not to say".
     private var sexDisplay: String? {
         switch GenderOption(serverValue: profile?.gender) {
-        case .male: String(localized: "Male")
-        case .female: String(localized: "Female")
-        case .other: String(localized: "Other")
+        case .male: AppLocale.string("Male")
+        case .female: AppLocale.string("Female")
+        case .other: AppLocale.string("Other")
         case .unspecified: nil
         }
     }
@@ -211,7 +211,7 @@ struct AboutMeScreen: View {
         guard let dob = profile?.dateOfBirth else { return nil }
         let years = Calendar.current.dateComponents([.year], from: dob, to: .now).year ?? -1
         guard years >= 0 else { return nil }
-        return String(format: String(localized: "aboutMe.body.ageValue"), years)
+        return String(format: AppLocale.string("aboutMe.body.ageValue"), years)
     }
 
     /// The most recent weight reading — read straight from the app-wide
@@ -445,7 +445,7 @@ struct AboutMeScreen: View {
                 .font(.hlSubhead)
                 .foregroundStyle(HLText.primary)
             Spacer(minLength: HLSpace.sm)
-            Text(value ?? String(localized: "aboutMe.value.empty"))
+            Text(value ?? AppLocale.string("aboutMe.value.empty"))
                 .font(.hlBody)
                 .foregroundStyle(value == nil ? HLText.tertiary : HLText.secondary)
                 .lineLimit(1)

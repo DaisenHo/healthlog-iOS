@@ -63,7 +63,7 @@ extension InsightsMetricScreen {
         // foreground retry starts clean (the card returns to skeleton/ready).
         assessmentFailed = false
         defer { assessmentLoading = false }
-        let locale = Locale.autoupdatingCurrent.language.languageCode?.identifier ?? "de"
+        let locale = AppLocale.shared.serverCode
 
         // Initial cache-first paint.
         let first: MetricStatusDTO?

@@ -117,8 +117,8 @@ private struct SourceChip: View {
                 .buttonStyle(.plain)
                 .accessibilityLabel(Text("\(label), \(count) entries"))
                 .accessibilityHint(Text(isActive
-                        ? String(localized: "Double-tap to clear the filter")
-                        : String(localized: "Double-tap to filter by this source")))
+                        ? AppLocale.string("Double-tap to clear the filter")
+                        : AppLocale.string("Double-tap to filter by this source")))
                 .accessibilityAddTraits(isActive ? [.isSelected, .isButton] : .isButton)
         } else {
             chip
@@ -151,23 +151,23 @@ private struct SourceChip: View {
 
     private var label: String {
         switch source {
-        case .appleHealth: String(localized: "Apple Health")
-        case .withings: String(localized: "Withings")
-        case .whoop: String(localized: "WHOOP")
-        case .fitbit: String(localized: "Fitbit")
-        case .googleHealth: String(localized: "Google Health")
-        case .strava: String(localized: "Strava")
-        case .oura: String(localized: "Oura")
-        case .polar: String(localized: "Polar")
-        case .nightscout: String(localized: "Nightscout")
-        case .healthConnect: String(localized: "Health Connect")
-        case .telegram: String(localized: "Telegram")
-        case .mcp: String(localized: "MCP")
-        case .external: String(localized: "measurement.source.external")
-        case .manual: String(localized: "Manual")
-        case .computed: String(localized: "measurement.source.computed")
-        case .import_: String(localized: "Import")
-        case .unknown: String(localized: "measurement.source.unknown")
+        case .appleHealth: AppLocale.string("Apple Health")
+        case .withings: AppLocale.string("Withings")
+        case .whoop: AppLocale.string("WHOOP")
+        case .fitbit: AppLocale.string("Fitbit")
+        case .googleHealth: AppLocale.string("Google Health")
+        case .strava: AppLocale.string("Strava")
+        case .oura: AppLocale.string("Oura")
+        case .polar: AppLocale.string("Polar")
+        case .nightscout: AppLocale.string("Nightscout")
+        case .healthConnect: AppLocale.string("Health Connect")
+        case .telegram: AppLocale.string("Telegram")
+        case .mcp: AppLocale.string("MCP")
+        case .external: AppLocale.string("measurement.source.external")
+        case .manual: AppLocale.string("Manual")
+        case .computed: AppLocale.string("measurement.source.computed")
+        case .import_: AppLocale.string("Import")
+        case .unknown: AppLocale.string("measurement.source.unknown")
         }
     }
 }

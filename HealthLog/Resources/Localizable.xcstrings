@@ -89236,7 +89236,7 @@
         }
       }
     },
-    "· %lld×": {
+    ", %lld×": {
       "comment": "Collapsed-row count badge in the chronological measurements feed — e.g. \"46 bpm · 10×\" for ten same-minute samples.",
       "localizations": {
         "de": {
@@ -99989,6 +99989,144 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ receives this data from your server and handles it under its own privacy policy."
+          }
+        }
+      }
+    },
+    "settings.language.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese Kontosprache gilt auch für die Web-App und Tagesberichte. Änderungen benötigen eine Verbindung."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This account language is shared with the web app and daily reports. Saving a change requires a connection."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "账户语言用于各端界面和日报。修改语言需要联网。"
+          }
+        }
+      }
+    },
+    "settings.language.onlineRequired": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die gespeicherte Sprache wird verwendet. Zum Ändern ist eine Verbindung nötig."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are using the cached language. Connect to save a language change."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在使用缓存语言。请联网后修改语言。"
+          }
+        }
+      }
+    },
+    "settings.language.saveFailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Sprache konnte nicht gespeichert werden. Die bisherige Sprache bleibt aktiv."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not save the language. Your previous language is still active."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "语言保存失败，继续使用原有语言。"
+          }
+        }
+      }
+    },
+    "settings.language.saving": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sprache wird gespeichert…"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saving language…"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在保存语言…"
+          }
+        }
+      }
+    },
+    "settings.language.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sprache"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Language"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "语言"
+          }
+        }
+      }
+    },
+    "settings.language.unsynced": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch nicht synchronisiert"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not synchronized yet"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尚未同步"
           }
         }
       }

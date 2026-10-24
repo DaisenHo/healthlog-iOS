@@ -16,23 +16,23 @@ enum HKSyncDiagnosticsVocabulary {
     static func collectionTrigger(_ raw: String) -> String {
         switch raw {
         case "background", "processing":
-            String(localized: "settings.hkdiag.value.trigger.background")
+            AppLocale.string("settings.hkdiag.value.trigger.background")
         case "appRefresh":
-            String(localized: "settings.hkdiag.value.trigger.appRefresh")
+            AppLocale.string("settings.hkdiag.value.trigger.appRefresh")
         case "foreground":
-            String(localized: "settings.hkdiag.value.trigger.foreground")
+            AppLocale.string("settings.hkdiag.value.trigger.foreground")
         case "manual":
-            String(localized: "settings.hkdiag.value.trigger.manual")
+            AppLocale.string("settings.hkdiag.value.trigger.manual")
         case "push", "silentPush":
-            String(localized: "settings.hkdiag.value.trigger.push")
+            AppLocale.string("settings.hkdiag.value.trigger.push")
         case "coldActivation":
-            String(localized: "settings.hkdiag.value.trigger.coldActivation")
+            AppLocale.string("settings.hkdiag.value.trigger.coldActivation")
         case "postAuthentication":
-            String(localized: "settings.hkdiag.value.trigger.postAuthentication")
+            AppLocale.string("settings.hkdiag.value.trigger.postAuthentication")
         case "observer":
-            String(localized: "settings.hkdiag.value.trigger.observer")
+            AppLocale.string("settings.hkdiag.value.trigger.observer")
         case "accountTeardown":
-            String(localized: "settings.hkdiag.value.trigger.accountTeardown")
+            AppLocale.string("settings.hkdiag.value.trigger.accountTeardown")
         default:
             unknown
         }
@@ -42,7 +42,7 @@ enum HKSyncDiagnosticsVocabulary {
     static func workoutSource(_ source: WorkoutSyncSource?) -> String {
         guard let source else { return "—" }
         return switch source {
-        case .registration: String(localized: "settings.hkdiag.value.trigger.registration")
+        case .registration: AppLocale.string("settings.hkdiag.value.trigger.registration")
         case .observer: collectionTrigger("observer")
         case .processing: collectionTrigger("processing")
         case .appRefresh: collectionTrigger("appRefresh")
@@ -54,25 +54,25 @@ enum HKSyncDiagnosticsVocabulary {
 
     static func workoutFailure(_ failure: HKSyncDiagnostics.WorkoutFailureClass) -> String {
         switch failure {
-        case .registration: String(localized: "settings.hkdiag.value.failure.registration")
-        case .healthKitQuery: String(localized: "settings.hkdiag.value.failure.healthKitQuery")
-        case .transport: String(localized: "settings.hkdiag.value.failure.transport")
-        case .serverRejected: String(localized: "settings.hkdiag.value.failure.serverRejected")
-        case .persistence: String(localized: "settings.hkdiag.value.failure.persistence")
-        case .cancelled: String(localized: "settings.hkdiag.value.failure.cancelled")
-        case .unknown: String(localized: "settings.hkdiag.value.failure.unknown")
+        case .registration: AppLocale.string("settings.hkdiag.value.failure.registration")
+        case .healthKitQuery: AppLocale.string("settings.hkdiag.value.failure.healthKitQuery")
+        case .transport: AppLocale.string("settings.hkdiag.value.failure.transport")
+        case .serverRejected: AppLocale.string("settings.hkdiag.value.failure.serverRejected")
+        case .persistence: AppLocale.string("settings.hkdiag.value.failure.persistence")
+        case .cancelled: AppLocale.string("settings.hkdiag.value.failure.cancelled")
+        case .unknown: AppLocale.string("settings.hkdiag.value.failure.unknown")
         }
     }
 
     static func workoutBackfill(_ state: HKSyncDiagnostics.WorkoutBackfillState) -> String {
         switch state {
-        case .idle: String(localized: "settings.hkdiag.status_idle")
-        case .running: String(localized: "settings.hkdiag.value.backfill.running")
-        case .progressed: String(localized: "settings.hkdiag.value.backfill.progressed")
-        case .finished: String(localized: "settings.hkdiag.value.backfill.finished")
-        case .authorizationPending: String(localized: "settings.hkdiag.value.backfill.authorizationPending")
-        case .failed: String(localized: "settings.hkdiag.value.backfill.failed")
-        case .serverUnsupported: String(localized: "settings.hkdiag.value.backfill.serverUnsupported")
+        case .idle: AppLocale.string("settings.hkdiag.status_idle")
+        case .running: AppLocale.string("settings.hkdiag.value.backfill.running")
+        case .progressed: AppLocale.string("settings.hkdiag.value.backfill.progressed")
+        case .finished: AppLocale.string("settings.hkdiag.value.backfill.finished")
+        case .authorizationPending: AppLocale.string("settings.hkdiag.value.backfill.authorizationPending")
+        case .failed: AppLocale.string("settings.hkdiag.value.backfill.failed")
+        case .serverUnsupported: AppLocale.string("settings.hkdiag.value.backfill.serverUnsupported")
         }
     }
 
@@ -90,9 +90,9 @@ enum HKSyncDiagnosticsVocabulary {
     static func freshnessType(_ raw: String) -> String {
         let key = normalizedTypeKey(raw)
         switch key {
-        case "WORKOUTS", "WORKOUT": return String(localized: "settings.hkdiag.freshness.workouts")
+        case "WORKOUTS", "WORKOUT": return AppLocale.string("settings.hkdiag.freshness.workouts")
         // W5 — server v1.42.4: doses imported from Apple Health (W3's bulk call).
-        case "MEDICATION_DOSE": return String(localized: "settings.hkdiag.freshness.medication_dose")
+        case "MEDICATION_DOSE": return AppLocale.string("settings.hkdiag.freshness.medication_dose")
         case "BLOOD_PRESSURE_DIA": return MetricKind.bloodPressure.displayName
         default: break
         }
@@ -125,10 +125,10 @@ enum HKSyncDiagnosticsVocabulary {
         let sent = snapshot.sentTotal
         let accepted = snapshot.acceptedTotal
         let rejected = snapshot.skippedTotal
-        let sentence = String(localized: "settings.hkdiag.workout_counts \(read) \(sent) \(accepted) \(rejected)")
+        let sentence = AppLocale.string("settings.hkdiag.workout_counts \(read) \(sent) \(accepted) \(rejected)")
         let unmapped = snapshot.fetchedTotal - snapshot.mappedTotal
         guard unmapped > 0 else { return sentence }
-        return sentence + String(localized: "settings.hkdiag.workout_counts_unmapped \(unmapped)")
+        return sentence + AppLocale.string("settings.hkdiag.workout_counts_unmapped \(unmapped)")
     }
 
     /// #12 — the gate that decided the heart-rate bucket path's last outcome,
@@ -136,24 +136,24 @@ enum HKSyncDiagnosticsVocabulary {
     /// what a tester quotes back and what Console prints after `gate=`.
     static func heartRateBucketGate(_ gate: HRBucketGate) -> String {
         let words = switch gate {
-        case .uploaded: String(localized: "settings.hkdiag.hrbuckets.gate.uploaded")
-        case .upToDate: String(localized: "settings.hkdiag.hrbuckets.gate.upToDate")
-        case .standalone: String(localized: "settings.hkdiag.hrbuckets.gate.standalone")
-        case .noAuthToken: String(localized: "settings.hkdiag.hrbuckets.gate.noAuthToken")
-        case .flagOff: String(localized: "settings.hkdiag.hrbuckets.gate.flagOff")
-        case .cutoverPending: String(localized: "settings.hkdiag.hrbuckets.gate.cutoverPending")
-        case .healthDataLocked: String(localized: "settings.hkdiag.hrbuckets.gate.healthDataLocked")
-        case .queryFailed: String(localized: "settings.hkdiag.hrbuckets.gate.queryFailed")
-        case .uploadDeferred: String(localized: "settings.hkdiag.hrbuckets.gate.uploadDeferred")
-        case .uploadFailed: String(localized: "settings.hkdiag.hrbuckets.gate.uploadFailed")
-        case .rawFallbackSweepFailed: String(localized: "settings.hkdiag.hrbuckets.gate.rawFallbackSweepFailed")
-        case .rawFallbackSweepStarved: String(localized: "settings.hkdiag.hrbuckets.gate.rawFallbackSweepStarved")
+        case .uploaded: AppLocale.string("settings.hkdiag.hrbuckets.gate.uploaded")
+        case .upToDate: AppLocale.string("settings.hkdiag.hrbuckets.gate.upToDate")
+        case .standalone: AppLocale.string("settings.hkdiag.hrbuckets.gate.standalone")
+        case .noAuthToken: AppLocale.string("settings.hkdiag.hrbuckets.gate.noAuthToken")
+        case .flagOff: AppLocale.string("settings.hkdiag.hrbuckets.gate.flagOff")
+        case .cutoverPending: AppLocale.string("settings.hkdiag.hrbuckets.gate.cutoverPending")
+        case .healthDataLocked: AppLocale.string("settings.hkdiag.hrbuckets.gate.healthDataLocked")
+        case .queryFailed: AppLocale.string("settings.hkdiag.hrbuckets.gate.queryFailed")
+        case .uploadDeferred: AppLocale.string("settings.hkdiag.hrbuckets.gate.uploadDeferred")
+        case .uploadFailed: AppLocale.string("settings.hkdiag.hrbuckets.gate.uploadFailed")
+        case .rawFallbackSweepFailed: AppLocale.string("settings.hkdiag.hrbuckets.gate.rawFallbackSweepFailed")
+        case .rawFallbackSweepStarved: AppLocale.string("settings.hkdiag.hrbuckets.gate.rawFallbackSweepStarved")
         }
         return "\(words) (\(gate.rawValue))"
     }
 
     /// The neutral word for a value this build cannot name.
     static var unknown: String {
-        String(localized: "settings.hkdiag.verdict_unknown")
+        AppLocale.string("settings.hkdiag.verdict_unknown")
     }
 }

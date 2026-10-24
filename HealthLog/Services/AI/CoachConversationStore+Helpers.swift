@@ -99,7 +99,7 @@ extension CoachConversationStore {
     func filteredReply(_ text: String) async -> String {
         await Self.safeReplyText(
             text,
-            refusal: String(localized: "coach.filtered.refusal"),
+            refusal: AppLocale.string("coach.filtered.refusal"),
             filter: safetyFilter
         )
     }
@@ -182,8 +182,7 @@ extension CoachConversationStore {
     /// language so the server's refusal copy never renders in an
     /// unsupported tongue.
     func serverLocaleCode() -> String {
-        let code = Locale.current.language.languageCode?.identifier ?? "en"
-        return code == "de" ? "de" : "en"
+        AppLocale.shared.serverCode
     }
 
     /// Id of the most recently appended transcript entity — used by the

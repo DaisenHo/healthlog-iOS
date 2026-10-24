@@ -89,7 +89,7 @@ extension CycleCaptureSheet {
     nonisolated static func bbtFormatted(_ value: Double, units: UnitPreferences = .standard) -> String {
         let transform = units.transform(for: .bodyTemperature)
         guard let suffix = transform.suffix else {
-            return String(format: String(localized: "cycle.capture.bbt.value"), value)
+            return String(format: AppLocale.string("cycle.capture.bbt.value"), value)
         }
         return "\(transform.display(value).formatted(.number.precision(.fractionLength(2)))) \(suffix)"
     }

@@ -85,7 +85,7 @@ public extension DashboardMetric {
     /// converted family; otherwise the descriptor's canonical `unitLabel`,
     /// resolved to a `String`.
     func unitSuffix(units: UnitPreferences) -> String {
-        units.transform(for: kind).suffix ?? String(localized: descriptor.unitLabel)
+        units.transform(for: kind).suffix ?? AppLocale.string(AppLocale.shared.resource(descriptor.unitLabel))
     }
 }
 

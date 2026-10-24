@@ -288,7 +288,7 @@ struct SettingsAboutScreen: View {
     /// glyph — and stating it is the honest alternative to inventing a
     /// number that looks like a version.
     private static var unknownValue: String {
-        String(localized: "Unknown")
+        AppLocale.string("Unknown")
     }
 
     private var appVersionString: String {

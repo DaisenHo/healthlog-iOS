@@ -96,14 +96,14 @@ enum InsightsExplainer {
 
     /// The "Was ist X?" trigger label, with the title interpolated.
     static func triggerLabel(title: String) -> String {
-        String(format: String(localized: "insights.subPage.explainer.trigger"), title)
+        String(format: AppLocale.string("insights.subPage.explainer.trigger"), title)
     }
 
     /// Resolves a catalog key, treating an absent entry (the key echoes back) or
     /// an empty value as "no copy" → `nil`. Mirrors the `descriptionSlot`
     /// echo-test in `InsightsMetricScreen`.
     private static func resolved(_ key: String) -> String? {
-        let value = String(localized: String.LocalizationValue(key))
+        let value = AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(key)))
         guard value != key, !value.isEmpty else { return nil }
         return value
     }

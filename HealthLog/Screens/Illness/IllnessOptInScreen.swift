@@ -105,7 +105,7 @@ struct IllnessOptInScreen: View {
         if ok {
             onEnabled?()
         } else {
-            enableError = String(localized: "illness.optIn.enableFailed")
+            enableError = AppLocale.string("illness.optIn.enableFailed")
         }
     }
 }

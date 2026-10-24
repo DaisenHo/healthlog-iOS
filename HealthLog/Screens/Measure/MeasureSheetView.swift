@@ -84,17 +84,17 @@ struct MeasureSheetView: View {
                     .pickerStyle(.menu)
                 }
 
-                Section(String(localized: "Value")) {
+                Section(AppLocale.string("Value")) {
                     if kind == .bloodPressure {
                         HStack {
-                            HLNumericField(title: String(localized: "Systolic"), placeholder: "120", value: $systolic)
+                            HLNumericField(title: AppLocale.string("Systolic"), placeholder: "120", value: $systolic)
                                 .focused($primaryFocused)
                             Text("/").foregroundStyle(HLText.secondary)
                             // H-5 — surface the BP unit suffix (mmHg|kPa) on the
                             // trailing leg so the operator knows which unit both
                             // fields are in.
                             HLNumericField(
-                                title: String(localized: "Diastolic"),
+                                title: AppLocale.string("Diastolic"),
                                 placeholder: "80",
                                 unit: units.bloodPressure.unitSuffix,
                                 value: $diastolic
@@ -347,14 +347,14 @@ struct MeasureSheetView: View {
     /// client-side integer requirement the server does not enforce.
     private var painNRSPicker: some View {
         VStack(alignment: .leading, spacing: HLSpace.sm) {
-            Picker(String(localized: "Pain level"), selection: $painScore) {
+            Picker(AppLocale.string("Pain level"), selection: $painScore) {
                 ForEach(PainScoreInput.range, id: \.self) { score in
                     Text("\(score)").tag(score)
                 }
             }
             .pickerStyle(.wheel)
             .accessibilityIdentifier("measure-sheet.pain-nrs.picker")
-            Text(String(localized: "0 = no pain · 10 = worst imaginable"))
+            Text(AppLocale.string("0 = no pain · 10 = worst imaginable"))
                 .font(.hlCaption)
                 .foregroundStyle(HLText.secondary)
         }
@@ -525,7 +525,7 @@ struct MeasureSheetView: View {
             // false return today, but the fallback keeps the banner
             // honest if that contract drifts).
             saveError = store.error ?? .unknown(
-                String(localized: "Save failed. Please try again.")
+                AppLocale.string("Save failed. Please try again.")
             )
         }
     }

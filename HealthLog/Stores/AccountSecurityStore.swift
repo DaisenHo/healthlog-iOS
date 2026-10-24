@@ -305,7 +305,7 @@ public final class AccountSecurityStore {
     ) async {
         guard !isBusy else { return }
         guard let proof = elevation.consume() else {
-            actionError = String(localized: "settings.security.twoFactor.error.reverify")
+            actionError = AppLocale.string("settings.security.twoFactor.error.reverify")
             return
         }
         isBusy = true
@@ -317,13 +317,13 @@ public final class AccountSecurityStore {
             // The proof was fine; the account simply has no second factor for a
             // fresh-factor route to be fresh about. Re-verifying cannot fix that
             // — enrolling can, so say that instead of "please confirm again".
-            actionError = String(localized: "settings.security.twoFactor.error.notEnrolled")
+            actionError = AppLocale.string("settings.security.twoFactor.error.notEnrolled")
         } catch let err as HLError where SecurityStepUp.isRequired(err) {
             // The gate refused the elevation (missing / expired / already spent /
             // minted from too weak a factor / bound to another token). The
             // refusal is deliberately uniform, so do NOT try to diagnose it:
             // drop the proof and ask for a fresh one.
-            actionError = String(localized: "settings.security.twoFactor.error.reverify")
+            actionError = AppLocale.string("settings.security.twoFactor.error.reverify")
         } catch {
             if !SecurityStepUp.consumesElevation(error) { elevation.restore(proof) }
             actionError = Self.userMessage(for: error)

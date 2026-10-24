@@ -55,7 +55,7 @@ enum HLChartScrubber {
         @ViewBuilder callout: (P) -> some View
     ) -> some ChartContent {
         if let selectedDate, let nearest = nearest(to: selectedDate, in: points, date: date) {
-            RuleMark(x: .value(String(localized: "chart.scrubber.selection"), nearest[keyPath: date]))
+            RuleMark(x: .value(AppLocale.string("chart.scrubber.selection"), nearest[keyPath: date]))
                 .foregroundStyle(HLChartTints.seriesMid)
                 .lineStyle(StrokeStyle(
                     lineWidth: HLChartGrid.thresholdWidth,
@@ -74,8 +74,8 @@ enum HLChartScrubber {
                     callout(nearest)
                 }
             PointMark(
-                x: .value(String(localized: "chart.scrubber.selection"), nearest[keyPath: date]),
-                y: .value(String(localized: "Value"), nearest[keyPath: value])
+                x: .value(AppLocale.string("chart.scrubber.selection"), nearest[keyPath: date]),
+                y: .value(AppLocale.string("Value"), nearest[keyPath: value])
             )
             .foregroundStyle(HLChartTints.series)
             .symbolSize(120)

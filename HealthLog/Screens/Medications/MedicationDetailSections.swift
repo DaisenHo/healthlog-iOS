@@ -60,7 +60,7 @@ struct ComplianceKPISection: View {
                     card
                 }
                 .buttonStyle(.plain)
-                .accessibilityHint(Text(String(localized: "med.compliance.history_hint")))
+                .accessibilityHint(Text(AppLocale.string("med.compliance.history_hint")))
             } else {
                 card
             }
@@ -91,7 +91,7 @@ struct ComplianceKPISection: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer(minLength: HLSpace.sm)
-                Text(String(localized: "med.compliance.window.taken"))
+                Text(AppLocale.string("med.compliance.window.taken"))
                     .font(.hlCaption)
                     .foregroundStyle(HLText.tertiary)
                     .multilineTextAlignment(.trailing)
@@ -122,15 +122,15 @@ struct ComplianceKPISection: View {
     private var captionLabel: String {
         switch state {
         case .pending:
-            String(localized: "med.compliance.loading")
+            AppLocale.string("med.compliance.loading")
         case let .server(adherence):
-            String(format: String(localized: "med.compliance.caption.taken"), adherence.taken, adherence.expected)
+            String(format: AppLocale.string("med.compliance.caption.taken"), adherence.taken, adherence.expected)
         case .notApplicable:
-            String(localized: "med.compliance.notApplicable")
+            AppLocale.string("med.compliance.notApplicable")
         case .notTracked:
-            String(localized: "med.compliance.notTracked")
+            AppLocale.string("med.compliance.notTracked")
         case .unavailable:
-            String(localized: "med.compliance.unavailable")
+            AppLocale.string("med.compliance.unavailable")
         }
     }
 
@@ -153,7 +153,7 @@ struct ComplianceKPISection: View {
     private var accessibilityLabel: String {
         guard let adherence else { return captionLabel }
         return String(
-            format: String(localized: "med.compliance.a11y.taken"),
+            format: AppLocale.string("med.compliance.a11y.taken"),
             adherence.rate,
             adherence.taken,
             adherence.expected
@@ -253,7 +253,7 @@ struct VerlaufGlyphTrack: View {
                         // can't map columns to weekdays once off-days are
                         // dropped, so weekly meds always render the strip.
                         Text(String(
-                            format: String(localized: "med.verlauf.due_count"),
+                            format: AppLocale.string("med.verlauf.due_count"),
                             shown.count
                         ))
                         .font(.hlCaption)
@@ -272,7 +272,7 @@ struct VerlaufGlyphTrack: View {
                     }
                 }
                 .accessibilityLabel(Text(String(
-                    format: String(localized: "med.verlauf.a11y"),
+                    format: AppLocale.string("med.verlauf.a11y"),
                     shown.count
                 )))
             }
@@ -322,8 +322,8 @@ struct VerlaufGlyphTrack: View {
         } label: {
             HStack(spacing: HLSpace.xxs) {
                 Text(isExpanded
-                    ? String(localized: "med.verlauf.show_less")
-                    : String(localized: "med.verlauf.show_more"))
+                    ? AppLocale.string("med.verlauf.show_less")
+                    : AppLocale.string("med.verlauf.show_more"))
                     .font(.hlSubhead)
                 Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
                     // Quiet disclosure caret beside the link label —
@@ -335,8 +335,8 @@ struct VerlaufGlyphTrack: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(Text(isExpanded
-                ? String(localized: "med.verlauf.show_less")
-                : String(localized: "med.verlauf.show_more")))
+                ? AppLocale.string("med.verlauf.show_less")
+                : AppLocale.string("med.verlauf.show_more")))
     }
 
     private var legend: some View {
@@ -345,9 +345,9 @@ struct VerlaufGlyphTrack: View {
             // same green/yellow/red status tokens as the per-day circles so
             // the key reads in the same hue the operator now sees on the
             // dots, not the prior monochrome graphite.
-            LegendEntry(systemName: "circle.fill", color: HLColor.statusOK, label: String(localized: "med.verlauf.legend.on_time"))
-            LegendEntry(systemName: "circle.fill", color: HLColor.statusWarn, label: String(localized: "med.verlauf.legend.late"))
-            LegendEntry(systemName: "circle.fill", color: HLColor.statusBad, label: String(localized: "med.verlauf.legend.missed"))
+            LegendEntry(systemName: "circle.fill", color: HLColor.statusOK, label: AppLocale.string("med.verlauf.legend.on_time"))
+            LegendEntry(systemName: "circle.fill", color: HLColor.statusWarn, label: AppLocale.string("med.verlauf.legend.late"))
+            LegendEntry(systemName: "circle.fill", color: HLColor.statusBad, label: AppLocale.string("med.verlauf.legend.missed"))
             Spacer()
         }
         .accessibilityHidden(true)

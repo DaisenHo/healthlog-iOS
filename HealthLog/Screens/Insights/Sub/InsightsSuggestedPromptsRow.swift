@@ -79,7 +79,7 @@ struct InsightsSuggestedPromptsRow: View {
                 // only the failing nested scroll is gone.
                 SuggestedPromptsChipFlow(spacing: HLSpace.sm) {
                     ForEach(Self.promptKeys, id: \.self) { key in
-                        chip(label: String(localized: String.LocalizationValue(key)))
+                        chip(label: AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(key))))
                     }
                 }
             }
@@ -119,7 +119,7 @@ struct InsightsSuggestedPromptsRow: View {
         }
         .hlPressable()
         .accessibilityLabel(Text(label))
-        .accessibilityHint(Text(String(localized: "Opens the coach")))
+        .accessibilityHint(Text(AppLocale.string("Opens the coach")))
         .accessibilityAddTraits(.isButton)
     }
 }

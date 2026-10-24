@@ -56,14 +56,14 @@ struct UnifiedSharingSelectionSection: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         if hasServer {
-            HLButton(String(localized: "report.selection.retry"), variant: .secondary, size: .compact) {
+            HLButton(AppLocale.string("report.selection.retry"), variant: .secondary, size: .compact) {
                 Task { await store.reload() }
             }
             .accessibilityIdentifier("sharing.unified.retry")
         } else {
             HLCloudDerivedPlaceholder(
                 variant: .inline,
-                surfaceName: String(localized: "sharing.unified.surfaceName"),
+                surfaceName: AppLocale.string("sharing.unified.surfaceName"),
                 onConnect: onConnect
             )
         }
@@ -123,7 +123,7 @@ struct UnifiedSharingSelectionSection: View {
         VStack(alignment: .leading, spacing: HLSpace.xs) {
             HStack(spacing: HLSpace.sm) {
                 HLButton(
-                    String(localized: "sharing.unified.selectAll"),
+                    AppLocale.string("sharing.unified.selectAll"),
                     variant: .secondary,
                     size: .compact
                 ) {
@@ -133,7 +133,7 @@ struct UnifiedSharingSelectionSection: View {
                 .accessibilityIdentifier("sharing.unified.selectAll")
 
                 HLButton(
-                    String(localized: "sharing.unified.clear"),
+                    AppLocale.string("sharing.unified.clear"),
                     variant: .secondary,
                     size: .compact
                 ) {

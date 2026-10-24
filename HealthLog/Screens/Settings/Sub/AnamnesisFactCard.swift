@@ -53,7 +53,7 @@ struct AnamnesisFactCard: View {
         switch state {
         case .neverRecorded:
             VStack(alignment: .leading, spacing: HLSpace.xs) {
-                HLBadge(String(localized: "anamnesis.state.neverRecorded"), icon: "questionmark.circle", tone: .neutral)
+                HLBadge(AppLocale.string("anamnesis.state.neverRecorded"), icon: "questionmark.circle", tone: .neutral)
                 Text("anamnesis.state.neverRecorded.hint")
                     .font(.hlCaption)
                     .foregroundStyle(HLText.secondary)
@@ -64,7 +64,7 @@ struct AnamnesisFactCard: View {
 
         case let .unreadable(revision):
             VStack(alignment: .leading, spacing: HLSpace.xs) {
-                HLBadge(String(localized: "anamnesis.state.unreadable"), icon: "lock.slash", tone: .warning)
+                HLBadge(AppLocale.string("anamnesis.state.unreadable"), icon: "lock.slash", tone: .warning)
                 Text("anamnesis.state.unreadable.hint")
                     .font(.hlCaption)
                     .foregroundStyle(HLText.secondary)
@@ -81,7 +81,7 @@ struct AnamnesisFactCard: View {
                         .foregroundStyle(HLText.primary)
                     if let provenanceKey = revision.provenance.labelKey {
                         HLBadge(
-                            String(localized: String.LocalizationValue(provenanceKey)),
+                            AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(provenanceKey))),
                             tone: revision.isCorrection ? .info : .neutral
                         )
                     }

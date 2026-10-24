@@ -46,13 +46,13 @@ struct IllnessInsightsScreen: View {
     private func summaryCard(_ insights: IllnessInsightsDTO) -> some View {
         HLCard {
             VStack(alignment: .leading, spacing: HLSpace.sm) {
-                let sickTemplate = String(localized: "illness.insights.sickCount")
+                let sickTemplate = AppLocale.string("illness.insights.sickCount")
                 Text(String(format: sickTemplate, insights.episodeCount))
                     .font(.hlTitle3)
                     .foregroundStyle(HLText.primary)
                 if let gap = insights.typicalRecoveryGapDays {
                     let gapValue = gap.formatted(.number.precision(.fractionLength(0 ... 1)))
-                    let gapTemplate = String(localized: "illness.insights.typicalGap")
+                    let gapTemplate = AppLocale.string("illness.insights.typicalGap")
                     Text(String(format: gapTemplate, gapValue))
                         .font(.hlSubhead)
                         .foregroundStyle(HLText.secondary)
@@ -69,7 +69,7 @@ struct IllnessInsightsScreen: View {
                         .font(.hlCaption)
                         .foregroundStyle(HLText.tertiary)
                 }
-                let resolvedTemplate = String(localized: "illness.insights.resolvedCount")
+                let resolvedTemplate = AppLocale.string("illness.insights.resolvedCount")
                 Text(String(format: resolvedTemplate, insights.resolvedCount, insights.episodeCount))
                     .font(.hlCaption)
                     .foregroundStyle(HLText.tertiary)
@@ -151,9 +151,9 @@ struct IllnessInsightsScreen: View {
     private func typicalGapDriverText(_ type: String?) -> String? {
         guard let type, !type.isEmpty else { return nil }
         if type.uppercased() == "FUNCTIONAL_IMPACT" {
-            return String(localized: "illness.insights.typicalGap.driver.symptom")
+            return AppLocale.string("illness.insights.typicalGap.driver.symptom")
         }
-        let template = String(localized: "illness.insights.typicalGap.driver")
+        let template = AppLocale.string("illness.insights.typicalGap.driver")
         return String(format: template, IllnessVitalLabel.label(for: type))
     }
 }

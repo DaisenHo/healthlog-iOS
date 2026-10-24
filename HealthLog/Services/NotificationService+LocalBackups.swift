@@ -102,8 +102,8 @@ import Foundation
             guard intake.scheduledAt > now else { return nil }
 
             let content = UNMutableNotificationContent()
-            content.title = String(localized: "Medication")
-            content.body = String(localized: "Reminder — please take your medication.")
+            content.title = AppLocale.string("Medication")
+            content.body = AppLocale.string("Reminder — please take your medication.")
             content.sound = .default
             content.categoryIdentifier = Self.categoryMedication
             // userInfo carries the same shape an APNs payload would, so

@@ -192,7 +192,7 @@ struct InsightsMedicationsPage: View {
                         ForEach(snapshot.displayRows, id: \.days) { row in
                             HLComplianceBar(
                                 label: String(
-                                    format: String(localized: "med.card.compliance.window.label"),
+                                    format: AppLocale.string("med.card.compliance.window.label"),
                                     row.days
                                 ),
                                 rate: row.rate
@@ -214,14 +214,14 @@ struct InsightsMedicationsPage: View {
                         ForEach([7, 30], id: \.self) { days in
                             HLComplianceBar(
                                 label: String(
-                                    format: String(localized: "med.card.compliance.window.label"),
+                                    format: AppLocale.string("med.card.compliance.window.label"),
                                     days
                                 ),
                                 rate: 0
                             )
                         }
                         .redacted(reason: .placeholder)
-                        .accessibilityLabel(Text(String(localized: "med.compliance.loading")))
+                        .accessibilityLabel(Text(AppLocale.string("med.compliance.loading")))
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -230,7 +230,7 @@ struct InsightsMedicationsPage: View {
         }
         .hlPressable() // QOL-AUDIT H1: press feedback
         .accessibilityIdentifier("insights.medications.card.\(medication.id)")
-        .accessibilityHint(Text(String(localized: "medications.row.detail_hint")))
+        .accessibilityHint(Text(AppLocale.string("medications.row.detail_hint")))
     }
 
     /// I-1 D — the relocated BP × medication-compliance correlation card. Same
@@ -262,14 +262,14 @@ struct InsightsMedicationsPage: View {
 
     private func categoryLabel(_ medication: Medication) -> String {
         guard let raw = medication.category, !raw.isEmpty else {
-            return String(localized: "med.card.category.fallback")
+            return AppLocale.string("med.card.category.fallback")
         }
         return MedicationCard.localizedCategory(raw, label: medication.categoryLabel)
     }
 
     /// Localized, plural-aware count line ("3 medications" / "1 Medikament").
     private var subtitle: String {
-        String(localized: "insights.medicationsCount \(store.activeMedications.count)")
+        AppLocale.string("insights.medicationsCount \(store.activeMedications.count)")
     }
 
     private var emptyState: some View {
@@ -281,7 +281,7 @@ struct InsightsMedicationsPage: View {
             // QoL-4 — a next-step CTA so the empty page isn't a dead-end: land
             // the user on the Medications tab where "+" adds the first med.
             HLButton(
-                String(localized: "Add medication"),
+                AppLocale.string("Add medication"),
                 icon: "plus",
                 variant: .restrained
             ) {

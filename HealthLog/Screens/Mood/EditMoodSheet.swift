@@ -251,15 +251,15 @@ struct EditMoodSheet: View {
     private func suggestionFallbackMessage(_ reason: MoodTagSuggestionOutcome.FallbackReason) -> String {
         switch reason {
         case .capabilityNotAllowed:
-            String(localized: "Tag suggestions are currently disabled.")
+            AppLocale.string("Tag suggestions are currently disabled.")
         case .deviceIneligible, .appleIntelligenceDisabled, .modelNotReady, .frameworkUnavailable:
-            String(localized: "On-device suggestions are not available on this device.")
+            AppLocale.string("On-device suggestions are not available on this device.")
         case .safetyRefused:
-            String(localized: "Suggestions were held back by the safety filter.")
+            AppLocale.string("Suggestions were held back by the safety filter.")
         case .generationFailed:
-            String(localized: "Could not generate suggestions. Try again later.")
+            AppLocale.string("Could not generate suggestions. Try again later.")
         case .emptyInput:
-            String(localized: "Write something in the note to enable suggestions.")
+            AppLocale.string("Write something in the note to enable suggestions.")
         }
     }
 
@@ -362,7 +362,7 @@ struct EditMoodSheet: View {
         } else if ok {
             onDismiss()
         } else {
-            error = store.error ?? .unknown(String(localized: "Could not save"))
+            error = store.error ?? .unknown(AppLocale.string("Could not save"))
         }
     }
 }

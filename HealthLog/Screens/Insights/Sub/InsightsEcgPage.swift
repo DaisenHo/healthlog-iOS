@@ -221,7 +221,7 @@ struct InsightsEcgPage: View {
                 // dieser Fläche ist der Archiv-Import darunter, und zwei laute
                 // Knöpfe übereinander sagen dem Nutzer nicht, welcher zuerst.
                 HLButton(
-                    String(localized: "insights.ecg.empty.uploadOffCta"),
+                    AppLocale.string("insights.ecg.empty.uploadOffCta"),
                     icon: "heart.text.square",
                     variant: .secondary
                 ) {
@@ -253,7 +253,7 @@ struct InsightsEcgPage: View {
 
                 if backend?.hasServer != false {
                     HLButton(
-                        String(localized: "insights.ecg.empty.cta"),
+                        AppLocale.string("insights.ecg.empty.cta"),
                         icon: "tray.and.arrow.down.fill",
                         variant: .restrained
                     ) {

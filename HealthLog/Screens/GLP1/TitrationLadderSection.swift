@@ -58,12 +58,12 @@ public struct TitrationLadderSection: View {
             Button {
                 showingAdd = true
             } label: {
-                Label(String(localized: "medications.section.active.empty.cta"), systemImage: "plus.circle.fill")
+                Label(AppLocale.string("medications.section.active.empty.cta"), systemImage: "plus.circle.fill")
                     .labelStyle(.iconOnly)
                     .font(.hlTitle3)
                     .foregroundStyle(.tint)
             }
-            .accessibilityLabel(Text(String(localized: "Add titration step")))
+            .accessibilityLabel(Text(AppLocale.string("Add titration step")))
         }
     }
 
@@ -92,17 +92,15 @@ public struct TitrationLadderSection: View {
         HLCard(style: .ghost) {
             VStack(alignment: .leading, spacing: HLSpace.sm) {
                 Label(
-                    String(localized: "No titration history yet"),
+                    AppLocale.string("No titration history yet"),
                     systemImage: "stairs"
                 )
                 .font(.hlHeadline)
                 .foregroundStyle(HLText.primary)
-                Text(String(
-                    localized: "Log dose changes to keep a record of the course."
-                ))
-                .font(.hlSubhead)
-                .foregroundStyle(HLText.secondary)
-                .fixedSize(horizontal: false, vertical: true)
+                Text(AppLocale.string("Log dose changes to keep a record of the course."))
+                    .font(.hlSubhead)
+                    .foregroundStyle(HLText.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
     }
@@ -129,7 +127,7 @@ public struct TitrationLadderSection: View {
         let formatter = NumberFormatter()
         formatter.minimumFractionDigits = 0
         formatter.maximumFractionDigits = 2
-        formatter.locale = Locale.current
+        formatter.locale = AppLocale.shared.current
         let raw = formatter.string(from: NSNumber(value: mg)) ?? String(format: "%.2f", mg)
         return "\(raw) mg"
     }
@@ -151,7 +149,7 @@ private struct TitrationRow: View {
                         .foregroundStyle(HLText.primary)
                         .monospacedDigit()
                     if entry.source == .server {
-                        HLBadge(String(localized: "Server"), tone: .neutral)
+                        HLBadge(AppLocale.string("Server"), tone: .neutral)
                     }
                 }
                 Text(HLDateFormat.date(entry.effectiveFrom, style: .abbreviated))
@@ -170,16 +168,16 @@ private struct TitrationRow: View {
                     Button {
                         onEdit()
                     } label: {
-                        Label(String(localized: "Edit"), systemImage: "pencil")
+                        Label(AppLocale.string("Edit"), systemImage: "pencil")
                     }
                     Button(role: .destructive, action: onDelete) {
-                        Label(String(localized: "Delete"), systemImage: "trash")
+                        Label(AppLocale.string("Delete"), systemImage: "trash")
                     }
                 } label: {
                     Image(systemName: "ellipsis.circle")
                         .foregroundStyle(HLText.secondary)
                 }
-                .accessibilityLabel(Text(String(localized: "Titration step actions")))
+                .accessibilityLabel(Text(AppLocale.string("Titration step actions")))
             }
         }
         .padding(.vertical, HLSpace.sm)
@@ -221,20 +219,20 @@ struct TitrationStepEditSheet: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section(String(localized: "Effective from")) {
+                Section(AppLocale.string("Effective from")) {
                     DatePicker(
-                        String(localized: "glp1.titration.date.label"),
+                        AppLocale.string("glp1.titration.date.label"),
                         selection: $effectiveFrom,
                         displayedComponents: [.date]
                     )
                 }
-                Section(String(localized: "Dose (mg)")) {
-                    TextField(String(localized: "glp1.titration.dose.placeholder"), text: $doseString)
+                Section(AppLocale.string("Dose (mg)")) {
+                    TextField(AppLocale.string("glp1.titration.dose.placeholder"), text: $doseString)
                         .keyboardType(.decimalPad)
                         .monospacedDigit()
                 }
-                Section(String(localized: "Note")) {
-                    TextField(String(localized: "Optional"), text: $note, axis: .vertical)
+                Section(AppLocale.string("Note")) {
+                    TextField(AppLocale.string("Optional"), text: $note, axis: .vertical)
                         .lineLimit(3 ... 6)
                 }
             }
@@ -242,10 +240,10 @@ struct TitrationStepEditSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "Cancel")) { dismiss() }
+                    Button(AppLocale.string("Cancel")) { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(String(localized: "Save")) { save() }
+                    Button(AppLocale.string("Save")) { save() }
                         .disabled(parsedDose == nil)
                 }
             }
@@ -254,8 +252,8 @@ struct TitrationStepEditSheet: View {
 
     private var navigationTitle: String {
         switch mode {
-        case .add: String(localized: "Titration step")
-        case .edit: String(localized: "Edit step")
+        case .add: AppLocale.string("Titration step")
+        case .edit: AppLocale.string("Edit step")
         }
     }
 

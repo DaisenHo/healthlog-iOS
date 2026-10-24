@@ -88,7 +88,7 @@ struct EnvironmentScreen: View {
         if let home = store.home, store.hasHome {
             Section(header: Text("environment.home.section")) {
                 VStack(alignment: .leading, spacing: HLSpace.xxs) {
-                    Text(home.label ?? String(localized: "environment.home.unnamed"))
+                    Text(home.label ?? AppLocale.string("environment.home.unnamed"))
                         .font(.hlBody)
                         .foregroundStyle(HLText.primary)
                     if let since = home.since, let formatted = Self.displayDate(since) {
@@ -128,7 +128,7 @@ struct EnvironmentScreen: View {
             Section(header: Text("environment.travel.section")) {
                 ForEach(store.travel) { trip in
                     VStack(alignment: .leading, spacing: HLSpace.xxs) {
-                        Text(trip.label.isEmpty ? String(localized: "environment.home.unnamed") : trip.label)
+                        Text(trip.label.isEmpty ? AppLocale.string("environment.home.unnamed") : trip.label)
                             .font(.hlBody)
                             .foregroundStyle(HLText.primary)
                         Text(Self.dateRange(trip.startDate, trip.endDate))

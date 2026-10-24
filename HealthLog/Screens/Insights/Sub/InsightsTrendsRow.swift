@@ -137,7 +137,7 @@ struct InsightsTrendsRow: View {
                 .hlPressable() // QOL-AUDIT H1: press feedback
                 .accessibilityElement(children: .combine)
                 .accessibilityLabel(Text(chart.accessibilityLabel))
-                .accessibilityHint(Text(String(localized: "Double-tap to open detail view")))
+                .accessibilityHint(Text(AppLocale.string("Double-tap to open detail view")))
                 .accessibilityIdentifier("insights.trend.\(chart.kind.rawValue)")
         } else {
             body
@@ -159,7 +159,7 @@ struct InsightsTrendsRow: View {
             }
         }
         .accessibilityElement()
-        .accessibilityLabel(Text(String(localized: "Loading trends")))
+        .accessibilityLabel(Text(AppLocale.string("Loading trends")))
     }
 
     // MARK: - Pure series resolution
@@ -195,8 +195,8 @@ struct InsightsTrendsRow: View {
         guard rows.count >= 2 else { return nil }
         let series = rows.map(\.primaryValue)
         let descriptor = kind.descriptor
-        let title = String(localized: descriptor.title)
-        let unit = units.transform(for: kind).suffix ?? String(localized: descriptor.unitLabel)
+        let title = AppLocale.string(AppLocale.shared.resource(descriptor.title))
+        let unit = units.transform(for: kind).suffix ?? AppLocale.string(AppLocale.shared.resource(descriptor.unitLabel))
         let latestRow = rows.last
         let valueText = formattedValue(latestRow, kind: kind, unit: unit, units: units)
         let summary = kind.availabilitySummaryKey.flatMap { digest?.summaries?[$0] }
@@ -241,9 +241,9 @@ struct InsightsTrendsRow: View {
     /// then shows no sentence rather than one derived from two chart points.
     nonisolated static func annotation(serverSlope: TrendSlope?, title: String) -> String? {
         switch serverSlope?.direction {
-        case .up: String(localized: "insights.trendsRow.annotation.up \(title)")
-        case .down: String(localized: "insights.trendsRow.annotation.down \(title)")
-        case .stable: String(localized: "insights.trendsRow.annotation.stable \(title)")
+        case .up: AppLocale.string("insights.trendsRow.annotation.up \(title)")
+        case .down: AppLocale.string("insights.trendsRow.annotation.down \(title)")
+        case .stable: AppLocale.string("insights.trendsRow.annotation.stable \(title)")
         case .unknown, nil: nil
         }
     }

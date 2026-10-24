@@ -40,8 +40,8 @@ enum InsightsAvailabilityStatement {
 
         var text: String {
             switch self {
-            case .loading: String(localized: "insights.availability.loading")
-            case .unavailable: String(localized: "insights.availability.unavailable")
+            case .loading: AppLocale.string("insights.availability.loading")
+            case .unavailable: AppLocale.string("insights.availability.unavailable")
             }
         }
     }

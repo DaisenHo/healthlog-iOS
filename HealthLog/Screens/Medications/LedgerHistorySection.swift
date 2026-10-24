@@ -111,8 +111,8 @@ struct LedgerHistorySection: View {
                 HStack {
                     Spacer()
                     Text(isExpanded
-                        ? String(localized: "med.verlauf.history.show_less")
-                        : String(localized: "med.verlauf.history.show_more"))
+                        ? AppLocale.string("med.verlauf.history.show_less")
+                        : AppLocale.string("med.verlauf.history.show_more"))
                         .font(.hlSubhead)
                         .foregroundStyle(HLText.primary)
                     Spacer()
@@ -127,10 +127,10 @@ struct LedgerHistorySection: View {
         Menu {
             Picker(
                 selection: $filter,
-                label: Text(String(localized: "Filter history"))
+                label: Text(AppLocale.string("Filter history"))
             ) {
-                Text(String(localized: "All")).tag(LedgerFilter.alle)
-                Text(String(localized: "Not taken")).tag(LedgerFilter.nichtGenommen)
+                Text(AppLocale.string("All")).tag(LedgerFilter.alle)
+                Text(AppLocale.string("Not taken")).tag(LedgerFilter.nichtGenommen)
             }
         } label: {
             HStack(spacing: HLSpace.xxs) {
@@ -141,7 +141,7 @@ struct LedgerHistorySection: View {
             }
             .foregroundStyle(HLText.secondary)
             .contentShape(Rectangle())
-            .accessibilityLabel(Text(String(localized: "Filter history")))
+            .accessibilityLabel(Text(AppLocale.string("Filter history")))
             .accessibilityValue(Text(filterLabel))
         }
         .menuStyle(.borderlessButton)
@@ -150,17 +150,17 @@ struct LedgerHistorySection: View {
 
     private var filterLabel: String {
         switch filter {
-        case .alle: String(localized: "All")
-        case .nichtGenommen: String(localized: "Not taken")
+        case .alle: AppLocale.string("All")
+        case .nichtGenommen: AppLocale.string("Not taken")
         }
     }
 
     private var emptyLabel: String {
         switch filter {
         case .alle:
-            String(localized: "No intakes logged yet.")
+            AppLocale.string("No intakes logged yet.")
         case .nichtGenommen:
-            String(localized: "No missed intakes in your history.")
+            AppLocale.string("No missed intakes in your history.")
         }
     }
 }
@@ -207,7 +207,7 @@ struct LedgerHistoryRow: View {
                 if let deviation = doseDeviation {
                     Label {
                         Text(String(
-                            format: String(localized: "med.ledger.dose_deviation"),
+                            format: AppLocale.string("med.ledger.dose_deviation"),
                             deviation
                         ))
                     } icon: {
@@ -217,7 +217,7 @@ struct LedgerHistoryRow: View {
                     .foregroundStyle(HLColor.statusWarn)
                     .lineLimit(1)
                     .accessibilityLabel(Text(String(
-                        format: String(localized: "med.ledger.dose_deviation.a11y"),
+                        format: AppLocale.string("med.ledger.dose_deviation.a11y"),
                         deviation
                     )))
                 }
@@ -238,15 +238,15 @@ struct LedgerHistoryRow: View {
                     .foregroundStyle(HLText.tertiary)
                     .lineLimit(1)
                     .accessibilityLabel(Text(String(
-                        format: String(localized: "med.ledger.provenance.a11y"),
-                        String(localized: provenance.labelResource)
+                        format: AppLocale.string("med.ledger.provenance.a11y"),
+                        AppLocale.string(AppLocale.shared.resource(provenance.labelResource))
                     )))
                 }
             }
             Spacer()
             if row.pinned == true, !row.isAdHoc {
                 // "Zugeordnet" — slot served by a deliberate user pin.
-                Text(String(localized: "med.ledger.pinned_badge"))
+                Text(AppLocale.string("med.ledger.pinned_badge"))
                     .font(.hlCaption)
                     .foregroundStyle(HLText.tertiary)
             }
@@ -315,14 +315,14 @@ struct LedgerHistoryRow: View {
                     Button {
                         onMarkTaken()
                     } label: {
-                        Label(String(localized: "Mark as taken"), systemImage: "checkmark.circle")
+                        Label(AppLocale.string("Mark as taken"), systemImage: "checkmark.circle")
                     }
                 }
                 if row.status != .skipped {
                     Button {
                         onMarkSkipped()
                     } label: {
-                        Label(String(localized: "Mark as skipped"), systemImage: "xmark.circle")
+                        Label(AppLocale.string("Mark as skipped"), systemImage: "xmark.circle")
                     }
                 }
             }
@@ -331,12 +331,12 @@ struct LedgerHistoryRow: View {
                     onPin()
                 } label: {
                     Label(
-                        String(localized: "med.ledger.action.pin"),
+                        AppLocale.string("med.ledger.action.pin"),
                         systemImage: "pin"
                     )
                 }
                 .accessibilityHint(Text(String(
-                    format: String(localized: "med.ledger.due_context"),
+                    format: AppLocale.string("med.ledger.due_context"),
                     slot.timeOfDay
                 )))
             }
@@ -344,7 +344,7 @@ struct LedgerHistoryRow: View {
                 Button {
                     onUnpin()
                 } label: {
-                    Label(String(localized: "med.ledger.action.unpin"), systemImage: "pin.slash")
+                    Label(AppLocale.string("med.ledger.action.unpin"), systemImage: "pin.slash")
                 }
             }
             if canDelete {
@@ -352,7 +352,7 @@ struct LedgerHistoryRow: View {
                 Button(role: .destructive) {
                     onDelete()
                 } label: {
-                    Label(String(localized: "Delete entry"), systemImage: "trash")
+                    Label(AppLocale.string("Delete entry"), systemImage: "trash")
                 }
             }
         } label: {
@@ -361,7 +361,7 @@ struct LedgerHistoryRow: View {
                 .foregroundStyle(HLText.secondary)
                 .frame(width: 32, height: 32)
                 .contentShape(Rectangle())
-                .accessibilityLabel(Text(String(localized: "Edit or delete entry")))
+                .accessibilityLabel(Text(AppLocale.string("Edit or delete entry")))
         }
         .menuStyle(.borderlessButton)
         .buttonStyle(.plain)
@@ -373,7 +373,7 @@ struct LedgerHistoryRow: View {
         let date = row.intake?.takenAt ?? row.at
         // M3 — date part keeps the locale order; the clock part honours the
         // user's time-format preference via the central `HLTimeFormat` helper.
-        let datePart = date.formatted(.dateTime.day().month(.abbreviated))
+        let datePart = date.formatted(.dateTime.day().month(.abbreviated).locale(AppLocale.shared.current))
         return "\(datePart), \(HLTimeFormat.time(date))"
     }
 
@@ -383,13 +383,13 @@ struct LedgerHistoryRow: View {
         if row.status == .takenLate {
             let planned = row.timeOfDay
                 ?? HLTimeFormat.time(row.at)
-            return String(format: String(localized: "med.ledger.planned_time"), planned)
+            return String(format: AppLocale.string("med.ledger.planned_time"), planned)
         }
         if row.isAdHoc {
             if let slot = row.nearestSlot {
-                return String(format: String(localized: "med.ledger.due_context"), slot.timeOfDay)
+                return String(format: AppLocale.string("med.ledger.due_context"), slot.timeOfDay)
             }
-            return String(localized: "med.ledger.status.adhoc")
+            return AppLocale.string("med.ledger.status.adhoc")
         }
         return nil
     }
@@ -405,27 +405,27 @@ struct LedgerHistoryRow: View {
             Image(systemName: "checkmark.circle.fill")
                 .font(.hlIcon(HLIconSize.rowAction))
                 .foregroundStyle(HLColor.statusOK)
-                .accessibilityLabel(String(localized: "med.ledger.status.on_time"))
+                .accessibilityLabel(AppLocale.string("med.ledger.status.on_time"))
         case .takenLate:
             Image(systemName: "checkmark.circle.fill")
                 .font(.hlIcon(HLIconSize.rowAction))
                 .foregroundStyle(HLColor.statusWarn)
-                .accessibilityLabel(String(localized: "med.ledger.status.late"))
+                .accessibilityLabel(AppLocale.string("med.ledger.status.late"))
         case .skipped:
             Image(systemName: "xmark.circle.fill")
                 .font(.hlIcon(HLIconSize.rowAction))
                 .foregroundStyle(HLText.tertiary)
-                .accessibilityLabel(String(localized: "med.ledger.status.skipped"))
+                .accessibilityLabel(AppLocale.string("med.ledger.status.skipped"))
         case .missed:
             Image(systemName: "circle")
                 .font(.hlIcon(HLIconSize.rowAction))
                 .foregroundStyle(HLColor.statusBad)
-                .accessibilityLabel(String(localized: "med.ledger.status.missed"))
+                .accessibilityLabel(AppLocale.string("med.ledger.status.missed"))
         case .upcoming:
             Image(systemName: "clock")
                 .font(.hlIcon(HLIconSize.rowAction))
                 .foregroundStyle(HLText.secondary)
-                .accessibilityLabel(String(localized: "med.ledger.status.upcoming"))
+                .accessibilityLabel(AppLocale.string("med.ledger.status.upcoming"))
         case nil:
             // Unknown future status literal — inert neutral dot.
             Image(systemName: "circle.dotted")

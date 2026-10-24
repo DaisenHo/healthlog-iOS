@@ -7,9 +7,9 @@ import SwiftUI
 enum WorkoutsListSummary {
     static func headerText(loaded: Int, total: Int?) -> String {
         guard let total, loaded < total else {
-            return String(localized: "insights.workoutsCount \(total ?? loaded)")
+            return AppLocale.string("insights.workoutsCount \(total ?? loaded)")
         }
-        return String(localized: "workouts.count.partial \(loaded) \(total)")
+        return AppLocale.string("workouts.count.partial \(loaded) \(total)")
     }
 
     /// VoiceOver reads the partial state as "… loaded" so the count is not
@@ -18,7 +18,7 @@ enum WorkoutsListSummary {
         guard let total, loaded < total else {
             return headerText(loaded: loaded, total: total)
         }
-        return String(localized: "workouts.count.partial.a11y \(loaded) \(total)")
+        return AppLocale.string("workouts.count.partial.a11y \(loaded) \(total)")
     }
 
     @MainActor

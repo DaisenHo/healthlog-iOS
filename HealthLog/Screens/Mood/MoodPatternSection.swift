@@ -117,7 +117,7 @@ enum MoodPatternPresentation {
             category: look.category,
             icon: look.icon,
             sentence: sentence,
-            basedOn: String(localized: "mood.patterns.basedOn \(size.subject) \(size.comparison)"),
+            basedOn: AppLocale.string("mood.patterns.basedOn \(size.subject) \(size.comparison)"),
             strength: strengthLabel(pattern.strength)
         )
     }
@@ -136,29 +136,29 @@ enum MoodPatternPresentation {
         switch pattern.kind {
         case .previousDay:
             return higher
-                ? String(localized: "mood.patterns.previousDayHigher \(subject) \(comparison)")
-                : String(localized: "mood.patterns.previousDayLower \(subject) \(comparison)")
+                ? AppLocale.string("mood.patterns.previousDayHigher \(subject) \(comparison)")
+                : AppLocale.string("mood.patterns.previousDayLower \(subject) \(comparison)")
         case .weekend:
             return higher
-                ? String(localized: "mood.patterns.weekendHigher \(subject) \(comparison)")
-                : String(localized: "mood.patterns.weekendLower \(subject) \(comparison)")
+                ? AppLocale.string("mood.patterns.weekendHigher \(subject) \(comparison)")
+                : AppLocale.string("mood.patterns.weekendLower \(subject) \(comparison)")
         case .bestWeekday:
             // A weekday that is only lower is not a best weekday.
             guard higher, let weekday = weekdayName(pattern.values.weekday, locale: locale) else { return nil }
-            return String(localized: "mood.patterns.bestWeekday \(weekday) \(subject) \(comparison)")
+            return AppLocale.string("mood.patterns.bestWeekday \(weekday) \(subject) \(comparison)")
         case .notes:
             return higher
-                ? String(localized: "mood.patterns.notesHigher \(subject) \(comparison)")
-                : String(localized: "mood.patterns.notesLower \(subject) \(comparison)")
+                ? AppLocale.string("mood.patterns.notesHigher \(subject) \(comparison)")
+                : AppLocale.string("mood.patterns.notesLower \(subject) \(comparison)")
         case .delayedTag:
             guard let tag = tagName(pattern.values) else { return nil }
             return higher
-                ? String(localized: "mood.patterns.delayedTagHigher \(tag) \(subject) \(comparison)")
-                : String(localized: "mood.patterns.delayedTagLower \(tag) \(subject) \(comparison)")
+                ? AppLocale.string("mood.patterns.delayedTagHigher \(tag) \(subject) \(comparison)")
+                : AppLocale.string("mood.patterns.delayedTagLower \(tag) \(subject) \(comparison)")
         case .multipleEntries:
             return higher
-                ? String(localized: "mood.patterns.multipleEntriesHigher \(subject) \(comparison)")
-                : String(localized: "mood.patterns.multipleEntriesLower \(subject) \(comparison)")
+                ? AppLocale.string("mood.patterns.multipleEntriesHigher \(subject) \(comparison)")
+                : AppLocale.string("mood.patterns.multipleEntriesLower \(subject) \(comparison)")
         case .unknown:
             return nil
         }
@@ -166,21 +166,21 @@ enum MoodPatternPresentation {
 
     private static func look(for kind: MoodPattern.Kind) -> (category: String, icon: String)? {
         switch kind {
-        case .previousDay: (String(localized: "Day to day"), "repeat")
-        case .weekend: (String(localized: "Weekends"), "calendar")
-        case .bestWeekday: (String(localized: "Weekdays"), "sun.max")
-        case .notes: (String(localized: "Notes"), "square.and.pencil")
-        case .delayedTag: (String(localized: "Next day"), "arrow.right")
-        case .multipleEntries: (String(localized: "Check-ins"), "number")
+        case .previousDay: (AppLocale.string("Day to day"), "repeat")
+        case .weekend: (AppLocale.string("Weekends"), "calendar")
+        case .bestWeekday: (AppLocale.string("Weekdays"), "sun.max")
+        case .notes: (AppLocale.string("Notes"), "square.and.pencil")
+        case .delayedTag: (AppLocale.string("Next day"), "arrow.right")
+        case .multipleEntries: (AppLocale.string("Check-ins"), "number")
         case .unknown: nil
         }
     }
 
     static func strengthLabel(_ strength: MoodPattern.Strength) -> String? {
         switch strength {
-        case .strong: String(localized: "mood.patterns.strength.strong")
-        case .moderate: String(localized: "mood.patterns.strength.moderate")
-        case .weak: String(localized: "mood.patterns.strength.weak")
+        case .strong: AppLocale.string("mood.patterns.strength.strong")
+        case .moderate: AppLocale.string("mood.patterns.strength.moderate")
+        case .weak: AppLocale.string("mood.patterns.strength.weak")
         case .unknown: nil
         }
     }

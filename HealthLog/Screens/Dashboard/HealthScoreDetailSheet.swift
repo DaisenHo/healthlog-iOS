@@ -66,7 +66,7 @@ public struct HealthScoreDetailSheet: View {
             // the sheet's Liquid Glass header instead of clipping cleanly.
             // iOS 18-25: no-op (system stays flat-translucent).
             .hlScrollEdgeSoft()
-            .navigationTitle(String(localized: "Health Score"))
+            .navigationTitle(AppLocale.string("Health Score"))
             .navigationBarTitleDisplayMode(.inline)
             // v0.6.1 Y2 — Home-Compliance pattern: drop the 'Fertig'
             // confirmationAction toolbar item (`docs/design-handbook-v1.md
@@ -121,9 +121,12 @@ private struct CompositionCard: View {
         if let composition = score.composition, !composition.isEmpty {
             HLCard {
                 VStack(alignment: .leading, spacing: HLSpace.md) {
-                    Text(String(localized: "What this score is made of", comment: "Health Score composition section"))
-                        .font(.hlHeadline)
-                        .foregroundStyle(HLText.primary)
+                    Text(AppLocale.string(LocalizedStringResource(
+                        "What this score is made of",
+                        comment: "Health Score composition section"
+                    )))
+                    .font(.hlHeadline)
+                    .foregroundStyle(HLText.primary)
                     VStack(alignment: .leading, spacing: HLSpace.sm) {
                         ForEach(composition, id: \.rawValue) { pillar in
                             PillarRow(pillar: pillar, isBandSetter: pillar == score.bandSetter)
@@ -178,10 +181,10 @@ private struct CompositionCard: View {
                             .foregroundStyle(HLText.secondary)
                             .fixedSize(horizontal: false, vertical: true)
                     }
-                    Text(String(
-                        localized: "Only pillars with enough data carry the score. Missing ones are left out, never guessed.",
+                    Text(AppLocale.string(LocalizedStringResource(
+                        "Only pillars with enough data carry the score. Missing ones are left out, never guessed.",
                         comment: "Health Score composition footnote"
-                    ))
+                    )))
                     .font(.hlCaption)
                     .foregroundStyle(HLText.tertiary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -202,7 +205,7 @@ private struct PillarRow: View {
                 .foregroundStyle(HLText.primary)
             Spacer(minLength: 0)
             if isBandSetter {
-                Text(String(localized: "sets the colour", comment: "Health Score band setter marker"))
+                Text(AppLocale.string(LocalizedStringResource("sets the colour", comment: "Health Score band setter marker")))
                     .font(.hlCaption)
                     .foregroundStyle(HLText.tertiary)
             }
@@ -222,7 +225,7 @@ private struct ConfidenceCard: View {
         if let confidence = score.confidence {
             HLCard(style: .ghost) {
                 VStack(alignment: .leading, spacing: HLSpace.sm) {
-                    Text(String(localized: "Confidence", comment: "Health Score confidence section"))
+                    Text(AppLocale.string(LocalizedStringResource("Confidence", comment: "Health Score confidence section")))
                         .font(.hlCaption.weight(.semibold))
                         .foregroundStyle(HLText.secondary)
                     HStack(spacing: HLSpace.sm) {
@@ -238,10 +241,10 @@ private struct ConfidenceCard: View {
                 }
             }
             .accessibilityElement(children: .combine)
-            .accessibilityLabel(Text(String(
-                localized: "Confidence \(HealthScorePresentation.label(for: confidence.band)), \(confidence.score) percent coverage",
+            .accessibilityLabel(Text(AppLocale.string(LocalizedStringResource(
+                "Confidence \(HealthScorePresentation.label(for: confidence.band)), \(confidence.score) percent coverage",
                 comment: "Health Score confidence a11y label"
-            )))
+            ))))
         }
     }
 }
@@ -257,7 +260,7 @@ private struct RestModeCard: View {
         RestModeGate(score: score) { restMode in
             HLCard(style: .ghost) {
                 VStack(alignment: .leading, spacing: HLSpace.sm) {
-                    Text(String(localized: "Rest phase", comment: "Health Score rest mode section"))
+                    Text(AppLocale.string(LocalizedStringResource("Rest phase", comment: "Health Score rest mode section")))
                         .font(.hlCaption.weight(.semibold))
                         .foregroundStyle(HLText.secondary)
                     Text(HealthScorePresentation.restModeLine(for: restMode))
@@ -277,14 +280,17 @@ private struct DocumentationCard: View {
     var body: some View {
         HLCard {
             VStack(alignment: .leading, spacing: HLSpace.sm) {
-                Text(String(localized: "How the score works"))
+                Text(AppLocale.string("How the score works"))
                     .font(.hlHeadline)
                     .foregroundStyle(HLText.primary)
-                Text(String(
-                    // swiftlint:disable:next line_length
-                    localized: "Up to eight pillars can carry this score: blood pressure, blood sugar, activity, sleep, waist, wellbeing, fitness and blood lipids. Only the ones with enough data count — a missing pillar is left out rather than filled in with a guess.",
+                Text(AppLocale.string(LocalizedStringResource(
+                    """
+                    Up to eight pillars can carry this score: blood pressure, blood sugar, activity, sleep, waist, \
+                    wellbeing, fitness and blood lipids. Only the ones with enough data count — a missing pillar is \
+                    left out rather than filled in with a guess.
+                    """,
                     comment: "Health Score explainer"
-                ))
+                )))
                 .font(.hlSubhead)
                 .foregroundStyle(HLText.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -313,7 +319,7 @@ private struct DataProvenanceLine: View {
                 HStack(spacing: HLSpace.sm) {
                     Image(systemName: "chart.bar.doc.horizontal")
                         .foregroundStyle(HLText.tertiary)
-                    Text(String(localized: "Calculated from \(total) measurements over \(span) days."))
+                    Text(AppLocale.string("Calculated from \(total) measurements over \(span) days."))
                         .font(.hlCaption)
                         .foregroundStyle(HLText.secondary)
                         .fixedSize(horizontal: false, vertical: true)

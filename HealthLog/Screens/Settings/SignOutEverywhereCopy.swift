@@ -51,7 +51,7 @@ enum SignOutEverywhereCopy {
     static func doneMessage(_ store: SessionsStore) -> Text {
         let names = store.keptGrantNames
         guard !names.isEmpty else { return Text(doneBody(store)) }
-        let list = names.formatted(.list(type: .and))
+        let list = names.formatted(.list(type: .and).locale(AppLocale.shared.current))
         return Text(doneBody(store)) + Text(verbatim: "\n\n") + Text("sessions.signOutAll.grantsKept \(list)")
     }
 }

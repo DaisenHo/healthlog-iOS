@@ -34,7 +34,7 @@ extension SettingsHKSyncDiagnosticsScreen {
                         .accessibilityIdentifier("settings.hkdiag.heldResend")
                     }
                     if let rearmedCount {
-                        Text(String(localized: "settings.hkdiag.held_resend_result \(rearmedCount)"))
+                        Text(AppLocale.string("settings.hkdiag.held_resend_result \(rearmedCount)"))
                             .font(.hlCaption)
                             .foregroundStyle(HLText.secondary)
                             .fixedSize(horizontal: false, vertical: true)
@@ -62,15 +62,15 @@ extension SettingsHKSyncDiagnosticsScreen {
     static func heldReasonText(_ reason: OutboxHoldReason) -> String {
         switch reason {
         case let .serverRefused(status):
-            String(localized: "settings.hkdiag.held_reason_refused \(status)")
+            AppLocale.string("settings.hkdiag.held_reason_refused \(status)")
         case let .moduleDisabled(module):
-            String(localized: "settings.hkdiag.held_reason_module \(module)")
+            AppLocale.string("settings.hkdiag.held_reason_module \(module)")
         case .unmappable:
-            String(localized: "settings.hkdiag.held_reason_unmappable")
+            AppLocale.string("settings.hkdiag.held_reason_unmappable")
         case .refusalNotRecorded:
-            String(localized: "settings.hkdiag.held_reason_not_recorded")
+            AppLocale.string("settings.hkdiag.held_reason_not_recorded")
         case .retryBudgetExhausted:
-            String(localized: "settings.hkdiag.held_reason_budget")
+            AppLocale.string("settings.hkdiag.held_reason_budget")
         }
     }
 

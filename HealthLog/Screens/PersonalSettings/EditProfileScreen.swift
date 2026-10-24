@@ -112,7 +112,7 @@ struct EditProfileScreen: View {
             Section {
                 LabeledContent {
                     TextField(
-                        String(localized: "Required"),
+                        AppLocale.string("Required"),
                         text: $displayName
                     )
                     .textContentType(.name)
@@ -133,11 +133,11 @@ struct EditProfileScreen: View {
             }
 
             Section {
-                Toggle(String(localized: "Set date of birth"), isOn: $hasDateOfBirth)
+                Toggle(AppLocale.string("Set date of birth"), isOn: $hasDateOfBirth)
                     .accessibilityIdentifier("editProfile.hasDateOfBirth")
                 if hasDateOfBirth {
                     DatePicker(
-                        String(localized: "Date of birth"),
+                        AppLocale.string("Date of birth"),
                         selection: $dateOfBirth,
                         in: minBirthDate ... .now,
                         displayedComponents: .date
@@ -151,7 +151,7 @@ struct EditProfileScreen: View {
             }
 
             Section {
-                Picker(String(localized: "Gender"), selection: $gender) {
+                Picker(AppLocale.string("Gender"), selection: $gender) {
                     ForEach(GenderOption.allCases) { option in
                         Text(option.label).tag(option)
                     }
@@ -164,7 +164,7 @@ struct EditProfileScreen: View {
             Section {
                 LabeledContent {
                     TextField(
-                        String(localized: "Optional"),
+                        AppLocale.string("Optional"),
                         text: $heightCm
                     )
                     .keyboardType(.numberPad)
@@ -341,7 +341,7 @@ struct EditProfileScreen: View {
             Text("Photo")
         } footer: {
             if avatarPickError {
-                HLFormErrorText(String(localized: "Could not load the selected photo."))
+                HLFormErrorText(AppLocale.string("Could not load the selected photo."))
             } else if let err = avatarStore.error {
                 HLFormErrorText(err.userFacingDescription)
             } else {

@@ -47,7 +47,7 @@ struct WebhookChannelCard: View {
                     Text("notifications.webhook.url")
                         .font(.hlCaption)
                         .foregroundStyle(HLText.secondary)
-                    TextField(String(localized: "notifications.webhook.urlPlaceholder"), text: $url)
+                    TextField(AppLocale.string("notifications.webhook.urlPlaceholder"), text: $url)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .keyboardType(.URL)
@@ -59,7 +59,7 @@ struct WebhookChannelCard: View {
                     Text("notifications.webhook.headerName")
                         .font(.hlCaption)
                         .foregroundStyle(HLText.secondary)
-                    TextField(String(localized: "notifications.webhook.headerNamePlaceholder"), text: $headerName)
+                    TextField(AppLocale.string("notifications.webhook.headerNamePlaceholder"), text: $headerName)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .accessibilityIdentifier("notifications.webhook.headerNameField")
@@ -87,7 +87,7 @@ struct WebhookChannelCard: View {
             }
 
             HLButton(
-                String(localized: "notifications.channel.save"),
+                AppLocale.string("notifications.channel.save"),
                 variant: .secondary,
                 isLoading: store.webhookWorking
             ) {
@@ -98,7 +98,7 @@ struct WebhookChannelCard: View {
 
             if enabled {
                 HLButton(
-                    String(localized: "notifications.channel.test"),
+                    AppLocale.string("notifications.channel.test"),
                     icon: "paperplane",
                     // UI-Standard R9 (U6) — siehe NtfyChannelCard: Test und
                     // Speichern sind hier beide `.secondary`.
@@ -160,9 +160,9 @@ struct WebhookChannelCard: View {
 
     private var headerValuePlaceholder: String {
         if store.webhook?.hasHeaderValue == true {
-            return String(localized: "notifications.channel.token.stored")
+            return AppLocale.string("notifications.channel.token.stored")
         }
-        return String(localized: "notifications.webhook.headerValuePlaceholder")
+        return AppLocale.string("notifications.webhook.headerValuePlaceholder")
     }
 
     /// Mirrors the server required-field rule: when enabled, the URL must be
@@ -170,7 +170,7 @@ struct WebhookChannelCard: View {
     private var validationMessage: String? {
         guard enabled else { return nil }
         if url.trimmingCharacters(in: .whitespaces).isEmpty {
-            return String(localized: "notifications.webhook.validation.required")
+            return AppLocale.string("notifications.webhook.validation.required")
         }
         return nil
     }

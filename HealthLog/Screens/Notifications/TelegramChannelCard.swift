@@ -51,7 +51,7 @@ struct TelegramChannelCard: View {
                     Text("notifications.telegram.chatId")
                         .font(.hlCaption)
                         .foregroundStyle(HLText.secondary)
-                    TextField(String(localized: "notifications.telegram.chatIdPlaceholder"), text: $chatId)
+                    TextField(AppLocale.string("notifications.telegram.chatIdPlaceholder"), text: $chatId)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .keyboardType(.numbersAndPunctuation)
@@ -67,7 +67,7 @@ struct TelegramChannelCard: View {
             }
 
             HLButton(
-                String(localized: "notifications.channel.save"),
+                AppLocale.string("notifications.channel.save"),
                 variant: .secondary,
                 isLoading: store.telegramWorking
             ) {
@@ -78,7 +78,7 @@ struct TelegramChannelCard: View {
 
             if enabled {
                 HLButton(
-                    String(localized: "notifications.channel.test"),
+                    AppLocale.string("notifications.channel.test"),
                     icon: "paperplane",
                     // UI-Standard R9 (U6) — siehe NtfyChannelCard: Test und
                     // Speichern sind hier beide `.secondary`.
@@ -113,9 +113,9 @@ struct TelegramChannelCard: View {
 
     private var tokenPlaceholder: String {
         if store.telegram?.hasBotToken == true {
-            return String(localized: "notifications.channel.token.stored")
+            return AppLocale.string("notifications.channel.token.stored")
         }
-        return String(localized: "notifications.telegram.tokenPlaceholder")
+        return AppLocale.string("notifications.telegram.tokenPlaceholder")
     }
 
     /// Mirrors the server required-field rule: when enabled, a token (stored or
@@ -126,7 +126,7 @@ struct TelegramChannelCard: View {
         let chat = chatId.trimmingCharacters(in: .whitespaces)
         let hasTokenAfterSave = !token.isEmpty || (store.telegram?.hasBotToken == true)
         if !hasTokenAfterSave || chat.isEmpty {
-            return String(localized: "notifications.telegram.validation.required")
+            return AppLocale.string("notifications.telegram.validation.required")
         }
         return nil
     }

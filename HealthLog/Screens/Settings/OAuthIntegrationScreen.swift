@@ -106,12 +106,12 @@ struct OAuthIntegrationScreen<Store: OAuthIntegrationStoreProtocol & Observable 
             if let health = store.status?.health {
                 HLStatusPill(ConnectionHealthPresentation(health: health).pill)
             } else {
-                HLStatusPill(.connected(label: String(localized: "Connected")))
+                HLStatusPill(.connected(label: AppLocale.string("Connected")))
             }
         case .some(false):
-            HLStatusPill(.disconnected(label: String(localized: "Not connected")))
+            HLStatusPill(.disconnected(label: AppLocale.string("Not connected")))
         case .none:
-            HLStatusPill(.unknown(label: String(localized: "Checking")))
+            HLStatusPill(.unknown(label: AppLocale.string("Checking")))
         }
     }
 
@@ -122,7 +122,7 @@ struct OAuthIntegrationScreen<Store: OAuthIntegrationStoreProtocol & Observable 
             // im Nicht-verbunden-Zweig (Audit-Gruppe 3) ist ersatzlos gefallen:
             // der Knopf darunter beschriftet sich selbst.
             if let status = store.status, status.connected {
-                Text("Last sync \(status.lastSync?.formatted(.relative(presentation: .named)) ?? "—")")
+                Text("Last sync \(status.lastSync?.formatted(.relative(presentation: .named).locale(AppLocale.shared.current)) ?? "—")")
                     .font(.hlCaption)
                     .foregroundStyle(HLText.secondary)
                 if let health = status.health {
@@ -170,11 +170,11 @@ struct OAuthIntegrationScreen<Store: OAuthIntegrationStoreProtocol & Observable 
                 }
                 .accessibilityIdentifier("integration.byo.remove")
             } else {
-                TextField(String(localized: "integration.byo.clientId.placeholder"), text: $clientIdDraft)
+                TextField(AppLocale.string("integration.byo.clientId.placeholder"), text: $clientIdDraft)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .accessibilityIdentifier("integration.byo.clientId")
-                SecureField(String(localized: "integration.byo.clientSecret.placeholder"), text: $clientSecretDraft)
+                SecureField(AppLocale.string("integration.byo.clientSecret.placeholder"), text: $clientSecretDraft)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .accessibilityIdentifier("integration.byo.clientSecret")
@@ -214,10 +214,7 @@ struct OAuthIntegrationScreen<Store: OAuthIntegrationStoreProtocol & Observable 
                 Text(
                     // W-I18N: interpolates a runtime latency number.
                     verbatim: String(
-                        format: NSLocalizedString(
-                            "integration.test.ok_latency",
-                            comment: "Connection test OK; %d is the latency in ms."
-                        ),
+                        format: AppLocale.string("integration.test.ok_latency"),
                         latency
                     )
                 )
@@ -269,10 +266,7 @@ struct OAuthIntegrationScreen<Store: OAuthIntegrationStoreProtocol & Observable 
                 // W-I18N: interpolates the runtime provider name (server
                 // value) — paint verbatim, never re-resolve as a key.
                 verbatim: String(
-                    format: NSLocalizedString(
-                        "integration.connectProvider",
-                        comment: "Connect button label; %@ is the provider name (Oura/Polar/Fitbit)."
-                    ),
+                    format: AppLocale.string("integration.connectProvider"),
                     displayName
                 ),
                 icon: "link",

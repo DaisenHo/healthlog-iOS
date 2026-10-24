@@ -95,7 +95,8 @@ struct CycleCalendarGrid: View {
 
     private var gridCells: [GridCell] {
         var cal = Calendar(identifier: .gregorian)
-        cal.firstWeekday = 2 // Monday — matches the weekday header below.
+        cal.firstWeekday = 2
+        cal.locale = AppLocale.shared.current // Monday — matches the weekday header below.
         let comps = cal.dateComponents([.year, .month], from: month)
         guard let first = cal.date(from: comps),
               let range = cal.range(of: .day, in: .month, for: first) else { return [] }
@@ -123,27 +124,27 @@ struct CycleCalendarGrid: View {
         guard let dto else { return "\(dayNumber)" }
         var parts = ["\(dayNumber)"]
         if dto.isPeriodLogged {
-            parts.append(String(localized: "cycle.calendar.a11y.periodLogged"))
+            parts.append(AppLocale.string("cycle.calendar.a11y.periodLogged"))
         } else if dto.isPredictedPeriod {
-            parts.append(String(localized: "cycle.calendar.a11y.predictedPeriod"))
+            parts.append(AppLocale.string("cycle.calendar.a11y.predictedPeriod"))
         }
         // Fertile/ovulation a11y labels follow the painted markers: dropped while
         // still learning so VoiceOver doesn't announce a guess as a fact.
         if !suppressFertility {
             if dto.isPredictedOvulation {
-                parts.append(String(localized: "cycle.calendar.a11y.ovulation"))
+                parts.append(AppLocale.string("cycle.calendar.a11y.ovulation"))
             } else if dto.isFertileWindow {
-                parts.append(String(localized: "cycle.calendar.a11y.fertile"))
+                parts.append(AppLocale.string("cycle.calendar.a11y.fertile"))
             }
         }
         if dto.hasSymptoms {
-            parts.append(String(localized: "cycle.calendar.a11y.symptoms"))
+            parts.append(AppLocale.string("cycle.calendar.a11y.symptoms"))
         }
         // v1.39.1 (#1032) — intercourse has its own marker, and every other
         // entry the day log holds is named, so VoiceOver reads what the
         // markers under the number show.
         if dto.sexualActivity {
-            parts.append(String(localized: "cycle.calendar.a11y.intercourse"))
+            parts.append(AppLocale.string("cycle.calendar.a11y.intercourse"))
         }
         parts.append(contentsOf: otherEntryLabels(dto))
         return parts.joined(separator: ", ")
@@ -157,18 +158,18 @@ struct CycleCalendarGrid: View {
     static func otherEntryLabels(_ dto: CalendarDayDTO) -> [String] {
         var labels: [String] = []
         if dto.intermenstrualBleeding {
-            labels.append(String(localized: "cycle.capture.intermenstrualBleeding.label"))
+            labels.append(AppLocale.string("cycle.capture.intermenstrualBleeding.label"))
         }
-        if dto.basalBodyTempC != nil { labels.append(String(localized: "cycle.capture.bbt.label")) }
-        if dto.ovulationTest != nil { labels.append(String(localized: "cycle.capture.ovulation.label")) }
-        if dto.cervicalMucus != nil { labels.append(String(localized: "cycle.capture.mucus.label")) }
+        if dto.basalBodyTempC != nil { labels.append(AppLocale.string("cycle.capture.bbt.label")) }
+        if dto.ovulationTest != nil { labels.append(AppLocale.string("cycle.capture.ovulation.label")) }
+        if dto.cervicalMucus != nil { labels.append(AppLocale.string("cycle.capture.mucus.label")) }
         if dto.cervixPosition != nil || dto.cervixFirmness != nil || dto.cervixOpening != nil {
-            labels.append(String(localized: "cycle.capture.cervix.header"))
+            labels.append(AppLocale.string("cycle.capture.cervix.header"))
         }
-        if dto.pregnancyTest != nil { labels.append(String(localized: "cycle.capture.pregnancyTest.label")) }
-        if dto.progesteroneTest != nil { labels.append(String(localized: "cycle.capture.progesteroneTest.label")) }
-        if dto.contraceptive != nil { labels.append(String(localized: "cycle.capture.contraceptive.label")) }
-        if dto.hasNote { labels.append(String(localized: "cycle.capture.note.header")) }
+        if dto.pregnancyTest != nil { labels.append(AppLocale.string("cycle.capture.pregnancyTest.label")) }
+        if dto.progesteroneTest != nil { labels.append(AppLocale.string("cycle.capture.progesteroneTest.label")) }
+        if dto.contraceptive != nil { labels.append(AppLocale.string("cycle.capture.contraceptive.label")) }
+        if dto.hasNote { labels.append(AppLocale.string("cycle.capture.note.header")) }
         return labels
     }
 
@@ -176,13 +177,14 @@ struct CycleCalendarGrid: View {
         dayFormatter.string(from: date)
     }
 
-    static let weekdaySymbols: [String] = {
+    static var weekdaySymbols: [String] {
         var cal = Calendar(identifier: .gregorian)
         cal.firstWeekday = 2
+        cal.locale = AppLocale.shared.current
         let symbols = cal.veryShortStandaloneWeekdaySymbols
         // Rotate so Monday leads.
         return Array(symbols[1...] + symbols[...0])
-    }()
+    }
 
     private static let dayFormatter: DateFormatter = {
         let f = DateFormatter()

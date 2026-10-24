@@ -86,7 +86,7 @@ struct MfaChallengeSheet: View {
                     }
 
                     HLButton(
-                        String(localized: "onboarding.mfa.verify"),
+                        AppLocale.string("onboarding.mfa.verify"),
                         variant: .primary,
                         size: .large,
                         isLoading: authStore.isWorking,
@@ -106,11 +106,11 @@ struct MfaChallengeSheet: View {
                 .padding(.top, HLSpace.md)
             }
             .background(HLColor.background)
-            .navigationTitle(String(localized: "onboarding.mfa.navTitle"))
+            .navigationTitle(AppLocale.string("onboarding.mfa.navTitle"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "Cancel")) {
+                    Button(AppLocale.string("Cancel")) {
                         authStore.cancelMFA()
                         dismiss()
                     }
@@ -207,7 +207,7 @@ struct MfaChallengeSheet: View {
 
     private var webAuthnButton: some View {
         HLButton(
-            String(localized: "onboarding.mfa.useSecurityKey"),
+            AppLocale.string("onboarding.mfa.useSecurityKey"),
             icon: "faceid",
             variant: .ghost,
             action: {

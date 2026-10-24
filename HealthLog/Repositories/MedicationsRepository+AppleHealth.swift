@@ -68,7 +68,7 @@ public extension MedicationsRepository {
             throw HLError.server(
                 status: 422,
                 code: Self.unstableExternalIDErrorCode,
-                message: String(localized: "settings.applehealth.medSync.error.unstableExternalId")
+                message: AppLocale.string("settings.applehealth.medSync.error.unstableExternalId")
             )
         }
         // The server requires a non-empty `dose`. Apple Health does not always

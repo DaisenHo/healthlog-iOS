@@ -23,9 +23,9 @@ enum HKSyncDiagnosticsSource: Equatable, CaseIterable {
 
     var label: String {
         switch self {
-        case .server: String(localized: "settings.hkdiag.source.server")
-        case .deviceStored: String(localized: "settings.hkdiag.source.device_stored")
-        case .deviceSession: String(localized: "settings.hkdiag.source.device_session")
+        case .server: AppLocale.string("settings.hkdiag.source.server")
+        case .deviceStored: AppLocale.string("settings.hkdiag.source.device_stored")
+        case .deviceSession: AppLocale.string("settings.hkdiag.source.device_session")
         }
     }
 
@@ -100,31 +100,31 @@ struct ServerFreshnessFacts: Equatable {
         guard let checked = lastChecked else { return nil }
         let when = Self.relative(checked)
         guard let trigger = row.lastTrigger else {
-            return String(localized: "settings.hkdiag.freshness_received \(when)")
+            return AppLocale.string("settings.hkdiag.freshness_received \(when)")
         }
         let word = HKSyncDiagnosticsVocabulary.collectionTrigger(trigger)
-        return String(localized: "settings.hkdiag.freshness_received_by \(when) \(word)")
+        return AppLocale.string("settings.hkdiag.freshness_received_by \(when) \(word)")
     }
 
     /// "Last new value sent 9 hours ago", or `nil` when the server does not say.
     var newValueLabel: String? {
         guard let new = lastNewValue else { return nil }
-        return String(localized: "settings.hkdiag.freshness_new_value \(Self.relative(new))")
+        return AppLocale.string("settings.hkdiag.freshness_new_value \(Self.relative(new))")
     }
 
     /// "Last sent in the background 2 hours ago", when that is news.
     var backgroundLabel: String? {
         guard let background = separateBackgroundArrival else { return nil }
-        return String(localized: "settings.hkdiag.freshness_background \(Self.relative(background))")
+        return AppLocale.string("settings.hkdiag.freshness_background \(Self.relative(background))")
     }
 
     /// The caption lines under the type name, in reading order.
     var detailLines: [String] {
-        [checkedLabel, newValueLabel, backgroundLabel].compactMap { $0 }
+        [checkedLabel, newValueLabel, backgroundLabel].compactMap(\.self)
     }
 
     static func relative(_ date: Date) -> String {
-        date.formatted(.relative(presentation: .named))
+        date.formatted(.relative(presentation: .named).locale(AppLocale.shared.current))
     }
 
     /// The server row for a HealthKit identifier, through the one mapping
@@ -153,14 +153,14 @@ extension KindRow {
     /// The last time this iPhone looked: a HealthKit delivery for the kind,
     /// or, for a summed kind, the last daily-statistics sweep.
     var lastCheckedAt: Date? {
-        [stats.lastObservationAt, lastSweepAt].compactMap { $0 }.max()
+        [stats.lastObservationAt, lastSweepAt].compactMap(\.self).max()
     }
 
     /// The last time something new went up: a posted day value, or an anchor
     /// advance on a path that stored readings this session.
     var lastNewValueAt: Date? {
         let anchor = stats.samplesUploadedTotal > 0 ? stats.lastAnchorAdvancedAt : nil
-        return [stats.lastStatsActionAt, anchor].compactMap { $0 }.max()
+        return [stats.lastStatsActionAt, anchor].compactMap(\.self).max()
     }
 
     var timeFact: TimeFact {
@@ -179,21 +179,21 @@ extension KindRow {
 
     /// The most recent of both, for sorting.
     var lastTouchedAt: Date? {
-        [lastNewValueAt, lastCheckedAt].compactMap { $0 }.max()
+        [lastNewValueAt, lastCheckedAt].compactMap(\.self).max()
     }
 
     var timeLabel: String {
         switch timeFact {
         case .none:
-            return String(localized: "settings.hkdiag.kind_time.none")
+            return AppLocale.string("settings.hkdiag.kind_time.none")
         case let .checkedOnly(checked):
-            return String(localized: "settings.hkdiag.kind_time.checked \(ServerFreshnessFacts.relative(checked))")
+            return AppLocale.string("settings.hkdiag.kind_time.checked \(ServerFreshnessFacts.relative(checked))")
         case let .newValue(new, nil):
-            return String(localized: "settings.hkdiag.kind_time.new \(ServerFreshnessFacts.relative(new))")
+            return AppLocale.string("settings.hkdiag.kind_time.new \(ServerFreshnessFacts.relative(new))")
         case let .newValue(new, checked?):
             let newText = ServerFreshnessFacts.relative(new)
             let checkedText = ServerFreshnessFacts.relative(checked)
-            return String(localized: "settings.hkdiag.kind_time.new_and_checked \(newText) \(checkedText)")
+            return AppLocale.string("settings.hkdiag.kind_time.new_and_checked \(newText) \(checkedText)")
         }
     }
 }

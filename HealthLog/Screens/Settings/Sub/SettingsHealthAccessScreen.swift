@@ -101,7 +101,7 @@ struct SettingsHealthAccessScreen: View {
             icon: "arrow.down.heart.fill",
             title: "health.permissions.read_title",
             subtitle: "health.permissions.read_subtitle",
-            trailing: { HLBadge(String(localized: "health.permissions.badge_read"), tone: .neutral) },
+            trailing: { HLBadge(AppLocale.string("health.permissions.badge_read"), tone: .neutral) },
             content: { typeList(rows: readTypeRows, emptyKey: "health.permissions.read_empty") }
         )
     }
@@ -114,7 +114,7 @@ struct SettingsHealthAccessScreen: View {
             // H1 — das Abzeichen benennt die Richtung, nicht den Zustand. In
             // `.success`-Grün las es sich als „alles erteilt“; der erteilte
             // Zustand steht jetzt pro Zeile.
-            trailing: { HLBadge(String(localized: "health.permissions.badge_write"), tone: .neutral) },
+            trailing: { HLBadge(AppLocale.string("health.permissions.badge_write"), tone: .neutral) },
             content: { typeList(rows: writeTypeRows, emptyKey: "health.permissions.write_empty") }
         )
     }
@@ -205,25 +205,25 @@ struct SettingsHealthAccessScreen: View {
         switch status {
         case .sharingAuthorized:
             HealthAccessStatusDescriptor(
-                title: String(localized: "health.permissions.status.allowed"),
+                title: AppLocale.string("health.permissions.status.allowed"),
                 symbol: "checkmark.circle.fill",
                 isGranted: true
             )
         case .sharingDenied:
             HealthAccessStatusDescriptor(
-                title: String(localized: "health.permissions.status.denied"),
+                title: AppLocale.string("health.permissions.status.denied"),
                 symbol: "circle.slash",
                 isGranted: false
             )
         case .notDetermined:
             HealthAccessStatusDescriptor(
-                title: String(localized: "health.permissions.status.undecided"),
+                title: AppLocale.string("health.permissions.status.undecided"),
                 symbol: "circle.dotted",
                 isGranted: false
             )
         case nil:
             HealthAccessStatusDescriptor(
-                title: String(localized: "health.permissions.status.unknown"),
+                title: AppLocale.string("health.permissions.status.unknown"),
                 symbol: "questionmark.circle",
                 isGranted: false
             )
@@ -375,7 +375,7 @@ struct HealthAccessStatusDescriptor: Equatable {
 enum HealthAccessTypeNaming {
     static func displayName(for identifier: String) -> String {
         if let key = localizationKey(for: identifier) {
-            return String(localized: key)
+            return AppLocale.string(AppLocale.shared.resource(key))
         }
         // Fail-soft: strip the `HKQuantityTypeIdentifier` / `HKCategoryType
         // Identifier` prefix so an unmapped type still reads better than the

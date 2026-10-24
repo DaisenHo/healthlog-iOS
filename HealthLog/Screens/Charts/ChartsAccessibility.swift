@@ -14,15 +14,13 @@ import Foundation
 ///   one was exposed accessibly. We now emit two `AXDataSeriesDescriptor`s for BP so
 ///   VoiceOver users can swipe between both series.
 enum ChartsAccessibility {
-    /// Cached formatter — `DateFormatter` allocation is non-trivial, and accessibility
-    /// descriptors are rebuilt on every render. Locale is read from `Locale.autoupdatingCurrent`
-    /// so OS language switches are respected without app restart.
-    private static let dateFormatter: DateFormatter = {
+    /// Each axis captures a formatter for the language active when it was built.
+    private static var dateFormatter: DateFormatter {
         let f = DateFormatter()
-        f.locale = .autoupdatingCurrent
+        f.locale = AppLocale.shared.current
         f.setLocalizedDateFormatFromTemplate("dMMM") // e.g. "9. Mai" (de), "May 9" (en)
         return f
-    }()
+    }
 
     /// Builds a chart descriptor for a measurement series.
     ///
@@ -55,9 +53,10 @@ enum ChartsAccessibility {
     // MARK: - Axes
 
     private static func makeXAxis(for points: [SeriesPoint]) -> AXNumericDataAxisDescriptor {
+        let dateFormatter = Self.dateFormatter
         let upper = max(Double(points.count), 1) // empty series still needs a valid range
         return AXNumericDataAxisDescriptor(
-            title: String(localized: "Time"),
+            title: AppLocale.string("Time"),
             range: 0 ... upper,
             gridlinePositions: [],
             valueDescriptionProvider: { value in
@@ -100,14 +99,14 @@ enum ChartsAccessibility {
             // C4 fix: expose BOTH systolic and diastolic as separate accessible series.
             // VoiceOver users can now swipe between the two with the rotor.
             let systolic = AXDataSeriesDescriptor(
-                name: String(localized: "Systolic"),
+                name: AppLocale.string("Systolic"),
                 isContinuous: true,
                 dataPoints: points.enumerated().map { idx, p in
                     AXDataPoint(x: Double(idx), y: p.value)
                 }
             )
             let diastolic = AXDataSeriesDescriptor(
-                name: String(localized: "Diastolic"),
+                name: AppLocale.string("Diastolic"),
                 isContinuous: true,
                 dataPoints: points.enumerated().compactMap { idx, p in
                     guard let secondary = p.secondary else { return nil }
@@ -133,16 +132,14 @@ enum ChartsAccessibility {
     private static func chartTitle(for kind: MetricKind) -> String {
         // "<Metric> Verlauf" — single localizable key with placeholder so EN can flip the
         // word order ("<Metric> trend" / "Trend von <Metric>").
-        String(localized: "\(kind.displayName) trend")
+        AppLocale.string("\(kind.displayName) trend")
     }
 
     private static func chartSummary(for stats: SeriesStats, unit: String) -> String {
         let mean = Int(stats.mean.rounded())
         let lo = Int(stats.min)
         let hi = Int(stats.max)
-        return String(
-            localized: "Mean \(mean) \(unit), min \(lo), max \(hi)"
-        )
+        return AppLocale.string("Mean \(mean) \(unit), min \(lo), max \(hi)")
     }
 
     // MARK: - Selected-point announcement (chart detail screen, A3 §5.2)
@@ -165,15 +162,14 @@ enum ChartsAccessibility {
     ) -> String {
         let dateString = point.at.formatted(
             .dateTime.weekday(.wide).day().month().hour().minute()
+                .locale(AppLocale.shared.current)
         )
         let valueString: String = if let secondary = point.secondary {
             // BP reads naturally — "128 über 82" is what a clinician would say.
-            String(localized: "\(Int(point.value.rounded())) over \(Int(secondary.rounded()))")
+            AppLocale.string("\(Int(point.value.rounded())) over \(Int(secondary.rounded()))")
         } else {
             point.value.formatted(.number.precision(.fractionLength(0 ... 1)))
         }
-        return String(
-            localized: "\(dateString): \(valueString) \(kind.unit)"
-        )
+        return AppLocale.string("\(dateString): \(valueString) \(kind.unit)")
     }
 }

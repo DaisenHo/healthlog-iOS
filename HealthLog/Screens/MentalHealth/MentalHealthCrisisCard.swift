@@ -65,7 +65,7 @@ struct MentalHealthCrisisCard: View {
     /// "If you are in immediate danger, call {emergency} now." — emergency number
     /// interpolated into the localized template.
     private var ifDangerText: String {
-        String(format: String(localized: "mentalHealth.crisis.ifDanger"), crisis.emergencyNumber)
+        String(format: AppLocale.string("mentalHealth.crisis.ifDanger"), crisis.emergencyNumber)
     }
 
     private func resourceRow(_ resource: CrisisResource) -> some View {

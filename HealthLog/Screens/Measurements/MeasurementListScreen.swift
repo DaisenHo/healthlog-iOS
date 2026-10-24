@@ -360,7 +360,7 @@ struct MeasurementListScreen: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 if !measurements.isEmpty {
-                    Button(editMode.isEditing ? String(localized: "Done") : String(localized: "Select")) {
+                    Button(editMode.isEditing ? AppLocale.string("Done") : AppLocale.string("Select")) {
                         withAnimation(reduceMotion ? nil : .default) {
                             if editMode.isEditing {
                                 editMode = .inactive
@@ -405,8 +405,8 @@ struct MeasurementListScreen: View {
                     Text("Delete \(selection.count) measurements?"),
                     isPresented: $bulkDeleteRequested,
                     message: Text("measurements.bulkDelete.confirm.message"),
-                    confirm: Text(String(localized: "Delete")),
-                    cancel: Text(String(localized: "Cancel")),
+                    confirm: Text(AppLocale.string("Delete")),
+                    cancel: Text(AppLocale.string("Cancel")),
                     action: {
                         Task { await performBulkDelete() }
                     }

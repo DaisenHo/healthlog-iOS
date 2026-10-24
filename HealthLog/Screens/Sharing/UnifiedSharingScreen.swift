@@ -181,7 +181,7 @@ struct UnifiedSharingScreen: View {
         return HLSettingsCard(icon: "link.badge.plus", title: "Label") {
             VStack(alignment: .leading, spacing: HLSpace.md) {
                 TextField(
-                    String(localized: "e.g. Dr. Schmidt — cardiology"),
+                    AppLocale.string("e.g. Dr. Schmidt — cardiology"),
                     text: $store.linkLabel
                 )
                 .accessibilityIdentifier("sharing.unified.link.label")
@@ -204,7 +204,7 @@ struct UnifiedSharingScreen: View {
         ) {
             VStack(alignment: .leading, spacing: HLSpace.xs) {
                 TextField(
-                    String(localized: "doctorReport.practice.placeholder"),
+                    AppLocale.string("doctorReport.practice.placeholder"),
                     text: Binding(
                         get: { practiceStore?.draft ?? store.practiceName },
                         // Every keystroke goes through the prefill store so the
@@ -289,7 +289,7 @@ struct UnifiedSharingScreen: View {
                 }
 
                 HLButton(
-                    String(localized: UnifiedSharingCopy.actionTitle(store.outputForm)),
+                    AppLocale.string(AppLocale.shared.resource(UnifiedSharingCopy.actionTitle(store.outputForm))),
                     icon: "paperplane.fill",
                     variant: .primary,
                     isLoading: store.outcome == .working
@@ -344,7 +344,7 @@ struct UnifiedSharingScreen: View {
                 localReportStore: localReportStore,
                 linkStore: linkStore,
                 snapshot: makeSnapshot(),
-                locale: Locale.current.language.languageCode?.identifier ?? "de",
+                locale: AppLocale.shared.serverCode,
                 isBackendReachable: backend.isReachable
             )
         )

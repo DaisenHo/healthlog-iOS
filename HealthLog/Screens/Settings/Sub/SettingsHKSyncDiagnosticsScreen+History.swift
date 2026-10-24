@@ -112,23 +112,24 @@ private struct HistoryPerTypeCard: View {
     /// the server.
     static func hourlyLabel(_ status: HourlyStatsStatus) -> String {
         if status.isBackfillComplete {
-            return String(localized: "settings.hkdiag.history_complete")
+            return AppLocale.string("settings.hkdiag.history_complete")
         }
-        return String(
-            localized: "settings.hkdiag.history_hourly_days \(status.backfillDaysCompleted) \(status.backfillDaysTotal)"
-        )
+        return AppLocale.string("settings.hkdiag.history_hourly_days \(status.backfillDaysCompleted) \(status.backfillDaysTotal)")
     }
 
     static func label(_ state: HistoryKindRow.State) -> String {
         switch state {
         case .complete:
-            String(localized: "settings.hkdiag.history_complete")
+            AppLocale.string("settings.hkdiag.history_complete")
         case .finishing:
-            String(localized: "settings.hkdiag.history_finishing")
+            AppLocale.string("settings.hkdiag.history_finishing")
         case .notStarted:
-            String(localized: "settings.hkdiag.history_pending")
+            AppLocale.string("settings.hkdiag.history_pending")
         case let .reachedBack(date):
-            String(localized: "settings.hkdiag.history_reached \(date.formatted(date: .numeric, time: .omitted))")
+            AppLocale
+                .string(
+                    "settings.hkdiag.history_reached \(date.formatted(Date.FormatStyle(date: .numeric, time: .omitted, locale: AppLocale.shared.current)))"
+                )
         }
     }
 }

@@ -270,7 +270,7 @@ struct IllnessJournalScreen: View {
     }
 
     private func deleteRow(_ episode: IllnessEpisodeDTO, store: IllnessStore) async {
-        await store.deleteEpisode(episode, undoMessage: String(localized: "illness.delete.undo"))
+        await store.deleteEpisode(episode, undoMessage: AppLocale.string("illness.delete.undo"))
     }
 }
 
@@ -298,7 +298,7 @@ struct IllnessEpisodeRow: View {
                 IllnessNeutralBadge(title: episode.lifecycle.localizedLabel, tone: .info)
             }
             if childCount > 0 {
-                let template = String(localized: "illness.journal.children.count")
+                let template = AppLocale.string("illness.journal.children.count")
                 Label(String(format: template, childCount), systemImage: "arrow.turn.down.right")
                     .font(.hlCaption)
                     .foregroundStyle(HLText.secondary)
@@ -314,15 +314,15 @@ struct IllnessEpisodeRow: View {
 
     private var onsetCaption: String {
         if let resolvedAt = episode.resolvedAt, !resolvedAt.isEmpty {
-            let template = String(localized: "illness.journal.onsetResolved")
+            let template = AppLocale.string("illness.journal.onsetResolved")
             return String(format: template, IllnessDateFormat.mediumDate(episode.onsetAt), IllnessDateFormat.mediumDate(resolvedAt))
         }
-        let template = String(localized: "illness.journal.onsetActive")
+        let template = AppLocale.string("illness.journal.onsetActive")
         return String(format: template, IllnessDateFormat.mediumDate(episode.onsetAt))
     }
 
     private var accessibilityText: String {
-        let template = String(localized: "illness.row.a11y")
+        let template = AppLocale.string("illness.row.a11y")
         return String(format: template, episode.label, episode.type.localizedLabel, onsetCaption)
     }
 }

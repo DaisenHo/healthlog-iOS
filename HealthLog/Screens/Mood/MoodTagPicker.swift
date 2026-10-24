@@ -160,7 +160,7 @@ struct MoodTagTile: View {
     /// word is meaningful. Selection state rides on the `.isSelected` trait
     /// above (VoiceOver appends "selected" automatically).
     private var accessibilityLabel: String {
-        String(localized: "\(categoryLabel): \(tag.localizedLabel)")
+        AppLocale.string("\(categoryLabel): \(tag.localizedLabel)")
     }
 }
 
@@ -339,7 +339,7 @@ struct MoodRatedFactorRow: View {
     }
 
     private var a11yValue: String {
-        guard rating != nil else { return String(localized: "mood.ratedFactor.notRated") }
+        guard rating != nil else { return AppLocale.string("mood.ratedFactor.notRated") }
         // Position-based, so VoiceOver always reads good/bad, not raw polarity.
         let pct = Int((position * 100).rounded())
         return HLNumberFormat.percent(pct)

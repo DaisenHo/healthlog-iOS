@@ -146,7 +146,7 @@ enum MeasureEntryValidation {
         case .ok, .empty:
             return nil
         case .notANumber:
-            return String(localized: "Please enter a number.")
+            return AppLocale.string("Please enter a number.")
         case .belowMinimum, .aboveMaximum:
             let suffix = MeasureEntryConversion.entrySuffix(kind: kind, units: units)
             let canonicalRange: ClosedRange<Double>
@@ -162,7 +162,7 @@ enum MeasureEntryValidation {
             let displayRange = MeasureEntryConversion.displayRange(canonicalRange, kind: kind, units: units)
             let rangeText = MeasurementRanges.formatRange(displayRange, unit: suffix)
             return String(
-                format: String(localized: "Value outside the expected range (%@)."),
+                format: AppLocale.string("Value outside the expected range (%@)."),
                 rangeText
             )
         }

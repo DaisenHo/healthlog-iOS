@@ -45,7 +45,7 @@ struct ImportDataScreen: View {
             ScrollView {
                 HLCloudDerivedPlaceholder(
                     variant: .hero,
-                    surfaceName: String(localized: "import.placeholder.surface"),
+                    surfaceName: AppLocale.string("import.placeholder.surface"),
                     onConnect: { authStore.beginServerPairing() }
                 )
                 .padding(HLSpace.lg)
@@ -84,12 +84,12 @@ struct ImportDataScreen: View {
                         messageRow(icon: "exclamationmark.triangle.fill", text: reason, tone: .bad)
                     }
                 case .previewing:
-                    progressRow(label: String(localized: "import.previewing"))
+                    progressRow(label: AppLocale.string("import.previewing"))
                 case let .previewed(result):
                     previewSummary(result)
                     commitButtons
                 case .importing:
-                    progressRow(label: String(localized: "import.importing"))
+                    progressRow(label: AppLocale.string("import.importing"))
                 case let .done(result):
                     doneSummary(result)
                     importAnotherButton
@@ -100,7 +100,7 @@ struct ImportDataScreen: View {
 
     private var pickButton: some View {
         HLButton(
-            String(localized: "import.pick.button"),
+            AppLocale.string("import.pick.button"),
             icon: "doc.badge.plus",
             // R9 — die Commit-Aktion dieses Flows; `.primary` und
             // `import.commit.button` rendern nie gleichzeitig (Phasen).
@@ -114,12 +114,12 @@ struct ImportDataScreen: View {
 
     private var commitButtons: some View {
         VStack(alignment: .leading, spacing: HLSpace.sm) {
-            HLButton(String(localized: "import.commit.button"), icon: "square.and.arrow.down", variant: .primary) {
+            HLButton(AppLocale.string("import.commit.button"), icon: "square.and.arrow.down", variant: .primary) {
                 Task { await store?.commit() }
             }
             .accessibilityIdentifier("import.commit.button")
 
-            HLButton(String(localized: "import.cancel.button"), variant: .secondary) {
+            HLButton(AppLocale.string("import.cancel.button"), variant: .secondary) {
                 store?.reset()
             }
             .accessibilityIdentifier("import.cancel.button")
@@ -127,7 +127,7 @@ struct ImportDataScreen: View {
     }
 
     private var importAnotherButton: some View {
-        HLButton(String(localized: "import.another.button"), icon: "arrow.clockwise", variant: .secondary) {
+        HLButton(AppLocale.string("import.another.button"), icon: "arrow.clockwise", variant: .secondary) {
             store?.reset()
         }
         .accessibilityIdentifier("import.another.button")
@@ -140,9 +140,9 @@ struct ImportDataScreen: View {
             Text("import.preview.heading")
                 .font(.hlSubhead.weight(.semibold))
                 .foregroundStyle(HLText.primary)
-            countRow(label: String(localized: "import.count.total"), value: result.total)
-            countRow(label: String(localized: "import.count.willWrite"), value: result.writeCount)
-            countRow(label: String(localized: "import.count.skipped"), value: result.skipped)
+            countRow(label: AppLocale.string("import.count.total"), value: result.total)
+            countRow(label: AppLocale.string("import.count.willWrite"), value: result.writeCount)
+            countRow(label: AppLocale.string("import.count.skipped"), value: result.skipped)
             // Audit-Gruppe 14 — „In der Vorschau wird nichts geschrieben.
             // Bestätige, um den Import auszuführen." stand hier direkt über den
             // Knöpfen „Import ausführen" / „Abbrechen", die genau diese Wahl
@@ -156,12 +156,12 @@ struct ImportDataScreen: View {
         VStack(alignment: .leading, spacing: HLSpace.md) {
             messageRow(
                 icon: "checkmark.circle.fill",
-                text: String(localized: "import.done.heading"),
+                text: AppLocale.string("import.done.heading"),
                 tone: .ok
             )
-            countRow(label: String(localized: "import.count.inserted"), value: result.inserted)
-            countRow(label: String(localized: "import.count.updated"), value: result.updated)
-            countRow(label: String(localized: "import.count.skipped"), value: result.skipped)
+            countRow(label: AppLocale.string("import.count.inserted"), value: result.inserted)
+            countRow(label: AppLocale.string("import.count.updated"), value: result.updated)
+            countRow(label: AppLocale.string("import.count.skipped"), value: result.skipped)
         }
     }
 

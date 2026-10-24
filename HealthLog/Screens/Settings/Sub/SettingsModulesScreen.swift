@@ -41,10 +41,10 @@ struct SettingsModulesScreen: View {
         .navigationTitle("Modules")
         .navigationBarTitleDisplayMode(.inline)
         .alert(
-            String(localized: "Could not update modules. Please try again."),
+            AppLocale.string("Could not update modules. Please try again."),
             isPresented: $showError
         ) {
-            Button(String(localized: "OK"), role: .cancel) {}
+            Button(AppLocale.string("OK"), role: .cancel) {}
         }
     }
 

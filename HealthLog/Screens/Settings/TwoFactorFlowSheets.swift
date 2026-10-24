@@ -98,7 +98,7 @@ struct TotpEnableSheet: View {
         case .recovery:
             VStack(alignment: .leading, spacing: HLSpace.lg) {
                 RecoveryCodesView(codes: codes)
-                HLButton(String(localized: "settings.security.twoFactor.done"), variant: .primary) {
+                HLButton(AppLocale.string("settings.security.twoFactor.done"), variant: .primary) {
                     store.clearPendingTotpSetup()
                     dismiss()
                 }
@@ -148,7 +148,7 @@ struct TotpEnableSheet: View {
                     .padding(HLSpace.md)
                     .background(HLColor.surface)
                     .clipShape(RoundedRectangle(cornerRadius: HLRadius.sm, style: .continuous))
-                HLButton(String(localized: "settings.security.twoFactor.enrol.continue"), variant: .primary) {
+                HLButton(AppLocale.string("settings.security.twoFactor.enrol.continue"), variant: .primary) {
                     // A retained (unspent) elevation from a previous wrong code
                     // goes straight back to confirm — no second ceremony.
                     if let held = heldElevation, !held.isSpent {
@@ -203,7 +203,7 @@ struct DisableTotpSheet: View {
                         .background(HLColor.surface)
                         .clipShape(RoundedRectangle(cornerRadius: HLRadius.sm, style: .continuous))
                     if let held = heldElevation, !held.isSpent {
-                        HLButton(String(localized: "settings.security.twoFactor.stepUp.retryHeld"), variant: .primary) {
+                        HLButton(AppLocale.string("settings.security.twoFactor.stepUp.retryHeld"), variant: .primary) {
                             Task { await disable(with: held) }
                         }
                         .disabled(code.isEmpty)
@@ -259,7 +259,7 @@ struct RegenerateRecoveryCodesSheet: View {
                 VStack(alignment: .leading, spacing: HLSpace.lg) {
                     if done {
                         RecoveryCodesView(codes: codes)
-                        HLButton(String(localized: "settings.security.twoFactor.done"), variant: .primary) { dismiss() }
+                        HLButton(AppLocale.string("settings.security.twoFactor.done"), variant: .primary) { dismiss() }
                     } else {
                         Text("settings.security.twoFactor.recovery.regenerateBody")
                             .font(.hlSubhead)
@@ -380,6 +380,6 @@ enum SecurityKeyDateFormat {
             return plain.date(from: raw)
         }()
         guard let date else { return nil }
-        return date.formatted(date: .abbreviated, time: .omitted)
+        return date.formatted(Date.FormatStyle(date: .abbreviated, time: .omitted, locale: AppLocale.shared.current))
     }
 }

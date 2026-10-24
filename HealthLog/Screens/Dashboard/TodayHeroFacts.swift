@@ -43,13 +43,13 @@ struct TodayHeroFacts: View {
     static func statusLines(_ digest: DailyDigest) -> [String] {
         var lines: [String] = []
         if let restMode = digest.restMode, restMode.day > 0 {
-            lines.append(String(localized: "today.restMode.day \(restMode.day)"))
+            lines.append(AppLocale.string("today.restMode.day \(restMode.day)"))
         }
         if let weeks = digest.score?.steadyWeeks, weeks > 0 {
             lines.append(
                 digest.score?.steadyAtLeast == true
-                    ? String(localized: "today.score.steadyAtLeast \(weeks)")
-                    : String(localized: "today.score.steady \(weeks)")
+                    ? AppLocale.string("today.score.steadyAtLeast \(weeks)")
+                    : AppLocale.string("today.score.steady \(weeks)")
             )
         }
         return lines

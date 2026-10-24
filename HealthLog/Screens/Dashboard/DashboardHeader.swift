@@ -140,7 +140,7 @@ struct DashboardHeader: View {
         // previously rendered a blank `.hlLargeTitle` row (reserved vertical
         // space, no text).
         guard let server = store.summary?.greeting.salutation, !server.isEmpty else {
-            return String(localized: "Hi", comment: "Dashboard greeting fallback when the server sends none")
+            return AppLocale.string(LocalizedStringResource("Hi", comment: "Dashboard greeting fallback when the server sends none"))
         }
         return server
     }
@@ -148,7 +148,7 @@ struct DashboardHeader: View {
     private var formattedDate: String {
         // Locale-respektiert (Spec §8 Localization). System-Locale wird automatisch verwendet.
         (store.summary?.greeting.date ?? .now)
-            .formatted(.dateTime.weekday(.wide).day().month())
+            .formatted(.dateTime.weekday(.wide).day().month().locale(AppLocale.shared.current))
     }
 
     /// Email source for the avatar's Gravatar lookup. Mirrors the ladder

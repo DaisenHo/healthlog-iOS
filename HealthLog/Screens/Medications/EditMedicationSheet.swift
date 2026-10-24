@@ -239,7 +239,7 @@ struct EditMedicationSheet: View {
                 VStack(alignment: .leading, spacing: HLSpace.xs) {
                     HStack {
                         DatePicker(
-                            String(localized: "med.form.time.label \(idx + 1)"),
+                            AppLocale.string("med.form.time.label \(idx + 1)"),
                             selection: bindingForTime(rowID: row.id),
                             displayedComponents: [.hourAndMinute]
                         )

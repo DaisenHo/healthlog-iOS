@@ -145,9 +145,9 @@ public enum LowSupplyAlertLedger {
             runwayDays: Int
         ) -> UNNotificationRequest {
             let content = UNMutableNotificationContent()
-            content.title = String(localized: "med.lowstock.push.title")
+            content.title = AppLocale.string("med.lowstock.push.title")
             content.body = String(
-                format: String(localized: "med.lowstock.push.body"),
+                format: AppLocale.string("med.lowstock.push.body"),
                 medicationName,
                 runwayDays
             )

@@ -108,7 +108,7 @@ struct HideScoreCardMenu: ViewModifier {
                 Button(role: .destructive) {
                     store.hide(id)
                 } label: {
-                    Label(String(localized: "Hide card"), systemImage: "eye.slash")
+                    Label(AppLocale.string("Hide card"), systemImage: "eye.slash")
                 }
             }
         } else {

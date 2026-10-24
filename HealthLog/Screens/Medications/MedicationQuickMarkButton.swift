@@ -92,16 +92,16 @@ public enum MedicationQuickMarkState: Equatable, Sendable {
 
     private var descriptorAccessibilityLabel: String {
         switch self {
-        case .takenToday: String(localized: "medication.quick_mark.already_taken_today")
-        case .actionable: String(localized: "medication.quick_mark.taken")
-        case .upcoming: String(localized: "medication.quick_mark.upcoming")
-        case .notScheduledToday: String(localized: "medication.quick_mark.not_scheduled_today")
+        case .takenToday: AppLocale.string("medication.quick_mark.already_taken_today")
+        case .actionable: AppLocale.string("medication.quick_mark.taken")
+        case .upcoming: AppLocale.string("medication.quick_mark.upcoming")
+        case .notScheduledToday: AppLocale.string("medication.quick_mark.not_scheduled_today")
         }
     }
 
     private var descriptorAccessibilityHint: String {
         switch self {
-        case .actionable: String(localized: "medication.quick_mark.action_hint")
+        case .actionable: AppLocale.string("medication.quick_mark.action_hint")
         case .takenToday, .upcoming, .notScheduledToday: ""
         }
     }
@@ -266,7 +266,7 @@ struct QuickMarkQueuedBanner: View {
                 // routine state-change cue, not ambient noise. Reduce-motion
                 // gated (the icon stays static when motion is disabled).
                 .symbolEffect(.pulse, isActive: !reduceMotion)
-            Text(String(localized: "medication.quick_mark.queued"))
+            Text(AppLocale.string("medication.quick_mark.queued"))
                 .font(.hlSubhead)
                 .foregroundStyle(HLText.primary)
             Spacer()

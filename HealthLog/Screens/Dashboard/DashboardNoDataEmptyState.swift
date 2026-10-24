@@ -27,7 +27,7 @@ struct DashboardNoDataEmptyState: View {
                 message: "Connect Apple Health or capture your first value — your metrics will appear here automatically."
             ) {
                 HLButton(
-                    String(localized: "Capture first value"),
+                    AppLocale.string("Capture first value"),
                     icon: "plus",
                     variant: .restrained,
                     action: onCapture

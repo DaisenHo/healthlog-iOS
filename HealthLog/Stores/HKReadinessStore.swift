@@ -151,15 +151,15 @@ public final class HKReadinessStore {
     public var connectionLabel: String {
         switch state {
         case .unknown:
-            String(localized: "Checking status…")
+            AppLocale.string("Checking status…")
         case .notRequested:
-            String(localized: "Not connected")
+            AppLocale.string("Not connected")
         case let .partiallyGranted(missing):
-            String(localized: "Partially connected — \(missing.count) type(s) missing")
+            AppLocale.string("Partially connected — \(missing.count) type(s) missing")
         case .fullyGranted:
-            String(localized: "Connected")
+            AppLocale.string("Connected")
         case .denied:
-            String(localized: "Declined by the user")
+            AppLocale.string("Declined by the user")
         }
     }
 

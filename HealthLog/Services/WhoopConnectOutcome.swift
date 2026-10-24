@@ -70,17 +70,17 @@ public enum WhoopConnectOutcome: Equatable, Sendable {
         case let .failed(reason):
             switch reason {
             case "rate_limited":
-                String(localized: "WHOOP is rate-limiting requests. Try again in a moment.")
+                AppLocale.string("WHOOP is rate-limiting requests. Try again in a moment.")
             case "connect", "":
-                String(localized: "Couldn't start the WHOOP connection. Please try again.")
+                AppLocale.string("Couldn't start the WHOOP connection. Please try again.")
             case "denied", "access_denied":
-                String(localized: "WHOOP access was declined. Connect again to grant access.")
+                AppLocale.string("WHOOP access was declined. Connect again to grant access.")
             case "invalid_state", "state":
-                String(localized: "The WHOOP sign-in expired. Please connect again.")
+                AppLocale.string("The WHOOP sign-in expired. Please connect again.")
             case "not_configured", "credentials":
-                String(localized: "Save your WHOOP credentials before connecting.")
+                AppLocale.string("Save your WHOOP credentials before connecting.")
             default:
-                String(localized: "WHOOP connection failed. Please try again.")
+                AppLocale.string("WHOOP connection failed. Please try again.")
             }
         }
     }

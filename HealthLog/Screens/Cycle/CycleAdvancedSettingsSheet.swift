@@ -103,7 +103,7 @@ struct CycleAdvancedSettingsSheet: View {
                 if digits != value { text.wrappedValue = digits }
             }
             .accessibilityHint(Text(
-                String(format: String(localized: "cycle.settings.range.hint"), range.lowerBound, range.upperBound)
+                String(format: AppLocale.string("cycle.settings.range.hint"), range.lowerBound, range.upperBound)
             ))
     }
 
@@ -125,7 +125,7 @@ struct CycleAdvancedSettingsSheet: View {
               let period = patchField(typicalPeriodLength, range: 1 ... 15),
               let luteal = patchField(lutealPhaseLength, range: 10 ... 16) else
         {
-            error = String(localized: "cycle.settings.validation.error")
+            error = AppLocale.string("cycle.settings.validation.error")
             return
         }
         isSaving = true
@@ -145,7 +145,7 @@ struct CycleAdvancedSettingsSheet: View {
         if await store.updatePreferences(patch) {
             onDismiss()
         } else {
-            error = store.lastError ?? String(localized: "cycle.settings.save.error")
+            error = store.lastError ?? AppLocale.string("cycle.settings.save.error")
         }
     }
 

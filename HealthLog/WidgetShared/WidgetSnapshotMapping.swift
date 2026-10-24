@@ -97,7 +97,7 @@ public extension WidgetSnapshot.LatestMeasurement {
         let descriptor = measurement.kind.descriptor
         return WidgetSnapshot.LatestMeasurement(
             kindRaw: measurement.kind.rawValue,
-            title: String(localized: descriptor.title),
+            title: AppLocale.string(AppLocale.shared.resource(descriptor.title)),
             formattedValue: formattedValue(for: measurement, units: units),
             unit: unitSuffix(for: measurement.kind, units: units),
             symbol: descriptor.sfSymbol,
@@ -109,7 +109,7 @@ public extension WidgetSnapshot.LatestMeasurement {
     /// the account's display unit for a converted family (#115 P2), else the
     /// descriptor's canonical unit label.
     private static func unitSuffix(for kind: MetricKind, units: UnitPreferences) -> String {
-        units.transform(for: kind).suffix ?? String(localized: kind.descriptor.unitLabel)
+        units.transform(for: kind).suffix ?? AppLocale.string(AppLocale.shared.resource(kind.descriptor.unitLabel))
     }
 
     /// Unit-aware primary value string, mirroring `DashboardMetric.formatted

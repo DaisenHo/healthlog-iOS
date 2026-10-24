@@ -43,7 +43,7 @@ enum MeasurementListFilter {
             if measurement.note?.lowercased().contains(needle) == true { return true }
             if sourceSearchLabel(measurement.source).contains(needle) { return true }
             let dateLabel = measurement.recordedAt
-                .formatted(.dateTime.month(.wide).weekday(.wide).day())
+                .formatted(.dateTime.month(.wide).weekday(.wide).day().locale(AppLocale.shared.current))
                 .lowercased()
             return dateLabel.contains(needle)
         }
@@ -193,7 +193,7 @@ struct SourceFilterChips: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: HLSpace.xs) {
                 Chip(
-                    label: String(localized: "All"),
+                    label: AppLocale.string("All"),
                     isSelected: selection == nil
                 ) { selection = nil }
                 ForEach(available, id: \.self) { source in
@@ -215,23 +215,23 @@ struct SourceFilterChips: View {
     /// so the complexity grows by one with every source the server adds.
     static func label(for source: MeasurementSource) -> String { // swiftlint:disable:this cyclomatic_complexity
         switch source {
-        case .appleHealth: String(localized: "Apple Health")
-        case .withings: String(localized: "Withings")
-        case .whoop: String(localized: "WHOOP")
-        case .fitbit: String(localized: "Fitbit")
-        case .googleHealth: String(localized: "Google Health")
-        case .strava: String(localized: "Strava")
-        case .oura: String(localized: "Oura")
-        case .polar: String(localized: "Polar")
-        case .nightscout: String(localized: "Nightscout")
-        case .healthConnect: String(localized: "Health Connect")
-        case .telegram: String(localized: "Telegram")
-        case .mcp: String(localized: "MCP")
-        case .external: String(localized: "measurement.source.external")
-        case .manual: String(localized: "Manual")
-        case .computed: String(localized: "measurement.source.computed")
-        case .import_: String(localized: "Import")
-        case .unknown: String(localized: "measurement.source.unknown")
+        case .appleHealth: AppLocale.string("Apple Health")
+        case .withings: AppLocale.string("Withings")
+        case .whoop: AppLocale.string("WHOOP")
+        case .fitbit: AppLocale.string("Fitbit")
+        case .googleHealth: AppLocale.string("Google Health")
+        case .strava: AppLocale.string("Strava")
+        case .oura: AppLocale.string("Oura")
+        case .polar: AppLocale.string("Polar")
+        case .nightscout: AppLocale.string("Nightscout")
+        case .healthConnect: AppLocale.string("Health Connect")
+        case .telegram: AppLocale.string("Telegram")
+        case .mcp: AppLocale.string("MCP")
+        case .external: AppLocale.string("measurement.source.external")
+        case .manual: AppLocale.string("Manual")
+        case .computed: AppLocale.string("measurement.source.computed")
+        case .import_: AppLocale.string("Import")
+        case .unknown: AppLocale.string("measurement.source.unknown")
         }
     }
 
@@ -323,11 +323,11 @@ struct ValueRangeFilterControl: View {
 
             if isExpanded {
                 HStack(spacing: HLSpace.sm) {
-                    field(prompt: String(localized: "Min"), text: $minText)
+                    field(prompt: AppLocale.string("Min"), text: $minText)
                         .focused($focusedField, equals: .min)
                         .accessibilityIdentifier("measurements.list.valueRange.min")
-                    Text(String(localized: "range.separator.to")).foregroundStyle(HLText.secondary)
-                    field(prompt: String(localized: "Max"), text: $maxText)
+                    Text(AppLocale.string("range.separator.to")).foregroundStyle(HLText.secondary)
+                    field(prompt: AppLocale.string("Max"), text: $maxText)
                         .focused($focusedField, equals: .max)
                         .accessibilityIdentifier("measurements.list.valueRange.max")
                     if !unit.isEmpty {
@@ -360,7 +360,7 @@ struct ValueRangeFilterControl: View {
             // so they're never trapped behind the keyboard (QA-b198 Design-M3).
             ToolbarItemGroup(placement: .keyboard) {
                 Spacer()
-                Button(String(localized: "Done")) { focusedField = nil }
+                Button(AppLocale.string("Done")) { focusedField = nil }
             }
         }
     }

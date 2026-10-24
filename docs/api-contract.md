@@ -43,6 +43,12 @@ route on the server. The drift-test
 and parameterises over the full route table — adding a new auth route without
 updating the exemption list (or the test) will fail the build.
 
+## 账户语言（个人分支 T01/T02）
+
+`GET /api/auth/me/locale` 返回 `{ locale }`；`PUT` 使用相同结构保存登录操作者的偏好并返回确认值。简体中文的线码为 `zh-CN`，iOS 字符串资源使用 `zh-Hans`。`GET /api/auth/me` 的 `locale` 与该读取采用相同回退规则。
+
+这两个请求使用登录账户身份，不携带选中共享档案的身份。语言写入不重试、不自动恢复认证；客户端只在响应确认值与提交值一致且会话仍有效时更新界面和缓存。详见 [T02 交付记录](project/t02-ios-account-language.md)。
+
 ## Cloudflare Access
 
 Optional. Slots im APIClient, default leer:

@@ -126,10 +126,10 @@ struct DashboardSyncStatusPanel: View {
     @ViewBuilder
     private func detailLines(now: Date) -> some View {
         if syncState.attention(now: now) == nil, syncState.pendingOutboxCount > 0 {
-            caption(String(localized: "sync.status.queued \(syncState.pendingOutboxCount)"))
+            caption(AppLocale.string("sync.status.queued \(syncState.pendingOutboxCount)"))
         }
         if syncState.healthSyncHeldItemCount > 0 {
-            caption(String(localized: "sync.activity.healthHeld \(syncState.healthSyncHeldItemCount)"))
+            caption(AppLocale.string("sync.activity.healthHeld \(syncState.healthSyncHeldItemCount)"))
         }
     }
 

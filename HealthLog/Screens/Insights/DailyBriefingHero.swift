@@ -54,9 +54,9 @@ public struct DailyBriefingHero: View {
 
         var label: String? {
             switch self {
-            case .onDevice: String(localized: "On your device")
-            case .account: String(localized: "From your account")
-            case .localData: String(localized: "From your data")
+            case .onDevice: AppLocale.string("On your device")
+            case .account: AppLocale.string("From your account")
+            case .localData: AppLocale.string("From your data")
             case .unspecified: nil
             }
         }
@@ -85,7 +85,7 @@ public struct DailyBriefingHero: View {
             if let onTap {
                 Button(action: onTap) { card }
                     .hlPressable() // QOL-AUDIT H1: press feedback
-                    .accessibilityHint(Text(String(localized: "Double-tap to ask the coach")))
+                    .accessibilityHint(Text(AppLocale.string("Double-tap to ask the coach")))
             } else {
                 card
             }
@@ -138,7 +138,7 @@ public struct DailyBriefingHero: View {
                     // compact-Dashboard arm that has no row. The whole card is
                     // already tappable, so the glyph is redundant — dropped.
                     if provenance == .unspecified, showsOnDeviceProvenance {
-                        HLBadge(String(localized: "On your device"), tone: .neutral)
+                        HLBadge(AppLocale.string("On your device"), tone: .neutral)
                     }
                 }
 

@@ -41,8 +41,8 @@ private struct HistoryCatchUpCard: View {
 
                     HLButton(
                         store.isRunning
-                            ? String(localized: "settings.applehealth.history.stop")
-                            : String(localized: "settings.applehealth.history.sync_all"),
+                            ? AppLocale.string("settings.applehealth.history.stop")
+                            : AppLocale.string("settings.applehealth.history.sync_all"),
                         icon: store.isRunning ? "stop.circle" : "arrow.down.circle",
                         variant: .secondary,
                         size: .regular
@@ -63,22 +63,20 @@ private struct HistoryCatchUpCard: View {
     private var statusText: String {
         switch store.phase {
         case .stalled:
-            return String(localized: "settings.applehealth.history.stalled")
+            return AppLocale.string("settings.applehealth.history.stalled")
         case .cancelled where !(store.overview?.isFinished ?? false):
-            return String(localized: "settings.applehealth.history.cancelled")
+            return AppLocale.string("settings.applehealth.history.cancelled")
         default:
             break
         }
         guard let overview = store.overview, overview.totalCount > 0 else {
-            return String(localized: "settings.applehealth.history.unknown")
+            return AppLocale.string("settings.applehealth.history.unknown")
         }
         if overview.isFinished {
-            return String(localized: "settings.applehealth.history.complete")
+            return AppLocale.string("settings.applehealth.history.complete")
         }
-        let progress = String(
-            localized: "settings.applehealth.history.progress \(overview.finishedCount) \(overview.totalCount)"
-        )
+        let progress = AppLocale.string("settings.applehealth.history.progress \(overview.finishedCount) \(overview.totalCount)")
         guard store.isRunning else { return progress }
-        return progress + "\n" + String(localized: "settings.applehealth.history.running")
+        return progress + "\n" + AppLocale.string("settings.applehealth.history.running")
     }
 }

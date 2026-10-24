@@ -62,13 +62,13 @@ struct SyncStatusCaption: View {
                 // digit roll is reduce-motion-gated; the layout/chrome is
                 // byte-identical to the plain "Wird synchronisiert…" line.
                 countingText(
-                    String(localized: "sync.status.syncingCount \(pending)"),
+                    AppLocale.string("sync.status.syncingCount \(pending)"),
                     count: pending,
                     identifier: "sync.status.syncingCount"
                 )
             case let .queued(count):
                 countingText(
-                    String(localized: "sync.status.queued \(count)"),
+                    AppLocale.string("sync.status.queued \(count)"),
                     count: count,
                     identifier: "sync.status.queued"
                 )
@@ -140,8 +140,8 @@ struct SyncStatusCaption: View {
 
     /// The settled timestamp string in the user's locale short time style.
     private func lastSyncedText(_ at: Date) -> String {
-        let time = at.formatted(date: .omitted, time: .shortened)
-        return String(localized: "sync.status.lastSynced \(time)")
+        let time = at.formatted(Date.FormatStyle(date: .omitted, time: .shortened, locale: AppLocale.shared.current))
+        return AppLocale.string("sync.status.lastSynced \(time)")
     }
 
     /// W2-SYNCUX — the in-flight states now carry stable accessibility

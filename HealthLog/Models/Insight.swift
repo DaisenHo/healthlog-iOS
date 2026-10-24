@@ -148,24 +148,27 @@ public enum AIProvider: String, Codable, Sendable, CaseIterable, Identifiable {
 
     public var label: String {
         switch self {
-        case .unconfigured: String(localized: "Not configured", comment: "AI-Provider — no provider chosen")
+        case .unconfigured: AppLocale.string(LocalizedStringResource("Not configured", comment: "AI-Provider — no provider chosen"))
         case .anthropic: "Anthropic"
         case .openai: "OpenAI"
-        case .local: String(localized: "Local (Ollama / LM Studio)", comment: "AI-Provider — local Ollama / LM Studio")
-        case .openaiCompatible: String(localized: "insight.provider.openaiCompatible")
+        case .local: AppLocale.string(LocalizedStringResource(
+                "Local (Ollama / LM Studio)",
+                comment: "AI-Provider — local Ollama / LM Studio"
+            ))
+        case .openaiCompatible: AppLocale.string("insight.provider.openaiCompatible")
         }
     }
 
     /// One-line description shown under each picker row.
     public var subtitle: String {
         switch self {
-        case .unconfigured: String(localized: "No assistant provider is being used.")
-        case .anthropic: String(localized: "API key from console.anthropic.com")
-        case .openai: String(localized: "API key from platform.openai.com")
-        case .local: String(localized: "Your own Ollama or LM Studio instance on the network.")
+        case .unconfigured: AppLocale.string("No assistant provider is being used.")
+        case .anthropic: AppLocale.string("API key from console.anthropic.com")
+        case .openai: AppLocale.string("API key from platform.openai.com")
+        case .local: AppLocale.string("Your own Ollama or LM Studio instance on the network.")
         // Deliberately names no vendor: an OpenAI-compatible endpoint can be
         // anyone's. Claiming a company here would be an invention.
-        case .openaiCompatible: String(localized: "An OpenAI-compatible endpoint configured on your server.")
+        case .openaiCompatible: AppLocale.string("An OpenAI-compatible endpoint configured on your server.")
         }
     }
 

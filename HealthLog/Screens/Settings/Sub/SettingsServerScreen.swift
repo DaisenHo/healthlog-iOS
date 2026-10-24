@@ -197,8 +197,8 @@ struct SettingsServerScreen: View {
         // Die App ist self-hosted-only und bringt keinen eigenen Server mehr
         // mit: jede eingetragene Adresse ist eine eigene Instanz. Nur die
         // oeffentliche Demo wird eigens benannt.
-        case .demo: return String(localized: "Demo")
-        case .selfHosted: return String(localized: "Self-hosted")
+        case .demo: return AppLocale.string("Demo")
+        case .selfHosted: return AppLocale.string("Self-hosted")
         }
     }
 
@@ -231,7 +231,7 @@ struct SettingsServerScreen: View {
 
     private func loadVersion() async {
         guard let api = container?.api else {
-            versionState = .failed(String(localized: "No server configured."))
+            versionState = .failed(AppLocale.string("No server configured."))
             return
         }
         versionState = .loading
@@ -366,7 +366,7 @@ private struct ChangeServerSheet: View {
                 .accessibilityIdentifier("settings.server.changeSheet.probeError")
         }
         if case .reachable = probeState {
-            inlineMessage(systemImage: "checkmark.circle.fill", tint: HLColor.statusOK, text: String(localized: "Server reachable."))
+            inlineMessage(systemImage: "checkmark.circle.fill", tint: HLColor.statusOK, text: AppLocale.string("Server reachable."))
                 .accessibilityIdentifier("settings.server.changeSheet.probeOK")
         }
     }
@@ -376,7 +376,7 @@ private struct ChangeServerSheet: View {
             // R9 — der abschließende Commit dieses Ablaufs; genau ein
             // `.primary` auf dem Sheet.
             HLButton(
-                String(localized: "Switch and sign in again"),
+                AppLocale.string("Switch and sign in again"),
                 icon: "arrow.right",
                 variant: .primary,
                 isLoading: probeState == .probing
@@ -400,10 +400,10 @@ private struct ChangeServerSheet: View {
 
     private func errorMessage(for err: AppEnvironment.URLValidationError) -> String {
         switch err {
-        case .empty: String(localized: "Please enter a server address.")
-        case .malformed: String(localized: "The address could not be read.")
-        case .missingHost: String(localized: "This address has no host part.")
-        case .insecureScheme: String(localized: "Only https:// is supported (no http://).")
+        case .empty: AppLocale.string("Please enter a server address.")
+        case .malformed: AppLocale.string("The address could not be read.")
+        case .missingHost: AppLocale.string("This address has no host part.")
+        case .insecureScheme: AppLocale.string("Only https:// is supported (no http://).")
         }
     }
 
@@ -436,15 +436,15 @@ private struct ChangeServerSheet: View {
                 probeState = .reachable
                 onCommitted()
             } catch {
-                probeState = .unreachable(String(localized: "Couldn't save URL: \(error.localizedDescription)"))
+                probeState = .unreachable(AppLocale.string("Couldn't save URL: \(error.localizedDescription)"))
             }
         case let .unreachable(reason):
             probeState = .unreachable(reason)
         case .probing, .idle:
-            probeState = .unreachable(String(
-                localized: "Unknown error during probe.",
+            probeState = .unreachable(AppLocale.string(LocalizedStringResource(
+                "Unknown error during probe.",
                 comment: "Server reachability probe — unexpected failure"
-            ))
+            )))
         }
     }
 
@@ -461,17 +461,17 @@ private struct ChangeServerSheet: View {
         let outcome = await ServerReachabilityProbe().probe(url: url, userAgent: "HealthLog-iOS-Settings/1")
         switch outcome {
         case .malformedURL:
-            return .unreachable(String(localized: "URL could not be expanded."))
+            return .unreachable(AppLocale.string("URL could not be expanded."))
         case .reachable:
             return .reachable
         case .notHealthLogServer:
-            return .unreachable(String(localized: "This server does not appear to be a HealthLog server."))
+            return .unreachable(AppLocale.string("This server does not appear to be a HealthLog server."))
         case let .unexpectedStatus(code):
-            return .unreachable(String(localized: "Server responded with status \(code)."))
+            return .unreachable(AppLocale.string("Server responded with status \(code)."))
         case .nonHTTPResponse:
-            return .unreachable(String(localized: "Received a response without an HTTP status."))
+            return .unreachable(AppLocale.string("Received a response without an HTTP status."))
         case let .transportFailure(description):
-            return .unreachable(String(localized: "Connection failed: \(description)"))
+            return .unreachable(AppLocale.string("Connection failed: \(description)"))
         }
     }
 }

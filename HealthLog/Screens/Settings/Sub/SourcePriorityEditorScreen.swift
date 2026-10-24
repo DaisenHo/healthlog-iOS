@@ -54,7 +54,7 @@ struct SourcePriorityEditorScreen: View {
                 ScrollView {
                     HLCloudDerivedPlaceholder(
                         variant: .hero,
-                        surfaceName: String(localized: "cloud_derived.surface.source_priority"),
+                        surfaceName: AppLocale.string("cloud_derived.surface.source_priority"),
                         onConnect: { authStore.beginServerPairing() }
                     )
                     .padding(HLSpace.lg)
@@ -77,7 +77,7 @@ struct SourcePriorityEditorScreen: View {
                         showResetConfirm = true
                     } label: {
                         Label(
-                            String(localized: "Reset to default"),
+                            AppLocale.string("Reset to default"),
                             systemImage: "arrow.uturn.backward"
                         )
                     }
@@ -101,8 +101,8 @@ struct SourcePriorityEditorScreen: View {
             message: Text(
                 "Every metric returns to its recommended default order."
             ),
-            confirm: Text(String(localized: "Reset")),
-            cancel: Text(String(localized: "Cancel")),
+            confirm: Text(AppLocale.string("Reset")),
+            cancel: Text(AppLocale.string("Cancel")),
             action: {
                 Task {
                     let ok = await store.resetToDefaults()
@@ -213,7 +213,7 @@ struct SourcePriorityEditorScreen: View {
         // under EN. Routed through a localized key (EN "Rank %lld: %@" / DE
         // "Rang %lld: %@").
         .accessibilityLabel(
-            Text(String(localized: "Rank \(rank): \(SourcePriorityRow.displayLabel(forSource: source))"))
+            Text(AppLocale.string("Rank \(rank): \(SourcePriorityRow.displayLabel(forSource: source))"))
         )
         .accessibilityHint(Text("Press and drag to reorder."))
     }

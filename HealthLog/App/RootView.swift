@@ -87,6 +87,10 @@ struct RootView: View {
         // is intentionally replaced by the structural branch above. Keeping the
         // historical shape named here documents why the existing security
         // contract now resolves to an even stronger terminal-root composition.
+        .environment(\.locale, AppLocale.shared.current)
+        .task(id: backendAvailability.isOnline) {
+            if backendAvailability.isOnline { await settings.refreshAccountLanguage() }
+        }
         .animation(.easeInOut(duration: 0.3), value: phaseKey)
         .animation(.easeInOut(duration: 0.2), value: scenePhase == .active)
         .animation(.easeInOut(duration: 0.3), value: needsServerAddressGate)
@@ -276,6 +280,7 @@ struct RootView: View {
     /// and `clearOnLogout()` wiped `profile`, blanking the avatar for minutes.
     /// Idempotent: `profile == nil` skips cold launch (preWarm already loaded it).
     private func loadProfileOnAuthenticationIfNeeded() async {
+        settings.restoreCachedAccountLanguage()
         guard case .authenticated = authStore.phase,
               let container,
               settings.profile == nil else { return }

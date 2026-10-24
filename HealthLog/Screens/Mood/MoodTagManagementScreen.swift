@@ -46,7 +46,7 @@ struct MoodTagManagementScreen: View {
             message: { group in
                 let customCount = group.tags.filter(\.custom).count
                 return Text(String(
-                    format: String(localized: "mood.tags.manage.group.delete.body"),
+                    format: AppLocale.string("mood.tags.manage.group.delete.body"),
                     customCount
                 ))
             },
@@ -64,7 +64,7 @@ struct MoodTagManagementScreen: View {
             message: { tag in
                 if let count = tag.usageCount {
                     Text(String(
-                        format: String(localized: "mood.tags.manage.purge.body"),
+                        format: AppLocale.string("mood.tags.manage.purge.body"),
                         count
                     ))
                 } else {
@@ -87,7 +87,7 @@ struct MoodTagManagementScreen: View {
                 Text(error.userFacingDescription)
                     .font(.hlSubhead)
                     .foregroundStyle(HLText.secondary)
-                HLButton(String(localized: "Retry"), variant: .secondary) {
+                HLButton(AppLocale.string("Retry"), variant: .secondary) {
                     Task { await store.load() }
                 }
             }
@@ -137,7 +137,7 @@ struct MoodTagManagementScreen: View {
                     .font(.hlSubhead)
                     .foregroundStyle(HLText.primary)
                 Text(String(
-                    format: String(localized: "mood.tags.manage.group.tagCount"),
+                    format: AppLocale.string("mood.tags.manage.group.tagCount"),
                     group.tags.filter { !$0.archived }.count
                 ))
                 .font(.hlCaption)
@@ -248,7 +248,7 @@ struct MoodTagManagementScreen: View {
                     .padding(.vertical, HLSpace.xxs)
                     .background(HLSurface.tertiary, in: Capsule())
                     .accessibilityLabel(Text(String(
-                        format: String(localized: "mood.tags.manage.usage"),
+                        format: AppLocale.string("mood.tags.manage.usage"),
                         usageCount
                     )))
             }

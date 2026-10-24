@@ -457,6 +457,7 @@ targets:
         CFBundleLocalizations:
           - de
           - en
+          - zh-Hans
         # No server identity is compiled into the distributed app. HTTPS uses
         # system trust and the user enters a server during onboarding.
     settings:

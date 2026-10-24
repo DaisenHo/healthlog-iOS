@@ -153,7 +153,7 @@ struct InsightsWorkoutsPage: View {
 
                 VStack(spacing: HLSpace.sm) {
                     HLButton(
-                        String(localized: "Sync from Apple Health"),
+                        AppLocale.string("Sync from Apple Health"),
                         icon: "heart.text.square",
                         variant: .primary,
                         size: .large,
@@ -165,7 +165,7 @@ struct InsightsWorkoutsPage: View {
                     .accessibilityIdentifier("insights.workouts.empty.sync")
 
                     HLButton(
-                        String(localized: "Open Apple Health"),
+                        AppLocale.string("Open Apple Health"),
                         variant: .secondary,
                         size: .large
                     ) {

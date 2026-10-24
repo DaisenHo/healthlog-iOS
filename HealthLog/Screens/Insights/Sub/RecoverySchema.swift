@@ -85,9 +85,9 @@ enum RecoverySchema {
     /// produces no chip on either. Never a fabricated classification.
     static func chipLabel(for item: RecoveryInsightsDTO.Item) -> String? {
         switch HLScoreRing.ScorePresentation.signal(forBand: item.band) {
-        case .ok: String(localized: "insights.recovery.band.onTarget")
-        case .warn: String(localized: "insights.recovery.band.watch")
-        case .bad: String(localized: "insights.recovery.band.offTarget")
+        case .ok: AppLocale.string("insights.recovery.band.onTarget")
+        case .warn: AppLocale.string("insights.recovery.band.watch")
+        case .bad: AppLocale.string("insights.recovery.band.offTarget")
         default: nil
         }
     }

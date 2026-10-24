@@ -114,7 +114,7 @@ public final class HealthScoreConfigStore {
         } catch let error as HLError {
             outcome = Self.outcome(for: error)
         } catch {
-            outcome = .failed(String(localized: "Couldn't save your selection. Please try again."))
+            outcome = .failed(AppLocale.string("Couldn't save your selection. Please try again."))
         }
     }
 

@@ -27,7 +27,7 @@ struct NativeLoginResponse: Decodable {
     func asAuthSession() throws -> AuthSession {
         guard let token else {
             // No `token` in the body: the server did not see `X-Client-Type: native`.
-            throw HLError.unknown(String(localized: "auth.error.incompleteResponse"))
+            throw HLError.unknown(AppLocale.string("auth.error.incompleteResponse"))
         }
         // Refresh-Pfad antwortet ohne `user`-Block — wir reichern ihn nicht
         // an, weil der vorhandene `phase = .authenticated(user)` den Wert

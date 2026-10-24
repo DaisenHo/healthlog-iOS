@@ -26,13 +26,13 @@ public enum LabsRefusal {
         case let .refusedWithReason(code, reason) where code == unitMismatch:
             return unitMismatchSentence(reason: reason)
         case let .refusedWithReason(code, alias) where code == aliasTaken:
-            return String(localized: "labs.refusal.aliasTaken \(alias)")
+            return AppLocale.string("labs.refusal.aliasTaken \(alias)")
         case let .refusedWithReason(code, _) where code == markerNotFound:
-            return String(localized: "labs.refusal.merged")
+            return AppLocale.string("labs.refusal.merged")
         case let .server(_, code?, _) where code == mergeUnitMismatch:
-            return String(localized: "labs.refusal.mergeUnitMismatch")
+            return AppLocale.string("labs.refusal.mergeUnitMismatch")
         case let .server(_, code?, _) where code == mergeInvalid:
-            return String(localized: "labs.refusal.mergeInvalid")
+            return AppLocale.string("labs.refusal.mergeInvalid")
         default:
             return nil
         }
@@ -42,10 +42,10 @@ public enum LabsRefusal {
     /// the general one, never a guess.
     public static func unitMismatchSentence(reason: String) -> String {
         switch reason {
-        case "unknown_analyte": String(localized: "labs.refusal.unit.unknownAnalyte")
-        case "unknown_unit": String(localized: "labs.refusal.unit.unknownUnit")
-        case "not_finite": String(localized: "labs.refusal.unit.notFinite")
-        default: String(localized: "labs.refusal.unit.general")
+        case "unknown_analyte": AppLocale.string("labs.refusal.unit.unknownAnalyte")
+        case "unknown_unit": AppLocale.string("labs.refusal.unit.unknownUnit")
+        case "not_finite": AppLocale.string("labs.refusal.unit.notFinite")
+        default: AppLocale.string("labs.refusal.unit.general")
         }
     }
 

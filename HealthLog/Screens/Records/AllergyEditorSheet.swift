@@ -176,7 +176,7 @@ struct AllergyEditorSheet: View {
         if succeeded {
             dismiss()
         } else {
-            saveError = store.lastError ?? String(localized: "allergies.save.failed")
+            saveError = store.lastError ?? AppLocale.string("allergies.save.failed")
         }
     }
 

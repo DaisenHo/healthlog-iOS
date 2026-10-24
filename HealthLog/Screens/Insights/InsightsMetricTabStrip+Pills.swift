@@ -27,8 +27,8 @@ extension InsightsMetricTabStrip {
                 }
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(String(localized: "Customize tab strip"))
-        .accessibilityHint(String(localized: "Reorder or show and hide metrics"))
+        .accessibilityLabel(AppLocale.string("Customize tab strip"))
+        .accessibilityHint(AppLocale.string("Reorder or show and hide metrics"))
         .accessibilityIdentifier("insights.tabStrip.customize")
     }
 

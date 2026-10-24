@@ -8,11 +8,11 @@ extension AllergyCategory {
     /// Localized display label (`allergy.category.*`).
     var localizedLabel: String {
         switch self {
-        case .food: String(localized: "allergy.category.food")
-        case .medication: String(localized: "allergy.category.medication")
-        case .environment: String(localized: "allergy.category.environment")
-        case .biologic: String(localized: "allergy.category.biologic")
-        case .other: String(localized: "allergy.category.other")
+        case .food: AppLocale.string("allergy.category.food")
+        case .medication: AppLocale.string("allergy.category.medication")
+        case .environment: AppLocale.string("allergy.category.environment")
+        case .biologic: AppLocale.string("allergy.category.biologic")
+        case .other: AppLocale.string("allergy.category.other")
         }
     }
 }
@@ -21,8 +21,8 @@ extension AllergyType {
     /// Localized display label (`allergy.type.*`).
     var localizedLabel: String {
         switch self {
-        case .allergy: String(localized: "allergy.type.allergy")
-        case .intolerance: String(localized: "allergy.type.intolerance")
+        case .allergy: AppLocale.string("allergy.type.allergy")
+        case .intolerance: AppLocale.string("allergy.type.intolerance")
         }
     }
 }
@@ -31,10 +31,10 @@ extension AllergySeverity {
     /// Localized display label (`allergy.severity.*`).
     var localizedLabel: String {
         switch self {
-        case .mild: String(localized: "allergy.severity.mild")
-        case .moderate: String(localized: "allergy.severity.moderate")
-        case .severe: String(localized: "allergy.severity.severe")
-        case .unknown: String(localized: "allergy.severity.unknown")
+        case .mild: AppLocale.string("allergy.severity.mild")
+        case .moderate: AppLocale.string("allergy.severity.moderate")
+        case .severe: AppLocale.string("allergy.severity.severe")
+        case .unknown: AppLocale.string("allergy.severity.unknown")
         }
     }
 }
@@ -43,10 +43,10 @@ extension AllergyStatus {
     /// Localized display label (`allergy.status.*`).
     var localizedLabel: String {
         switch self {
-        case .active: String(localized: "allergy.status.active")
-        case .inactive: String(localized: "allergy.status.inactive")
-        case .resolved: String(localized: "allergy.status.resolved")
-        case .unknown: String(localized: "allergy.status.unknown")
+        case .active: AppLocale.string("allergy.status.active")
+        case .inactive: AppLocale.string("allergy.status.inactive")
+        case .resolved: AppLocale.string("allergy.status.resolved")
+        case .unknown: AppLocale.string("allergy.status.unknown")
         }
     }
 }
@@ -55,21 +55,21 @@ extension FamilyRelationship {
     /// Localized display label (`family.relationship.*`).
     var localizedLabel: String {
         switch self {
-        case .mother: String(localized: "family.relationship.mother")
-        case .father: String(localized: "family.relationship.father")
-        case .sister: String(localized: "family.relationship.sister")
-        case .brother: String(localized: "family.relationship.brother")
-        case .daughter: String(localized: "family.relationship.daughter")
-        case .son: String(localized: "family.relationship.son")
-        case .grandmotherMaternal: String(localized: "family.relationship.grandmotherMaternal")
-        case .grandfatherMaternal: String(localized: "family.relationship.grandfatherMaternal")
-        case .grandmotherPaternal: String(localized: "family.relationship.grandmotherPaternal")
-        case .grandfatherPaternal: String(localized: "family.relationship.grandfatherPaternal")
-        case .aunt: String(localized: "family.relationship.aunt")
-        case .uncle: String(localized: "family.relationship.uncle")
-        case .cousin: String(localized: "family.relationship.cousin")
-        case .halfSibling: String(localized: "family.relationship.halfSibling")
-        case .other: String(localized: "family.relationship.other")
+        case .mother: AppLocale.string("family.relationship.mother")
+        case .father: AppLocale.string("family.relationship.father")
+        case .sister: AppLocale.string("family.relationship.sister")
+        case .brother: AppLocale.string("family.relationship.brother")
+        case .daughter: AppLocale.string("family.relationship.daughter")
+        case .son: AppLocale.string("family.relationship.son")
+        case .grandmotherMaternal: AppLocale.string("family.relationship.grandmotherMaternal")
+        case .grandfatherMaternal: AppLocale.string("family.relationship.grandfatherMaternal")
+        case .grandmotherPaternal: AppLocale.string("family.relationship.grandmotherPaternal")
+        case .grandfatherPaternal: AppLocale.string("family.relationship.grandfatherPaternal")
+        case .aunt: AppLocale.string("family.relationship.aunt")
+        case .uncle: AppLocale.string("family.relationship.uncle")
+        case .cousin: AppLocale.string("family.relationship.cousin")
+        case .halfSibling: AppLocale.string("family.relationship.halfSibling")
+        case .other: AppLocale.string("family.relationship.other")
         }
     }
 }

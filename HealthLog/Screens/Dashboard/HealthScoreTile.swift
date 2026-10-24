@@ -43,7 +43,7 @@ public struct HealthScoreTile: View {
             // No backend → calm "connect a server" placeholder, never a doomed
             // request or a spinner that won't resolve.
             HLCloudDerivedPlaceholder(
-                surfaceName: String(localized: "the Health Score"),
+                surfaceName: AppLocale.string("the Health Score"),
                 onConnect: { authStore.beginServerPairing() }
             )
         }
@@ -102,7 +102,7 @@ struct HealthScoreLoaded: View {
             HStack(alignment: .center, spacing: HLSpace.lg) {
                 HLRing(
                     progress: max(0, min(1, Double(score.score) / 100.0)),
-                    label: String(localized: "of 100"),
+                    label: AppLocale.string("of 100"),
                     value: "\(score.score)",
                     tint: bandColor
                 )
@@ -151,7 +151,7 @@ struct HealthScoreLoaded: View {
     /// detail sheet keeps the full explanation.
     private var captionRow: some View {
         HStack(spacing: HLSpace.xs) {
-            Text(String(localized: "Health Score"))
+            Text(AppLocale.string("Health Score"))
                 .font(.hlCaption)
                 .foregroundStyle(HLText.secondary)
         }
@@ -165,7 +165,7 @@ struct HealthScoreLoaded: View {
     /// of the number. Localized "Health Score —" fallback when band is
     /// unknown (server returned a score without a banding classification).
     private var headlineText: String {
-        bandLabel ?? String(localized: "Health Score —")
+        bandLabel ?? AppLocale.string("Health Score —")
     }
 
     /// The week-over-week line.
@@ -185,12 +185,12 @@ struct HealthScoreLoaded: View {
         } else if let delta = score.narratableDelta {
             HStack(spacing: HLSpace.xs) {
                 DeltaChip(delta: delta)
-                Text(String(localized: "vs. last week"))
+                Text(AppLocale.string("vs. last week"))
                     .font(.hlCaption)
                     .foregroundStyle(HLText.tertiary)
             }
         } else {
-            Text(String(localized: "vs. last week —"))
+            Text(AppLocale.string("vs. last week —"))
                 .font(.hlCaption)
                 .foregroundStyle(HLText.tertiary)
         }
@@ -212,16 +212,16 @@ struct HealthScoreLoaded: View {
 
     private var bandLabel: String? {
         switch score.displayBand {
-        case .green: String(localized: "Green")
-        case .yellow: String(localized: "Yellow", comment: "Health Score band label")
-        case .red: String(localized: "Red", comment: "Health Score band label")
+        case .green: AppLocale.string("Green")
+        case .yellow: AppLocale.string(LocalizedStringResource("Yellow", comment: "Health Score band label"))
+        case .red: AppLocale.string(LocalizedStringResource("Red", comment: "Health Score band label"))
         case nil: nil
         }
     }
 
     /// The band as spoken in the accessibility label; "unknown" without one.
     private var spokenBand: String {
-        bandLabel ?? String(localized: "unknown")
+        bandLabel ?? AppLocale.string("unknown")
     }
 
     private var accessibilityLabel: String {
@@ -233,13 +233,13 @@ struct HealthScoreLoaded: View {
         // spoken tile carries the same statement the seen one does.
         let base: String
         if let reason = score.deltaReason {
-            base = String(
-                localized: "Health Score \(score.score) of 100, band \(spokenBand). \(HealthScorePresentation.explanation(for: reason))",
+            base = AppLocale.string(LocalizedStringResource(
+                "Health Score \(score.score) of 100, band \(spokenBand). \(HealthScorePresentation.explanation(for: reason))",
                 comment: "Health Score tile a11y label with a withheld week-over-week delta"
-            )
+            ))
         } else {
             let delta = score.narratableDelta.map { $0 >= 0 ? "+\($0)" : "\($0)" } ?? "—"
-            base = String(localized: "Health Score \(score.score) of 100, band \(spokenBand), change \(delta) from last week")
+            base = AppLocale.string("Health Score \(score.score) of 100, band \(spokenBand), change \(delta) from last week")
         }
         var parts = [base]
         if let basis = score.scoreBasis { parts.append(HealthScorePresentation.basisLine(basis) + ".") }
@@ -293,12 +293,12 @@ private struct DeltaChip: View {
 
     private var accessibilityText: String {
         if delta > 0 {
-            return String(localized: "Plus \(delta) from last week")
+            return AppLocale.string("Plus \(delta) from last week")
         }
         if delta < 0 {
-            return String(localized: "Minus \(abs(delta)) from last week")
+            return AppLocale.string("Minus \(abs(delta)) from last week")
         }
-        return String(localized: "Unchanged from last week")
+        return AppLocale.string("Unchanged from last week")
     }
 }
 

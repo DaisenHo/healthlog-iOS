@@ -72,8 +72,8 @@ public enum TrendSentiment: String, Codable, Sendable, Hashable, CaseIterable, T
     /// `nil` for a neutral or unknown verdict: nothing to add.
     public var spokenClause: String? {
         switch self {
-        case .positive: String(localized: "trend.verdict.spoken.positive")
-        case .negative: String(localized: "trend.verdict.spoken.negative")
+        case .positive: AppLocale.string("trend.verdict.spoken.positive")
+        case .negative: AppLocale.string("trend.verdict.spoken.negative")
         case .neutral, .unknown: nil
         }
     }

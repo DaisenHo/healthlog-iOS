@@ -33,7 +33,7 @@ extension HLDashboardTile {
         // "7d"/"30d" are the existing trend-chip window labels (de "7 T"/"30 T").
         // Interpolated into one localized resource so the "·" separator + the
         // two windows translate as a unit (no fragment concatenation).
-        String(localized: "7d \(formattedAverage(avg7)) · 30d \(formattedAverage(avg30))")
+        AppLocale.string("7d \(formattedAverage(avg7)) · 30d \(formattedAverage(avg30))")
     }
 
     /// Formats one average through the headline's `formatScalar` (unit-aware),
@@ -48,14 +48,14 @@ extension HLDashboardTile {
     var statsSpokenClause: String {
         var parts: [String] = []
         if let avg7 {
-            parts.append(String(localized: "7-day avg \(formatScalar(avg7))"))
+            parts.append(AppLocale.string("7-day avg \(formatScalar(avg7))"))
         }
         if let avg30 {
-            parts.append(String(localized: "30-day avg \(formatScalar(avg30))"))
+            parts.append(AppLocale.string("30-day avg \(formatScalar(avg30))"))
         }
         if let targetBand {
             let pct = min(100, max(0, targetBand.pctInRange))
-            parts.append(String(localized: "\(pct) of 30 days in target range"))
+            parts.append(AppLocale.string("\(pct) of 30 days in target range"))
         }
         guard !parts.isEmpty else { return "" }
         return " " + parts.joined(separator: ". ") + "."

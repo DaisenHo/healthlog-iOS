@@ -44,7 +44,7 @@ struct AskCoachSuggestionChip: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(text)
-        .accessibilityHint(String(localized: "Insert suggestion into the input field"))
+        .accessibilityHint(AppLocale.string("Insert suggestion into the input field"))
         .accessibilityAddTraits(.isButton)
     }
 }
@@ -52,15 +52,15 @@ struct AskCoachSuggestionChip: View {
 #Preview("AskCoachSuggestionChip") {
     VStack(alignment: .leading, spacing: HLSpace.sm) {
         AskCoachSuggestionChip(
-            text: String(localized: "What does my blood pressure mean?"),
+            text: AppLocale.string("What does my blood pressure mean?"),
             icon: "waveform.path.ecg"
         ) {}
         AskCoachSuggestionChip(
-            text: String(localized: "How is my sleep?"),
+            text: AppLocale.string("How is my sleep?"),
             icon: "moon.zzz.fill"
         ) {}
         AskCoachSuggestionChip(
-            text: String(localized: "Am I active enough today?"),
+            text: AppLocale.string("Am I active enough today?"),
             icon: "figure.walk"
         ) {}
     }

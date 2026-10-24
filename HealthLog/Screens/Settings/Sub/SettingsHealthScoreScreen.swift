@@ -48,7 +48,7 @@ struct SettingsHealthScoreScreen: View {
             } else {
                 HLCloudDerivedPlaceholder(
                     variant: .inline,
-                    surfaceName: String(localized: "Health Score"),
+                    surfaceName: AppLocale.string("Health Score"),
                     onConnect: { authStore.beginServerPairing() }
                 )
             }
@@ -176,7 +176,7 @@ struct SettingsHealthScoreScreen: View {
         case .idle:
             EmptyView()
         case .saved:
-            Label(String(localized: "Saved"), systemImage: "checkmark.circle.fill")
+            Label(AppLocale.string("Saved"), systemImage: "checkmark.circle.fill")
                 .font(.hlFootnote)
                 .foregroundStyle(HLColor.statusOK)
                 .accessibilityIdentifier("settings.healthScore.saved")

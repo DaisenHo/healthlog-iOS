@@ -20,9 +20,9 @@ extension AskCoachSheet {
     func errorCopy(_ error: LocalLLMError) -> String {
         switch error {
         case .foundationModelsUnavailable:
-            String(localized: "The Coach is currently unavailable.")
+            AppLocale.string("The Coach is currently unavailable.")
         case .modelResponseFailed:
-            String(localized: "Response failed. Please try again.")
+            AppLocale.string("Response failed. Please try again.")
         case let .byoFailed(byoError):
             byoErrorCopy(byoError)
         case let .serverFailed(serverError):
@@ -41,12 +41,12 @@ extension AskCoachSheet {
             case let .provider(code):
                 providerErrorCopy(code)
             case .decode, .emptyReply:
-                String(localized: "Response failed. Please try again.")
+                AppLocale.string("Response failed. Please try again.")
             }
         case let hlError as HLError:
             hlErrorCopy(hlError)
         default:
-            String(localized: "Response failed. Please try again.")
+            AppLocale.string("Response failed. Please try again.")
         }
     }
 
@@ -56,21 +56,19 @@ extension AskCoachSheet {
     private func providerErrorCopy(_ code: String) -> String {
         switch code {
         case "coach.provider.none":
-            String(
-                localized: "No AI provider is available. Set one up in Settings → Assistant."
-            )
+            AppLocale.string("No AI provider is available. Set one up in Settings → Assistant.")
         case "coach.provider.rate_limited":
-            String(localized: "The Coach is busy right now. Try again shortly.")
+            AppLocale.string("The Coach is busy right now. Try again shortly.")
         case "coach.budget.exceeded":
             // A360 M3 — the user hit their daily AI budget. Honest + actionable
             // (the budget resets) rather than the flat "Response failed".
-            String(localized: "You've used today's AI budget. It resets tomorrow.")
+            AppLocale.string("You've used today's AI budget. It resets tomorrow.")
         case "coach.provider.credential_expired":
             // A360 M3 — the server provider's credential expired (e.g. an OAuth
             // token lapsed). Point at where the user can fix it.
-            String(localized: "Your AI provider needs reconnecting. Check Settings → Assistant.")
+            AppLocale.string("Your AI provider needs reconnecting. Check Settings → Assistant.")
         default:
-            String(localized: "The Coach couldn't answer right now. Try again shortly.")
+            AppLocale.string("The Coach couldn't answer right now. Try again shortly.")
         }
     }
 
@@ -97,22 +95,18 @@ extension AskCoachSheet {
             // A360 M2 — a TRANSPORT 429 (per-user 20/min limit) surfaced as
             // `HLError.rateLimited`, distinct from the provider `error` frame
             // `coach.provider.rate_limited`. Honest "busy" copy with a retry hint.
-            String(localized: "The Coach is busy right now. Try again in a moment.")
+            AppLocale.string("The Coach is busy right now. Try again in a moment.")
         case .offline,
              .network(.connectionLost),
              .network(.dnsFailure),
              .network(.timeout):
-            String(
-                localized: "You're offline — the server Coach needs a connection."
-            )
+            AppLocale.string("You're offline — the server Coach needs a connection.")
         case let .server(status, code, _) where status == 403 && (code == nil || code == AIRefusal.consentRequiredCode):
             // `consent.ai.required` (server v1.39 sends it in `meta.errorCode`),
             // or a pre-v1.39 403 without a code: the missing consent receipt.
-            String(
-                localized: "The Coach needs your consent to use external AI. Grant it in Settings → Assistant."
-            )
+            AppLocale.string("The Coach needs your consent to use external AI. Grant it in Settings → Assistant.")
         default:
-            String(localized: "Response failed. Please try again.")
+            AppLocale.string("Response failed. Please try again.")
         }
     }
 
@@ -122,21 +116,21 @@ extension AskCoachSheet {
     func byoErrorCopy(_ error: BYOLLMError) -> String {
         switch error {
         case .invalidKey, .invalidConfiguration:
-            String(localized: "Your key was rejected. Check it in Settings → Assistant.")
+            AppLocale.string("Your key was rejected. Check it in Settings → Assistant.")
         case .rateLimited:
-            String(localized: "Your provider is rate-limiting requests. Try again shortly.")
+            AppLocale.string("Your provider is rate-limiting requests. Try again shortly.")
         case .quotaExhausted:
-            String(localized: "Your provider quota is used up. Check your account.")
+            AppLocale.string("Your provider quota is used up. Check your account.")
         case .modelNotFound:
-            String(localized: "That model is unknown to your provider. Pick another in Settings.")
+            AppLocale.string("That model is unknown to your provider. Pick another in Settings.")
         case .unreachable:
-            String(localized: "Couldn't reach your provider. Check your connection.")
+            AppLocale.string("Couldn't reach your provider. Check your connection.")
         case .providerUnavailable:
-            String(localized: "Your provider is temporarily unavailable. Try again later.")
+            AppLocale.string("Your provider is temporarily unavailable. Try again later.")
         case .safetyRefused:
-            String(localized: "Your provider declined to answer this request.")
+            AppLocale.string("Your provider declined to answer this request.")
         case .badRequest, .decode:
-            String(localized: "Response failed. Please try again.")
+            AppLocale.string("Response failed. Please try again.")
         }
     }
 
@@ -147,21 +141,21 @@ extension AskCoachSheet {
     static func coachRefusalCopy(_ refusal: AIRefusal) -> String {
         switch refusal.impliedState.reason ?? .unknown {
         case .operatorDisabled:
-            String(localized: "The Coach is turned off on your server.")
+            AppLocale.string("The Coach is turned off on your server.")
         case .notPermittedForRecord:
-            String(localized: "The Coach isn't available for this person's data.")
+            AppLocale.string("The Coach isn't available for this person's data.")
         case .moduleDisabled:
-            String(localized: "The Coach is off because a module it needs is turned off.")
+            AppLocale.string("The Coach is off because a module it needs is turned off.")
         case .userDisabled:
-            String(localized: "You've turned the Coach off. You can turn it back on in Settings.")
+            AppLocale.string("You've turned the Coach off. You can turn it back on in Settings.")
         case .noProvider:
-            String(localized: "No AI provider is available. Set one up in Settings → Assistant.")
+            AppLocale.string("No AI provider is available. Set one up in Settings → Assistant.")
         case .consentRequired:
-            String(localized: "The Coach needs your consent to use external AI. Grant it in Settings → Assistant.")
+            AppLocale.string("The Coach needs your consent to use external AI. Grant it in Settings → Assistant.")
         case .usageLevel:
-            String(localized: "ai.reason.usageLevel")
+            AppLocale.string("ai.reason.usageLevel")
         case .checkFailed, .unknown:
-            String(localized: "The Coach isn't available right now. Try again later.")
+            AppLocale.string("The Coach isn't available right now. Try again later.")
         }
     }
 

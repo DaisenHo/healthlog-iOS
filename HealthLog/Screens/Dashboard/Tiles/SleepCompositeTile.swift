@@ -176,24 +176,24 @@ public struct SleepCompositeTile: View {
     }
 
     private var combinedLabel: Text {
-        let title = String(localized: MetricKind.sleep.descriptor.title)
+        let title = AppLocale.string(AppLocale.shared.resource(MetricKind.sleep.descriptor.title))
         let direction: String? = switch metric.dashboardTrend {
-        case .up: String(localized: "Trend rising")
-        case .down: String(localized: "Trend falling")
-        case .flat: String(localized: "Trend stable")
+        case .up: AppLocale.string("Trend rising")
+        case .down: AppLocale.string("Trend falling")
+        case .flat: AppLocale.string("Trend stable")
         case .unknown: nil
         }
         let trend = direction.map { $0 + metric.spokenVerdictSuffix }
         if let stages, stages.total > 0 {
             let primary = metric.formattedPrimary()
-            let stageDescription = String(
-                localized:
-                "dashboard.sleep.a11y.stages \(title) \(primary) \(Int(stages.deep)) \(Int(stages.rem)) \(Int(stages.core)) \(Int(stages.awake))"
-            )
-            return Text([stageDescription, trend].compactMap { $0 }.joined(separator: " "))
+            let stageDescription = AppLocale
+                .string(
+                    "dashboard.sleep.a11y.stages \(title) \(primary) \(Int(stages.deep)) \(Int(stages.rem)) \(Int(stages.core)) \(Int(stages.awake))"
+                )
+            return Text([stageDescription, trend].compactMap(\.self).joined(separator: " "))
         }
         let valueDescription = "\(title): \(metric.formattedPrimary())"
-        return Text([valueDescription, trend].compactMap { $0 }.joined(separator: " "))
+        return Text([valueDescription, trend].compactMap(\.self).joined(separator: " "))
     }
 }
 

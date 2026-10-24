@@ -50,8 +50,8 @@ struct InsightsOverviewHeader: View {
             if !insightsTargetsStore.targets.isEmpty {
                 InsightsHeaderActionCircle(
                     systemImage: "slider.horizontal.3",
-                    accessibilityLabelText: String(localized: "Customise insights"),
-                    accessibilityHintText: String(localized: "Reorder, add, or remove tiles"),
+                    accessibilityLabelText: AppLocale.string("Customise insights"),
+                    accessibilityHintText: AppLocale.string("Reorder, add, or remove tiles"),
                     accessibilityIdentifier: "insights.header.customiseMenu"
                 ) {
                     onCustomize()
@@ -66,7 +66,7 @@ struct InsightsOverviewHeader: View {
             if aiSurfacesVisible, appContainer.offersCoach {
                 InsightsHeaderActionCircle(
                     systemImage: "sparkles",
-                    accessibilityLabelText: String(localized: "Ask the coach"),
+                    accessibilityLabelText: AppLocale.string("Ask the coach"),
                     accessibilityIdentifier: "InsightsScreen.askCoachCollapsedCoin.header"
                 ) {
                     // Y9-E — Quick-Launch to Chat.
@@ -79,8 +79,8 @@ struct InsightsOverviewHeader: View {
                 // header slot so the surface is never a silent dead end.
                 InsightsHeaderActionCircle(
                     systemImage: "sparkles",
-                    accessibilityLabelText: String(localized: "Enable the coach"),
-                    accessibilityHintText: String(localized: "Opens the assistant consent choice"),
+                    accessibilityLabelText: AppLocale.string("Enable the coach"),
+                    accessibilityHintText: AppLocale.string("Opens the assistant consent choice"),
                     accessibilityIdentifier: "InsightsScreen.enableCoachCoin.header"
                 ) {
                     reengageCoach()
@@ -351,7 +351,7 @@ struct InsightsEmptyErrorSlot: View {
         // equivalent. One calm placeholder with the shared "Server verbinden" CTA.
         if !backend.canShowCloudInsights {
             HLCloudDerivedPlaceholder(
-                surfaceName: String(localized: "cloud_derived.surface.insights"),
+                surfaceName: AppLocale.string("cloud_derived.surface.insights"),
                 onConnect: { authStore.beginServerPairing() }
             )
         }

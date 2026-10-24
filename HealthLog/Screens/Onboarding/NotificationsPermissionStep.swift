@@ -63,18 +63,18 @@ struct NotificationsPermissionStep: View {
                 VStack(alignment: .leading, spacing: HLSpace.md) {
                     PermissionRow(
                         symbol: "pills.fill",
-                        title: String(localized: "onboarding.notifications.medReminder.title"),
-                        subtitle: String(localized: "onboarding.notifications.medReminder.subtitle")
+                        title: AppLocale.string("onboarding.notifications.medReminder.title"),
+                        subtitle: AppLocale.string("onboarding.notifications.medReminder.subtitle")
                     )
                     PermissionRow(
                         symbol: "exclamationmark.triangle.fill",
-                        title: String(localized: "onboarding.notifications.outOfRange.title"),
-                        subtitle: String(localized: "onboarding.notifications.outOfRange.subtitle")
+                        title: AppLocale.string("onboarding.notifications.outOfRange.title"),
+                        subtitle: AppLocale.string("onboarding.notifications.outOfRange.subtitle")
                     )
                     PermissionRow(
                         symbol: "trophy.fill",
-                        title: String(localized: "onboarding.notifications.records.title"),
-                        subtitle: String(localized: "onboarding.notifications.records.subtitle")
+                        title: AppLocale.string("onboarding.notifications.records.title"),
+                        subtitle: AppLocale.string("onboarding.notifications.records.subtitle")
                     )
                 }
             }
@@ -125,18 +125,18 @@ struct NotificationsPermissionStep: View {
         switch permission.outcome {
         case .declined:
             HLButton(
-                String(localized: "onboarding.permission.openSettings"),
+                AppLocale.string("onboarding.permission.openSettings"),
                 icon: "gear",
                 variant: .secondary,
                 size: .large,
                 action: openSystemSettings
             )
             .accessibilityIdentifier("onboarding.notifications.openSettings")
-            HLButton(String(localized: "Continue"), variant: .primary, size: .large, action: onNext)
+            HLButton(AppLocale.string("Continue"), variant: .primary, size: .large, action: onNext)
                 .accessibilityIdentifier("onboarding.notifications.continue")
         case .failed:
             HLButton(
-                String(localized: "Try again"),
+                AppLocale.string("Try again"),
                 icon: "arrow.clockwise",
                 variant: .primary,
                 size: .large,
@@ -147,7 +147,7 @@ struct NotificationsPermissionStep: View {
             .accessibilityIdentifier("onboarding.notifications.retry")
         case .idle, .granted:
             HLButton(
-                String(localized: "onboarding.notifications.allow"),
+                AppLocale.string("onboarding.notifications.allow"),
                 icon: "bell.fill",
                 variant: .primary,
                 size: .large,

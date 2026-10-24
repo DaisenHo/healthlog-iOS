@@ -75,6 +75,6 @@ struct CycleCustomSymptomEditor: View {
             onSaved(created.key)
             return
         }
-        error = store.customSymptomsError ?? String(localized: "cycle.custom.error.generic")
+        error = store.customSymptomsError ?? AppLocale.string("cycle.custom.error.generic")
     }
 }

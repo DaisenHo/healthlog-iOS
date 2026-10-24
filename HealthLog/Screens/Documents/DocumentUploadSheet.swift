@@ -77,7 +77,7 @@ struct DocumentUploadSheet: View {
                     onCancel: { showScanner = false },
                     onError: {
                         showScanner = false
-                        errorMessage = String(localized: "documents.upload.scanError")
+                        errorMessage = AppLocale.string("documents.upload.scanError")
                     }
                 )
                 .ignoresSafeArea()
@@ -291,7 +291,7 @@ struct DocumentUploadSheet: View {
                     episodeIds: preselectedEpisodeId.map { [$0] } ?? []
                 )
             } else {
-                errorMessage = String(localized: "documents.upload.scanError")
+                errorMessage = AppLocale.string("documents.upload.scanError")
                 return
             }
             await uploadAll([draft], unreadable: 0)
@@ -346,10 +346,10 @@ struct DocumentUploadSheet: View {
             return message(for: first)
         }
         if outcome.uploaded == 0, outcome.unreadable > 0 {
-            return String(format: String(localized: "documents.upload.unreadable"), outcome.unreadable)
+            return String(format: AppLocale.string("documents.upload.unreadable"), outcome.unreadable)
         }
         return String(
-            format: String(localized: "documents.upload.partial"),
+            format: AppLocale.string("documents.upload.partial"),
             outcome.uploaded,
             outcome.selected
         )
@@ -364,26 +364,26 @@ struct DocumentUploadSheet: View {
         case let .upload(reason):
             message(for: reason)
         case .moduleDisabled, .notAuthenticated, .superseded:
-            String(localized: "documents.error.generic")
+            AppLocale.string("documents.error.generic")
         }
     }
 
     private static func message(for error: DocumentUploadError) -> String {
         switch error {
         case let .fileTooLarge(maxFileBytes):
-            String(format: String(localized: "documents.error.fileTooLarge"), DocumentFormat.bytes(maxFileBytes))
+            String(format: AppLocale.string("documents.error.fileTooLarge"), DocumentFormat.bytes(maxFileBytes))
         case let .quotaExceeded(quotaBytes, usedBytes):
             String(
-                format: String(localized: "documents.error.quotaExceeded"),
+                format: AppLocale.string("documents.error.quotaExceeded"),
                 DocumentFormat.bytes(usedBytes),
                 DocumentFormat.bytes(quotaBytes)
             )
         case .unsupportedType:
-            String(localized: "documents.error.unsupportedType")
+            AppLocale.string("documents.error.unsupportedType")
         case .rateLimited:
-            String(localized: "documents.error.rateLimited")
+            AppLocale.string("documents.error.rateLimited")
         case .generic:
-            String(localized: "documents.error.generic")
+            AppLocale.string("documents.error.generic")
         }
     }
 }

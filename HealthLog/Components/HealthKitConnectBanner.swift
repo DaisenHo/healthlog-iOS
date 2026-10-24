@@ -82,7 +82,7 @@ public struct HealthKitConnectBanner: View {
     }
 
     private var title: String {
-        String(localized: "Apple Health not connected")
+        AppLocale.string("Apple Health not connected")
     }
 
     private var subtitle: String {
@@ -90,14 +90,14 @@ public struct HealthKitConnectBanner: View {
         case let .partiallyGranted(missing):
             // Pluralised — N=1 reads natürlich ("1 Typ fehlt"), N>1 nicht ("3 Typen fehlen").
             if missing.count == 1 {
-                String(localized: "HealthLog has no access to one data type. Tap to connect.")
+                AppLocale.string("HealthLog has no access to one data type. Tap to connect.")
             } else {
-                String(localized: "HealthLog has no access to \(missing.count) data types. Tap to connect.")
+                AppLocale.string("HealthLog has no access to \(missing.count) data types. Tap to connect.")
             }
         case .denied:
-            String(localized: "You declined Apple Health. Tap to allow it in iPhone Settings.")
+            AppLocale.string("You declined Apple Health. Tap to allow it in iPhone Settings.")
         default:
-            String(localized: "HealthLog can't read your Apple Health data. Tap to connect.")
+            AppLocale.string("HealthLog can't read your Apple Health data. Tap to connect.")
         }
     }
 
@@ -128,16 +128,16 @@ public struct HealthKitConnectBanner: View {
 
     private var connectButtonLabel: String {
         if case .denied = readiness.state {
-            return String(localized: "Open settings")
+            return AppLocale.string("Open settings")
         }
-        return String(localized: "Connect")
+        return AppLocale.string("Connect")
     }
 
     private var dismissButton: some View {
         Button {
             readiness.dismissBanner()
         } label: {
-            Text(String(localized: "Not now"))
+            Text(AppLocale.string("Not now"))
                 .font(.hlSubhead)
                 .foregroundStyle(HLText.tertiary)
         }

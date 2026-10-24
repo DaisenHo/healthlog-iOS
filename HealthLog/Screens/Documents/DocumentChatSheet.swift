@@ -183,7 +183,7 @@ struct DocumentChatSheet: View {
     private var inputRow: some View {
         HStack(alignment: .bottom, spacing: HLSpace.sm) {
             TextField(
-                String(localized: "documents.chat.placeholder"),
+                AppLocale.string("documents.chat.placeholder"),
                 text: $draft,
                 axis: .vertical
             )
@@ -262,7 +262,7 @@ private struct DocumentChatBubble: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(
-            (isUser ? String(localized: "You: ") : String(localized: "documents.chat.assistantPrefix")) + text
+            (isUser ? AppLocale.string("You: ") : AppLocale.string("documents.chat.assistantPrefix")) + text
         )
     }
 }

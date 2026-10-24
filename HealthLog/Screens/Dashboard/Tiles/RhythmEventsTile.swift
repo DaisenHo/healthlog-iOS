@@ -87,7 +87,7 @@ enum RhythmEventsTileModel {
         // Plural-aware (`%lld`-keyed `plural` variations in the catalog) — pass the
         // count through `String(localized:)` interpolation so the right `one` /
         // `other` form resolves per language.
-        let subtitle = String(localized: "dashboard.rhythmEvents.tile.subtitle \(events.count)")
+        let subtitle = AppLocale.string("dashboard.rhythmEvents.tile.subtitle \(events.count)")
         return Summary(count: events.count, subtitle: subtitle)
     }
 }

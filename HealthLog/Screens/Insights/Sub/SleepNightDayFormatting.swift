@@ -94,7 +94,7 @@ enum SleepNightDay {
     static func label(
         forDayKey dayKey: String,
         timeZone: TimeZone = .current,
-        locale: Locale = .current
+        locale: Locale = AppLocale.shared.current
     ) -> String? {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = timeZone
@@ -117,9 +117,9 @@ enum SleepDurationFormat {
         let hours = minutes / 60
         let mins = minutes % 60
         if hours > 0 {
-            return String(localized: "sleep.duration.hm \(hours) \(mins)")
+            return AppLocale.string("sleep.duration.hm \(hours) \(mins)")
         }
-        return String(localized: "sleep.duration.m \(mins)")
+        return AppLocale.string("sleep.duration.m \(mins)")
     }
 
     /// Minutes-of-day (0…1439) as a wall-clock time, e.g. `"04:15"`.

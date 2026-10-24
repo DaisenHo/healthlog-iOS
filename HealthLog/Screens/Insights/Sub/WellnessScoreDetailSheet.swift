@@ -186,8 +186,8 @@ struct WellnessScoreDetailSheet: View {
     private var recoverySourceLine: String? {
         guard dto.metric == "RECOVERY_SCORE" else { return nil }
         return WellnessScorePresentation.isWhoopNativeRecovery(dto)
-            ? String(localized: "Source: your WHOOP recovery.")
-            : String(localized: "Source: estimated from your heart-rate variability.")
+            ? AppLocale.string("Source: your WHOOP recovery.")
+            : AppLocale.string("Source: estimated from your heart-rate variability.")
     }
 
     // MARK: - "Was ist [Metrik]?" (explainer, LAST)
@@ -272,7 +272,7 @@ private struct ContributorRow: View {
                 .hlPressable() // QOL-AUDIT H1: press feedback
                 .accessibilityElement(children: .combine)
                 .accessibilityLabel(Text(accessibilityLabel))
-                .accessibilityHint(Text(String(localized: "Double-tap to open detail view")))
+                .accessibilityHint(Text(AppLocale.string("Double-tap to open detail view")))
                 .accessibilityIdentifier("insights.scoreSheet.contributor.\(contributor.key)")
         } else {
             content
@@ -306,7 +306,7 @@ private struct ContributorRow: View {
     /// "Weight · 25 %" — the effective share after null-redistribution.
     private var weightCaption: String {
         let pct = Int((contributor.weight * 100).rounded())
-        return String(localized: "Weight · \(HLNumberFormat.percent(pct))")
+        return AppLocale.string("Weight · \(HLNumberFormat.percent(pct))")
     }
 
     private var accessibilityLabel: String {

@@ -85,7 +85,7 @@ struct AskCoachSheet: View {
         NavigationStack {
             content
                 .hlScreenBackground()
-                .navigationTitle(String(localized: "Ask the coach"))
+                .navigationTitle(AppLocale.string("Ask the coach"))
                 .navigationBarTitleDisplayMode(.inline)
                 // v0.6.1 Y2 — Home-Compliance pattern: drop the
                 // 'Schließen' cancellationAction (drag-down dismisses).
@@ -110,7 +110,7 @@ struct AskCoachSheet: View {
                                 appContainer?.coachConversationStore.reset()
                             } label: {
                                 Label(
-                                    String(localized: "New conversation"),
+                                    AppLocale.string("New conversation"),
                                     systemImage: "arrow.counterclockwise"
                                 )
                             }
@@ -118,7 +118,7 @@ struct AskCoachSheet: View {
                                 showPastConversations = true
                             } label: {
                                 Label(
-                                    String(localized: "coach.toolbar.pastConversations"),
+                                    AppLocale.string("coach.toolbar.pastConversations"),
                                     systemImage: "clock.arrow.circlepath"
                                 )
                             }
@@ -130,7 +130,7 @@ struct AskCoachSheet: View {
                             // double-circle. The three dots alone sit cleanly in
                             // the glass capsule like a normal toolbar button.
                             Image(systemName: "ellipsis")
-                                .accessibilityLabel(String(localized: "Coach options"))
+                                .accessibilityLabel(AppLocale.string("Coach options"))
                         }
                         .disabled(appContainer == nil)
                     }
@@ -202,7 +202,7 @@ struct AskCoachSheet: View {
                 // #115 · 0.2 — a decision (operator, record, module, the person's
                 // own switch) closed the Coach: say which, offer nothing to send.
                 unavailableSurface(
-                    title: String(localized: "Coach unavailable"),
+                    title: AppLocale.string("Coach unavailable"),
                     message: Self.coachRefusalCopy(blocked)
                 )
             } else if store.shouldUseBYO {
@@ -317,9 +317,7 @@ struct AskCoachSheet: View {
                 .font(.hlIcon(HLIconSize.sm))
                 .foregroundStyle(HLText.secondary)
             Text(
-                String(
-                    localized: "Answered privately on your iPhone. Your data never leaves the device."
-                )
+                AppLocale.string("Answered privately on your iPhone. Your data never leaves the device.")
             )
             .font(.hlFootnote)
             .foregroundStyle(HLText.secondary)
@@ -335,15 +333,13 @@ struct AskCoachSheet: View {
                     .font(.hlIcon(HLIconSize.lg))
                     .symbolRenderingMode(.hierarchical)
                     .foregroundStyle(.tint)
-                Text(String(localized: "Hi! What would you like to know today?"))
+                Text(AppLocale.string("Hi! What would you like to know today?"))
                     .font(.hlTitle3)
                     .foregroundStyle(HLText.primary)
                     .fixedSize(horizontal: false, vertical: true)
             }
             Text(
-                String(
-                    localized: "Ask me a question about your data — I know your history and can explain what the numbers mean."
-                )
+                AppLocale.string("Ask me a question about your data — I know your history and can explain what the numbers mean.")
             )
             .font(.hlSubhead)
             .foregroundStyle(HLText.secondary)
@@ -397,13 +393,11 @@ struct AskCoachSheet: View {
         #else
             VStack(spacing: HLSpace.md) {
                 Spacer()
-                Text(String(localized: "Coach requires Apple Intelligence"))
+                Text(AppLocale.string("Coach requires Apple Intelligence"))
                     .font(.hlHeadline)
                     .foregroundStyle(HLText.primary)
                 Text(
-                    String(
-                        localized: "This build configuration is missing the chat module. Please reinstall the app."
-                    )
+                    AppLocale.string("This build configuration is missing the chat module. Please reinstall the app.")
                 )
                 .font(.hlSubhead)
                 .foregroundStyle(HLText.secondary)
@@ -490,7 +484,7 @@ struct AskCoachSheet: View {
         ScrollView {
             VStack(alignment: .leading, spacing: HLSpace.xl) {
                 welcomeLockup
-                Text(String(localized: "Preview without Coach backend."))
+                Text(AppLocale.string("Preview without Coach backend."))
                     .font(.hlFootnote)
                     .foregroundStyle(HLText.secondary)
                 Spacer(minLength: HLSpace.xxxl)
@@ -509,9 +503,9 @@ struct AskCoachSheet: View {
     /// treats it as composer seed text), matching the existing suggestion-chip
     /// convention. The `%@` carries the localized metric title.
     static func metricSeed(for kind: MetricKind) -> String {
-        let title = String(localized: kind.descriptor.title)
+        let title = AppLocale.string(AppLocale.shared.resource(kind.descriptor.title))
         return String(
-            format: String(localized: "What does my %@ trend tell me?"),
+            format: AppLocale.string("What does my %@ trend tell me?"),
             title
         )
     }
@@ -520,7 +514,7 @@ struct AskCoachSheet: View {
     /// Mood has no `MetricKind` title (it is a special Insights surface), so it
     /// gets its own fixed opener.
     static var moodSeed: String {
-        String(localized: "What does my mood pattern tell me?")
+        AppLocale.string("What does my mood pattern tell me?")
     }
 
     /// Treat the transcript as empty for layout purposes when there
@@ -549,15 +543,15 @@ struct AskCoachSuggestion {
 
     static let defaults: [AskCoachSuggestion] = [
         AskCoachSuggestion(
-            text: String(localized: "What does my blood pressure mean?"),
+            text: AppLocale.string("What does my blood pressure mean?"),
             icon: "waveform.path.ecg"
         ),
         AskCoachSuggestion(
-            text: String(localized: "How is my sleep?"),
+            text: AppLocale.string("How is my sleep?"),
             icon: "moon.zzz.fill"
         ),
         AskCoachSuggestion(
-            text: String(localized: "Am I active enough today?"),
+            text: AppLocale.string("Am I active enough today?"),
             icon: "figure.walk"
         )
     ]

@@ -208,30 +208,32 @@ public final class BYOKeyEntryModel {
     static func message(for error: BYOLLMError) -> String {
         switch error {
         case .invalidKey, .invalidConfiguration:
-            String(localized: "That key was rejected. Check it and try again.")
+            AppLocale.string("That key was rejected. Check it and try again.")
         case .rateLimited:
-            String(localized: "Your provider is rate-limiting requests. Try again shortly.")
+            AppLocale.string("Your provider is rate-limiting requests. Try again shortly.")
         case .quotaExhausted:
-            String(localized: "Your provider quota is used up. Check your account.")
+            AppLocale.string("Your provider quota is used up. Check your account.")
         case .modelNotFound:
-            String(localized: "That model is unknown to your provider. Pick another.")
+            AppLocale.string("That model is unknown to your provider. Pick another.")
         case .unreachable:
-            String(localized: "Couldn't reach your provider. Check your connection.")
+            AppLocale.string("Couldn't reach your provider. Check your connection.")
         case .providerUnavailable:
-            String(localized: "Your provider is temporarily unavailable. Try again later.")
+            AppLocale.string("Your provider is temporarily unavailable. Try again later.")
         case .safetyRefused:
-            String(localized: "Your provider declined this validation request.")
+            AppLocale.string("Your provider declined this validation request.")
         case .badRequest, .decode:
-            String(localized: "Validation failed. Please try again.")
+            AppLocale.string("Validation failed. Please try again.")
         }
     }
 
     static func invalidConfigMessage(requiresBaseURL: Bool) -> String {
         if requiresBaseURL {
-            return String(localized: "Enter your key and an https base URL.")
+            return AppLocale.string("Enter your key and an https base URL.")
         }
-        return String(localized: "Enter your API key.")
+        return AppLocale.string("Enter your API key.")
     }
 
-    static let saveFailedMessage = String(localized: "Could not save your key. Please try again.")
+    static var saveFailedMessage: String {
+        AppLocale.string("Could not save your key. Please try again.")
+    }
 }

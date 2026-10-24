@@ -420,9 +420,9 @@ extension AnstehendeEinnahmenSheet {
         /// via the `String(format:)` bridge.
         var subtitleKey: String {
             if totalCount == 0 {
-                return String(localized: "dashboard.intakesSheet.subtitle.empty")
+                return AppLocale.string("dashboard.intakesSheet.subtitle.empty")
             }
-            let fmt = NSLocalizedString("dashboard.intakesSheet.subtitle.count", comment: "")
+            let fmt = AppLocale.string("dashboard.intakesSheet.subtitle.count")
             return String(format: fmt, pendingCount, totalCount)
         }
     }
@@ -448,7 +448,7 @@ extension AnstehendeEinnahmenSheet {
                 return SheetRow(
                     intake: intake,
                     medication: med,
-                    scheduledLabel: intake.scheduledAt.formatted(.dateTime.hour().minute()),
+                    scheduledLabel: intake.scheduledAt.formatted(.dateTime.hour().minute().locale(AppLocale.shared.current)),
                     // Parity 1.9 — overdue is the SERVER's verdict, not ours.
                     // This used to read `intake.scheduledAt < now`, a pure
                     // client recompute of a value the server already computes

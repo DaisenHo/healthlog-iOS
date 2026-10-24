@@ -127,7 +127,7 @@ struct MedicationQuickIntakeSheet: View {
                 set: { if !$0 { batchResult = nil } }
             )
         ) {
-            Button(String(localized: "meds.quick.takeall.result.ok")) {
+            Button(AppLocale.string("meds.quick.takeall.result.ok")) {
                 let allConfirmed = batchResult?.allConfirmed ?? false
                 batchResult = nil
                 if allConfirmed { onDismiss() }
@@ -135,7 +135,7 @@ struct MedicationQuickIntakeSheet: View {
         } message: {
             if let batchResult {
                 Text(String(
-                    format: String(localized: "meds.quick.takeall.result.message"),
+                    format: AppLocale.string("meds.quick.takeall.result.message"),
                     batchResult.confirmed,
                     batchResult.total
                 ))
@@ -190,7 +190,7 @@ struct MedicationQuickIntakeSheet: View {
                         // W-I18N: already-formatted string carries a runtime
                         // count — paint verbatim, never re-resolve as a key.
                         verbatim: String(
-                            format: String(localized: "meds.quick.takeall.cta"),
+                            format: AppLocale.string("meds.quick.takeall.cta"),
                             due.count
                         ),
                         icon: "checkmark.circle.fill",
@@ -220,7 +220,7 @@ struct MedicationQuickIntakeSheet: View {
                 // one of the pending slots above (an off-schedule take, or a
                 // dose taken earlier the operator wants to back-date).
                 HLButton(
-                    String(localized: "med.freelog.open"),
+                    AppLocale.string("med.freelog.open"),
                     icon: "square.and.pencil",
                     variant: .secondary,
                     size: .regular
@@ -445,7 +445,7 @@ struct MedicationQuickIntakeConfirm: View {
                     inlineError(failedError)
                 }
                 HLButton(
-                    String(localized: "meds.quick.commit"),
+                    AppLocale.string("meds.quick.commit"),
                     icon: "checkmark.circle.fill",
                     variant: .restrained,
                     isLoading: isSaving
@@ -454,7 +454,7 @@ struct MedicationQuickIntakeConfirm: View {
                 }
                 .accessibilityIdentifier("meds.quick.commit")
                 HLButton(
-                    String(localized: "meds.quick.cancel"),
+                    AppLocale.string("meds.quick.cancel"),
                     variant: .secondary,
                     size: .regular
                 ) {
@@ -547,7 +547,7 @@ struct MedicationQuickIntakeConfirm: View {
 
     private func displayMessage(for error: HLError) -> String {
         let copy = error.userFacingDescription
-        return copy.isEmpty ? String(localized: "meds.quick.error.generic") : copy
+        return copy.isEmpty ? AppLocale.string("meds.quick.error.generic") : copy
     }
 
     private func commit() async {

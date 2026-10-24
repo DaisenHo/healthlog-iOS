@@ -31,7 +31,7 @@ struct CoachMemoryScreen: View {
                 List {
                     HLCloudDerivedPlaceholder(
                         variant: .inline,
-                        surfaceName: String(localized: "what the assistant knows"),
+                        surfaceName: AppLocale.string("what the assistant knows"),
                         onConnect: { authStore.beginServerPairing() }
                     )
                     .listRowSeparator(.hidden)
@@ -70,7 +70,7 @@ struct CoachMemoryScreen: View {
             List {
                 HLCloudDerivedPlaceholder(
                     variant: .inline,
-                    surfaceName: String(localized: "the coach")
+                    surfaceName: AppLocale.string("the coach")
                 )
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
@@ -169,13 +169,13 @@ struct CoachMemoryScreen: View {
     /// a blank header.
     static func categoryTitle(_ raw: String) -> String {
         switch raw.lowercased() {
-        case "": String(localized: "General")
-        case "preference", "preferences": String(localized: "Preferences")
-        case "health": String(localized: "Health")
-        case "medication", "medications": String(localized: "Medications")
-        case "routine", "routines": String(localized: "Routines")
-        case "goal", "goals": String(localized: "Goals")
-        case "lifestyle": String(localized: "Lifestyle")
+        case "": AppLocale.string("General")
+        case "preference", "preferences": AppLocale.string("Preferences")
+        case "health": AppLocale.string("Health")
+        case "medication", "medications": AppLocale.string("Medications")
+        case "routine", "routines": AppLocale.string("Routines")
+        case "goal", "goals": AppLocale.string("Goals")
+        case "lifestyle": AppLocale.string("Lifestyle")
         default: raw.prefix(1).uppercased() + raw.dropFirst()
         }
     }

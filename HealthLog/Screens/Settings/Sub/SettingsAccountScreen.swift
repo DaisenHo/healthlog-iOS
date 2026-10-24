@@ -64,6 +64,7 @@ struct SettingsAccountScreen: View {
             // install is paired. Parity 2.2 (sessions) and 2.5 (data reset) are
             // server actions for the same reason and join the same gate.
             if !syncMode.isStandalone {
+                AccountLanguageCard()
                 sessionsCard
                 signOutCard
                 resetDataCard
@@ -79,7 +80,7 @@ struct SettingsAccountScreen: View {
                 DeleteAccountScreen()
                     .toolbar {
                         ToolbarItem(placement: .topBarTrailing) {
-                            Button(String(localized: "Close")) {
+                            Button(AppLocale.string("Close")) {
                                 showDeleteConfirmation = false
                             }
                         }
@@ -93,7 +94,7 @@ struct SettingsAccountScreen: View {
                 ResetDataScreen()
                     .toolbar {
                         ToolbarItem(placement: .topBarTrailing) {
-                            Button(String(localized: "Close")) {
+                            Button(AppLocale.string("Close")) {
                                 showResetDataConfirmation = false
                             }
                         }

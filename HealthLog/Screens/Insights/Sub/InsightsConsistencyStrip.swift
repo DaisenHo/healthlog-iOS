@@ -25,7 +25,7 @@ struct ConsistencyStrip: View {
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(String(localized: "7-day consistency: \(summary)")))
+        .accessibilityLabel(Text(AppLocale.string("7-day consistency: \(summary)")))
     }
 
     private func color(for bucket: InsightsTargetsResponseDTO.TargetItem.ConsistencyBucket?) -> Color {
@@ -44,11 +44,11 @@ struct ConsistencyStrip: View {
         let outCount = buckets.filter { $0 == .outBand }.count
         let missingCount = buckets.filter { $0 == nil }.count
         var parts: [String] = []
-        if inCount > 0 { parts.append(String(localized: "\(inCount) in range")) }
-        if nearCount > 0 { parts.append(String(localized: "\(nearCount) near target")) }
-        if outCount > 0 { parts.append(String(localized: "\(outCount) out of range")) }
-        if missingCount > 0 { parts.append(String(localized: "\(missingCount) without entry")) }
-        return parts.isEmpty ? String(localized: "no data") : parts.joined(separator: ", ")
+        if inCount > 0 { parts.append(AppLocale.string("\(inCount) in range")) }
+        if nearCount > 0 { parts.append(AppLocale.string("\(nearCount) near target")) }
+        if outCount > 0 { parts.append(AppLocale.string("\(outCount) out of range")) }
+        if missingCount > 0 { parts.append(AppLocale.string("\(missingCount) without entry")) }
+        return parts.isEmpty ? AppLocale.string("no data") : parts.joined(separator: ", ")
     }
 }
 

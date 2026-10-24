@@ -40,7 +40,7 @@ struct MoodRecentSection: View {
                 }
 
                 if totalCount > entries.count {
-                    HLButton(String(localized: "Show all"), icon: "chevron.right", variant: .ghost, size: .regular) {
+                    HLButton(AppLocale.string("Show all"), icon: "chevron.right", variant: .ghost, size: .regular) {
                         onShowAll()
                     }
                     .accessibilityHint(Text("Opens the full history"))

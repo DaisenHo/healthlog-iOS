@@ -106,7 +106,7 @@ struct IllnessCorrelationSection: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 if let day = feltBetterDay, !day.isEmpty {
-                    let template = String(localized: "illness.correlation.feltBetter")
+                    let template = AppLocale.string("illness.correlation.feltBetter")
                     Text(String(format: template, IllnessDateFormat.mediumDate(day)))
                         .font(.hlCaption)
                         .foregroundStyle(HLText.tertiary)
@@ -232,7 +232,7 @@ struct IllnessCorrelationSection: View {
                     .foregroundStyle(HLText.tertiary)
                     .fixedSize(horizontal: false, vertical: true)
                 if let coverage = correlation?.coverage, coverage.requiredInputs > 0 {
-                    let template = String(localized: "illness.correlation.coverage")
+                    let template = AppLocale.string("illness.correlation.coverage")
                     Text(String(format: template, coverage.presentInputs, coverage.requiredInputs))
                         .font(.hlCaption)
                         .foregroundStyle(HLText.tertiary)
@@ -245,7 +245,7 @@ struct IllnessCorrelationSection: View {
 
     private func recoveryGapText(_ gap: Double) -> String {
         let value = gap.formatted(.number.precision(.fractionLength(0 ... 1)))
-        let template = String(localized: "illness.correlation.recoveryGap.value")
+        let template = AppLocale.string("illness.correlation.recoveryGap.value")
         return String(format: template, value)
     }
 
@@ -258,9 +258,9 @@ struct IllnessCorrelationSection: View {
         // symptoms were the last to ease") rather than slotted into the
         // vital template — mirrors the web's dedicated symptom phrasing.
         if type.uppercased() == "FUNCTIONAL_IMPACT" {
-            return String(localized: "illness.correlation.recoveryGap.driver.symptom")
+            return AppLocale.string("illness.correlation.recoveryGap.driver.symptom")
         }
-        let template = String(localized: "illness.correlation.recoveryGap.driver")
+        let template = AppLocale.string("illness.correlation.recoveryGap.driver")
         return String(format: template, IllnessVitalLabel.label(for: type))
     }
 
@@ -273,7 +273,7 @@ struct IllnessCorrelationSection: View {
         let key = context.deltaMinutes > 0
             ? "illness.correlation.sleepContext.more"
             : "illness.correlation.sleepContext.less"
-        let template = String(localized: String.LocalizationValue(key))
+        let template = AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(key)))
         return String(format: template, hours)
     }
 
@@ -284,21 +284,21 @@ struct IllnessCorrelationSection: View {
         case .below: "illness.correlation.direction.below"
         case .unknown: "illness.correlation.direction.unknown"
         }
-        let direction = String(localized: String.LocalizationValue(directionKey))
-        let template = String(localized: "illness.correlation.deviation.value")
+        let direction = AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(directionKey)))
+        let template = AppLocale.string("illness.correlation.deviation.value")
         return String(format: template, sd, direction)
     }
 
     private func returnText(_ ret: IllnessVitalReturn) -> String {
         guard let day = ret.returnedDay, !day.isEmpty else {
-            return String(localized: "illness.correlation.returns.notYet")
+            return AppLocale.string("illness.correlation.returns.notYet")
         }
         let dayLabel = IllnessDateFormat.mediumDate(day)
         guard let gap = ret.gapDays else {
             return dayLabel
         }
         let gapValue = gap.formatted(.number.precision(.fractionLength(0 ... 1)))
-        let template = String(localized: "illness.correlation.returns.value")
+        let template = AppLocale.string("illness.correlation.returns.value")
         return String(format: template, dayLabel, gapValue)
     }
 
@@ -311,13 +311,13 @@ struct IllnessCorrelationSection: View {
         let value = worst.formatted(.number.precision(.fractionLength(0 ... 1)))
         // L10N-3 — count-aware "day(s)" via xcstrings plural substitution (the
         // key carries `%@ %lld` so the days arg drives the one/other variation).
-        return String(localized: "illness.correlation.redFlags.detail \(value) \(flag.days)")
+        return AppLocale.string("illness.correlation.redFlags.detail \(value) \(flag.days)")
     }
 
     private func insufficientBody(correlation: IllnessCorrelationDTO?) -> String {
         if let reason = correlation?.reason, !reason.isEmpty {
             return reason
         }
-        return String(localized: "illness.correlation.insufficient.body")
+        return AppLocale.string("illness.correlation.insufficient.body")
     }
 }

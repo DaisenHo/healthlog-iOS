@@ -76,17 +76,17 @@ private struct PinToHomeButton: View {
     }
 
     private func pin(_ pinned: Bool) {
-        let name = String(localized: kind.descriptor.title)
+        let name = AppLocale.string(AppLocale.shared.resource(kind.descriptor.title))
         let message = pinned
-            ? String(
-                localized: "\(name) added to Home",
+            ? AppLocale.string(LocalizedStringResource(
+                "\(name) added to Home",
                 comment: "Toast — metric pinned to home dashboard. %@ = metric name."
-            )
-            : String(
-                localized: "\(name) removed from Home",
+            ))
+            : AppLocale.string(LocalizedStringResource(
+                "\(name) removed from Home",
                 comment: "Toast — metric unpinned from home dashboard. %@ = metric name."
-            )
-        Task { @MainActor in
+            ))
+        Task { @MainActor [layoutStore] in
             await layoutStore.setPinned(forId: widgetId, pinned: pinned)
             UINotificationFeedbackGenerator().notificationOccurred(.success)
             let id = widgetId

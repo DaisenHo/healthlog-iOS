@@ -86,7 +86,7 @@ struct CustomMetricsListScreen: View {
                 Task {
                     await store.deleteMetric(
                         id: metric.id,
-                        undoMessage: String(localized: "customMetric.delete.undo")
+                        undoMessage: AppLocale.string("customMetric.delete.undo")
                     )
                 }
             }
@@ -175,9 +175,9 @@ struct CustomMetricBandBadge: View {
 
     private var label: String {
         switch status {
-        case .inBand: String(localized: "customMetric.band.inBand")
-        case .below: String(localized: "customMetric.band.below")
-        case .above: String(localized: "customMetric.band.above")
+        case .inBand: AppLocale.string("customMetric.band.inBand")
+        case .below: AppLocale.string("customMetric.band.below")
+        case .above: AppLocale.string("customMetric.band.above")
         case .unknown: ""
         }
     }

@@ -273,7 +273,7 @@ extension DocumentDetailScreen {
             syncEditState(from: detail.document)
             suggestApplied.kind = true
         } else {
-            actionError = String(localized: "documents.detail.saveError")
+            actionError = AppLocale.string("documents.detail.saveError")
         }
     }
 
@@ -284,7 +284,7 @@ extension DocumentDetailScreen {
             syncEditState(from: detail.document)
             suggestApplied.date = true
         } else {
-            actionError = String(localized: "documents.detail.saveError")
+            actionError = AppLocale.string("documents.detail.saveError")
         }
     }
 
@@ -298,17 +298,17 @@ extension DocumentDetailScreen {
         // #115 · 0.2 — one sentence per v1.39 refusal code.
         switch DocumentsRepository.aiRefusalKind(error) {
         case .operatorDisabled:
-            return String(localized: "documents.assist.errorOperatorDisabled")
+            return AppLocale.string("documents.assist.errorOperatorDisabled")
         case .recordNotPermitted:
-            return String(localized: "documents.assist.errorRecordNotPermitted")
+            return AppLocale.string("documents.assist.errorRecordNotPermitted")
         case .noProvider:
-            return String(localized: "documents.assist.errorProvider")
+            return AppLocale.string("documents.assist.errorProvider")
         case .unavailable, nil:
             break
         }
         if let hl = error as? HLError, case .rateLimited = hl {
-            return String(localized: "documents.assist.errorRateLimited")
+            return AppLocale.string("documents.assist.errorRateLimited")
         }
-        return String(localized: "documents.assist.errorGeneric")
+        return AppLocale.string("documents.assist.errorGeneric")
     }
 }

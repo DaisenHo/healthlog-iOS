@@ -138,9 +138,9 @@ public enum ShareLinkError: Error, Sendable, Equatable {
     public var userFacingDescription: String {
         switch self {
         case .forbiddenLeaf:
-            String(localized: "shareLink.error.forbiddenLeaf")
+            AppLocale.string("shareLink.error.forbiddenLeaf")
         case .selectionRejected:
-            String(localized: "shareLink.error.selectionRejected")
+            AppLocale.string("shareLink.error.selectionRejected")
         }
     }
 }

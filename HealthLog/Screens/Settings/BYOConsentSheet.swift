@@ -19,7 +19,7 @@ struct BYOConsentSheet: View {
                         .font(.hlLargeTitle.weight(.light))
                         .foregroundStyle(HLText.primary)
                         .frame(maxWidth: .infinity, alignment: .center)
-                    Text(String(localized: "Use your own AI key"))
+                    Text(AppLocale.string("Use your own AI key"))
                         .font(.hlLargeTitle)
                         .foregroundStyle(HLText.primary)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -32,25 +32,20 @@ struct BYOConsentSheet: View {
                     VStack(alignment: .leading, spacing: HLSpace.md) {
                         bulletRow(
                             symbol: "iphone.gen3",
-                            text: String(
-                                localized: "Requests go directly from this device to your provider — not through HealthLog's servers."
-                            )
+                            text: AppLocale
+                                .string("Requests go directly from this device to your provider — not through HealthLog's servers.")
                         )
                         bulletRow(
                             symbol: "lock.shield",
-                            text: String(
-                                localized: "Your name, email, and device ID are never sent."
-                            )
+                            text: AppLocale.string("Your name, email, and device ID are never sent.")
                         )
                         bulletRow(
                             symbol: "building.2",
-                            text: String(
-                                localized: "Your provider receives this data and handles it under their own privacy policy."
-                            )
+                            text: AppLocale.string("Your provider receives this data and handles it under their own privacy policy.")
                         )
                         bulletRow(
                             symbol: "arrow.uturn.backward",
-                            text: String(localized: "You can remove your key at any time in Settings → Assistant.")
+                            text: AppLocale.string("You can remove your key at any time in Settings → Assistant.")
                         )
                     }
                     .padding(HLSpace.md)
@@ -61,11 +56,11 @@ struct BYOConsentSheet: View {
                 .padding(HLSpace.lg)
             }
             .hlScrollEdgeSoft()
-            .navigationTitle(String(localized: "Data flow"))
+            .navigationTitle(AppLocale.string("Data flow"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "Decline"), action: onDecline)
+                    Button(AppLocale.string("Decline"), action: onDecline)
                 }
             }
             .safeAreaInset(edge: .bottom) {
@@ -76,13 +71,13 @@ struct BYOConsentSheet: View {
                     // white-on-white CTA when the sheet's ambient `.tint`
                     // resolves near-white in light mode.
                     HLButton(
-                        String(localized: "Accept"),
+                        AppLocale.string("Accept"),
                         variant: .primary,
                         size: .large,
                         action: onAccept
                     )
                     .tint(HLAccent.primary)
-                    Text(String(localized: "You can change this choice at any time in Settings."))
+                    Text(AppLocale.string("You can change this choice at any time in Settings."))
                         .font(.hlCaption)
                         .foregroundStyle(HLText.tertiary)
                         .multilineTextAlignment(.center)
@@ -95,10 +90,14 @@ struct BYOConsentSheet: View {
     }
 
     private var consentCopy: String {
-        String(
-            // swiftlint:disable:next line_length
-            localized: "HealthLog sends excerpts of your health data — recent measurements, medications, sleep, and mood — directly to \(provider.displayName), using the API key you provided, to generate personal insights."
-        )
+        AppLocale
+            .string(
+                """
+                HealthLog sends excerpts of your health data — recent measurements, medications, sleep, and mood \
+                — directly to \(provider.displayName), using the API key you provided, to generate personal \
+                insights.
+                """
+            )
     }
 
     private func bulletRow(symbol: String, text: String) -> some View {

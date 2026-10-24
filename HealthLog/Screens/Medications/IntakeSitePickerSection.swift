@@ -36,7 +36,7 @@ struct IntakeSitePickerSection: View {
                         Image(systemName: "arrow.triangle.2.circlepath")
                             .foregroundStyle(HLText.secondary)
                         Text(String(
-                            format: String(localized: "Vorschlag laut Rotationsplan: %@"),
+                            format: AppLocale.string("Vorschlag laut Rotationsplan: %@"),
                             suggested.localizedLabel
                         ))
                         .font(.hlCaption)
@@ -82,8 +82,8 @@ struct IntakeSitePickerSection: View {
         .accessibilityAddTraits(selected == site ? [.isSelected] : [])
         .accessibilityHint(Text(
             suggested == site
-                ? String(localized: "Empfohlene Stelle laut Rotationsplan")
-                : String(localized: "Double-tap to select")
+                ? AppLocale.string("Empfohlene Stelle laut Rotationsplan")
+                : AppLocale.string("Double-tap to select")
         ))
     }
 

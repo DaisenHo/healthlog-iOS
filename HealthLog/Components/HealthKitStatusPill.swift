@@ -25,13 +25,13 @@ public struct HealthKitStatusPill: View {
     public var body: some View {
         switch readiness.surfaceStatus {
         case .checking:
-            HLStatusPill(.unknown(label: String(localized: "Checking")))
+            HLStatusPill(.unknown(label: AppLocale.string("Checking")))
         case .receiving:
-            HLStatusPill(.connected(label: String(localized: "Connected")))
+            HLStatusPill(.connected(label: AppLocale.string("Connected")))
         case .notConnected:
-            HLStatusPill(.disconnected(label: String(localized: "Not connected")))
+            HLStatusPill(.disconnected(label: AppLocale.string("Not connected")))
         case .declined:
-            HLStatusPill(.error(label: String(localized: "Declined")))
+            HLStatusPill(.error(label: AppLocale.string("Declined")))
         }
     }
 }

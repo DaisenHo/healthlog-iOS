@@ -84,7 +84,7 @@ struct IllnessDayLogRow: View {
 
     private func symptomLabel(_ symptom: IllnessSymptom) -> String {
         let base: String = if let entry = IllnessSymptomCatalog.entry(for: symptom.key) {
-            String(localized: String.LocalizationValue(entry.labelKey))
+            AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(entry.labelKey)))
         } else {
             symptom.key.replacingOccurrences(of: "_", with: " ").capitalized
         }
@@ -102,7 +102,7 @@ struct IllnessDayLogRow: View {
     private func feverLabel(_ fever: Double) -> String {
         let value = units.displayValue(fever, kind: .bodyTemperature)
             .formatted(.number.precision(.fractionLength(0 ... 1)))
-        return String(localized: "illness.daylog.fever.value \(value) \(units.unitLabel(for: .bodyTemperature))")
+        return AppLocale.string("illness.daylog.fever.value \(value) \(units.unitLabel(for: .bodyTemperature))")
     }
 }
 

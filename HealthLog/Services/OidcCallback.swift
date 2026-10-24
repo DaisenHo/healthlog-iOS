@@ -64,17 +64,17 @@ public enum OidcErrorReason: Sendable, Equatable {
     /// Localized, user-facing message (de+en) surfaced on the auth step.
     public var localizedMessage: String {
         switch self {
-        case .disabled: String(localized: "onboarding.sso.error.disabled")
-        case .invalidRequest: String(localized: "onboarding.sso.error.invalidRequest")
-        case .failed: String(localized: "onboarding.sso.error.failed")
-        case .denied: String(localized: "onboarding.sso.error.denied")
-        case .noEmail: String(localized: "onboarding.sso.error.noEmail")
-        case .emailUnverified: String(localized: "onboarding.sso.error.emailUnverified")
-        case .identityConflict: String(localized: "onboarding.sso.error.identityConflict")
-        case .registrationDisabled: String(localized: "onboarding.sso.error.registrationDisabled")
-        case .rateLimited: String(localized: "onboarding.sso.error.rateLimited")
-        case .linkRequired: String(localized: "onboarding.sso.error.linkRequired")
-        case .unknown: String(localized: "onboarding.sso.error.generic")
+        case .disabled: AppLocale.string("onboarding.sso.error.disabled")
+        case .invalidRequest: AppLocale.string("onboarding.sso.error.invalidRequest")
+        case .failed: AppLocale.string("onboarding.sso.error.failed")
+        case .denied: AppLocale.string("onboarding.sso.error.denied")
+        case .noEmail: AppLocale.string("onboarding.sso.error.noEmail")
+        case .emailUnverified: AppLocale.string("onboarding.sso.error.emailUnverified")
+        case .identityConflict: AppLocale.string("onboarding.sso.error.identityConflict")
+        case .registrationDisabled: AppLocale.string("onboarding.sso.error.registrationDisabled")
+        case .rateLimited: AppLocale.string("onboarding.sso.error.rateLimited")
+        case .linkRequired: AppLocale.string("onboarding.sso.error.linkRequired")
+        case .unknown: AppLocale.string("onboarding.sso.error.generic")
         }
     }
 

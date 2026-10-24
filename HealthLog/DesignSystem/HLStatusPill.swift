@@ -37,11 +37,19 @@ public struct HLStatusPill: View {
     }
 
     /// Convenience: connected with a default localized label.
-    public static let connected = HLStatusPill(.connected(label: String(localized: "Connected")))
+    public static var connected: HLStatusPill {
+        HLStatusPill(.connected(label: AppLocale.string("Connected")))
+    }
+
     /// Convenience: error with a default localized label.
-    public static let error = HLStatusPill(.error(label: String(localized: "Error")))
+    public static var error: HLStatusPill {
+        HLStatusPill(.error(label: AppLocale.string("Error")))
+    }
+
     /// Convenience: disconnected with a default localized label.
-    public static let disconnected = HLStatusPill(.disconnected(label: String(localized: "Not connected")))
+    public static var disconnected: HLStatusPill {
+        HLStatusPill(.disconnected(label: AppLocale.string("Not connected")))
+    }
 
     public var body: some View {
         HStack(spacing: HLSpace.xs) {

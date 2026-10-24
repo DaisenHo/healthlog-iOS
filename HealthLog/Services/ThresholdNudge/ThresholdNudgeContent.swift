@@ -66,7 +66,7 @@ struct ThresholdNudgeContent: Equatable {
     }
 
     init(lab: LabResultDTO) {
-        title = String(localized: "threshold.nudge.title")
+        title = AppLocale.string("threshold.nudge.title")
 
         let analyte = lab.analyte
         let bounded = Self.boundedValue(for: lab)
@@ -80,15 +80,15 @@ struct ThresholdNudgeContent: Equatable {
             lab.displayValue
         }
         let rangeText = Self.formatRange(low: bounded?.low, high: bounded?.high)
-        let disclaimer = String(localized: "threshold.nudge.disclaimer")
+        let disclaimer = AppLocale.string("threshold.nudge.disclaimer")
 
         // The factual sentence: "<analyte> reading of <value> is <below/above>
         // the range you set (<range>)." Each interpolation is a pre-localized
         // String, so the format key stays stable (`%@ … %@ … %@`).
         let factual = if bounded?.isBelow == true {
-            String(localized: "threshold.nudge.body.below \(analyte) \(valueText) \(rangeText)")
+            AppLocale.string("threshold.nudge.body.below \(analyte) \(valueText) \(rangeText)")
         } else {
-            String(localized: "threshold.nudge.body.above \(analyte) \(valueText) \(rangeText)")
+            AppLocale.string("threshold.nudge.body.above \(analyte) \(valueText) \(rangeText)")
         }
         // Body = factual reading-vs-range + the non-diagnostic disclaimer. The
         // disclaimer is appended (not interpolated) so it reads as a distinct,
@@ -138,9 +138,9 @@ struct ThresholdNudgeContent: Equatable {
         case let (low?, high?):
             return HLNumberFormat.range(fmt(low), fmt(high))
         case let (low?, nil):
-            return String(localized: "threshold.nudge.range.atLeast \(fmt(low))")
+            return AppLocale.string("threshold.nudge.range.atLeast \(fmt(low))")
         case let (nil, high?):
-            return String(localized: "threshold.nudge.range.atMost \(fmt(high))")
+            return AppLocale.string("threshold.nudge.range.atMost \(fmt(high))")
         case (nil, nil):
             return ""
         }

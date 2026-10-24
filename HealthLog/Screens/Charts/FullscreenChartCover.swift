@@ -53,7 +53,7 @@ struct FullscreenChartCover: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(String(localized: "Done")) { dismiss() }
+                    Button(AppLocale.string("Done")) { dismiss() }
                         .accessibilityIdentifier("chartDetail.fullscreen.dismiss")
                 }
             }

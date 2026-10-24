@@ -39,7 +39,7 @@ struct LabConversion: Equatable {
         let unit = sourceUnit?.trimmingCharacters(in: .whitespaces) ?? ""
         let value = sourceValue.formatted(.number.precision(.fractionLength(0 ... 4)))
         let printed = unit.isEmpty ? value : "\(value) \(unit)"
-        return String(localized: "labs.conversion.from \(printed)")
+        return AppLocale.string("labs.conversion.from \(printed)")
     }
 
     /// "Printed range: 3.9 to 5.5 mmol/L", as the server stored it.
@@ -47,7 +47,7 @@ struct LabConversion: Equatable {
         guard let text = printedReferenceText?.trimmingCharacters(in: .whitespacesAndNewlines), !text.isEmpty else {
             return nil
         }
-        return String(localized: "labs.conversion.printedRange \(text)")
+        return AppLocale.string("labs.conversion.printedRange \(text)")
     }
 
     var lines: [String] {

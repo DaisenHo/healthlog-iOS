@@ -38,8 +38,10 @@ struct PasskeyManagementScreen: View {
                     ForEach(store.passkeys) { passkey in
                         VStack(alignment: .leading, spacing: HLSpace.xs) {
                             Text(passkey.displayName).font(.hlHeadline)
-                            Text("passkey.created \(passkey.createdAt.formatted(.dateTime.day().month().year()))")
-                                .font(.hlCaption).foregroundStyle(HLText.secondary)
+                            Text(
+                                "passkey.created \(passkey.createdAt.formatted(.dateTime.day().month().year().locale(AppLocale.shared.current)))"
+                            )
+                            .font(.hlCaption).foregroundStyle(HLText.secondary)
                             if let deviceLabel = passkey.deviceLabel {
                                 Text(deviceLabel)
                                     .font(.hlCaption).foregroundStyle(HLText.tertiary)
@@ -213,7 +215,7 @@ public struct PasskeyEntry: Codable, Identifiable, Sendable {
     /// authenticators created entries without a friendly name).
     var displayName: String {
         if let name, !name.isEmpty { return name }
-        return String(localized: "Passkey")
+        return AppLocale.string("Passkey")
     }
 
     /// Optional secondary line — SimpleWebAuthn reports `singleDevice` or
@@ -221,8 +223,8 @@ public struct PasskeyEntry: Codable, Identifiable, Sendable {
     /// value so the row stays compact for legacy entries.
     var deviceLabel: String? {
         switch credentialDeviceType {
-        case "multiDevice": String(localized: "Synced via iCloud Keychain")
-        case "singleDevice": String(localized: "Bound to this device")
+        case "multiDevice": AppLocale.string("Synced via iCloud Keychain")
+        case "singleDevice": AppLocale.string("Bound to this device")
         default: nil
         }
     }
@@ -232,10 +234,9 @@ public struct PasskeyEntry: Codable, Identifiable, Sendable {
     /// server delivers `null` until the passkey is first used for a login.
     var lastUsedLabel: String {
         if let lastUsedAt {
-            return String(
-                localized: "passkey.lastUsed \(lastUsedAt.formatted(.dateTime.day().month().year()))"
-            )
+            return AppLocale
+                .string("passkey.lastUsed \(lastUsedAt.formatted(.dateTime.day().month().year().locale(AppLocale.shared.current)))")
         }
-        return String(localized: "settings.passkeys.neverUsed")
+        return AppLocale.string("settings.passkeys.neverUsed")
     }
 }

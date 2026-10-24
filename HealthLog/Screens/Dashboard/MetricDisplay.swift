@@ -57,7 +57,7 @@ public struct MetricDisplay: Equatable, Sendable {
             // label ("noch keine Daten") for the same surface.
             if descriptor.formatStyle == .bloodPressureCompound, metric.secondaryValue == nil {
                 valueText = "—"
-                secondaryLine = String(localized: "No data yet")
+                secondaryLine = AppLocale.string("No data yet")
                 isEmptyForDisplay = true
                 return
             }
@@ -119,13 +119,13 @@ public struct MetricDisplay: Equatable, Sendable {
             isEmptyForDisplay = true
             switch reason {
             case .noData:
-                secondaryLine = String(localized: "No data yet")
+                secondaryLine = AppLocale.string("No data yet")
             case let .outsideRange(latestAt):
                 let raw = calendar.dateComponents([.day], from: latestAt, to: now).day ?? 0
                 let days = max(0, raw)
-                secondaryLine = String(localized: "Last measurement \(days) days ago")
+                secondaryLine = AppLocale.string("Last measurement \(days) days ago")
             case .sourceFiltered:
-                secondaryLine = String(localized: "No measurements for the selected source")
+                secondaryLine = AppLocale.string("No measurements for the selected source")
             }
 
         case .unknown, .loading:
@@ -140,7 +140,7 @@ public struct MetricDisplay: Equatable, Sendable {
                !metric.hasDisplayableBloodPressureSnapshot
             {
                 valueText = "—"
-                secondaryLine = String(localized: "No data yet")
+                secondaryLine = AppLocale.string("No data yet")
                 isEmptyForDisplay = true
                 return
             }
@@ -221,7 +221,7 @@ public struct MetricDisplay: Equatable, Sendable {
         let raw = calendar.dateComponents([.day], from: latestAt, to: now).day ?? 0
         let days = max(0, raw)
         guard days >= recencyHintThresholdDays else { return nil }
-        return String(localized: "Last measurement \(days) days ago")
+        return AppLocale.string("Last measurement \(days) days ago")
     }
 
     /// **V0.5.4-BF-3 helper.** Sums every sample whose `recordedAt` falls

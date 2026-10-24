@@ -78,7 +78,7 @@ struct BiomarkerAliasesSheet: View {
         if await store.setAliases(aliases, for: marker.id) {
             dismiss()
         } else {
-            inlineError = store.lastError ?? String(localized: "labs.save.failed")
+            inlineError = store.lastError ?? AppLocale.string("labs.save.failed")
         }
     }
 }

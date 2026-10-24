@@ -84,12 +84,13 @@ enum DocumentFormat {
             ?? dayOnlyFormatter.date(from: raw + "T12:00:00Z")
     }
 
-    private static let mediumFormatter: DateFormatter = {
+    private static var mediumFormatter: DateFormatter {
         let f = DateFormatter()
         f.dateStyle = .medium
         f.timeStyle = .none
+        f.locale = AppLocale.shared.current
         return f
-    }()
+    }
 
     private nonisolated(unsafe) static let dayOnlyFormatter: ISO8601DateFormatter = {
         let f = ISO8601DateFormatter()

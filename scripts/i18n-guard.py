@@ -44,6 +44,7 @@ import re
 import sys
 
 _FOUNDATION = [
+    r"AppLocale\.string\(\s*",
     r"String\(localized:\s*",
     r"NSLocalizedString\(\s*",
     r"LocalizedStringResource\(\s*",

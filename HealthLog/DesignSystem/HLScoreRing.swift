@@ -58,9 +58,9 @@ public struct HLScoreRing: View {
         /// (the dot is the only colour and is otherwise invisible to VoiceOver).
         var accessibilityWord: String {
             switch self {
-            case .ok: String(localized: "in range")
-            case .warn: String(localized: "borderline")
-            case .bad: String(localized: "out of range")
+            case .ok: AppLocale.string("in range")
+            case .warn: AppLocale.string("borderline")
+            case .bad: AppLocale.string("out of range")
             }
         }
     }
@@ -260,7 +260,7 @@ public struct HLScoreRing: View {
         if parts.isEmpty {
             // Catalog key `%lld percent` (EN + DE), rounded (F1) — no-value fallback.
             let percent = HLNumberFormat.percentValue(ofFraction: fraction)
-            return String(localized: "\(percent) percent", comment: "Ring a11y value fallback, e.g. \"60 percent\"")
+            return AppLocale.string(LocalizedStringResource("\(percent) percent", comment: "Ring a11y value fallback, e.g. \"60 percent\""))
         }
         return parts.joined(separator: ", ")
     }

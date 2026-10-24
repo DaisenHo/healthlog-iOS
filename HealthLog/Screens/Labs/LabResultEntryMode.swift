@@ -45,9 +45,9 @@ enum LabQualitativeSuggestion: String, CaseIterable, Identifiable {
     /// so it deliberately reads as the operator's own words, not a code.
     var text: String {
         switch self {
-        case .negative: String(localized: "labs.form.qualNegative")
-        case .positive: String(localized: "labs.form.qualPositive")
-        case .borderline: String(localized: "labs.form.qualBorderline")
+        case .negative: AppLocale.string("labs.form.qualNegative")
+        case .positive: AppLocale.string("labs.form.qualPositive")
+        case .borderline: AppLocale.string("labs.form.qualBorderline")
         }
     }
 }

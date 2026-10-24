@@ -74,7 +74,7 @@ struct MedicalDisclaimerAckSheet: View {
             .interactiveDismissDisabled(true)
             .safeAreaInset(edge: .bottom) {
                 HLButton(
-                    String(localized: "disclaimer.ack.cta"),
+                    AppLocale.string("disclaimer.ack.cta"),
                     icon: "checkmark.circle.fill",
                     variant: .primary,
                     size: .large,

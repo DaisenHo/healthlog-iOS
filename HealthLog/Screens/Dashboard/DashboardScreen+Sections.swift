@@ -14,7 +14,10 @@ struct HighlightInsightCard: View {
     /// the symbol may suggest an assistant wrote them.
     static let symbolName = "lightbulb"
     static var title: String {
-        String(localized: "Insight", comment: "Dashboard insight card title — rule-based server cards, not AI (#115 B6)")
+        AppLocale.string(LocalizedStringResource(
+            "Insight",
+            comment: "Dashboard insight card title — rule-based server cards, not AI (#115 B6)"
+        ))
     }
 
     var body: some View {
@@ -91,7 +94,7 @@ private struct InsightRecommendationActions: View {
                             .background(HLSurface.tertiary, in: RoundedRectangle(cornerRadius: HLRadius.sm, style: .continuous))
                         }
                         .hlPressable() // QOL-AUDIT H1: press feedback (M1 filled pill)
-                        .accessibilityHint(Text(String(localized: "Opens the recommended action")))
+                        .accessibilityHint(Text(AppLocale.string("Opens the recommended action")))
                     } else {
                         HStack(alignment: .firstTextBaseline, spacing: HLSpace.xs) {
                             Image(systemName: "circle.fill")

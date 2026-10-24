@@ -76,7 +76,7 @@ enum InsightsMetricStatusDescriptor {
         let classification = digest?.bpClassification
         return InsightsMetricStatusCard.Descriptor(
             title: kind.displayName,
-            guidelineCaption: String(localized: "insights.digest.bp.guideline.esh2023"),
+            guidelineCaption: AppLocale.string("insights.digest.bp.guideline.esh2023"),
             // 1.4.1 — the ESH caption is the claim's authority; make it the way
             // into ESH 2023 / ESC 2024 / ACC-AHA 2017 rather than a bare name.
             sourcesTopic: .bloodPressureClassification,
@@ -86,14 +86,14 @@ enum InsightsMetricStatusDescriptor {
             // diagnostic category name. The clause that says a category off
             // home readings is not one lived only in the Sources sheet; it now
             // rides on the card next to the chip.
-            chipCaption: String(localized: "insights.metric.statusCard.notADiagnosis"),
+            chipCaption: AppLocale.string("insights.metric.statusCard.notADiagnosis"),
             headlineValue: headline,
             unitCaption: kind.unit,
             pctInTarget: digest?.bpPctInTarget,
             // b183 coherence — `bpPctInTarget` is the server's TRAILING 90-DAY
             // share (ESH-2023 band, comprehensive route). Label it "90 T" so the
             // figure isn't read as the 30-day window the non-BP bars use.
-            inTargetWindowLabel: digest?.bpPctInTarget != nil ? String(localized: "90d") : nil,
+            inTargetWindowLabel: digest?.bpPctInTarget != nil ? AppLocale.string("90d") : nil,
             targetBandCaption: digest?.bpTargets.flatMap(bpTargetBandCaption),
             // BP keeps its full chip+band+bar anatomy — no target-less Verlauf here.
             sparklineValues: nil,
@@ -103,13 +103,13 @@ enum InsightsMetricStatusDescriptor {
 
     private static func bpLabel(_ c: BPClassification) -> String {
         switch c {
-        case .optimal: String(localized: "insights.digest.bp.optimal")
-        case .normal: String(localized: "insights.digest.bp.normal")
-        case .highNormal: String(localized: "High-normal")
-        case .hypertensionGrade1: String(localized: "Hypertension grade 1")
-        case .hypertensionGrade2: String(localized: "Hypertension grade 2")
-        case .hypertensionGrade3: String(localized: "Hypertension grade 3")
-        case .unknown: String(localized: "Unknown", comment: "BMI/BP classification — server token not recognised")
+        case .optimal: AppLocale.string("insights.digest.bp.optimal")
+        case .normal: AppLocale.string("insights.digest.bp.normal")
+        case .highNormal: AppLocale.string("High-normal")
+        case .hypertensionGrade1: AppLocale.string("Hypertension grade 1")
+        case .hypertensionGrade2: AppLocale.string("Hypertension grade 2")
+        case .hypertensionGrade3: AppLocale.string("Hypertension grade 3")
+        case .unknown: AppLocale.string(LocalizedStringResource("Unknown", comment: "BMI/BP classification — server token not recognised"))
         }
     }
 
@@ -140,7 +140,7 @@ enum InsightsMetricStatusDescriptor {
     static func bpTargetBandCaption(_ t: BPTargets) -> String? {
         guard let sysLow = t.sysLow, let sysHigh = t.sysHigh,
               let diaLow = t.diaLow, let diaHigh = t.diaHigh else { return nil }
-        return String(localized: "insights.digest.bp.targetBand \(sysLow) \(sysHigh) \(diaLow) \(diaHigh)")
+        return AppLocale.string("insights.digest.bp.targetBand \(sysLow) \(sysHigh) \(diaLow) \(diaHigh)")
     }
 
     // MARK: - BMI (WHO)
@@ -162,14 +162,14 @@ enum InsightsMetricStatusDescriptor {
             // 1.4.1 — the BMI chip and its band hint are WHO 2000 bands. BP has
             // always named its guideline in the header; BMI classified silently.
             // It now says whose bands these are, and the caption cites them.
-            guidelineCaption: String(localized: "insights.digest.bmi.guideline.who2000"),
+            guidelineCaption: AppLocale.string("insights.digest.bmi.guideline.who2000"),
             sourcesTopic: .bmi,
             chipLabel: classification.map(bmiLabel),
             chipTone: classification.map(bmiTone) ?? .neutral,
             // 1.0.3 (1.4.1, audit row 10) — same qualifier as BP: "Obesity
             // class III" is a WHO category computed from the user's own
             // readings, not a diagnosis anyone made.
-            chipCaption: String(localized: "insights.metric.statusCard.notADiagnosis"),
+            chipCaption: AppLocale.string("insights.metric.statusCard.notADiagnosis"),
             headlineValue: headline,
             unitCaption: kind.unit,
             pctInTarget: nil,
@@ -187,13 +187,13 @@ enum InsightsMetricStatusDescriptor {
 
     private static func bmiLabel(_ c: BMIClassification) -> String {
         switch c {
-        case .underweight: String(localized: "Underweight", comment: "BMI WHO classification label")
-        case .normal: String(localized: "Normal weight", comment: "BMI WHO classification label")
-        case .overweight: String(localized: "Overweight")
-        case .obeseGradeI: String(localized: "Obesity class I", comment: "BMI WHO classification label")
-        case .obeseGradeII: String(localized: "Obesity class II", comment: "BMI WHO classification label")
-        case .obeseGradeIII: String(localized: "Obesity class III", comment: "BMI WHO classification label")
-        case .unknown: String(localized: "Unknown", comment: "BMI/BP classification — server token not recognised")
+        case .underweight: AppLocale.string(LocalizedStringResource("Underweight", comment: "BMI WHO classification label"))
+        case .normal: AppLocale.string(LocalizedStringResource("Normal weight", comment: "BMI WHO classification label"))
+        case .overweight: AppLocale.string("Overweight")
+        case .obeseGradeI: AppLocale.string(LocalizedStringResource("Obesity class I", comment: "BMI WHO classification label"))
+        case .obeseGradeII: AppLocale.string(LocalizedStringResource("Obesity class II", comment: "BMI WHO classification label"))
+        case .obeseGradeIII: AppLocale.string(LocalizedStringResource("Obesity class III", comment: "BMI WHO classification label"))
+        case .unknown: AppLocale.string(LocalizedStringResource("Unknown", comment: "BMI/BP classification — server token not recognised"))
         }
     }
 
@@ -212,13 +212,16 @@ enum InsightsMetricStatusDescriptor {
 
     private static func bmiBandHint(_ c: BMIClassification) -> String {
         switch c {
-        case .underweight: String(localized: "WHO < 18.5", comment: "BMI WHO band range hint")
-        case .normal: String(localized: "WHO 18.5 – 24.9", comment: "BMI WHO band range hint")
-        case .overweight: String(localized: "WHO 25.0 – 29.9", comment: "BMI WHO band range hint")
-        case .obeseGradeI: String(localized: "WHO 30.0 – 34.9", comment: "BMI WHO band range hint")
-        case .obeseGradeII: String(localized: "WHO 35.0 – 39.9", comment: "BMI WHO band range hint")
-        case .obeseGradeIII: String(localized: "WHO ≥ 40.0", comment: "BMI WHO band range hint")
-        case .unknown: String(localized: "Classification unavailable", comment: "BMI — server classification token unknown")
+        case .underweight: AppLocale.string(LocalizedStringResource("WHO < 18.5", comment: "BMI WHO band range hint"))
+        case .normal: AppLocale.string(LocalizedStringResource("WHO 18.5 – 24.9", comment: "BMI WHO band range hint"))
+        case .overweight: AppLocale.string(LocalizedStringResource("WHO 25.0 – 29.9", comment: "BMI WHO band range hint"))
+        case .obeseGradeI: AppLocale.string(LocalizedStringResource("WHO 30.0 – 34.9", comment: "BMI WHO band range hint"))
+        case .obeseGradeII: AppLocale.string(LocalizedStringResource("WHO 35.0 – 39.9", comment: "BMI WHO band range hint"))
+        case .obeseGradeIII: AppLocale.string(LocalizedStringResource("WHO ≥ 40.0", comment: "BMI WHO band range hint"))
+        case .unknown: AppLocale.string(LocalizedStringResource(
+                "Classification unavailable",
+                comment: "BMI — server classification token unknown"
+            ))
         }
     }
 
@@ -261,7 +264,7 @@ enum InsightsMetricStatusDescriptor {
             // b183 coherence — the non-BP share rides the local 30-day day-count
             // window (`daysInRange30d / daysLogged30d`). Label it "30 T" so each
             // bar honestly carries its own window alongside BP's 90-day one.
-            inTargetWindowLabel: pct != nil ? String(localized: "30d") : nil,
+            inTargetWindowLabel: pct != nil ? AppLocale.string("30d") : nil,
             targetBandCaption: band,
             sparklineValues: trend,
             identifierSuffix: kind.rawValue
@@ -340,9 +343,9 @@ enum InsightsMetricStatusDescriptor {
         let lo = fmt(display.value(range.min))
         let hi = fmt(display.value(range.max))
         if unit.isEmpty {
-            return String(localized: "Target: \(lo)–\(hi)")
+            return AppLocale.string("Target: \(lo)–\(hi)")
         }
-        return String(localized: "Target: \(lo)–\(hi) \(unit)")
+        return AppLocale.string("Target: \(lo)–\(hi) \(unit)")
     }
 
     /// Trim a trailing `.0` so whole-number bands read `120` not `120.0`.

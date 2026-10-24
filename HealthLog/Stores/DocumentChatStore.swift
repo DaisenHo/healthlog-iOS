@@ -215,6 +215,6 @@ public final class DocumentChatStore {
     /// The two-letter locale the server renders its refusal / limit copy in
     /// (`"de"` / `"en"`), mirroring the Coach's `serverLocaleCode()`.
     static var localeCode: String {
-        Locale.current.language.languageCode?.identifier == "de" ? "de" : "en"
+        AppLocale.shared.serverCode
     }
 }

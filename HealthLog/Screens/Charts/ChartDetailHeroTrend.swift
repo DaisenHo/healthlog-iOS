@@ -108,12 +108,12 @@ private struct TrendSlopeChip: View {
 
     private var accessibilityLabel: String {
         let direction = switch slope.direction {
-        case .up: String(localized: "rising")
-        case .down: String(localized: "falling")
-        case .stable, .none: String(localized: "stable")
-        case .unknown: String(localized: "unknown")
+        case .up: AppLocale.string("rising")
+        case .down: AppLocale.string("falling")
+        case .stable, .none: AppLocale.string("stable")
+        case .unknown: AppLocale.string("unknown")
         }
-        return String(localized: "Trend \(window.shortLabel): \(direction)")
+        return AppLocale.string("Trend \(window.shortLabel): \(direction)")
     }
 }
 
@@ -130,7 +130,7 @@ struct YearOverYearRow: View {
 
     var body: some View {
         HStack(spacing: HLSpace.xs) {
-            Text(String(localized: "1 year ago"))
+            Text(AppLocale.string("1 year ago"))
                 .font(.hlCaption)
                 .foregroundStyle(HLText.tertiary)
             Text(baselineText)
@@ -154,9 +154,9 @@ struct YearOverYearRow: View {
 
     private var accessibilityLabel: String {
         guard let delta else {
-            return String(localized: "1 year ago: \(baselineText)")
+            return AppLocale.string("1 year ago: \(baselineText)")
         }
         let deltaText = delta.formatted(.number.precision(.fractionLength(0 ... 1)))
-        return String(localized: "1 year ago: \(baselineText), change \(deltaText) \(unit)")
+        return AppLocale.string("1 year ago: \(baselineText), change \(deltaText) \(unit)")
     }
 }

@@ -47,19 +47,19 @@ public final class ChartDetailStore {
             case .week: "W"
             case .month: "M"
             case .sixMonths: "6M"
-            case .year: String(localized: "range.label.year", defaultValue: "Y")
-            case .all: String(localized: "All")
+            case .year: AppLocale.string(LocalizedStringResource("range.label.year", defaultValue: "Y"))
+            case .all: AppLocale.string("All")
             }
         }
 
         public var accessibilityLabel: String {
             switch self {
-            case .day: String(localized: "Day")
-            case .week: String(localized: "Week")
-            case .month: String(localized: "Month")
-            case .sixMonths: String(localized: "6 months")
-            case .year: String(localized: "Year")
-            case .all: String(localized: "All data")
+            case .day: AppLocale.string("Day")
+            case .week: AppLocale.string("Week")
+            case .month: AppLocale.string("Month")
+            case .sixMonths: AppLocale.string("6 months")
+            case .year: AppLocale.string("Year")
+            case .all: AppLocale.string("All data")
             }
         }
     }
@@ -209,7 +209,7 @@ public final class ChartDetailStore {
         measurementsRepo: MeasurementsRepository,
         insightsRepo: MetricInsightsRepository,
         resolveLocale: @escaping @Sendable () -> String = {
-            Locale.autoupdatingCurrent.language.languageCode?.identifier ?? "de"
+            AppLocale.shared.serverCode
         },
         consentGate: (@MainActor () -> Bool)? = nil,
         preLoadHook: (@Sendable () async -> Void)? = nil,

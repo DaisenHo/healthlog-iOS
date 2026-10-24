@@ -69,7 +69,7 @@ struct InsightsCorrelationFollowUpSection: View {
         } label: {
             HStack(spacing: HLSpace.sm) {
                 Text(verbatim: String(
-                    format: String(localized: "insights.correlations.detail.openMetric"),
+                    format: AppLocale.string("insights.correlations.detail.openMetric"),
                     kind.displayName
                 ))
                 .font(.hlSubhead)

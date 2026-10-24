@@ -167,7 +167,7 @@ public struct HLDashboardTile: View {
         .accessibilityElement(children: .combine)
         .accessibilityLabel(combinedAccessibilityLabel)
         .accessibilityHint(descriptor.supportsDrillDown
-            ? Text(String(localized: "Double-tap to open detail view"))
+            ? Text(AppLocale.string("Double-tap to open detail view"))
             : Text(""))
         // V0.5.4.3 HP-2 — accessibility identifier for the walkthrough
         // XCUITest contract. The suffix encodes the sparkline-state directly
@@ -518,7 +518,7 @@ public struct HLDashboardTile: View {
     // MARK: - Accessibility
 
     private var combinedAccessibilityLabel: Text {
-        let title = String(localized: descriptor.title)
+        let title = AppLocale.string(AppLocale.shared.resource(descriptor.title))
         if isEmptyForDisplay {
             // Distinguish "no data ever" from "outside the queried window"
             // so VoiceOver users know whether to log a first reading or
@@ -530,16 +530,16 @@ public struct HLDashboardTile: View {
                 // Clamp at 0 so the spoken label always reads sensibly.
                 let raw = Calendar.current.dateComponents([.day], from: latestAt, to: .now).day ?? 0
                 let days = max(0, raw)
-                return Text(String(localized: "\(title): Last measurement \(days) days ago"))
+                return Text(AppLocale.string("\(title): Last measurement \(days) days ago"))
             }
-            return Text(String(localized: "\(title): No data yet"))
+            return Text(AppLocale.string("\(title): No data yet"))
         }
         let value = "\(formattedValueText) \(metric.unitSuffix(units: unitPreferences))"
         let trendDesc = switch metric.dashboardTrend {
-        case .up: String(localized: "Trend rising")
-        case .down: String(localized: "Trend falling")
-        case .flat: String(localized: "Trend stable")
-        case .unknown: String(localized: "Trend unknown")
+        case .up: AppLocale.string("Trend rising")
+        case .down: AppLocale.string("Trend falling")
+        case .flat: AppLocale.string("Trend stable")
+        case .unknown: AppLocale.string("Trend unknown")
         }
         // v0.14.8 AUDIT-HOME M5 — the visible recency hint ("Last
         // measurement X days ago" on stale `.ready` values) is spoken too.

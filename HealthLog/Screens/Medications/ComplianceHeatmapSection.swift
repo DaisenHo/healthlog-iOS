@@ -122,16 +122,16 @@ struct ComplianceHeatmapSection: View {
     /// (row 0 = Mon). Cached at type init so the column doesn't
     /// allocate per repaint. Both symbol arrays are typed as
     /// implicitly-unwrapped optionals so we coalesce defensively.
-    private nonisolated static let weekdayLabels: [String] = {
+    private nonisolated static var weekdayLabels: [String] {
         let formatter = DateFormatter()
-        formatter.locale = .autoupdatingCurrent
+        formatter.locale = AppLocale.shared.current
         let veryShort: [String] = formatter.veryShortWeekdaySymbols ?? []
         let short: [String] = formatter.shortWeekdaySymbols ?? []
         let raw: [String] = veryShort.count == 7 ? veryShort : short
         guard raw.count == 7 else { return Array(repeating: "", count: 7) }
         // Reorder Mon=0 … Sun=6 to match the grid's row indexing.
         return [raw[1], raw[2], raw[3], raw[4], raw[5], raw[6], raw[0]]
-    }()
+    }
 
     /// **POLISH-MED (v0.5.5.6) / v0.6.1.4 Y4.2.** The section host is no
     /// longer rendered on the main `MedicationsScreen`. In v0.5.5.6 the
@@ -172,13 +172,14 @@ struct ComplianceHeatmapSection: View {
                         // grey circles. Reads as "you haven't started yet"
                         // instead of "broken chart" on a fresh device.
                         VStack(alignment: .leading, spacing: HLSpace.xs) {
-                            Text(String(localized: "No intakes logged yet"))
+                            Text(AppLocale.string("No intakes logged yet"))
                                 .font(.hlSubhead.weight(.semibold))
                                 .foregroundStyle(HLText.primary)
                             Text(
-                                String(
-                                    localized: "Once you log medications and acknowledge reminders, your \(weeks)-week compliance history appears here."
-                                )
+                                AppLocale
+                                    .string(
+                                        "Once you log medications and acknowledge reminders, your \(weeks)-week compliance history appears here."
+                                    )
                             )
                             .font(.hlFootnote)
                             .foregroundStyle(HLText.secondary)
@@ -415,14 +416,14 @@ struct ComplianceHeatmapSection: View {
     /// fill: full → "taken", partial → "partially taken", none → "missed".
     /// No-schedule days collapse to the empty descriptor.
     private static func statusWord(for day: ComplianceDay) -> String {
-        guard day.scheduled > 0 else { return String(localized: "med.heatmap.status.none") }
+        guard day.scheduled > 0 else { return AppLocale.string("med.heatmap.status.none") }
         if day.taken >= day.scheduled {
-            return String(localized: "med.heatmap.status.taken")
+            return AppLocale.string("med.heatmap.status.taken")
         }
         if day.taken == 0 {
-            return String(localized: "med.heatmap.status.missed")
+            return AppLocale.string("med.heatmap.status.missed")
         }
-        return String(localized: "med.heatmap.status.partial")
+        return AppLocale.string("med.heatmap.status.partial")
     }
 
     private var rateLabel: String {
@@ -439,7 +440,7 @@ struct ComplianceHeatmapSection: View {
     /// #115 1.5 — `date` is a UTC-midnight day anchor; format it in UTC so the
     /// VoiceOver label names the same day the cell stands for.
     private func formatted(_ date: Date) -> String {
-        date.formatted(Date.FormatStyle(timeZone: ProfileDay.utcCalendar.timeZone).day().month())
+        date.formatted(Date.FormatStyle(locale: AppLocale.shared.current, timeZone: ProfileDay.utcCalendar.timeZone).day().month())
     }
 }
 

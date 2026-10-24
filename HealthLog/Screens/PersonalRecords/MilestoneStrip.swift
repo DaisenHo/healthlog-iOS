@@ -48,7 +48,7 @@ struct Milestone: Identifiable, Equatable {
     /// The pill's copy in the current locale. Also the piece the VoiceOver
     /// label interpolates, so both paths resolve through the same catalog entry.
     var localizedTitle: String {
-        String(localized: String.LocalizationValue(titleKey))
+        AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(titleKey)))
     }
 
     /// Synthesise the canonical milestones from the user's enriched

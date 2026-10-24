@@ -148,8 +148,8 @@ struct LabScanReviewList: View {
 
     private func flagLabels(row: LabScanRow) -> [String] {
         var labels: [String] = []
-        if row.isLowConfidence { labels.append(String(localized: "labs.scan.flag.lowConfidence")) }
-        if row.isDuplicate { labels.append(String(localized: "labs.scan.flag.duplicate")) }
+        if row.isLowConfidence { labels.append(AppLocale.string("labs.scan.flag.lowConfidence")) }
+        if row.isDuplicate { labels.append(AppLocale.string("labs.scan.flag.duplicate")) }
         return labels
     }
 

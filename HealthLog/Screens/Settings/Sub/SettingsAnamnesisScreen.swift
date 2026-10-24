@@ -34,7 +34,7 @@ struct SettingsAnamnesisScreen: View {
                 List {
                     HLCloudDerivedPlaceholder(
                         variant: .inline,
-                        surfaceName: String(localized: "anamnesis.title"),
+                        surfaceName: AppLocale.string("anamnesis.title"),
                         onConnect: { authStore.beginServerPairing() }
                     )
                     .listRowSeparator(.hidden)

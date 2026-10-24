@@ -212,22 +212,22 @@ struct CustomMetricEditorSheet: View {
         if ok {
             dismiss()
         } else if store.lastErrorWasDuplicateName {
-            inlineError = String(localized: "customMetric.duplicate.error")
+            inlineError = AppLocale.string("customMetric.duplicate.error")
         } else {
-            inlineError = store.lastError ?? String(localized: "customMetric.save.failed")
+            inlineError = store.lastError ?? AppLocale.string("customMetric.save.failed")
         }
     }
 
     /// Localized copy for a client-side validation failure.
     private static func message(for failure: CustomMetricValidation.Failure) -> String {
         switch failure {
-        case .nameEmpty: String(localized: "customMetric.validation.nameEmpty")
-        case .nameTooLong: String(localized: "customMetric.validation.nameTooLong")
-        case .unitEmpty: String(localized: "customMetric.validation.unitEmpty")
-        case .unitTooLong: String(localized: "customMetric.validation.unitTooLong")
-        case .descriptionTooLong: String(localized: "customMetric.validation.descriptionTooLong")
-        case .decimalsOutOfRange: String(localized: "customMetric.validation.decimals")
-        case .invertedTargetBand: String(localized: "customMetric.validation.invertedBand")
+        case .nameEmpty: AppLocale.string("customMetric.validation.nameEmpty")
+        case .nameTooLong: AppLocale.string("customMetric.validation.nameTooLong")
+        case .unitEmpty: AppLocale.string("customMetric.validation.unitEmpty")
+        case .unitTooLong: AppLocale.string("customMetric.validation.unitTooLong")
+        case .descriptionTooLong: AppLocale.string("customMetric.validation.descriptionTooLong")
+        case .decimalsOutOfRange: AppLocale.string("customMetric.validation.decimals")
+        case .invertedTargetBand: AppLocale.string("customMetric.validation.invertedBand")
         }
     }
 }

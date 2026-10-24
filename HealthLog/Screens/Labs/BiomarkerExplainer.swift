@@ -49,7 +49,7 @@ enum BiomarkerExplainer {
         // entry for it. Guard against that (mirrors `CoachProvenanceLabels.resolve`)
         // so a missing string hides the slot instead of leaking the raw key as the
         // explainer paragraph.
-        let resolved = String(localized: String.LocalizationValue(key))
+        let resolved = AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(key)))
         return resolved == key ? nil : resolved
     }
 

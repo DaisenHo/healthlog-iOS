@@ -263,7 +263,7 @@ private struct ChronoRow: View {
                 // isn't from the current year (else the day+month is ambiguous).
                 Text(HLDateFormat.appendingYearIfNeeded(
                     measurement.recordedAt,
-                    base: .dateTime.weekday(.abbreviated).day().month().hour().minute()
+                    base: .dateTime.weekday(.abbreviated).day().month().hour().minute().locale(AppLocale.shared.current)
                 ))
                 .font(.hlFootnote)
                 .foregroundStyle(HLText.secondary)
@@ -302,7 +302,7 @@ private struct EmptyCategoryState: View {
         ) {
             if let onLog {
                 HLButton(
-                    String(localized: "Log a measurement"),
+                    AppLocale.string("Log a measurement"),
                     icon: "plus",
                     variant: .restrained,
                     action: onLog

@@ -23,7 +23,7 @@ struct WithingsIntegrationScreen: View {
             ScrollView {
                 HLCloudDerivedPlaceholder(
                     variant: .hero,
-                    surfaceName: String(localized: "cloud_derived.surface.withings"),
+                    surfaceName: AppLocale.string("cloud_derived.surface.withings"),
                     onConnect: { authStore.beginServerPairing() }
                 )
                 .padding(HLSpace.lg)
@@ -76,19 +76,19 @@ struct WithingsIntegrationScreen: View {
             if let health = store.status?.health {
                 HLStatusPill(ConnectionHealthPresentation(health: health).pill)
             } else {
-                HLStatusPill(.connected(label: String(localized: "Connected")))
+                HLStatusPill(.connected(label: AppLocale.string("Connected")))
             }
         case .some(false):
-            HLStatusPill(.disconnected(label: String(localized: "Not connected")))
+            HLStatusPill(.disconnected(label: AppLocale.string("Not connected")))
         case .none:
-            HLStatusPill(.unknown(label: String(localized: "Checking")))
+            HLStatusPill(.unknown(label: AppLocale.string("Checking")))
         }
     }
 
     private var connectionBody: some View {
         VStack(alignment: .leading, spacing: HLSpace.md) {
             if let status = store.status, status.connected {
-                Text("Last sync \(status.lastSyncedAt?.formatted(.relative(presentation: .named)) ?? "—")")
+                Text("Last sync \(status.lastSyncedAt?.formatted(.relative(presentation: .named).locale(AppLocale.shared.current)) ?? "—")")
                     .font(.hlCaption)
                     .foregroundStyle(HLText.secondary)
                 if let health = status.health {

@@ -321,7 +321,7 @@ struct EditLabResultSheet: View {
         if await store.updateLab(id: result.id, patch) {
             dismiss()
         } else {
-            saveError = store.lastError ?? String(localized: "labs.save.failed")
+            saveError = store.lastError ?? AppLocale.string("labs.save.failed")
         }
     }
 }

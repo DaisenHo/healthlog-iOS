@@ -56,7 +56,7 @@ extension AuthStore {
             .server(
                 status: 403,
                 code: "oidc_only",
-                message: String(localized: "onboarding.auth.error.passwordLoginDisabled")
+                message: AppLocale.string("onboarding.auth.error.passwordLoginDisabled")
             )
         default:
             error
@@ -73,14 +73,14 @@ extension AuthStore {
             return .server(
                 status: 429,
                 code: nil,
-                message: String(localized: "onboarding.auth.error.rateLimited")
+                message: AppLocale.string("onboarding.auth.error.rateLimited")
             )
         }
         let wait = signInRetryWait(retryAfter)
         return .server(
             status: 429,
             code: nil,
-            message: String(localized: "onboarding.auth.error.rateLimitedRetry \(wait)")
+            message: AppLocale.string("onboarding.auth.error.rateLimitedRetry \(wait)")
         )
     }
 
@@ -100,7 +100,7 @@ extension AuthStore {
         .server(
             status: 401,
             code: code,
-            message: String(localized: "onboarding.auth.error.invalidCredentials")
+            message: AppLocale.string("onboarding.auth.error.invalidCredentials")
         )
     }
 }

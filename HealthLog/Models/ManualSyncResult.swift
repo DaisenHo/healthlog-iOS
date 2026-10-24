@@ -128,7 +128,7 @@ public enum ManualSyncState: Sendable, Equatable {
     /// is defensive — it recognises the code should the envelope ever surface.
     public static func classify(_ error: some Error) -> ManualSyncState {
         guard let hlError = error as? HLError else {
-            return .failed(String(localized: "integration.sync.failed"))
+            return .failed(AppLocale.string("integration.sync.failed"))
         }
         switch hlError {
         case let .rateLimited(retryAfter):

@@ -31,7 +31,7 @@ struct BiomarkerMergeSheet: View {
                         candidateRow(marker)
                     }
                 } header: {
-                    Text(verbatim: String(localized: "labs.merge.into \(target.name)"))
+                    Text(verbatim: AppLocale.string("labs.merge.into \(target.name)"))
                 } footer: {
                     Text("labs.merge.pick.footer")
                 }
@@ -128,7 +128,7 @@ struct BiomarkerMergeSheet: View {
         defer { isWorking = false }
         preview = await store.previewMerge(into: target.id, sources: Array(selected))
         if preview == nil {
-            inlineError = store.lastError ?? String(localized: "labs.save.failed")
+            inlineError = store.lastError ?? AppLocale.string("labs.save.failed")
         }
     }
 
@@ -139,7 +139,7 @@ struct BiomarkerMergeSheet: View {
         if await store.merge(into: target.id, sources: Array(selected)) != nil {
             dismiss()
         } else {
-            inlineError = store.lastError ?? String(localized: "labs.save.failed")
+            inlineError = store.lastError ?? AppLocale.string("labs.save.failed")
         }
     }
 }
@@ -148,11 +148,11 @@ struct BiomarkerMergeSheet: View {
 enum BiomarkerMergeCopy {
     static func sourceLine(_ source: BiomarkerMergeResult.Source) -> String {
         let what = switch source.conversion {
-        case .none: String(localized: "labs.merge.source.same")
-        case .converted: String(localized: "labs.merge.source.converted")
-        case .refused, .unknown: String(localized: "labs.merge.source.refused")
+        case .none: AppLocale.string("labs.merge.source.same")
+        case .converted: AppLocale.string("labs.merge.source.converted")
+        case .refused, .unknown: AppLocale.string("labs.merge.source.refused")
         }
-        return String(localized: "labs.merge.source \(source.name) \(source.readingCount) \(what)")
+        return AppLocale.string("labs.merge.source \(source.name) \(source.readingCount) \(what)")
     }
 
     static func summaryLines(_ preview: BiomarkerMergeResult) -> [String] {
@@ -163,11 +163,13 @@ enum BiomarkerMergeCopy {
             for reason in reasons where !unique.contains(reason) {
                 unique.append(reason)
             }
-            return unique + [String(localized: "labs.merge.refused")]
+            return unique + [AppLocale.string("labs.merge.refused")]
         }
-        var lines = [String(localized: "labs.merge.moves \(preview.movedReadings) \(preview.convertedReadings)")]
+        var lines = [AppLocale.string("labs.merge.moves \(preview.movedReadings) \(preview.convertedReadings)")]
         if !preview.aliasesAdded.isEmpty {
-            lines.append(String(localized: "labs.merge.aliases \(preview.aliasesAdded.formatted(.list(type: .and)))"))
+            lines
+                .append(AppLocale
+                    .string("labs.merge.aliases \(preview.aliasesAdded.formatted(.list(type: .and).locale(AppLocale.shared.current)))"))
         }
         return lines
     }

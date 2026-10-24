@@ -70,7 +70,7 @@ public struct HLCloudDerivedPlaceholder: View {
                         .foregroundStyle(HLText.tertiary)
                         .accessibilityHidden(true)
                     VStack(alignment: .leading, spacing: HLSpace.xxs) {
-                        Text(String(localized: "cloud_derived.title"))
+                        Text(AppLocale.string("cloud_derived.title"))
                             .font(.hlHeadline)
                             .foregroundStyle(HLText.secondary)
                         Text(subtitle)
@@ -82,7 +82,7 @@ public struct HLCloudDerivedPlaceholder: View {
                 }
                 if let onConnect {
                     Button(action: onConnect) {
-                        Text(String(localized: "cloud_derived.cta.connect"))
+                        Text(AppLocale.string("cloud_derived.cta.connect"))
                             .font(.hlSubhead.weight(.semibold))
                     }
                     .buttonStyle(.bordered)
@@ -96,9 +96,9 @@ public struct HLCloudDerivedPlaceholder: View {
 
     private var subtitle: String {
         if let surfaceName {
-            return String(localized: "cloud_derived.subtitle.named \(surfaceName)")
+            return AppLocale.string("cloud_derived.subtitle.named \(surfaceName)")
         }
-        return String(localized: "cloud_derived.subtitle.generic")
+        return AppLocale.string("cloud_derived.subtitle.generic")
     }
 
     private var iconFont: Font {
@@ -111,7 +111,7 @@ public struct HLCloudDerivedPlaceholder: View {
 
 #Preview("HLCloudDerivedPlaceholder") {
     VStack(spacing: HLSpace.lg) {
-        HLCloudDerivedPlaceholder(variant: .hero, surfaceName: String(localized: "Health Score"))
+        HLCloudDerivedPlaceholder(variant: .hero, surfaceName: AppLocale.string("Health Score"))
         HLCloudDerivedPlaceholder(variant: .inline)
     }
     .padding()

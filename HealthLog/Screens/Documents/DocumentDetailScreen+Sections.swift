@@ -59,7 +59,7 @@ extension DocumentDetailScreen {
                 LabsScreen()
             } label: {
                 Label {
-                    Text(String(format: String(localized: "documents.detail.labValuesLink"), count))
+                    Text(String(format: AppLocale.string("documents.detail.labValuesLink"), count))
                 } icon: {
                     Image(systemName: "testtube.2")
                 }
@@ -177,7 +177,7 @@ extension DocumentDetailScreen {
         if let detail = await store.updateMetadata(id: documentId, .title(newValue)) {
             document = detail.document
         } else {
-            actionError = String(localized: "documents.detail.saveError")
+            actionError = AppLocale.string("documents.detail.saveError")
         }
     }
 
@@ -186,7 +186,7 @@ extension DocumentDetailScreen {
         if let detail = await store.updateMetadata(id: documentId, .kind(kind)) {
             document = detail.document
         } else {
-            actionError = String(localized: "documents.detail.saveError")
+            actionError = AppLocale.string("documents.detail.saveError")
         }
     }
 
@@ -196,7 +196,7 @@ extension DocumentDetailScreen {
         if let detail = await store.updateMetadata(id: documentId, .documentDate(newValue)) {
             document = detail.document
         } else {
-            actionError = String(localized: "documents.detail.saveError")
+            actionError = AppLocale.string("documents.detail.saveError")
         }
     }
 }

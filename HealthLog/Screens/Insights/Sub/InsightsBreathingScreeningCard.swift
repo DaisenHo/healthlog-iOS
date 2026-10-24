@@ -54,9 +54,9 @@ struct InsightsBreathingScreeningCard: View {
 
     private var classificationText: String {
         switch screening?.classification {
-        case "elevated": String(localized: "clinicalSignals.breathing.classification.elevated")
-        case "not-elevated": String(localized: "clinicalSignals.breathing.classification.notElevated")
-        default: String(localized: "clinicalSignals.breathing.classification.unknown")
+        case "elevated": AppLocale.string("clinicalSignals.breathing.classification.elevated")
+        case "not-elevated": AppLocale.string("clinicalSignals.breathing.classification.notElevated")
+        default: AppLocale.string("clinicalSignals.breathing.classification.unknown")
         }
     }
 
@@ -65,9 +65,9 @@ struct InsightsBreathingScreeningCard: View {
     private var detailLine: String {
         guard let screening else { return "" }
         var parts: [String] = []
-        parts.append(String(format: String(localized: "clinicalSignals.breathing.nights"), screening.nights))
+        parts.append(String(format: AppLocale.string("clinicalSignals.breathing.nights"), screening.nights))
         if screening.eventCount > 0 {
-            parts.append(String(format: String(localized: "clinicalSignals.breathing.events"), screening.eventCount))
+            parts.append(String(format: AppLocale.string("clinicalSignals.breathing.events"), screening.eventCount))
         }
         if let trend = trendText { parts.append(trend) }
         return parts.joined(separator: ", ")
@@ -75,9 +75,9 @@ struct InsightsBreathingScreeningCard: View {
 
     private var trendText: String? {
         switch screening?.trend {
-        case "up": String(localized: "clinicalSignals.breathing.trend.up")
-        case "down": String(localized: "clinicalSignals.breathing.trend.down")
-        case "stable": String(localized: "clinicalSignals.breathing.trend.stable")
+        case "up": AppLocale.string("clinicalSignals.breathing.trend.up")
+        case "down": AppLocale.string("clinicalSignals.breathing.trend.down")
+        case "stable": AppLocale.string("clinicalSignals.breathing.trend.stable")
         default: nil
         }
     }

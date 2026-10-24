@@ -58,12 +58,12 @@ extension AppleHealthIntegrationDetailScreen {
                 case .running:
                     ProgressView().controlSize(.mini)
                 case .done:
-                    Label(String(localized: "settings.cycle.purge.done"), systemImage: "checkmark.circle.fill")
+                    Label(AppLocale.string("settings.cycle.purge.done"), systemImage: "checkmark.circle.fill")
                         .font(.hlFootnote)
                         .foregroundStyle(HLColor.statusOK)
                 case .failed:
                     Label(
-                        String(localized: "settings.cycle.purge.failed"),
+                        AppLocale.string("settings.cycle.purge.failed"),
                         systemImage: "exclamationmark.triangle.fill"
                     )
                     .font(.hlFootnote)
@@ -72,7 +72,7 @@ extension AppleHealthIntegrationDetailScreen {
             }
         }
         .hlConfirmDestructive(
-            Text(String(localized: "settings.cycle.purge.confirm.title")),
+            Text(AppLocale.string("settings.cycle.purge.confirm.title")),
             isPresented: $showCyclePurgeConfirmation,
             message: Text("settings.cycle.purge.confirm.message"),
             confirm: Text("settings.cycle.purge.title"),
@@ -117,7 +117,7 @@ extension AppleHealthIntegrationDetailScreen {
                     .fixedSize(horizontal: false, vertical: true)
                 // R9 — nachgeordnete Vollbreiten-Aktion; das `.primary` dieses
                 // Screens ist „Mit Apple Health verbinden".
-                HLButton(String(localized: "settings.cycle.optin.offer.confirm"), variant: .secondary) {
+                HLButton(AppLocale.string("settings.cycle.optin.offer.confirm"), variant: .secondary) {
                     Task {
                         await container.settingsStore.setCycleTrackingOptIn(true)
                         await container.cycleStore.refreshGateLifecycle()

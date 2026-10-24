@@ -12,20 +12,20 @@ extension ProfileRejectedField {
     /// is shown verbatim rather than guessed.
     var fieldLabel: String {
         switch path {
-        case "displayName": String(localized: "Display name")
-        case "heightCm": String(localized: "Height")
-        case "dateOfBirth": String(localized: "Date of birth")
-        case "gender": String(localized: "Gender")
-        case "fullName": String(localized: "Full name")
-        case "insurerName": String(localized: "Health insurer")
-        case "insuranceNumber": String(localized: "Insurance number")
-        case "insurerIkNumber": String(localized: "Insurer ID (IK)")
-        case "timeFormat": String(localized: "settings.time_format.title")
-        case "dateFormat": String(localized: "settings.date_format.title")
-        case "moodReminderEnabled": String(localized: "Mood reminder")
-        case "email": String(localized: "profile.rejected.field.email")
-        case "locale": String(localized: "profile.rejected.field.locale")
-        case "timezone": String(localized: "profile.rejected.field.timezone")
+        case "displayName": AppLocale.string("Display name")
+        case "heightCm": AppLocale.string("Height")
+        case "dateOfBirth": AppLocale.string("Date of birth")
+        case "gender": AppLocale.string("Gender")
+        case "fullName": AppLocale.string("Full name")
+        case "insurerName": AppLocale.string("Health insurer")
+        case "insuranceNumber": AppLocale.string("Insurance number")
+        case "insurerIkNumber": AppLocale.string("Insurer ID (IK)")
+        case "timeFormat": AppLocale.string("settings.time_format.title")
+        case "dateFormat": AppLocale.string("settings.date_format.title")
+        case "moodReminderEnabled": AppLocale.string("Mood reminder")
+        case "email": AppLocale.string("profile.rejected.field.email")
+        case "locale": AppLocale.string("profile.rejected.field.locale")
+        case "timezone": AppLocale.string("profile.rejected.field.timezone")
         default: path
         }
     }
@@ -33,16 +33,16 @@ extension ProfileRejectedField {
     /// Why the field did not land, from the validator `code`.
     var reasonText: String {
         switch code {
-        case "too_big": String(localized: "profile.rejected.reason.tooBig")
-        case "too_small": String(localized: "profile.rejected.reason.tooSmall")
-        case "rate_limited": String(localized: "profile.rejected.reason.rateLimited")
-        default: String(localized: "profile.rejected.reason.invalid")
+        case "too_big": AppLocale.string("profile.rejected.reason.tooBig")
+        case "too_small": AppLocale.string("profile.rejected.reason.tooSmall")
+        case "rate_limited": AppLocale.string("profile.rejected.reason.rateLimited")
+        default: AppLocale.string("profile.rejected.reason.invalid")
         }
     }
 
     /// One line per skipped field: "<field> was not saved: <reason>".
     var displayLine: String {
-        String(localized: "profile.rejected.line \(fieldLabel) \(reasonText)")
+        AppLocale.string("profile.rejected.line \(fieldLabel) \(reasonText)")
     }
 }
 
@@ -54,7 +54,7 @@ struct ProfileRejectedFieldsNotice: View {
     var body: some View {
         if !fields.isEmpty {
             VStack(alignment: .leading, spacing: HLSpace.xs) {
-                Label(String(localized: "profile.rejected.title"), systemImage: "exclamationmark.triangle.fill")
+                Label(AppLocale.string("profile.rejected.title"), systemImage: "exclamationmark.triangle.fill")
                     .font(.hlCaption.weight(.semibold))
                 ForEach(fields, id: \.self) { field in
                     Text(field.displayLine)

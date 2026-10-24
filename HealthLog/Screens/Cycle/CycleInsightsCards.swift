@@ -143,19 +143,19 @@ private struct CycleSymptomPatternCard: View {
 
     private func symptomLabel(_ key: String) -> String {
         if let labelKey = CycleSymptomCatalog.labelsByKey[key] {
-            return String(localized: String.LocalizationValue(labelKey))
+            return AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(labelKey)))
         }
         if key.hasPrefix("custom:") {
             return customSymptoms.first(where: { $0.key == key })?.displayLabel
-                ?? String(localized: "cycle.insights.symptoms.customFallback")
+                ?? AppLocale.string("cycle.insights.symptoms.customFallback")
         }
-        return String(localized: "cycle.insights.symptoms.unknownFallback")
+        return AppLocale.string("cycle.insights.symptoms.unknownFallback")
     }
 
     private func topPhaseLabel(_ pattern: CycleSymptomPhasePattern) -> String {
-        guard let phase = pattern.topPhaseValue else { return String(localized: "cycle.insights.phase.unknown") }
+        guard let phase = pattern.topPhaseValue else { return AppLocale.string("cycle.insights.phase.unknown") }
         return String(
-            format: String(localized: "cycle.insights.symptoms.topPhase"),
+            format: AppLocale.string("cycle.insights.symptoms.topPhase"),
             phaseLabel(phase),
             pattern.topShare * 100
         )
@@ -168,7 +168,7 @@ private struct CycleSymptomPatternCard: View {
     }
 
     private func phaseLabel(_ phase: CyclePhaseValue) -> String {
-        String(localized: String.LocalizationValue("cycle.phase.\(phase.rawValue.lowercased()).name"))
+        AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(String("cycle.phase.\(phase.rawValue.lowercased()).name"))))
     }
 
     private func palette(_ phase: CyclePhaseValue) -> CyclePhasePalette.Phase {
@@ -184,7 +184,7 @@ private struct CycleSymptomPatternCard: View {
 enum CycleInsightFormatting {
     static func metricLabel(_ key: String) -> String {
         let localizationKey = "cycle.insights.metric.\(key)"
-        let value = String(localized: String.LocalizationValue(localizationKey))
+        let value = AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(localizationKey)))
         guard value == localizationKey else { return value }
         return key
             .replacingOccurrences(of: "([a-z])([A-Z])", with: "$1 $2", options: .regularExpression)
@@ -193,7 +193,7 @@ enum CycleInsightFormatting {
 
     static func comparison(_ row: CyclePhaseMetricRow, units: UnitPreferences) -> String {
         String(
-            format: String(localized: "cycle.insights.comparison"),
+            format: AppLocale.string("cycle.insights.comparison"),
             formatted(row.lutealAvg, display: row.displayValue, units: units, isDelta: false),
             formatted(row.follicularAvg, display: row.displayValue, units: units, isDelta: false)
         )
@@ -219,7 +219,7 @@ enum CycleInsightFormatting {
 
     static func evidence(_ row: CyclePhaseMetricRow) -> String {
         String(
-            format: String(localized: "cycle.insights.evidence"),
+            format: AppLocale.string("cycle.insights.evidence"),
             row.lutealDays,
             row.follicularDays,
             row.qValue
@@ -242,13 +242,13 @@ enum CycleInsightFormatting {
         }
         let number = value.formatted(.number.precision(.fractionLength(1)))
         switch display {
-        case .hours: return String(format: String(localized: "cycle.insights.unit.hours"), number)
-        case .steps: return String(format: String(localized: "cycle.insights.unit.steps"), number)
-        case .bpm: return String(format: String(localized: "cycle.insights.unit.bpm"), number)
-        case .milliseconds: return String(format: String(localized: "cycle.insights.unit.ms"), number)
-        case .kilograms: return String(format: String(localized: "cycle.insights.unit.kg"), number)
-        case .celsius: return String(format: String(localized: "cycle.insights.unit.celsius"), number)
-        case .glucose: return String(format: String(localized: "cycle.insights.unit.glucose"), number)
+        case .hours: return String(format: AppLocale.string("cycle.insights.unit.hours"), number)
+        case .steps: return String(format: AppLocale.string("cycle.insights.unit.steps"), number)
+        case .bpm: return String(format: AppLocale.string("cycle.insights.unit.bpm"), number)
+        case .milliseconds: return String(format: AppLocale.string("cycle.insights.unit.ms"), number)
+        case .kilograms: return String(format: AppLocale.string("cycle.insights.unit.kg"), number)
+        case .celsius: return String(format: AppLocale.string("cycle.insights.unit.celsius"), number)
+        case .glucose: return String(format: AppLocale.string("cycle.insights.unit.glucose"), number)
         case .mood, .unknown: return number
         }
     }

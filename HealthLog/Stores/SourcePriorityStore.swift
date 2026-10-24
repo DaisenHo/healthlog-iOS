@@ -294,8 +294,8 @@ public struct SourcePriorityRow: Sendable, Equatable, Identifiable {
         let token = raw.uppercased()
         if let label = verbatimSourceLabels[token] { return label }
         return token == "EXTERNAL"
-            ? String(localized: "measurement.source.external")
-            : String(localized: "measurement.source.unknown")
+            ? AppLocale.string("measurement.source.external")
+            : AppLocale.string("measurement.source.unknown")
     }
 
     /// Brand spellings (never `.capitalized`: "WHOOP", not "Whoop") and the

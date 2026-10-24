@@ -259,14 +259,14 @@ struct ChartCard: View {
                     // The dimmed chart is decorative during a reload — let
                     // VoiceOver announce the loading state instead of reading
                     // out the stale (about-to-change) data series.
-                    .accessibilityValue(store.isLoading ? Text(String(localized: "Loading")) : Text(""))
+                    .accessibilityValue(store.isLoading ? Text(AppLocale.string("Loading")) : Text(""))
             }
             .contentShape(Rectangle())
             .onTapGesture { onTapChart() }
             // W3b C1 — zoom-morph source for the fullscreen cover (iOS 18+).
             .matchedTransitionSource(id: zoomSourceID, in: zoomNamespace)
             .accessibilityAddTraits(.isButton)
-            .accessibilityHint(Text(String(localized: "Double-tap to open the chart full screen")))
+            .accessibilityHint(Text(AppLocale.string("Double-tap to open the chart full screen")))
         } else if store.chartPoints.count == 1 {
             // Series landed but only one point — Apple-Health "Need more
             // data" copy. Independent of dataState (which may still be
@@ -528,11 +528,11 @@ struct StatsRow: View {
     var body: some View {
         if let stats {
             HStack(spacing: HLSpace.sm) {
-                StatBox(label: String(localized: "Min"), value: format(stats.min), unit: unit)
-                StatBox(label: String(localized: "chart.stat.mean"), value: format(stats.mean), unit: unit)
-                StatBox(label: String(localized: "Max"), value: format(stats.max), unit: unit)
+                StatBox(label: AppLocale.string("Min"), value: format(stats.min), unit: unit)
+                StatBox(label: AppLocale.string("chart.stat.mean"), value: format(stats.mean), unit: unit)
+                StatBox(label: AppLocale.string("Max"), value: format(stats.max), unit: unit)
                 if let median {
-                    StatBox(label: String(localized: "chart.stat.median"), value: format(median), unit: unit)
+                    StatBox(label: AppLocale.string("chart.stat.median"), value: format(median), unit: unit)
                 }
             }
             .accessibilityElement(children: .contain)

@@ -55,71 +55,71 @@ public struct HealthKitPermissionGroup: Identifiable, Sendable, Equatable {
         .init(
             id: "vitals.body",
             symbolName: "scalemass",
-            title: String(localized: "onboarding.healthkit.row.body"),
-            directionLabel: String(localized: "onboarding.healthkit.direction.readWrite"),
+            title: AppLocale.string("onboarding.healthkit.row.body"),
+            directionLabel: AppLocale.string("onboarding.healthkit.direction.readWrite"),
             categoryId: "body"
         ),
         .init(
             id: "vitals.bodyTemperature",
             symbolName: "thermometer",
-            title: String(localized: "onboarding.healthkit.row.bodyTemperature"),
-            directionLabel: String(localized: "onboarding.healthkit.direction.read"),
+            title: AppLocale.string("onboarding.healthkit.row.bodyTemperature"),
+            directionLabel: AppLocale.string("onboarding.healthkit.direction.read"),
             categoryId: "vitals"
         ),
         .init(
             id: "vitals.bloodPressure",
             symbolName: "waveform.path.ecg",
-            title: String(localized: "onboarding.healthkit.row.bloodPressure"),
-            directionLabel: String(localized: "onboarding.healthkit.direction.readWrite"),
+            title: AppLocale.string("onboarding.healthkit.row.bloodPressure"),
+            directionLabel: AppLocale.string("onboarding.healthkit.direction.readWrite"),
             categoryId: "vitals"
         ),
         .init(
             id: "vitals.bloodGlucose",
             symbolName: "drop.fill",
-            title: String(localized: "onboarding.healthkit.row.bloodGlucose"),
-            directionLabel: String(localized: "onboarding.healthkit.direction.readWrite"),
+            title: AppLocale.string("onboarding.healthkit.row.bloodGlucose"),
+            directionLabel: AppLocale.string("onboarding.healthkit.direction.readWrite"),
             categoryId: "metabolic"
         ),
         .init(
             id: "vitals.spo2",
             symbolName: "lungs.fill",
-            title: String(localized: "onboarding.healthkit.row.oxygenSaturation"),
-            directionLabel: String(localized: "onboarding.healthkit.direction.read"),
+            title: AppLocale.string("onboarding.healthkit.row.oxygenSaturation"),
+            directionLabel: AppLocale.string("onboarding.healthkit.direction.read"),
             categoryId: "vitals"
         ),
         .init(
             id: "cardio.pulse",
             symbolName: "heart.fill",
-            title: String(localized: "onboarding.healthkit.row.pulse"),
-            directionLabel: String(localized: "onboarding.healthkit.direction.read"),
+            title: AppLocale.string("onboarding.healthkit.row.pulse"),
+            directionLabel: AppLocale.string("onboarding.healthkit.direction.read"),
             categoryId: "cardiovascular"
         ),
         .init(
             id: "activity.steps",
             symbolName: "figure.walk",
-            title: String(localized: "onboarding.healthkit.row.activity"),
-            directionLabel: String(localized: "onboarding.healthkit.direction.read"),
+            title: AppLocale.string("onboarding.healthkit.row.activity"),
+            directionLabel: AppLocale.string("onboarding.healthkit.direction.read"),
             categoryId: "activity"
         ),
         .init(
             id: "sleep",
             symbolName: "bed.double.fill",
-            title: String(localized: "onboarding.healthkit.row.sleep"),
-            directionLabel: String(localized: "onboarding.healthkit.direction.read"),
+            title: AppLocale.string("onboarding.healthkit.row.sleep"),
+            directionLabel: AppLocale.string("onboarding.healthkit.direction.read"),
             categoryId: "sleep"
         ),
         .init(
             id: "audio",
             symbolName: "speaker.wave.3.fill",
-            title: String(localized: "onboarding.healthkit.row.audio"),
-            directionLabel: String(localized: "onboarding.healthkit.direction.read"),
+            title: AppLocale.string("onboarding.healthkit.row.audio"),
+            directionLabel: AppLocale.string("onboarding.healthkit.direction.read"),
             categoryId: "hearing"
         ),
         .init(
             id: "daylight",
             symbolName: "sun.max.fill",
-            title: String(localized: "onboarding.healthkit.row.daylight"),
-            directionLabel: String(localized: "onboarding.healthkit.direction.read"),
+            title: AppLocale.string("onboarding.healthkit.row.daylight"),
+            directionLabel: AppLocale.string("onboarding.healthkit.direction.read"),
             categoryId: "environment"
         )
     ]

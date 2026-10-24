@@ -159,8 +159,8 @@ struct MeasurementsPickerScreen: View {
         } label: {
             HLSettingsRow(
                 icon: descriptor.sfSymbol,
-                title: LocalizedStringKey(String(localized: descriptor.title)),
-                subtitle: LocalizedStringKey(String(localized: descriptor.unitLabel))
+                title: LocalizedStringKey(AppLocale.string(AppLocale.shared.resource(descriptor.title))),
+                subtitle: LocalizedStringKey(AppLocale.string(AppLocale.shared.resource(descriptor.unitLabel)))
             )
         }
         .accessibilityIdentifier("measurements.picker.row.\(kind.rawValue)")

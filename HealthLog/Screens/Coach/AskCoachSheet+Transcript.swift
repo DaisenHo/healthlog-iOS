@@ -60,7 +60,7 @@ import SwiftUI
                                                     rememberStatement(entity.content)
                                                 } label: {
                                                     Label(
-                                                        String(localized: "coach.remember.action"),
+                                                        AppLocale.string("coach.remember.action"),
                                                         systemImage: "brain.head.profile"
                                                     )
                                                 }
@@ -201,8 +201,8 @@ import SwiftUI
         private func rememberToast(success: Bool) -> some View {
             Label(
                 success
-                    ? String(localized: "coach.remember.confirmation")
-                    : String(localized: "coach.remember.failed"),
+                    ? AppLocale.string("coach.remember.confirmation")
+                    : AppLocale.string("coach.remember.failed"),
                 systemImage: success ? "checkmark.circle.fill" : "exclamationmark.triangle.fill"
             )
             .font(.hlFootnote)
@@ -316,8 +316,8 @@ import SwiftUI
 
         private var accessibilityPrefix: String {
             isUser
-                ? String(localized: "You: ")
-                : String(localized: "coach.bubble.prefix")
+                ? AppLocale.string("You: ")
+                : AppLocale.string("coach.bubble.prefix")
         }
 
         /// Mirrors SpeziChat's internal markdown parse so the bubble
@@ -360,7 +360,7 @@ import SwiftUI
             .padding(.vertical, HLSpace.sm)
             .background(HLColor.surfaceCanonicalDracula)
             .clipShape(RoundedRectangle(cornerRadius: HLRadius.md, style: .continuous))
-            .accessibilityLabel(String(localized: "coach.typing.label"))
+            .accessibilityLabel(AppLocale.string("coach.typing.label"))
             .task {
                 // Reduce-motion: render static, never advance the phase loop.
                 guard !reduceMotion else { return }
@@ -394,13 +394,13 @@ import SwiftUI
                 thumb(
                     .helpful,
                     symbol: "hand.thumbsup",
-                    label: String(localized: "coach.feedback.helpful.label"),
+                    label: AppLocale.string("coach.feedback.helpful.label"),
                     current: rating
                 )
                 thumb(
                     .unhelpful,
                     symbol: "hand.thumbsdown",
-                    label: String(localized: "coach.feedback.unhelpful.label"),
+                    label: AppLocale.string("coach.feedback.unhelpful.label"),
                     current: rating
                 )
             }
@@ -445,7 +445,7 @@ import SwiftUI
 
         var body: some View {
             VStack(alignment: .leading, spacing: HLSpace.sm) {
-                Label(String(localized: "coach.reminderSuggestion.title"), systemImage: "bell.badge")
+                Label(AppLocale.string("coach.reminderSuggestion.title"), systemImage: "bell.badge")
                     .font(.hlCaption)
                     .foregroundStyle(HLText.secondary)
                 Text(cadenceLabel)
@@ -457,20 +457,20 @@ import SwiftUI
                 // the a11y floor + drifted from every other CTA (QA D-H1/D-M1).
                 HStack(spacing: HLSpace.sm) {
                     HLButton(
-                        String(localized: "coach.reminderSuggestion.accept"),
+                        AppLocale.string("coach.reminderSuggestion.accept"),
                         variant: .primary,
                         size: .compact,
                         action: onAccept
                     )
                     HLButton(
-                        String(localized: "coach.reminderSuggestion.dismiss"),
+                        AppLocale.string("coach.reminderSuggestion.dismiss"),
                         variant: .secondary,
                         size: .compact,
                         action: onDismiss
                     )
                 }
                 HLButton(
-                    String(localized: "coach.reminderSuggestion.stop"),
+                    AppLocale.string("coach.reminderSuggestion.stop"),
                     variant: .ghost,
                     size: .compact,
                     action: onStop
@@ -489,9 +489,9 @@ import SwiftUI
         /// key verbatim when the catalog has no entry, so an unknown future
         /// cadence falls back to a generic, still-readable label.
         private var cadenceLabel: String {
-            let resolved = String(localized: String.LocalizationValue(suggestion.label))
+            let resolved = AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(suggestion.label)))
             return resolved == suggestion.label
-                ? String(localized: "coach.reminderSuggestion.generic")
+                ? AppLocale.string("coach.reminderSuggestion.generic")
                 : resolved
         }
     }
@@ -500,7 +500,7 @@ import SwiftUI
     /// suggestion; points at where the new reminder now lives.
     private struct CoachSuggestionAcceptedNote: View {
         var body: some View {
-            Label(String(localized: "coach.reminderSuggestion.accepted"), systemImage: "checkmark.circle")
+            Label(AppLocale.string("coach.reminderSuggestion.accepted"), systemImage: "checkmark.circle")
                 .font(.hlCaption)
                 .foregroundStyle(HLText.secondary)
                 .padding(.horizontal, HLSpace.md)

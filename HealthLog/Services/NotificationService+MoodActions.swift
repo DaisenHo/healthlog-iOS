@@ -73,8 +73,8 @@ import Foundation
         static func buildMoodSnoozeRequest(payload: APNsPayload?) -> UNNotificationRequest {
             let id = "mood-snooze-\(UUID().uuidString)"
             let content = UNMutableNotificationContent()
-            content.title = payload?.title ?? String(localized: "How are you feeling right now?")
-            content.body = payload?.body ?? String(localized: "Log your mood quickly.")
+            content.title = payload?.title ?? AppLocale.string("How are you feeling right now?")
+            content.body = payload?.body ?? AppLocale.string("Log your mood quickly.")
             content.sound = .default
             content.categoryIdentifier = Self.categoryMood
             // Build 273 — the evening mood nudge is a ROUTINE `.active`

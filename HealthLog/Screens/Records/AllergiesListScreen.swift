@@ -90,7 +90,7 @@ struct AllergiesListScreen: View {
         .buttonStyle(.plain)
         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
             Button(role: .destructive) {
-                store.delete(record, undoMessage: String(localized: "allergies.delete.undo"))
+                store.delete(record, undoMessage: AppLocale.string("allergies.delete.undo"))
             } label: {
                 Label("allergies.delete.action", systemImage: "trash")
             }
@@ -173,7 +173,7 @@ struct AllergyRow: View {
     }
 
     private var accessibilityText: String {
-        let template = String(localized: "allergies.row.a11y")
+        let template = AppLocale.string("allergies.row.a11y")
         return String(format: template, record.substance, record.category.localizedLabel, record.type.localizedLabel)
     }
 }

@@ -89,7 +89,7 @@ struct BaselineProfileStep: View {
                         .accessibilityIdentifier("onboarding.baselineProfile.saveFailed")
                 }
                 HLButton(
-                    String(localized: "Continue"),
+                    AppLocale.string("Continue"),
                     variant: .primary,
                     size: .large,
                     isLoading: isSaving
@@ -97,7 +97,7 @@ struct BaselineProfileStep: View {
                     Task { await saveThenContinue() }
                 }
                 .accessibilityIdentifier("onboarding.baselineProfile.continue")
-                HLButton(String(localized: "Later"), variant: .ghost) {
+                HLButton(AppLocale.string("Later"), variant: .ghost) {
                     onSkip()
                 }
                 .accessibilityIdentifier("onboarding.baselineProfile.skip")
@@ -127,10 +127,10 @@ struct BaselineProfileStep: View {
                 // Canonical onboarding hero glyph (`HLIconSize.display`, mono).
                 .font(.hlIcon(HLIconSize.display))
                 .foregroundStyle(HLText.primary)
-            Text(String(localized: "onboarding.baselineProfile.title"))
+            Text(AppLocale.string("onboarding.baselineProfile.title"))
                 .font(.hlTitle1)
                 .foregroundStyle(HLText.primary)
-            Text(String(localized: "onboarding.baselineProfile.subtitle"))
+            Text(AppLocale.string("onboarding.baselineProfile.subtitle"))
                 .font(.hlBody)
                 .foregroundStyle(HLText.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -142,16 +142,16 @@ struct BaselineProfileStep: View {
             HLCard {
                 VStack(alignment: .leading, spacing: HLSpace.md) {
                     field(
-                        label: String(localized: "Display name"),
-                        prompt: String(localized: "onboarding.baselineProfile.name.prompt"),
+                        label: AppLocale.string("Display name"),
+                        prompt: AppLocale.string("onboarding.baselineProfile.name.prompt"),
                         text: $displayName,
                         keyboard: .default,
                         identifier: "onboarding.baselineProfile.name"
                     )
                     Divider().opacity(0.4)
                     field(
-                        label: String(localized: "Height (cm)"),
-                        prompt: String(localized: "Optional"),
+                        label: AppLocale.string("Height (cm)"),
+                        prompt: AppLocale.string("Optional"),
                         text: $heightCm,
                         keyboard: .numberPad,
                         identifier: "onboarding.baselineProfile.height"
@@ -160,11 +160,11 @@ struct BaselineProfileStep: View {
                     // away the moment the field stops saying it.
                     .onChange(of: heightCm) { _, _ in invalidHeight = false }
                     Divider().opacity(0.4)
-                    Toggle(String(localized: "Set date of birth"), isOn: $hasDateOfBirth)
+                    Toggle(AppLocale.string("Set date of birth"), isOn: $hasDateOfBirth)
                         .accessibilityIdentifier("onboarding.baselineProfile.hasDateOfBirth")
                     if hasDateOfBirth {
                         DatePicker(
-                            String(localized: "Date of birth"),
+                            AppLocale.string("Date of birth"),
                             selection: $dateOfBirth,
                             in: minBirthDate ... .now,
                             displayedComponents: .date
@@ -172,7 +172,7 @@ struct BaselineProfileStep: View {
                         .accessibilityIdentifier("onboarding.baselineProfile.dateOfBirth")
                     }
                     Divider().opacity(0.4)
-                    Picker(String(localized: "Gender"), selection: $gender) {
+                    Picker(AppLocale.string("Gender"), selection: $gender) {
                         ForEach(GenderOption.allCases) { option in
                             Text(option.label).tag(option)
                         }
@@ -180,7 +180,7 @@ struct BaselineProfileStep: View {
                     .accessibilityIdentifier("onboarding.baselineProfile.gender")
                 }
             }
-            Text(String(localized: "onboarding.baselineProfile.footer"))
+            Text(AppLocale.string("onboarding.baselineProfile.footer"))
                 .font(.hlCaption)
                 .foregroundStyle(HLText.tertiary)
                 .fixedSize(horizontal: false, vertical: true)

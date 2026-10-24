@@ -23,7 +23,7 @@ struct EditProfileSheet: View {
             EditProfileScreen()
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
-                        Button(String(localized: "Done")) { dismiss() }
+                        Button(AppLocale.string("Done")) { dismiss() }
                             .accessibilityIdentifier("editProfile.done")
                     }
                 }

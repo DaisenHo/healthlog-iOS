@@ -159,12 +159,12 @@ struct SettingsIntegrationsScreen: View {
                 if let health {
                     HLStatusPill(ConnectionHealthPresentation(health: health).pill)
                 } else {
-                    HLStatusPill(.connected(label: String(localized: "Connected")))
+                    HLStatusPill(.connected(label: AppLocale.string("Connected")))
                 }
             case .some(false):
-                HLStatusPill(.disconnected(label: String(localized: "Not connected")))
+                HLStatusPill(.disconnected(label: AppLocale.string("Not connected")))
             case .none:
-                HLStatusPill(.unknown(label: String(localized: "Checking")))
+                HLStatusPill(.unknown(label: AppLocale.string("Checking")))
             }
         }
     }
@@ -230,7 +230,7 @@ struct SettingsIntegrationsScreen: View {
                 integrationRow(label: "Open Oura", identifier: "settings.integrations.ouraRow") {
                     OAuthIntegrationScreen<OuraIntegrationStore>(
                         displayName: "Oura",
-                        placeholderSurface: String(localized: "cloud_derived.surface.oura")
+                        placeholderSurface: AppLocale.string("cloud_derived.surface.oura")
                     )
                 }
             }
@@ -247,7 +247,7 @@ struct SettingsIntegrationsScreen: View {
                 integrationRow(label: "Open Polar", identifier: "settings.integrations.polarRow") {
                     OAuthIntegrationScreen<PolarIntegrationStore>(
                         displayName: "Polar",
-                        placeholderSurface: String(localized: "cloud_derived.surface.polar")
+                        placeholderSurface: AppLocale.string("cloud_derived.surface.polar")
                     )
                 }
             }
@@ -264,7 +264,7 @@ struct SettingsIntegrationsScreen: View {
                 integrationRow(label: "Open Fitbit", identifier: "settings.integrations.fitbitRow") {
                     OAuthIntegrationScreen<FitbitIntegrationStore>(
                         displayName: "Fitbit",
-                        placeholderSurface: String(localized: "cloud_derived.surface.fitbit")
+                        placeholderSurface: AppLocale.string("cloud_derived.surface.fitbit")
                     )
                 }
             }
@@ -281,7 +281,7 @@ struct SettingsIntegrationsScreen: View {
                 integrationRow(label: "Open Strava", identifier: "settings.integrations.stravaRow") {
                     OAuthIntegrationScreen<StravaIntegrationStore>(
                         displayName: "Strava",
-                        placeholderSurface: String(localized: "cloud_derived.surface.strava")
+                        placeholderSurface: AppLocale.string("cloud_derived.surface.strava")
                     )
                 }
             }

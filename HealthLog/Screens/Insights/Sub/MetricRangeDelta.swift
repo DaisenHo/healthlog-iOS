@@ -69,12 +69,15 @@ struct MetricRangeDelta: View {
     /// language says it — "ggü. Vormonat" is.
     nonisolated static func priorLabel(for range: ChartDetailStore.Range, bundle: Bundle = .main) -> String {
         switch range {
-        case .day: String(localized: "insights.metric.rangeDelta.prior.day", bundle: bundle)
-        case .week: String(localized: "insights.metric.rangeDelta.prior.week", bundle: bundle)
-        case .month: String(localized: "insights.metric.rangeDelta.prior.month", bundle: bundle)
-        case .sixMonths: String(localized: "insights.metric.rangeDelta.prior.sixMonths", bundle: bundle)
-        case .year: String(localized: "insights.metric.rangeDelta.prior.year", bundle: bundle)
-        case .all: String(localized: "insights.metric.rangeDelta.prior.all", bundle: bundle)
+        case .day: AppLocale.string(LocalizedStringResource("insights.metric.rangeDelta.prior.day", bundle: .atURL(bundle.bundleURL)))
+        case .week: AppLocale.string(LocalizedStringResource("insights.metric.rangeDelta.prior.week", bundle: .atURL(bundle.bundleURL)))
+        case .month: AppLocale.string(LocalizedStringResource("insights.metric.rangeDelta.prior.month", bundle: .atURL(bundle.bundleURL)))
+        case .sixMonths: AppLocale.string(LocalizedStringResource(
+                "insights.metric.rangeDelta.prior.sixMonths",
+                bundle: .atURL(bundle.bundleURL)
+            ))
+        case .year: AppLocale.string(LocalizedStringResource("insights.metric.rangeDelta.prior.year", bundle: .atURL(bundle.bundleURL)))
+        case .all: AppLocale.string(LocalizedStringResource("insights.metric.rangeDelta.prior.all", bundle: .atURL(bundle.bundleURL)))
         }
     }
 
@@ -190,7 +193,7 @@ struct MetricRangeDelta: View {
 
     nonisolated static func format(percent: Double) -> String {
         if abs(percent) < 0.05 {
-            return String(localized: "insights.metric.rangeDelta.flat")
+            return AppLocale.string("insights.metric.rangeDelta.flat")
         }
         let sign = percent > 0 ? "+" : "−"
         let magnitude = abs(percent)

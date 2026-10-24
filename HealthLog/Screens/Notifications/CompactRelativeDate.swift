@@ -32,21 +32,21 @@ enum CompactRelativeDate {
         let interval = reference.timeIntervalSince(date)
         let seconds = Int(interval.rounded())
         if seconds < 60 {
-            return String(localized: "compact.relative.now")
+            return AppLocale.string("compact.relative.now")
         }
         let minutes = seconds / 60
         if minutes < 60 {
-            return String(format: String(localized: "compact.relative.minutes"), minutes)
+            return String(format: AppLocale.string("compact.relative.minutes"), minutes)
         }
         let hours = minutes / 60
         if hours < 24 {
-            return String(format: String(localized: "compact.relative.hours"), hours)
+            return String(format: AppLocale.string("compact.relative.hours"), hours)
         }
         let days = hours / 24
         if days < 7 {
-            return String(format: String(localized: "compact.relative.days"), days)
+            return String(format: AppLocale.string("compact.relative.days"), days)
         }
         let weeks = days / 7
-        return String(format: String(localized: "compact.relative.weeks"), weeks)
+        return String(format: AppLocale.string("compact.relative.weeks"), weeks)
     }
 }

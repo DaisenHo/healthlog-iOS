@@ -61,7 +61,7 @@ struct DocumentLinkPickerSheet: View {
                     .foregroundStyle(HLText.secondary)
                     .frame(width: 20)
                 VStack(alignment: .leading, spacing: 1) {
-                    Text(document.resolvedTitle ?? String(localized: "documents.card.untitled"))
+                    Text(document.resolvedTitle ?? AppLocale.string("documents.card.untitled"))
                         .foregroundStyle(HLText.primary)
                         .lineLimit(1)
                     Text(DocumentFormat.mediumDate(document.displayDate))

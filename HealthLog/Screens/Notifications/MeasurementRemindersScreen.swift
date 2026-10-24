@@ -343,7 +343,7 @@ struct VorsorgeReminderCardView: View {
                 originBadge
                 ledgerStatePills
                 if !row.enabled {
-                    HLBadge(String(localized: "vorsorge.card.disabled"), tone: .neutral)
+                    HLBadge(AppLocale.string("vorsorge.card.disabled"), tone: .neutral)
                 }
             }
         }
@@ -359,15 +359,15 @@ struct VorsorgeReminderCardView: View {
     private var ledgerStatePills: some View {
         if let until = row.snoozedUntil, VorsorgeCard.isSnoozed(row) {
             metaPill(String(
-                format: String(localized: "vorsorge.card.snoozedUntil"),
-                until.formatted(.dateTime.day().month())
+                format: AppLocale.string("vorsorge.card.snoozedUntil"),
+                until.formatted(.dateTime.day().month().locale(AppLocale.shared.current))
             ))
         }
         if VorsorgeCard.hasSkippedCurrentCycle(row) {
-            metaPill(String(localized: "vorsorge.card.skippedCycle"))
+            metaPill(AppLocale.string("vorsorge.card.skippedCycle"))
         }
         if row.skipCount > 0 {
-            metaPill(String(format: String(localized: "vorsorge.card.skipCount"), row.skipCount))
+            metaPill(String(format: AppLocale.string("vorsorge.card.skipCount"), row.skipCount))
         }
     }
 
@@ -489,7 +489,7 @@ struct VorsorgeReminderCardView: View {
     private var originBadge: some View {
         switch row.origin {
         case .coach:
-            HLBadge(String(localized: "reminder.origin.coach"), icon: "sparkles", tone: .purple)
+            HLBadge(AppLocale.string("reminder.origin.coach"), icon: "sparkles", tone: .purple)
         case .vorsorge, .unknown:
             EmptyView()
         }
@@ -499,9 +499,9 @@ struct VorsorgeReminderCardView: View {
     private var cadenceChip: String? {
         guard let (key, days) = VorsorgeCard.cadenceKeyAndArg(for: row) else { return nil }
         if let days {
-            return String(format: String(localized: String.LocalizationValue(key)), days)
+            return String(format: AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(key))), days)
         }
-        return String(localized: String.LocalizationValue(key))
+        return AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(key)))
     }
 
     /// Relative due text — the web `relativeDueKey` mirror. Shared with the
@@ -520,8 +520,8 @@ struct VorsorgeReminderCardView: View {
     private var endsOnLine: String? {
         guard let ends = row.endsOn else { return nil }
         return String(
-            format: String(localized: "reminders.endsOn.label"),
-            ends.formatted(.dateTime.day().month().year())
+            format: AppLocale.string("reminders.endsOn.label"),
+            ends.formatted(.dateTime.day().month().year().locale(AppLocale.shared.current))
         )
     }
 }
@@ -578,7 +578,7 @@ enum MeasurementReminderType {
     static func label(for raw: String?, fallback: String) -> String {
         guard let raw, !raw.isEmpty else { return fallback }
         if let key = keysByWire.first(where: { $0.key == raw })?.value {
-            return String(localized: String.LocalizationValue(key))
+            return AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(key)))
         }
         // F3 (v0153) — forward-compat for a server enum widening. The earlier
         // path title-cased the raw wire value ("SOME_NEW_TYPE" → "Some New
@@ -589,7 +589,7 @@ enum MeasurementReminderType {
         // value.
         let trimmedFallback = fallback.trimmingCharacters(in: .whitespacesAndNewlines)
         if !trimmedFallback.isEmpty { return trimmedFallback }
-        return String(localized: "reminder.type.generic")
+        return AppLocale.string("reminder.type.generic")
     }
 
     /// The known catalog, in the create-sheet picker order. Each entry is

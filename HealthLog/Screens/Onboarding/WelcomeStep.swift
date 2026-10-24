@@ -70,18 +70,18 @@ struct WelcomeStep: View {
                 VStack(spacing: HLSpace.md) {
                     FeatureRow(
                         symbol: "waveform.path.ecg",
-                        title: String(localized: "onboarding.welcome.feature.vitals.title"),
-                        subtitle: String(localized: "onboarding.welcome.feature.vitals.subtitle")
+                        title: AppLocale.string("onboarding.welcome.feature.vitals.title"),
+                        subtitle: AppLocale.string("onboarding.welcome.feature.vitals.subtitle")
                     )
                     FeatureRow(
                         symbol: "pills.fill",
-                        title: String(localized: "onboarding.welcome.feature.meds.title"),
-                        subtitle: String(localized: "onboarding.welcome.feature.meds.subtitle")
+                        title: AppLocale.string("onboarding.welcome.feature.meds.title"),
+                        subtitle: AppLocale.string("onboarding.welcome.feature.meds.subtitle")
                     )
                     FeatureRow(
                         symbol: "lock.shield.fill",
-                        title: String(localized: "onboarding.welcome.feature.selfhosted.title"),
-                        subtitle: String(localized: "onboarding.welcome.feature.selfhosted.subtitle")
+                        title: AppLocale.string("onboarding.welcome.feature.selfhosted.title"),
+                        subtitle: AppLocale.string("onboarding.welcome.feature.selfhosted.subtitle")
                     )
                 }
                 .padding(.horizontal, HLSpace.xl)

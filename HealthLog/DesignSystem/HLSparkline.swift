@@ -75,8 +75,8 @@ public struct HLSparkline: View {
         case .line:
             ForEach(indexed) { entry in
                 LineMark(
-                    x: .value(String(localized: "chart.axis.index"), entry.x),
-                    y: .value(String(localized: "Value"), entry.y)
+                    x: .value(AppLocale.string("chart.axis.index"), entry.x),
+                    y: .value(AppLocale.string("Value"), entry.y)
                 )
                 .foregroundStyle(tint)
                 .lineStyle(StrokeStyle(
@@ -89,8 +89,8 @@ public struct HLSparkline: View {
         case .bar:
             ForEach(indexed) { entry in
                 BarMark(
-                    x: .value(String(localized: "chart.axis.index"), entry.x),
-                    y: .value(String(localized: "Value"), entry.y)
+                    x: .value(AppLocale.string("chart.axis.index"), entry.x),
+                    y: .value(AppLocale.string("Value"), entry.y)
                 )
                 .foregroundStyle(tint)
                 .clipShape(.rect(cornerRadius: 2))
@@ -150,10 +150,10 @@ public struct HLSparkline: View {
 
     private var accessibilitySummary: Text {
         guard let first = values.first, let last = values.last else {
-            return Text(String(localized: "Sparkline without data"))
+            return Text(AppLocale.string("Sparkline without data"))
         }
-        let trend = last >= first ? String(localized: "rising") : String(localized: "falling")
-        let countLabel = String(localized: "\(values.count) values")
+        let trend = last >= first ? AppLocale.string("rising") : AppLocale.string("falling")
+        let countLabel = AppLocale.string("\(values.count) values")
         return Text("Sparkline, \(countLabel), \(trend) from \(format(first)) to \(format(last))")
     }
 
@@ -163,24 +163,24 @@ public struct HLSparkline: View {
 
     private func makeAXDescriptor() -> AXChartDescriptor {
         let points = values.enumerated().map { idx, v in
-            (x: Double(idx), y: v, xLabel: String(localized: "chart.axis.point \(idx + 1)"))
+            (x: Double(idx), y: v, xLabel: AppLocale.string("chart.axis.point \(idx + 1)"))
         }
         let summary: String = {
             if values.isEmpty {
-                return String(localized: "No data")
+                return AppLocale.string("No data")
             }
             if let first = values.first, let last = values.last {
-                let trend = last >= first ? String(localized: "rising") : String(localized: "falling")
-                return String(localized: "chart.sparkline.summary \(values.count) \(trend) \(format(first)) \(format(last))")
+                let trend = last >= first ? AppLocale.string("rising") : AppLocale.string("falling")
+                return AppLocale.string("chart.sparkline.summary \(values.count) \(trend) \(format(first)) \(format(last))")
             }
-            return String(localized: "chart.series.sparkline")
+            return AppLocale.string("chart.series.sparkline")
         }()
         return HLChartAX.singleSeries(
-            title: String(localized: "chart.series.sparkline"),
+            title: AppLocale.string("chart.series.sparkline"),
             summary: summary,
-            xAxisTitle: String(localized: "chart.axis.index"),
-            yAxisTitle: String(localized: "Value"),
-            seriesName: String(localized: "Values"),
+            xAxisTitle: AppLocale.string("chart.axis.index"),
+            yAxisTitle: AppLocale.string("Value"),
+            seriesName: AppLocale.string("Values"),
             points: points,
             yValueLabel: { v in v.formatted(.number.precision(.fractionLength(0 ... 1))) }
         )

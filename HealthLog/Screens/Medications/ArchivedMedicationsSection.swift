@@ -104,7 +104,7 @@ struct ArchivedMedicationsSection: View {
     static let archiveRelativeFormatter: RelativeDateTimeFormatter = {
         let f = RelativeDateTimeFormatter()
         f.unitsStyle = .full
-        f.locale = Locale.current
+        f.locale = AppLocale.shared.current
         return f
     }()
 
@@ -113,8 +113,9 @@ struct ArchivedMedicationsSection: View {
     /// MainActor-isolated (the View is, and `RelativeDateTimeFormatter` is not
     /// `Sendable`). `relativeArchive` is a thin `now`-injecting wrapper.
     static func relativeArchiveLabel(for date: Date, relativeTo reference: Date) -> String {
+        archiveRelativeFormatter.locale = AppLocale.shared.current
         let relative = archiveRelativeFormatter.localizedString(for: date, relativeTo: reference)
-        return String(localized: "medications.archived.relative \(relative)")
+        return AppLocale.string("medications.archived.relative \(relative)")
     }
 
     private func relativeArchive(_ date: Date) -> String {

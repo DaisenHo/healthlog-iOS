@@ -80,13 +80,13 @@ struct ComplianceRingCard: View {
         // pretending there's data to read.
         HLCard {
             VStack(alignment: .leading, spacing: HLSpace.xs) {
-                Text(String(localized: "Medication compliance"))
+                Text(AppLocale.string("Medication compliance"))
                     .font(.hlCaption)
                     .foregroundStyle(HLText.secondary)
-                Text(String(localized: "No reminders scheduled yet"))
+                Text(AppLocale.string("No reminders scheduled yet"))
                     .font(.hlTitle3)
                     .foregroundStyle(HLText.primary)
-                Text(String(localized: "Add an entry in the Medications tab to see reminders + compliance here."))
+                Text(AppLocale.string("Add an entry in the Medications tab to see reminders + compliance here."))
                     .font(.hlFootnote)
                     .foregroundStyle(HLText.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -101,7 +101,7 @@ struct ComplianceRingCard: View {
                 HStack(alignment: .center, spacing: HLSpace.lg) {
                     HLRing(
                         progress: snapshot.ratio,
-                        label: String(localized: "today"),
+                        label: AppLocale.string("today"),
                         value: snapshot.hasSchedule ? "\(snapshot.takenToday)/\(snapshot.scheduledToday)" : "—",
                         tint: HLText.primary,
                         // Audit H2 — VoiceOver otherwise reads only the bare
@@ -110,11 +110,11 @@ struct ComplianceRingCard: View {
                     )
                     .frame(width: 92, height: 92)
                     VStack(alignment: .leading, spacing: HLSpace.xs) {
-                        Text(String(localized: "Medication compliance"))
+                        Text(AppLocale.string("Medication compliance"))
                             .font(.hlCaption).foregroundStyle(HLText.secondary)
                         Text(snapshot.hasSchedule
-                            ? String(localized: "\(Self.percentLabel(snapshot.ratio)) today")
-                            : String(localized: "Nothing scheduled today"))
+                            ? AppLocale.string("\(Self.percentLabel(snapshot.ratio)) today")
+                            : AppLocale.string("Nothing scheduled today"))
                             .font(.hlTitle2)
                             .foregroundStyle(snapshot.hasSchedule ? HLText.primary : HLText.tertiary)
                         // v0.6.1.26 — subtitle line carries the calm
@@ -129,7 +129,7 @@ struct ComplianceRingCard: View {
                             Text(verbatim: overdueCount > 0 ? subtitle + "," : subtitle)
                                 .font(.hlSubhead).foregroundStyle(HLText.secondary)
                             if overdueCount > 0 {
-                                Text(String(localized: "overdue"))
+                                Text(AppLocale.string("overdue"))
                                     .font(.hlSubhead.weight(.semibold))
                                     .foregroundStyle(HLColor.statusBad)
                             }
@@ -166,10 +166,10 @@ struct ComplianceRingCard: View {
     }
 
     private var subtitle: String {
-        guard snapshot.hasSchedule else { return String(localized: "No intakes scheduled for today.") }
+        guard snapshot.hasSchedule else { return AppLocale.string("No intakes scheduled for today.") }
         return snapshot.scheduledToday == snapshot.takenToday
-            ? String(localized: "All taken — nice.")
-            : String(localized: "\(snapshot.scheduledToday - snapshot.takenToday) still open")
+            ? AppLocale.string("All taken — nice.")
+            : AppLocale.string("\(snapshot.scheduledToday - snapshot.takenToday) still open")
     }
 
     /// v0.6.1.26 — count of today's intakes the SERVER flags as an open
@@ -270,16 +270,16 @@ private struct TappableComplianceModifier: ViewModifier {
         HStack(alignment: .center, spacing: HLSpace.lg) {
             HLRing(
                 progress: snapshot.ratio,
-                label: String(localized: "today"),
+                label: AppLocale.string("today"),
                 value: "\(snapshot.takenToday)/\(snapshot.scheduledToday)",
                 tint: HLText.primary,
                 accessibilityLabel: snapshot.ringAccessibilityLabel
             )
             .frame(width: 92, height: 92)
             VStack(alignment: .leading, spacing: HLSpace.xs) {
-                Text(String(localized: "Medication compliance"))
+                Text(AppLocale.string("Medication compliance"))
                     .font(.hlCaption).foregroundStyle(HLText.secondary)
-                Text(String(localized: "\(ComplianceRingCard.percentLabel(snapshot.ratio)) today"))
+                Text(AppLocale.string("\(ComplianceRingCard.percentLabel(snapshot.ratio)) today"))
                     .font(.hlTitle2)
                     .foregroundStyle(HLText.primary)
             }

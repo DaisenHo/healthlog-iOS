@@ -40,13 +40,13 @@ enum InsightsMetricCategory: String, CaseIterable, Hashable {
     /// `Environment` reuse existing xcstrings keys; the rest are appended.
     var label: String {
         switch self {
-        case .vitals: String(localized: "Vitals")
-        case .body: String(localized: "Body")
-        case .activity: String(localized: "Activity")
-        case .heart: String(localized: "Heart")
-        case .hearing: String(localized: "Hearing")
-        case .environment: String(localized: "Environment")
-        case .metabolic: String(localized: "Metabolic")
+        case .vitals: AppLocale.string("Vitals")
+        case .body: AppLocale.string("Body")
+        case .activity: AppLocale.string("Activity")
+        case .heart: AppLocale.string("Heart")
+        case .hearing: AppLocale.string("Hearing")
+        case .environment: AppLocale.string("Environment")
+        case .metabolic: AppLocale.string("Metabolic")
         }
     }
 

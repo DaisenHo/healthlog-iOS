@@ -301,7 +301,7 @@ private struct BackfillWindowPicker: View {
                         .foregroundStyle(HLText.secondary)
                         .frame(width: 28, height: 28)
                     VStack(alignment: .leading, spacing: HLSpace.xxs) {
-                        Text(String(localized: "How far back should we sync?"))
+                        Text(AppLocale.string("How far back should we sync?"))
                             .font(.hlHeadline).foregroundStyle(HLText.primary)
                         Text("Limits the initial sync. New values are always imported live afterwards.")
                             .font(.hlCaption).foregroundStyle(HLText.secondary)
@@ -321,11 +321,11 @@ private struct BackfillWindowPicker: View {
 
     private func label(for window: HealthKitBackfillWindow) -> String {
         switch window {
-        case .sevenDays: String(localized: "Last 7 days")
-        case .thirtyDays: String(localized: "Last 30 days")
-        case .ninetyDays: String(localized: "Last 90 days")
-        case .oneYear: String(localized: "Last year")
-        case .allTime: String(localized: "Everything")
+        case .sevenDays: AppLocale.string("Last 7 days")
+        case .thirtyDays: AppLocale.string("Last 30 days")
+        case .ninetyDays: AppLocale.string("Last 90 days")
+        case .oneYear: AppLocale.string("Last year")
+        case .allTime: AppLocale.string("Everything")
         }
     }
 }

@@ -20,7 +20,7 @@ struct McpTokenMintSheet: View {
         NavigationStack {
             HLSettingsPage(title: "New connector token") {
                 HLSettingsCard(icon: "tag", title: "Name") {
-                    TextField(String(localized: "e.g. My health dashboard"), text: $name)
+                    TextField(AppLocale.string("e.g. My health dashboard"), text: $name)
                         .textFieldStyle(.plain)
                         .font(.hlSubhead)
                         .autocorrectionDisabled()
@@ -40,7 +40,7 @@ struct McpTokenMintSheet: View {
                     title: "Access",
                     footer: "Write access is separate and opt-in. It is limited to the MCP endpoint — through the normal API the assistant can never change anything."
                 ) {
-                    Picker(String(localized: "Access"), selection: $scope) {
+                    Picker(AppLocale.string("Access"), selection: $scope) {
                         Text("Read only").tag(McpTokenScope.read)
                         Text("Read and write").tag(McpTokenScope.readWrite)
                     }

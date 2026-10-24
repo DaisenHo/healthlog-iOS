@@ -70,7 +70,7 @@ import SwiftUI
                     Image(systemName: "doc.text.magnifyingglass")
                         .font(.hlIcon(HLIconSize.sm))
                         .foregroundStyle(HLText.secondary)
-                    Text(String(localized: "insights.coach.evidenceLabel"))
+                    Text(AppLocale.string("insights.coach.evidenceLabel"))
                         .font(.hlFootnote)
                         .foregroundStyle(HLText.secondary)
                     HLDisclosureChevron()
@@ -79,11 +79,11 @@ import SwiftUI
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .accessibilityLabel(String(localized: "insights.coach.evidenceLabel"))
+            .accessibilityLabel(AppLocale.string("insights.coach.evidenceLabel"))
             .accessibilityValue(
                 expanded
-                    ? String(localized: "coach.evidence.expanded")
-                    : String(localized: "coach.evidence.collapsed")
+                    ? AppLocale.string("coach.evidence.expanded")
+                    : AppLocale.string("coach.evidence.collapsed")
             )
             .accessibilityAddTraits(.isButton)
         }
@@ -237,15 +237,12 @@ import SwiftUI
 
         private func label(_ total: Int) -> String {
             if let model = usage.model, !model.isEmpty {
-                return String(
-                    localized: "\(total) tokens · \(model)",
+                return AppLocale.string(LocalizedStringResource(
+                    "\(total) tokens · \(model)",
                     comment: "CO5 — quiet per-turn token-usage footer with provider model."
-                )
+                ))
             }
-            return String(
-                localized: "\(total) tokens",
-                comment: "CO5 — quiet per-turn token-usage footer."
-            )
+            return AppLocale.string(LocalizedStringResource("\(total) tokens", comment: "CO5 — quiet per-turn token-usage footer."))
         }
     }
 
@@ -266,7 +263,7 @@ import SwiftUI
 
         private static func resolve(prefix: String, token: String) -> String {
             let key = prefix + token
-            let resolved = String(localized: String.LocalizationValue(key))
+            let resolved = AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(key)))
             // `String(localized:)` echoes the key verbatim when the catalog has
             // no entry → fall back to the raw token (web parity).
             return resolved == key ? token : resolved

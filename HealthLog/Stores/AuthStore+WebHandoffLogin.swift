@@ -34,7 +34,7 @@ import Foundation
                 // `publishError`, not a direct assignment: `lastError`'s setter
                 // is file-private and this leg now lives in its own file. Same
                 // writer the rest of the store uses, no behaviour change.
-                publishError(.unknown(String(localized: "onboarding.sso.unavailable")))
+                publishError(.unknown(AppLocale.string("onboarding.sso.unavailable")))
                 HLLog.auth.error("Web-login requested but no web-auth driver is wired.")
                 return
             }
@@ -53,7 +53,7 @@ import Foundation
                 return
             }
             guard let loginURL = WebLoginNativeFlow.loginURL(baseURL: baseURL, codeChallenge: pkce.codeChallenge) else {
-                failAttempt(.unknown(String(localized: "onboarding.webLogin.error.generic")), for: attempt)
+                failAttempt(.unknown(AppLocale.string("onboarding.webLogin.error.generic")), for: attempt)
                 HLLog.auth.error("Web-login could not build the login URL.")
                 return
             }
@@ -73,7 +73,7 @@ import Foundation
                 acceptBenignCancellation(for: attempt)
                 revealPasswordFallback(for: attempt)
             case .failed:
-                failAttempt(.unknown(String(localized: "onboarding.webLogin.error.generic")), for: attempt)
+                failAttempt(.unknown(AppLocale.string("onboarding.webLogin.error.generic")), for: attempt)
                 revealPasswordFallback(for: attempt)
                 HLLog.auth.warning("Web-login web-auth session failed to complete.")
             case let .callback(url):
@@ -83,7 +83,7 @@ import Foundation
                 // it to the server's own bind address) and handed us the page
                 // it died on. Classified, never corrected.
                 if WebLoginRedirectPolicy.isDeadEnd(target: url, configuredHost: baseURL.host) {
-                    failAttempt(.unknown(String(localized: "onboarding.webLogin.error.deadEnd")), for: attempt)
+                    failAttempt(.unknown(AppLocale.string("onboarding.webLogin.error.deadEnd")), for: attempt)
                     revealPasswordFallback(for: attempt)
                     HLLog.auth.warning("Web-login ended on a non-routable host.")
                     return
@@ -119,7 +119,7 @@ import Foundation
                     // A consumed/expired/mismatched code (single generic 401) is a
                     // login failure — surface it, never a web page. The
                     // code/verifier/token never appear in any log line.
-                    failAttempt(.unknown(String(localized: "onboarding.webLogin.exchangeFailed")), for: leg)
+                    failAttempt(.unknown(AppLocale.string("onboarding.webLogin.exchangeFailed")), for: leg)
                     revealPasswordFallback(for: leg)
                     HLLog.auth.error(
                         "Web-login token exchange failed: \(LogSanitizer.redact(String(describing: error)), privacy: .public)"
@@ -135,7 +135,7 @@ import Foundation
                 // swiftlint:disable:next hllog_public_privacy_interpolation
                 HLLog.auth.warning("Web-login callback error: \(reason.logLabel, privacy: .public)")
             case .unrecognized:
-                failAttempt(.unknown(String(localized: "onboarding.webLogin.error.generic")), for: leg)
+                failAttempt(.unknown(AppLocale.string("onboarding.webLogin.error.generic")), for: leg)
                 revealPasswordFallback(for: leg)
                 HLLog.auth.warning("Web-login callback carried no recognised parameters.")
             }

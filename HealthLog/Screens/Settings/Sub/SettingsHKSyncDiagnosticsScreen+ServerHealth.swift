@@ -96,9 +96,9 @@ struct HKServerSyncHealthSummary: Equatable {
 
     var autonomyLabel: String {
         switch autonomy {
-        case .confirmed: String(localized: "settings.hkdiag.server_autonomy_yes")
-        case .foregroundOnly: String(localized: "settings.hkdiag.server_autonomy_no")
-        case .unknown: String(localized: "settings.hkdiag.server_autonomy_unknown")
+        case .confirmed: AppLocale.string("settings.hkdiag.server_autonomy_yes")
+        case .foregroundOnly: AppLocale.string("settings.hkdiag.server_autonomy_no")
+        case .unknown: AppLocale.string("settings.hkdiag.server_autonomy_unknown")
         }
     }
 
@@ -112,16 +112,16 @@ struct HKServerSyncHealthSummary: Equatable {
 
     var verdictLabel: String {
         if let health { return ConnectionHealthPresentation(health: health).stateLabel }
-        guard let verdict else { return String(localized: "settings.hkdiag.never") }
+        guard let verdict else { return AppLocale.string("settings.hkdiag.never") }
         switch verdict {
-        case .fresh: return String(localized: "settings.hkdiag.verdict_fresh")
-        case .stale: return String(localized: "settings.hkdiag.verdict_stale")
-        case .stalled: return String(localized: "settings.hkdiag.verdict_stalled")
-        case .failing: return String(localized: "settings.hkdiag.verdict_failing")
-        case .reauthRequired: return String(localized: "settings.hkdiag.verdict_reauth_required")
-        case .parked: return String(localized: "settings.hkdiag.verdict_parked")
-        case .pendingFirstSync: return String(localized: "settings.hkdiag.verdict_pending_first_sync")
-        case .disconnected: return String(localized: "settings.hkdiag.verdict_disconnected")
+        case .fresh: return AppLocale.string("settings.hkdiag.verdict_fresh")
+        case .stale: return AppLocale.string("settings.hkdiag.verdict_stale")
+        case .stalled: return AppLocale.string("settings.hkdiag.verdict_stalled")
+        case .failing: return AppLocale.string("settings.hkdiag.verdict_failing")
+        case .reauthRequired: return AppLocale.string("settings.hkdiag.verdict_reauth_required")
+        case .parked: return AppLocale.string("settings.hkdiag.verdict_parked")
+        case .pendingFirstSync: return AppLocale.string("settings.hkdiag.verdict_pending_first_sync")
+        case .disconnected: return AppLocale.string("settings.hkdiag.verdict_disconnected")
         case .unknown:
             // K1 — ein neues Server-Wort ist ein Bezeichner, kein Satz. Es wird
             // neutral „Unbekannt" gelesen (und nicht rot gefärbt, siehe
@@ -142,12 +142,12 @@ struct HKServerSyncHealthSummary: Equatable {
     /// Server-Wort liest sich neutral „Unbekannt" (K1).
     var triggerLabel: String {
         guard let raw = lastSyncTrigger else {
-            return String(localized: "settings.hkdiag.never")
+            return AppLocale.string("settings.hkdiag.never")
         }
         switch SyncTrigger(rawValue: raw) {
-        case .foreground: return String(localized: "settings.hkdiag.trigger_foreground")
-        case .background: return String(localized: "settings.hkdiag.trigger_background")
-        case .push: return String(localized: "settings.hkdiag.trigger_push")
+        case .foreground: return AppLocale.string("settings.hkdiag.trigger_foreground")
+        case .background: return AppLocale.string("settings.hkdiag.trigger_background")
+        case .push: return AppLocale.string("settings.hkdiag.trigger_push")
         case .manual: return HKSyncDiagnosticsVocabulary.collectionTrigger("manual")
         case .backfill, nil: return HKSyncDiagnosticsVocabulary.unknown
         }
@@ -200,7 +200,7 @@ extension SettingsHKSyncDiagnosticsScreen {
                         if let since = summary.since {
                             serverStatRow(
                                 label: "settings.hkdiag.server_since",
-                                value: since.formatted(.relative(presentation: .named)),
+                                value: since.formatted(.relative(presentation: .named).locale(AppLocale.shared.current)),
                                 tint: HLText.secondary
                             )
                         }

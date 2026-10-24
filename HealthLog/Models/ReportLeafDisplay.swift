@@ -25,7 +25,7 @@ public enum ReportLeafDisplay {
             return kind.displayName
         }
         let key = "report.leaf.\(leaf)"
-        let resolved = String(localized: String.LocalizationValue(key))
+        let resolved = AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(key)))
         // `String(localized:)` echoes the key back verbatim when it is not in
         // the catalog — that is the signal to humanise instead of showing a
         // dotted key to a user.

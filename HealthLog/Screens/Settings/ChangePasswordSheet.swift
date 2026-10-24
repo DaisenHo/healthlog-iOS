@@ -149,7 +149,7 @@ struct ChangePasswordSheet: View {
 
     private var submitButton: some View {
         HLButton(
-            String(localized: "settings.security.password.submit"),
+            AppLocale.string("settings.security.password.submit"),
             variant: .primary,
             isLoading: store.isSaving,
             action: { Task { await submit() } }

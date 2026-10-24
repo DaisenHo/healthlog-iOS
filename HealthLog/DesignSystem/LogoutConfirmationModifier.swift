@@ -113,12 +113,12 @@ enum LogoutConfirmation {
     /// The destructive label. Same source key as the row that opens the dialog,
     /// so the answer and the question cannot drift apart in translation.
     static var confirmTitle: String {
-        String(localized: "Sign out")
+        AppLocale.string("Sign out")
     }
 
     /// The non-destructive answer.
     static var cancelTitle: String {
-        String(localized: "Cancel")
+        AppLocale.string("Cancel")
     }
 
     static let confirmButtonIdentifier = "logout.confirm.signOut"

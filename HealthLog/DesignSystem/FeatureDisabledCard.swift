@@ -51,10 +51,10 @@ public struct FeatureDisabledCard: View {
                     .foregroundStyle(HLText.tertiary)
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: HLSpace.xxs) {
-                    Text(String(localized: "feature_disabled.title"))
+                    Text(AppLocale.string("feature_disabled.title"))
                         .font(.hlHeadline)
                         .foregroundStyle(HLText.secondary)
-                    Text(reason ?? String(localized: "feature_disabled.subtitle"))
+                    Text(reason ?? AppLocale.string("feature_disabled.subtitle"))
                         .font(.hlSubhead)
                         .foregroundStyle(HLText.tertiary)
                         .fixedSize(horizontal: false, vertical: true)

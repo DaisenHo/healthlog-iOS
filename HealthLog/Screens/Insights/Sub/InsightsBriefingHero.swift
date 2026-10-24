@@ -45,7 +45,7 @@ struct InsightsBriefingHero: View {
                 moodEntries: moodStore.entries,
                 compliance: (dashboardStore.summary?.compliance).map(ComplianceSnapshotInput.init(from:)),
                 style: .full,
-                locale: .current,
+                locale: AppLocale.shared.current,
                 service: appContainer?.onDeviceBriefingService ?? OnDeviceBriefingService(),
                 // I-3 ITEM 3 — server AI active (`aiMode == .online`) → prefer the
                 // richer server briefing over the on-device / Statistik arm; the
@@ -78,8 +78,8 @@ struct InsightsBriefingHero: View {
         if let staleAsOf = briefingStore.staleBriefingAsOf {
             Text(
                 String(
-                    format: String(localized: "insights.briefingHero.staleAsOf"),
-                    staleAsOf.formatted(date: .omitted, time: .shortened)
+                    format: AppLocale.string("insights.briefingHero.staleAsOf"),
+                    staleAsOf.formatted(Date.FormatStyle(date: .omitted, time: .shortened, locale: AppLocale.shared.current))
                 )
             )
             .font(.hlCaption)
@@ -88,7 +88,7 @@ struct InsightsBriefingHero: View {
             .accessibilityIdentifier("insights.briefingHero.staleAsOf")
         } else if let updatedAt = briefingStore.lastUpdatedAt {
             HStack(spacing: HLSpace.xs) {
-                Text(String(localized: "insights.briefingHero.generatedPrefix"))
+                Text(AppLocale.string("insights.briefingHero.generatedPrefix"))
                 Text(updatedAt, format: .relative(presentation: .named))
             }
             .font(.hlCaption)

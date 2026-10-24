@@ -79,7 +79,7 @@ struct FamilyHistoryListScreen: View {
         .buttonStyle(.plain)
         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
             Button(role: .destructive) {
-                store.delete(record, undoMessage: String(localized: "familyHistory.delete.undo"))
+                store.delete(record, undoMessage: AppLocale.string("familyHistory.delete.undo"))
             } label: {
                 Label("familyHistory.delete.action", systemImage: "trash")
             }
@@ -155,11 +155,11 @@ struct FamilyHistoryRow: View {
     }
 
     private func ageCaption(_ age: Int) -> String {
-        String(format: String(localized: "familyHistory.row.ageAtOnset"), age)
+        String(format: AppLocale.string("familyHistory.row.ageAtOnset"), age)
     }
 
     private var accessibilityText: String {
-        let template = String(localized: "familyHistory.row.a11y")
+        let template = AppLocale.string("familyHistory.row.a11y")
         return String(format: template, record.relationship.localizedLabel, record.condition)
     }
 }

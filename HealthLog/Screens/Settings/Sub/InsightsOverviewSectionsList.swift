@@ -66,7 +66,7 @@ struct InsightsOverviewSectionsList: View {
             .onMove(perform: move)
         } header: {
             // R12 — Abschnitts-Header im List-Gerüst: System-Default.
-            Text(String(localized: "Overview sections"))
+            Text(AppLocale.string("Overview sections"))
         }
         // UI-Standard R3 — der Abschnitts-Footer ist gefallen. Er sagte
         // dasselbe wie der Tabs-Footer eine Sektion darüber („zum Verschieben
@@ -82,7 +82,7 @@ struct InsightsOverviewSectionsList: View {
                     .font(.hlSubhead.weight(.semibold))
                     .foregroundStyle(HLText.primary)
                 if Self.webOnlySectionIDs.contains(section.id) {
-                    Text(String(localized: "Shown on the web only."))
+                    Text(AppLocale.string("Shown on the web only."))
                         .font(.hlCaption)
                         .foregroundStyle(HLText.secondary)
                 }
@@ -108,6 +108,6 @@ struct InsightsOverviewSectionsList: View {
     /// — the row still round-trips and stays orderable, it just has no name yet.
     private func label(for id: String) -> String {
         guard let key = Self.labelKeys[id] else { return id }
-        return String(localized: key)
+        return AppLocale.string(AppLocale.shared.resource(key))
     }
 }

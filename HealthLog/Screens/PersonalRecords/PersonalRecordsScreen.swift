@@ -70,7 +70,7 @@ struct PersonalRecordsScreen: View {
                 ScrollView {
                     HLCloudDerivedPlaceholder(
                         variant: .hero,
-                        surfaceName: String(localized: "your Personal Records"),
+                        surfaceName: AppLocale.string("your Personal Records"),
                         onConnect: { authStore.beginServerPairing() }
                     )
                     .padding(HLSpace.lg)
@@ -347,11 +347,10 @@ private struct BenchmarkSelection: Identifiable, Equatable {
 /// the record cards, the hero card and the VoiceOver labels mixed German into
 /// the English UI.
 public enum MetricTypeLocalisation {
-    public static func label(forType raw: String, locale: Locale = .current) -> String {
+    public static func label(forType raw: String, locale: Locale = AppLocale.shared.current) -> String {
         let key = raw.uppercased()
-        guard var resource = MetricTypeLocalisation.dictionary[key] else { return raw.capitalized }
-        resource.locale = locale
-        return String(localized: resource)
+        guard let resource = MetricTypeLocalisation.dictionary[key] else { return raw.capitalized }
+        return AppLocale.string(resource, locale: locale)
     }
 
     /// Every server metric type this table names (tests walk it per language).

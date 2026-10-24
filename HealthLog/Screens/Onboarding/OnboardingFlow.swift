@@ -645,24 +645,24 @@ private struct AdoptUploadIndicator: View {
                 HLSyncBanner(
                     text: progress.total > 0
                         ? String(
-                            format: String(localized: "onboarding.adopt.uploading.progress"),
+                            format: AppLocale.string("onboarding.adopt.uploading.progress"),
                             progress.completed, progress.total
                         )
-                        : String(localized: "onboarding.adopt.uploading"),
+                        : AppLocale.string("onboarding.adopt.uploading"),
                     showsSpinner: true
                 )
             case .done:
                 HLSyncBanner(
-                    text: String(localized: "onboarding.adopt.done"),
+                    text: AppLocale.string("onboarding.adopt.done"),
                     symbol: "checkmark.circle.fill"
                 )
             case .failed:
                 // v0.13 WR — the glyph is now a real retry action, not a passive
                 // label. The upload is idempotent, so re-running is safe.
                 HLSyncBanner(
-                    text: String(localized: "onboarding.adopt.failed"),
+                    text: AppLocale.string("onboarding.adopt.failed"),
                     symbol: "arrow.clockwise",
-                    actionLabel: String(localized: "onboarding.adopt.retry"),
+                    actionLabel: AppLocale.string("onboarding.adopt.retry"),
                     action: onRetry,
                     actionAccessibilityIdentifier: "onboarding.adopt.retry"
                 )

@@ -85,7 +85,7 @@ public final class UserThresholdsStore {
             error = .server(
                 status: 422,
                 code: "thresholds.invalid_range",
-                message: String(localized: "Value outside the valid range.")
+                message: AppLocale.string("Value outside the valid range.")
             )
             return false
         }

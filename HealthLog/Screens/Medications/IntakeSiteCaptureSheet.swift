@@ -53,7 +53,7 @@ struct IntakeSiteCaptureSheet: View {
                     // graphic was removed; the body map (with its legend) is the
                     // single selector. Every allowed site is reachable as a dot.
                     HLButton(
-                        String(localized: "meds.quick.commit"),
+                        AppLocale.string("meds.quick.commit"),
                         icon: "checkmark.circle.fill",
                         variant: .restrained
                     ) {
@@ -61,7 +61,7 @@ struct IntakeSiteCaptureSheet: View {
                     }
                     .accessibilityIdentifier("meds.quick.site.commit")
                     HLButton(
-                        String(localized: "meds.quick.site.skip"),
+                        AppLocale.string("meds.quick.site.skip"),
                         variant: .secondary,
                         size: .regular
                     ) {
@@ -73,7 +73,7 @@ struct IntakeSiteCaptureSheet: View {
                     // The push rides the shared HLButton carrier (FREEZE-A,
                     // 1.0.4): the sheet names no presenter of its own.
                     HLButton(
-                        String(localized: "Manage sites"),
+                        AppLocale.string("Manage sites"),
                         icon: "circle.grid.cross",
                         variant: .secondary,
                         size: .compact,
@@ -90,7 +90,7 @@ struct IntakeSiteCaptureSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "meds.quick.cancel")) { onCancel() }
+                    Button(AppLocale.string("meds.quick.cancel")) { onCancel() }
                         .accessibilityIdentifier("meds.quick.site.cancel")
                 }
             }
@@ -123,7 +123,7 @@ struct IntakeSiteCaptureSheet: View {
                         Image(systemName: "arrow.triangle.2.circlepath")
                             .foregroundStyle(HLText.secondary)
                         Text(String(
-                            format: String(localized: "Vorschlag laut Rotationsplan: %@"),
+                            format: AppLocale.string("Vorschlag laut Rotationsplan: %@"),
                             suggestedSite.localizedLabel
                         ))
                         .font(.hlCaption)

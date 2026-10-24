@@ -86,10 +86,10 @@ private struct AlertRow: View {
 
     private var levelLabel: String {
         switch alert.level {
-        case .success: String(localized: "insights.digest.alert.success")
-        case .info: String(localized: "insights.digest.alert.info")
-        case .warning: String(localized: "insights.digest.alert.warning")
-        case .danger: String(localized: "insights.digest.alert.danger")
+        case .success: AppLocale.string("insights.digest.alert.success")
+        case .info: AppLocale.string("insights.digest.alert.info")
+        case .warning: AppLocale.string("insights.digest.alert.warning")
+        case .danger: AppLocale.string("insights.digest.alert.danger")
         }
     }
 
@@ -140,15 +140,15 @@ public struct MoodSummaryCard: View {
                 InsightsSectionHeader("Mood")
                 HStack(alignment: .top, spacing: HLSpace.lg) {
                     averageColumn(
-                        label: String(localized: "insights.mood.avg7"),
+                        label: AppLocale.string("insights.mood.avg7"),
                         value: summary.avg7
                     )
                     averageColumn(
-                        label: String(localized: "insights.mood.avg30"),
+                        label: AppLocale.string("insights.mood.avg30"),
                         value: summary.avg30
                     )
                     countColumn(
-                        label: String(localized: "Entries"),
+                        label: AppLocale.string("Entries"),
                         count: summary.count
                     )
                 }
@@ -242,13 +242,13 @@ public struct MoodSummaryCard: View {
 
     /// VoiceOver-Zusammenfassung der drei Spalten in einem Atemzug.
     private var accessibilitySummary: String {
-        let seven = summary.avg7.map { String(localized: "7-day avg \($0.formatted(.number.precision(.fractionLength(1))))") }
-            ?? String(localized: "7-day avg no data")
-        let thirty = summary.avg30.map { String(localized: "30-day avg \($0.formatted(.number.precision(.fractionLength(1))))") }
-            ?? String(localized: "30-day avg no data")
-        let entries = summary.count.map { String(localized: "\($0) entries") }
-            ?? String(localized: "No entries")
-        return String(localized: "Mood — \(seven), \(thirty), \(entries)")
+        let seven = summary.avg7.map { AppLocale.string("7-day avg \($0.formatted(.number.precision(.fractionLength(1))))") }
+            ?? AppLocale.string("7-day avg no data")
+        let thirty = summary.avg30.map { AppLocale.string("30-day avg \($0.formatted(.number.precision(.fractionLength(1))))") }
+            ?? AppLocale.string("30-day avg no data")
+        let entries = summary.count.map { AppLocale.string("\($0) entries") }
+            ?? AppLocale.string("No entries")
+        return AppLocale.string("Mood — \(seven), \(thirty), \(entries)")
     }
 }
 
@@ -267,12 +267,12 @@ public struct DataQualityFooter: View {
     }
 
     public var body: some View {
-        Text(String(localized: "Analysis based on \(measurements) measurements over \(span) days."))
+        Text(AppLocale.string("Analysis based on \(measurements) measurements over \(span) days."))
             .font(.hlCaption)
             .foregroundStyle(HLText.tertiary)
             .multilineTextAlignment(.center)
             .frame(maxWidth: .infinity)
             .padding(.vertical, HLSpace.md)
-            .accessibilityLabel(String(localized: "Data basis: \(measurements) measurements over \(span) days"))
+            .accessibilityLabel(AppLocale.string("Data basis: \(measurements) measurements over \(span) days"))
     }
 }

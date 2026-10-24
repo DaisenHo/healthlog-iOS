@@ -36,7 +36,10 @@ struct DeleteAccountScreen: View {
     /// localized String einmal und vergleichen exakt — Case-Sensitive,
     /// damit der User nicht versehentlich durchklickt.
     private var requiredConfirmation: String {
-        String(localized: "DELETE", comment: "Type-confirm phrase the user must enter literally to delete their account")
+        AppLocale.string(LocalizedStringResource(
+            "DELETE",
+            comment: "Type-confirm phrase the user must enter literally to delete their account"
+        ))
     }
 
     var body: some View {
@@ -114,7 +117,7 @@ struct DeleteAccountScreen: View {
                 // SIZE drops from the `.large` slab to the restrained compact
                 // 44pt floor, matching the app-wide button-size pass.
                 HLButton(
-                    String(localized: "Continue"),
+                    AppLocale.string("Continue"),
                     icon: "chevron.right",
                     variant: .destructive,
                     size: .compact
@@ -125,7 +128,7 @@ struct DeleteAccountScreen: View {
                 .accessibilityIdentifier(Self.continueButtonIdentifier)
 
                 HLButton(
-                    String(localized: "Cancel"),
+                    AppLocale.string("Cancel"),
                     variant: .secondary,
                     size: .regular
                 ) {
@@ -166,7 +169,7 @@ struct DeleteAccountScreen: View {
 
             VStack(spacing: HLSpace.sm) {
                 HLButton(
-                    String(localized: "Delete account forever"),
+                    AppLocale.string("Delete account forever"),
                     icon: "trash.fill",
                     variant: .destructive,
                     size: .compact,
@@ -178,7 +181,7 @@ struct DeleteAccountScreen: View {
                 .accessibilityIdentifier(Self.deleteButtonIdentifier)
 
                 HLButton(
-                    String(localized: "Back"),
+                    AppLocale.string("Back"),
                     variant: .secondary,
                     size: .regular
                 ) {
@@ -218,7 +221,7 @@ struct DeleteAccountScreen: View {
 
             VStack(spacing: HLSpace.sm) {
                 HLButton(
-                    String(localized: "deleteAccount.stepUp.openButton"),
+                    AppLocale.string("deleteAccount.stepUp.openButton"),
                     icon: "safari",
                     variant: .primary,
                     size: .compact
@@ -235,7 +238,7 @@ struct DeleteAccountScreen: View {
                 .accessibilityIdentifier(Self.stepUpOpenButtonIdentifier)
 
                 HLButton(
-                    String(localized: "Cancel"),
+                    AppLocale.string("Cancel"),
                     variant: .secondary,
                     size: .regular
                 ) {
@@ -285,7 +288,7 @@ struct DeleteAccountScreen: View {
             stepUpWebURL = container?.environment.baseURL?.appendingPathComponent("/settings/account")
             return
         }
-        let raw = authStore.lastError?.localizedDescription ?? String(localized: "Unknown error")
+        let raw = authStore.lastError?.localizedDescription ?? AppLocale.string("Unknown error")
         deletionError = raw
     }
 

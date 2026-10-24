@@ -29,7 +29,7 @@ struct MedicationsLayoutCustomizeSheet: View {
             .scrollContentBackground(.hidden)
             .hlScreenBackground()
             .hlScrollEdgeSoft()
-            .navigationTitle(String(localized: "med.layout.customize.title"))
+            .navigationTitle(AppLocale.string("med.layout.customize.title"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -37,7 +37,7 @@ struct MedicationsLayoutCustomizeSheet: View {
                         .tint(HLText.primary)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(String(localized: "Done")) { dismiss() }
+                    Button(AppLocale.string("Done")) { dismiss() }
                         .tint(HLText.primary)
                 }
             }
@@ -51,7 +51,7 @@ struct MedicationsLayoutCustomizeSheet: View {
         let meds = store.activeMedications
         Section {
             if meds.isEmpty {
-                Text(String(localized: "med.layout.order.empty"))
+                Text(AppLocale.string("med.layout.order.empty"))
                     .font(.hlSubhead)
                     .foregroundStyle(HLText.secondary)
             } else {
@@ -61,9 +61,9 @@ struct MedicationsLayoutCustomizeSheet: View {
                 .onMove(perform: moveMedication)
             }
         } header: {
-            Text(String(localized: "med.layout.order.section.header"))
+            Text(AppLocale.string("med.layout.order.section.header"))
         } footer: {
-            Text(String(localized: "med.layout.order.section.footer"))
+            Text(AppLocale.string("med.layout.order.section.footer"))
                 .font(.hlCaption)
                 .foregroundStyle(HLText.tertiary)
         }

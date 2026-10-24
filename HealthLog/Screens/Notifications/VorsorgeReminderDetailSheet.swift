@@ -92,11 +92,11 @@ struct VorsorgeReminderDetailSheet: View {
     private var nextLastBlock: some View {
         VStack(alignment: .leading, spacing: HLSpace.xs) {
             detailRow(
-                label: String(localized: "vorsorge.card.nextDue"),
+                label: AppLocale.string("vorsorge.card.nextDue"),
                 value: VorsorgeCard.dueDisplayText(nextDueAt: currentRow.nextDueAt)
             )
             detailRow(
-                label: String(localized: "vorsorge.card.lastDone"),
+                label: AppLocale.string("vorsorge.card.lastDone"),
                 value: VorsorgeCard.lastDoneDisplayText(lastSatisfiedAt: currentRow.lastSatisfiedAt)
             )
             // ROUTE-07 — both are server instants formatted, never computed. The
@@ -104,15 +104,15 @@ struct VorsorgeReminderDetailSheet: View {
             // clock, which is the comparison the accepted DTO prescribes.
             if let until = currentRow.snoozedUntil, VorsorgeCard.isSnoozed(currentRow) {
                 detailRow(
-                    label: String(localized: "vorsorge.card.snoozed"),
-                    value: until.formatted(.dateTime.day().month().year())
+                    label: AppLocale.string("vorsorge.card.snoozed"),
+                    value: until.formatted(.dateTime.day().month().year().locale(AppLocale.shared.current))
                 )
             }
             if currentRow.skipCount > 0 {
                 detailRow(
-                    label: String(localized: "vorsorge.card.skipped"),
+                    label: AppLocale.string("vorsorge.card.skipped"),
                     value: String(
-                        format: String(localized: "vorsorge.card.skipCount"),
+                        format: AppLocale.string("vorsorge.card.skipCount"),
                         currentRow.skipCount
                     )
                 )
@@ -139,19 +139,19 @@ struct VorsorgeReminderDetailSheet: View {
     private var primaryButton: some View {
         switch primaryAction {
         case let .measure(kind):
-            HLButton(String(localized: "vorsorge.card.measureNow"), icon: "plus", variant: .secondary) {
+            HLButton(AppLocale.string("vorsorge.card.measureNow"), icon: "plus", variant: .secondary) {
                 dismiss()
                 onMeasure(kind)
             }
             .accessibilityIdentifier("vorsorge.detail.measureNow")
         case .checkIn:
-            HLButton(String(localized: "vorsorge.card.checkIn"), icon: "brain.head.profile", variant: .secondary) {
+            HLButton(AppLocale.string("vorsorge.card.checkIn"), icon: "brain.head.profile", variant: .secondary) {
                 dismiss()
                 onCheckIn()
             }
             .accessibilityIdentifier("vorsorge.detail.checkIn")
         case .markDone:
-            HLButton(String(localized: "vorsorge.card.markDone"), icon: "checkmark", variant: .secondary) {
+            HLButton(AppLocale.string("vorsorge.card.markDone"), icon: "checkmark", variant: .secondary) {
                 onMarkDone()
                 dismiss()
             }
@@ -224,10 +224,12 @@ struct VorsorgeReminderDetailSheet: View {
     private func bandByID(model: VorsorgeDetailModel, instrument: MentalHealthInstrument) -> [String: String] {
         Dictionary(
             model.screeningRows.map { row in
-                (row.id, NSLocalizedString(
-                    "mentalHealth.band.\(instrument.rawValue).\(row.severityBand)",
-                    comment: "Mental-health severity band label"
-                ))
+                (
+                    row.id,
+                    AppLocale
+                        .string(AppLocale.shared
+                            .resource(String.LocalizationValue(String("mentalHealth.band.\(instrument.rawValue).\(row.severityBand)"))))
+                )
             },
             uniquingKeysWith: { first, _ in first }
         )
@@ -238,7 +240,7 @@ struct VorsorgeReminderDetailSheet: View {
     private var freeTextBody: some View {
         VStack(alignment: .leading, spacing: HLSpace.sm) {
             if let location = row.location, !location.isEmpty {
-                detailRow(label: String(localized: "reminders.create.location.label"), value: location)
+                detailRow(label: AppLocale.string("reminders.create.location.label"), value: location)
             }
             HStack(spacing: HLSpace.xs) {
                 Image(systemName: "info.circle")
@@ -270,8 +272,8 @@ struct VorsorgeReminderDetailSheet: View {
             title: "vorsorge.detail.history",
             points: plotted,
             yDomain: model.yDomain,
-            xValueLabel: String(localized: "vorsorge.detail.axis.date"),
-            yValueLabel: String(localized: "vorsorge.detail.axis.value"),
+            xValueLabel: AppLocale.string("vorsorge.detail.axis.date"),
+            yValueLabel: AppLocale.string("vorsorge.detail.axis.value"),
             annotation: { point in chartValueText(canonicalByID[point.id] ?? point, model: model, bandByID: bandByID) },
             accessibilityDescription: { point in
                 let canonical = canonicalByID[point.id] ?? point
@@ -311,7 +313,7 @@ struct VorsorgeReminderDetailSheet: View {
                 Text("vorsorge.detail.recent")
                     .font(.hlHeadline)
                     .foregroundStyle(HLText.primary)
-                ForEach(model.metricMeasurements.prefix(7).map { $0 }) { measurement in
+                ForEach(model.metricMeasurements.prefix(7).map(\.self)) { measurement in
                     HStack(alignment: .firstTextBaseline, spacing: HLSpace.sm) {
                         Text(HLDateFormat.date(measurement.recordedAt, style: .abbreviated))
                             .font(.hlSubhead)
@@ -458,7 +460,7 @@ private struct VorsorgeReminderLedgerSection: View {
     }
 
     private var loadMoreButton: some View {
-        HLButton(String(localized: "vorsorge.history.loadMore"), variant: .secondary) {
+        HLButton(AppLocale.string("vorsorge.history.loadMore"), variant: .secondary) {
             Task { await store.loadHistory(id: row.id) }
         }
         .disabled(store.ledger(for: row.id).isLoading)
@@ -466,7 +468,7 @@ private struct VorsorgeReminderLedgerSection: View {
     }
 
     private func retryButton(hasMore: Bool) -> some View {
-        HLButton(String(localized: "vorsorge.history.retry"), variant: .secondary) {
+        HLButton(AppLocale.string("vorsorge.history.retry"), variant: .secondary) {
             Task { await store.loadHistory(id: row.id, reset: !hasMore) }
         }
         .disabled(store.ledger(for: row.id).isLoading)

@@ -167,10 +167,10 @@ struct MoodInfluenceRowView: View {
         let withoutAvg = row.withoutAvg.formatted(.number.precision(.fractionLength(1)))
         let signed = deltaString(row.delta)
         let confidence = MoodConfidencePill.label(for: row.confidence)
-        return String(
-            localized: "Mood \(withAvg) on days with \(label), \(withoutAvg) without. \(signed) difference, based on \(row.minGroupDays) days each side. \(confidence) confidence.",
+        return AppLocale.string(LocalizedStringResource(
+            "Mood \(withAvg) on days with \(label), \(withoutAvg) without. \(signed) difference, based on \(row.minGroupDays) days each side. \(confidence) confidence.",
             comment: "VoiceOver value for one mood tag-influence row"
-        )
+        ))
     }
 }
 
@@ -206,9 +206,9 @@ struct MoodConfidencePill: View {
     /// Localized band word.
     nonisolated static func label(for confidence: MoodConfidence) -> String {
         switch confidence {
-        case .high: String(localized: "High", comment: "Mood relation confidence band: high")
-        case .medium: String(localized: "Medium", comment: "Mood relation confidence band: medium")
-        case .low: String(localized: "Low", comment: "Mood relation confidence band: low")
+        case .high: AppLocale.string(LocalizedStringResource("High", comment: "Mood relation confidence band: high"))
+        case .medium: AppLocale.string(LocalizedStringResource("Medium", comment: "Mood relation confidence band: medium"))
+        case .low: AppLocale.string(LocalizedStringResource("Low", comment: "Mood relation confidence band: low"))
         }
     }
 }

@@ -135,7 +135,7 @@ final class LabScanStore {
 
         /// The already-localized message for this failure.
         var message: String {
-            String(localized: String.LocalizationValue(messageKey))
+            AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(messageKey)))
         }
     }
 
@@ -289,11 +289,11 @@ final class LabScanStore {
         rows.removeAll { savedIDs.contains($0.id) }
         let saved = savedIDs.count
         if saved == batch.count {
-            saveSummary = String(localized: "labs.scan.saved.\(saved)")
+            saveSummary = AppLocale.string("labs.scan.saved.\(saved)")
             step = .review
             return true
         }
-        saveSummary = String(localized: "labs.scan.savedPartial.\(saved).\(batch.count)")
+        saveSummary = AppLocale.string("labs.scan.savedPartial.\(saved).\(batch.count)")
         step = .review
         return false
     }

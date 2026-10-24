@@ -319,7 +319,7 @@ struct AddLabResultSheet: View {
         }
 
         guard await store.createLab(body) else {
-            saveError = store.lastError ?? String(localized: "labs.save.failed")
+            saveError = store.lastError ?? AppLocale.string("labs.save.failed")
             return
         }
         if keepOpen {

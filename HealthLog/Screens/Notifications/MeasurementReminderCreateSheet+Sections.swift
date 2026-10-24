@@ -8,7 +8,7 @@ extension MeasurementReminderCreateSheet {
 
     var labelSection: some View {
         Section {
-            TextField(String(localized: "reminders.create.label.placeholder"), text: $label)
+            TextField(AppLocale.string("reminders.create.label.placeholder"), text: $label)
                 .focused($labelFocused)
                 .submitLabel(.done)
                 .accessibilityIdentifier("MeasurementReminderCreateSheet.label")
@@ -66,7 +66,7 @@ extension MeasurementReminderCreateSheet {
             HStack {
                 Text("reminders.create.interval.label")
                 Spacer()
-                Text(String(format: String(localized: "reminders.schedule.everyNDays"), intervalDays))
+                Text(String(format: AppLocale.string("reminders.schedule.everyNDays"), intervalDays))
                     .foregroundStyle(HLText.secondary)
                     .monospacedDigit()
             }
@@ -86,7 +86,7 @@ extension MeasurementReminderCreateSheet {
         .accessibilityIdentifier("MeasurementReminderCreateSheet.rrulePreset")
 
         if rrulePreset == .custom {
-            TextField(String(localized: "reminders.create.rrule.customPlaceholder"), text: $customRrule)
+            TextField(AppLocale.string("reminders.create.rrule.customPlaceholder"), text: $customRrule)
                 .textInputAutocapitalization(.characters)
                 .autocorrectionDisabled()
                 .accessibilityIdentifier("MeasurementReminderCreateSheet.customRrule")
@@ -142,7 +142,7 @@ extension MeasurementReminderCreateSheet {
 
     var locationSection: some View {
         Section {
-            TextField(String(localized: "reminders.create.location.placeholder"), text: $location)
+            TextField(AppLocale.string("reminders.create.location.placeholder"), text: $location)
                 .accessibilityIdentifier("MeasurementReminderCreateSheet.location")
         } header: {
             Text("reminders.create.location.label")

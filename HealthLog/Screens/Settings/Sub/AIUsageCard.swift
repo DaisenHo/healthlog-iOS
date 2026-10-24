@@ -110,18 +110,18 @@ extension AIUsageCard {
 enum AIUsagePresentation {
     static func label(_ level: AIUsageLevel) -> String {
         switch level {
-        case .frugal: String(localized: "settings.ai.usage.level.frugal")
-        case .standard: String(localized: "settings.ai.usage.level.standard")
-        case .full: String(localized: "settings.ai.usage.level.full")
+        case .frugal: AppLocale.string("settings.ai.usage.level.frugal")
+        case .standard: AppLocale.string("settings.ai.usage.level.standard")
+        case .full: AppLocale.string("settings.ai.usage.level.full")
         }
     }
 
     /// The line under an option: why it is disabled, else the server's
     /// estimate, else nothing.
     static func detail(for option: AIUsageOption) -> String? {
-        if !option.allowed { return String(localized: "settings.ai.usage.limited") }
+        if !option.allowed { return AppLocale.string("settings.ai.usage.limited") }
         guard let tokens = option.estimatedTokensPerDay else { return nil }
-        return String(localized: "settings.ai.usage.estimate \(tokens.formatted())")
+        return AppLocale.string("settings.ai.usage.estimate \(tokens.formatted())")
     }
 
     /// The notes under the options: the operator's ceiling over a stored
@@ -129,10 +129,10 @@ enum AIUsagePresentation {
     static func notes(for usage: AIUsageState) -> [String] {
         var notes: [String] = []
         if usage.source == .adminCap {
-            notes.append(String(localized: "settings.ai.usage.adminCap \(label(usage.level))"))
+            notes.append(AppLocale.string("settings.ai.usage.adminCap \(label(usage.level))"))
         }
         if let measured = usage.measuredTokensPerDay, usage.measuredDays > 0 {
-            notes.append(String(localized: "settings.ai.usage.measured \(measured.formatted()) \(usage.measuredDays)"))
+            notes.append(AppLocale.string("settings.ai.usage.measured \(measured.formatted()) \(usage.measuredDays)"))
         }
         return notes
     }

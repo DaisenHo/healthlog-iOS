@@ -227,7 +227,7 @@ struct SettingsDevicesScreen: View {
         HStack(spacing: HLSpace.xs) {
             Text("devices.add.supported.title")
             Text(Self.supportedFamilies
-                .map { String(localized: $0.localizationKey) }
+                .map { AppLocale.string(AppLocale.shared.resource($0.localizationKey)) }
                 .joined(separator: ", ")
             )
         }

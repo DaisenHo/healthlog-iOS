@@ -152,7 +152,7 @@ struct AchievementMedallion: View {
 
     private var visibleTitle: String {
         if achievement.isHiddenPlaceholder {
-            return String(localized: "Secret")
+            return AppLocale.string("Secret")
         }
         return achievement.title
     }
@@ -163,12 +163,12 @@ struct AchievementMedallion: View {
     /// without opening the sheet.
     private var tooltipLabel: String {
         if achievement.isHiddenPlaceholder {
-            return String(localized: "Mysterious achievement — discover it")
+            return AppLocale.string("Mysterious achievement — discover it")
         }
         if achievement.unlocked {
             return achievement.title
         }
-        return String(localized: "Not unlocked yet")
+        return AppLocale.string("Not unlocked yet")
     }
 }
 
@@ -194,18 +194,18 @@ struct AchievementMedallionButton: View {
     private var accessibilityLabel: Text {
         var parts: [String] = []
         if achievement.isHiddenPlaceholder {
-            parts.append(String(localized: "Secret achievement"))
+            parts.append(AppLocale.string("Secret achievement"))
         } else {
-            parts.append(String(localized: "Achievement"))
+            parts.append(AppLocale.string("Achievement"))
             parts.append(achievement.title)
         }
         if achievement.unlocked {
-            parts.append(String(localized: "earned"))
+            parts.append(AppLocale.string("earned"))
         } else if !achievement.isHiddenPlaceholder {
-            parts.append(String(localized: "\(Int(round(achievement.progress * 100))) percent progress"))
+            parts.append(AppLocale.string("\(Int(round(achievement.progress * 100))) percent progress"))
         }
         if let points = achievement.points, points > 0, achievement.unlocked {
-            parts.append(String(localized: "\(points) points"))
+            parts.append(AppLocale.string("\(points) points"))
         }
         return Text(parts.joined(separator: ", "))
     }

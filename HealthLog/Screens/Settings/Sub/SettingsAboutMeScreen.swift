@@ -49,7 +49,7 @@ struct SettingsAboutMeScreen: View {
                 List {
                     HLCloudDerivedPlaceholder(
                         variant: .inline,
-                        surfaceName: String(localized: "coachContext.title"),
+                        surfaceName: AppLocale.string("coachContext.title"),
                         onConnect: { authStore.beginServerPairing() }
                     )
                     .listRowSeparator(.hidden)
@@ -115,7 +115,7 @@ struct SettingsAboutMeScreen: View {
             ) {
                 field(
                     text: $store.aboutMe,
-                    prompt: String(localized: "Describe yourself…"),
+                    prompt: AppLocale.string("Describe yourself…"),
                     cap: store.maxChars,
                     lines: 3 ... 8,
                     store: store
@@ -126,7 +126,7 @@ struct SettingsAboutMeScreen: View {
             HLSettingsCard(icon: "stethoscope", title: "Conditions") {
                 field(
                     text: $store.conditions,
-                    prompt: String(localized: "Chronic conditions"),
+                    prompt: AppLocale.string("Chronic conditions"),
                     cap: store.fieldMaxChars,
                     lines: 1 ... 4,
                     store: store
@@ -137,7 +137,7 @@ struct SettingsAboutMeScreen: View {
             HLSettingsCard(icon: "allergens", title: "Allergies & intolerances") {
                 field(
                     text: $store.allergies,
-                    prompt: String(localized: "Allergies or intolerances"),
+                    prompt: AppLocale.string("Allergies or intolerances"),
                     cap: store.fieldMaxChars,
                     lines: 1 ... 4,
                     store: store
@@ -148,7 +148,7 @@ struct SettingsAboutMeScreen: View {
             HLSettingsCard(icon: "scope", title: "Coach focus") {
                 field(
                     text: $store.coachFocus,
-                    prompt: String(localized: "What the coach should focus on"),
+                    prompt: AppLocale.string("What the coach should focus on"),
                     cap: store.fieldMaxChars,
                     lines: 1 ... 4,
                     store: store
@@ -210,12 +210,12 @@ struct SettingsAboutMeScreen: View {
             case .idle:
                 EmptyView()
             case .saved:
-                Label(String(localized: "Saved"), systemImage: "checkmark.circle.fill")
+                Label(AppLocale.string("Saved"), systemImage: "checkmark.circle.fill")
                     .font(.hlFootnote)
                     .foregroundStyle(HLColor.statusOK)
             case .failed:
                 Label(
-                    String(localized: "Could not save — please try again."),
+                    AppLocale.string("Could not save — please try again."),
                     systemImage: "exclamationmark.triangle.fill"
                 )
                 .font(.hlFootnote)
@@ -300,15 +300,15 @@ struct SettingsAboutMeScreen: View {
         case .idle:
             EmptyView()
         case .adopted:
-            Label(String(localized: "coach.questions.adopted"), systemImage: "checkmark.circle.fill")
+            Label(AppLocale.string("coach.questions.adopted"), systemImage: "checkmark.circle.fill")
                 .font(.hlFootnote)
                 .foregroundStyle(HLColor.statusOK)
         case .dismissed:
-            Label(String(localized: "coach.questions.dismissed"), systemImage: "checkmark.circle")
+            Label(AppLocale.string("coach.questions.dismissed"), systemImage: "checkmark.circle")
                 .font(.hlFootnote)
                 .foregroundStyle(HLText.secondary)
         case .failed:
-            Label(String(localized: "coach.questions.failed"), systemImage: "exclamationmark.triangle.fill")
+            Label(AppLocale.string("coach.questions.failed"), systemImage: "exclamationmark.triangle.fill")
                 .font(.hlFootnote)
                 .foregroundStyle(HLColor.statusBad)
         }
@@ -336,7 +336,7 @@ struct SettingsAboutMeScreen: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "Cancel")) { answeringQuestion = nil }
+                    Button(AppLocale.string("Cancel")) { answeringQuestion = nil }
                 }
             }
         }
@@ -347,7 +347,7 @@ struct SettingsAboutMeScreen: View {
     private func answerField(store: CoachAboutMeStore) -> some View {
         VStack(alignment: .trailing, spacing: HLSpace.xxs) {
             TextField(
-                String(localized: "coach.questions.answer.prompt"),
+                AppLocale.string("coach.questions.answer.prompt"),
                 text: $answerDraft,
                 axis: .vertical
             )

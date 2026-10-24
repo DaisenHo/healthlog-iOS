@@ -294,7 +294,7 @@ struct InsightsContainerScreen: View {
                 SettingsInsightsCustomizationScreen()
                     .toolbar {
                         ToolbarItem(placement: .confirmationAction) {
-                            Button(String(localized: "Done")) { showStripCustomize = false }
+                            Button(AppLocale.string("Done")) { showStripCustomize = false }
                         }
                     }
             }

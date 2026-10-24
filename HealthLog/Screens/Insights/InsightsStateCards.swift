@@ -35,7 +35,7 @@ struct InsightsEmptyStateCard: View {
             case let .aiUnavailable(reason):
                 HLEmptyState(
                     icon: "sparkles",
-                    title: Text(String(localized: "insights.empty.ai.title")),
+                    title: Text(AppLocale.string("insights.empty.ai.title")),
                     message: Text(verbatim: InsightsEmptyState.message(for: reason))
                 )
                 .accessibilityIdentifier("insights.empty.ai")
@@ -81,21 +81,21 @@ enum InsightsEmptyState: Equatable {
     nonisolated static func message(for reason: AIUnavailableReason) -> String {
         let why = switch reason {
         case .operatorDisabled:
-            String(localized: "insights.empty.ai.reason.operator")
+            AppLocale.string("insights.empty.ai.reason.operator")
         case .moduleDisabled, .userDisabled:
-            String(localized: "insights.empty.ai.reason.switchedOff")
+            AppLocale.string("insights.empty.ai.reason.switchedOff")
         case .noProvider:
-            String(localized: "insights.empty.ai.reason.noProvider")
+            AppLocale.string("insights.empty.ai.reason.noProvider")
         case .consentRequired:
-            String(localized: "insights.empty.ai.reason.consent")
+            AppLocale.string("insights.empty.ai.reason.consent")
         case .notPermittedForRecord:
-            String(localized: "insights.empty.ai.reason.record")
+            AppLocale.string("insights.empty.ai.reason.record")
         case .usageLevel:
-            String(localized: "ai.reason.usageLevel")
+            AppLocale.string("ai.reason.usageLevel")
         case .checkFailed, .unknown:
-            String(localized: "insights.empty.ai.reason.unknown")
+            AppLocale.string("insights.empty.ai.reason.unknown")
         }
-        return why + " " + String(localized: "insights.empty.ai.dataNote")
+        return why + " " + AppLocale.string("insights.empty.ai.dataNote")
     }
 }
 
@@ -109,7 +109,7 @@ struct InsightsErrorCard: View {
                 HStack {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .foregroundStyle(HLColor.statusBad)
-                    Text(String(localized: "Couldn't load insights"))
+                    Text(AppLocale.string("Couldn't load insights"))
                         .font(.hlHeadline)
                         .foregroundStyle(HLText.primary)
                 }
@@ -118,7 +118,7 @@ struct InsightsErrorCard: View {
                     .foregroundStyle(HLText.secondary)
                     .fixedSize(horizontal: false, vertical: true)
                 HLButton(
-                    String(localized: "Try again"),
+                    AppLocale.string("Try again"),
                     variant: .primary,
                     size: .regular
                 ) { retry() }

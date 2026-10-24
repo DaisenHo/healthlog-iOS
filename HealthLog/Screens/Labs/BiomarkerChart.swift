@@ -171,15 +171,19 @@ struct BiomarkerChart: View {
     private var chartDescriptor: AXChartDescriptor {
         let pts = points
         let triples = pts.enumerated().map { idx, point in
-            (x: Double(idx), y: point.value, xLabel: point.date.formatted(.dateTime.day().month(.abbreviated).year()))
+            (
+                x: Double(idx),
+                y: point.value,
+                xLabel: point.date.formatted(.dateTime.day().month(.abbreviated).year().locale(AppLocale.shared.current))
+            )
         }
         let unitSuffix = unit.isEmpty ? "" : " \(unit)"
         return HLChartAX.singleSeries(
-            title: String(localized: "biomarker.detail.chart.a11y"),
+            title: AppLocale.string("biomarker.detail.chart.a11y"),
             summary: "",
-            xAxisTitle: String(localized: "biomarker.detail.chart.ax.dateAxis"),
-            yAxisTitle: unit.isEmpty ? String(localized: "biomarker.detail.chart.ax.valueAxis") : unit,
-            seriesName: String(localized: "biomarker.detail.chart.ax.series"),
+            xAxisTitle: AppLocale.string("biomarker.detail.chart.ax.dateAxis"),
+            yAxisTitle: unit.isEmpty ? AppLocale.string("biomarker.detail.chart.ax.valueAxis") : unit,
+            seriesName: AppLocale.string("biomarker.detail.chart.ax.series"),
             points: triples,
             yValueLabel: { value in
                 let formatted = value.formatted(.number.precision(.fractionLength(0 ... 2)))

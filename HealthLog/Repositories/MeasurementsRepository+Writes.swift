@@ -447,7 +447,7 @@ public extension MeasurementsRepository {
             // picker entry lands before its `toCreateDTOs()` arm does.
             throw HLError.unknown(
                 String(
-                    format: String(localized: "measurement.error.notSerializable"),
+                    format: AppLocale.string("measurement.error.notSerializable"),
                     measurement.kind.displayName
                 )
             )

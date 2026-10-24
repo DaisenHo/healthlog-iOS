@@ -188,7 +188,7 @@ extension NotificationsScreen {
                 )
             ) {
                 HStack(spacing: HLSpace.sm) {
-                    Text(verbatim: String(localized: "med.lowstock.toggle.label"))
+                    Text(verbatim: AppLocale.string("med.lowstock.toggle.label"))
                         .font(.hlHeadline)
                     if lowStockInFlight {
                         ProgressView()
@@ -213,12 +213,12 @@ extension NotificationsScreen {
                     in: medicationLowStockRunwayMin ... medicationLowStockRunwayMax
                 ) {
                     HStack {
-                        Text(verbatim: String(localized: "med.lowstock.threshold.label"))
+                        Text(verbatim: AppLocale.string("med.lowstock.threshold.label"))
                             .font(.hlHeadline)
                         Spacer(minLength: HLSpace.sm)
                         Text(
                             verbatim: String(
-                                format: String(localized: "med.lowstock.threshold.value"),
+                                format: AppLocale.string("med.lowstock.threshold.value"),
                                 store?.lowStockRunwayDays ?? lowStockDaysSelection
                             )
                         )

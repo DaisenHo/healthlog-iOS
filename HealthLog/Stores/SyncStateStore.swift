@@ -106,7 +106,7 @@ public final class SyncStateStore {
     public var failedDropCaption: String? {
         guard showsFailedDrop, failedDropCount > 0 else { return nil }
         return String(
-            format: String(localized: "sync.footer.failed_drop"),
+            format: AppLocale.string("sync.footer.failed_drop"),
             failedDropCount
         )
     }

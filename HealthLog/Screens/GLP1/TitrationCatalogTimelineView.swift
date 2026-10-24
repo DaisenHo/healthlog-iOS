@@ -35,7 +35,7 @@ struct TitrationCatalogTimelineView: View {
                 // The schedule is the manufacturer's, not the app's — say so,
                 // and hand the reader the EMA source it comes from. The link
                 // stays outside every `.combine` group above it.
-                Text(String(localized: "Per the manufacturer's guide — discuss any change with your doctor."))
+                Text(AppLocale.string("Per the manufacturer's guide — discuss any change with your doctor."))
                     .font(.hlCaption)
                     .foregroundStyle(HLText.tertiary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -100,8 +100,8 @@ private struct TitrationCatalogRow: View {
     private var accessibilityLabel: Text {
         let dose = TitrationLadderSection.formatDose(step.doseMg)
         let state = step.isCurrent
-            ? String(localized: "medication.titration.plan.a11y.current")
-            : String(localized: "medication.titration.plan.a11y.past")
+            ? AppLocale.string("medication.titration.plan.a11y.current")
+            : AppLocale.string("medication.titration.plan.a11y.past")
         return Text("\(dose), \(state)")
     }
 }

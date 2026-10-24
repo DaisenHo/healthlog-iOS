@@ -215,7 +215,7 @@ struct EmptyActiveMedicationsState: View {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, HLSpace.md)
             HLButton(
-                String(localized: "medications.section.active.empty.cta"),
+                AppLocale.string("medications.section.active.empty.cta"),
                 icon: "plus",
                 variant: .restrained,
                 action: onAdd

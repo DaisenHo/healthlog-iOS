@@ -35,7 +35,7 @@ public extension MedicationsStore {
             let err = HLError.server(
                 status: 422,
                 code: "medications.intake.taken_at.out_of_range",
-                message: String(localized: "med.intake.taken_at.out_of_range")
+                message: AppLocale.string("med.intake.taken_at.out_of_range")
             )
             error = err
             return .failed(err)

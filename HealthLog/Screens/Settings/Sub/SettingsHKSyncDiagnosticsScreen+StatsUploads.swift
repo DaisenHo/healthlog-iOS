@@ -66,7 +66,7 @@ extension SettingsHKSyncDiagnosticsScreen {
 
     /// "5 minutes ago, Background", or "Never".
     func statsEventLabel(_ entry: HealthKitStatsUploadLog.Entry?) -> String {
-        guard let entry else { return String(localized: "settings.hkdiag.never") }
+        guard let entry else { return AppLocale.string("settings.hkdiag.never") }
         let trigger = HKSyncDiagnosticsVocabulary.collectionTrigger(entry.trigger)
         return "\(relativeOrNever(entry.at)), \(trigger)"
     }
@@ -74,10 +74,10 @@ extension SettingsHKSyncDiagnosticsScreen {
     /// W5 — "New value sent 5 minutes ago, Background", or "None sent from
     /// this iPhone yet": a local record, and it says so.
     static func statsSentLabel(_ entry: HealthKitStatsUploadLog.Entry?) -> String {
-        guard let entry else { return String(localized: "settings.hkdiag.stats.none_sent") }
+        guard let entry else { return AppLocale.string("settings.hkdiag.stats.none_sent") }
         let when = ServerFreshnessFacts.relative(entry.at)
         let trigger = HKSyncDiagnosticsVocabulary.collectionTrigger(entry.trigger)
-        return String(localized: "settings.hkdiag.stats.sent \(when) \(trigger)")
+        return AppLocale.string("settings.hkdiag.stats.sent \(when) \(trigger)")
     }
 
     /// W5 — "Server: last checked 5 hours ago (Background)" for the same type,
@@ -85,11 +85,11 @@ extension SettingsHKSyncDiagnosticsScreen {
     static func statsServerLine(_ identifier: String, freshness: [MetricFreshness]?) -> String? {
         guard let row = ServerFreshnessFacts.row(forHealthKitIdentifier: identifier, in: freshness),
               let checked = ServerFreshnessFacts(row: row).checkedLabel else { return nil }
-        return String(localized: "settings.hkdiag.stats.server_line \(checked)")
+        return AppLocale.string("settings.hkdiag.stats.server_line \(checked)")
     }
 
     static func statsTypeTitle(_ identifier: String) -> String {
         guard let kind = HKSyncDiagnostics.metricKind(for: identifier) else { return identifier }
-        return String(localized: kind.descriptor.title)
+        return AppLocale.string(AppLocale.shared.resource(kind.descriptor.title))
     }
 }

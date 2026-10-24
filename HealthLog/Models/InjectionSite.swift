@@ -39,15 +39,15 @@ public enum InjectionSite: String, Codable, CaseIterable, Sendable, Hashable {
     /// can render without a separate switch.
     public var localizedLabel: String {
         switch self {
-        case .abdomenLeftUpper: String(localized: "med.injection.site.abdomen_left_upper")
-        case .abdomenRightUpper: String(localized: "med.injection.site.abdomen_right_upper")
-        case .abdomenLeftLower: String(localized: "med.injection.site.abdomen_left_lower")
-        case .abdomenRightLower: String(localized: "med.injection.site.abdomen_right_lower")
-        case .thighLeft: String(localized: "med.injection.site.thigh_left")
-        case .thighRight: String(localized: "med.injection.site.thigh_right")
-        case .armLeft: String(localized: "med.injection.site.arm_left")
-        case .armRight: String(localized: "med.injection.site.arm_right")
-        case .unknown: String(localized: "med.injection.site.unknown")
+        case .abdomenLeftUpper: AppLocale.string("med.injection.site.abdomen_left_upper")
+        case .abdomenRightUpper: AppLocale.string("med.injection.site.abdomen_right_upper")
+        case .abdomenLeftLower: AppLocale.string("med.injection.site.abdomen_left_lower")
+        case .abdomenRightLower: AppLocale.string("med.injection.site.abdomen_right_lower")
+        case .thighLeft: AppLocale.string("med.injection.site.thigh_left")
+        case .thighRight: AppLocale.string("med.injection.site.thigh_right")
+        case .armLeft: AppLocale.string("med.injection.site.arm_left")
+        case .armRight: AppLocale.string("med.injection.site.arm_right")
+        case .unknown: AppLocale.string("med.injection.site.unknown")
         }
     }
 

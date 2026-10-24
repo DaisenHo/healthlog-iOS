@@ -33,9 +33,9 @@ struct ResolvedChannelState {
         // active row sits at full ink so it still reads as the healthy
         // default against the muted paused/disabled states.
         tint: HLText.primary,
-        stateLine: String(localized: "Active"),
+        stateLine: AppLocale.string("Active"),
         stateLineTint: HLText.secondary,
-        voiceOverLabel: String(localized: "notifications.channel.state.active"),
+        voiceOverLabel: AppLocale.string("notifications.channel.state.active"),
         needsRetryAction: false
     )
 }
@@ -67,17 +67,17 @@ enum NotificationFailureReason {
     private static func apnsLabel(for raw: String) -> String? {
         switch raw {
         case "BadDeviceToken":
-            String(localized: "Device unknown — reinstall the app or register the token.")
+            AppLocale.string("Device unknown — reinstall the app or register the token.")
         case "Unregistered":
-            String(localized: "App uninstalled on the device — renew the push token.")
+            AppLocale.string("App uninstalled on the device — renew the push token.")
         case "DeviceTokenNotForTopic":
-            String(localized: "Bundle ID does not match the APNs topic.")
+            AppLocale.string("Bundle ID does not match the APNs topic.")
         case "apns_not_configured":
-            String(localized: "APNs key missing on the server — check operator configuration.")
+            AppLocale.string("APNs key missing on the server — check operator configuration.")
         case "apns_network_error":
-            String(localized: "Network error connecting to Apple Push.")
+            AppLocale.string("Network error connecting to Apple Push.")
         case "apns_unknown_failure":
-            String(localized: "notifications.error.apns.unknown")
+            AppLocale.string("notifications.error.apns.unknown")
         default:
             nil
         }
@@ -88,9 +88,9 @@ enum NotificationFailureReason {
     private static func webPushLabel(for raw: String) -> String? {
         switch raw {
         case "web_push_410_gone", "web_push_404_endpoint":
-            String(localized: "notifications.error.webpush.expired")
+            AppLocale.string("notifications.error.webpush.expired")
         case "ntfy_410_gone":
-            String(localized: "ntfy topic deleted — create a new one.")
+            AppLocale.string("ntfy topic deleted — create a new one.")
         default:
             nil
         }
@@ -101,9 +101,9 @@ enum NotificationFailureReason {
     private static func telegramLabel(for raw: String) -> String? {
         switch raw {
         case "telegram_chat_not_found":
-            String(localized: "Telegram chat not found — reconnect the bot.")
+            AppLocale.string("Telegram chat not found — reconnect the bot.")
         case "telegram_blocked_by_user":
-            String(localized: "The bot was blocked in Telegram.")
+            AppLocale.string("The bot was blocked in Telegram.")
         default:
             nil
         }
@@ -113,11 +113,11 @@ enum NotificationFailureReason {
     private static func genericLabel(for raw: String) -> String? {
         switch raw {
         case "give_up_after_5_failures":
-            String(localized: "Five failures in a row — channel disabled.")
+            AppLocale.string("Five failures in a row — channel disabled.")
         case "hard_reject":
-            String(localized: "Upstream rejected the channel permanently.")
+            AppLocale.string("Upstream rejected the channel permanently.")
         case "transient_failure":
-            String(localized: "Temporary error — the dispatcher will retry.")
+            AppLocale.string("Temporary error — the dispatcher will retry.")
         default:
             nil
         }

@@ -96,7 +96,7 @@ struct InsightsRhythmEventsCard: View {
                         .accessibilityIdentifier("insights.rhythmEvents.verdict")
                 }
                 HStack(spacing: HLSpace.xs) {
-                    let when = event.occurredAt.formatted(.dateTime.day().month().year().hour().minute())
+                    let when = event.occurredAt.formatted(.dateTime.day().month().year().hour().minute().locale(AppLocale.shared.current))
                     // Honest device attribution — "…, Withings" / "…, Apple
                     // Watch". Tertiary, caption-weight: it qualifies the
                     // event without competing with the verdict. U5 (1.1.1):
@@ -121,7 +121,7 @@ struct InsightsRhythmEventsCard: View {
     nonisolated static func accessibilityLabel(label: String, verdict: String?, source: String?) -> String {
         var parts = [label]
         if let verdict { parts.append(verdict) }
-        if let source { parts.append(String(localized: "Recorded by \(source)")) }
+        if let source { parts.append(AppLocale.string("Recorded by \(source)")) }
         return parts.joined(separator: ". ")
     }
 
@@ -154,11 +154,11 @@ struct InsightsRhythmEventsCard: View {
     /// actor. Localized strings resolve through the catalog (EN source + DE).
     nonisolated static func eventLabel(for type: String) -> String {
         switch type {
-        case "IRREGULAR_RHYTHM_NOTIFICATION": String(localized: "Irregular rhythm notification")
-        case "HIGH_HEART_RATE_EVENT": String(localized: "High heart rate notification")
-        case "LOW_HEART_RATE_EVENT": String(localized: "Low heart rate notification")
-        case "WALKING_STEADINESS_EVENT": String(localized: "Walking steadiness alert")
-        case "BREATHING_DISTURBANCE_EVENT": String(localized: "Breathing disturbance during sleep")
+        case "IRREGULAR_RHYTHM_NOTIFICATION": AppLocale.string("Irregular rhythm notification")
+        case "HIGH_HEART_RATE_EVENT": AppLocale.string("High heart rate notification")
+        case "LOW_HEART_RATE_EVENT": AppLocale.string("Low heart rate notification")
+        case "WALKING_STEADINESS_EVENT": AppLocale.string("Walking steadiness alert")
+        case "BREATHING_DISTURBANCE_EVENT": AppLocale.string("Breathing disturbance during sleep")
         default: type
         }
     }
@@ -168,12 +168,12 @@ struct InsightsRhythmEventsCard: View {
     nonisolated static func verdictLabel(for classification: String?) -> String? {
         guard let classification else { return nil }
         switch classification {
-        case "IRREGULAR": return String(localized: "Your device flagged a possible irregular rhythm.")
-        case "NOT_DETECTED": return String(localized: "Your device did not flag an irregular rhythm.")
-        case "INCONCLUSIVE": return String(localized: "Your device could not make a reading.")
-        case "LOW": return String(localized: "Your device flagged low walking steadiness.")
-        case "VERY_LOW": return String(localized: "Your device flagged very low walking steadiness.")
-        case "FIRED": return String(localized: "Your device flagged this event.")
+        case "IRREGULAR": return AppLocale.string("Your device flagged a possible irregular rhythm.")
+        case "NOT_DETECTED": return AppLocale.string("Your device did not flag an irregular rhythm.")
+        case "INCONCLUSIVE": return AppLocale.string("Your device could not make a reading.")
+        case "LOW": return AppLocale.string("Your device flagged low walking steadiness.")
+        case "VERY_LOW": return AppLocale.string("Your device flagged very low walking steadiness.")
+        case "FIRED": return AppLocale.string("Your device flagged this event.")
         default: return nil
         }
     }

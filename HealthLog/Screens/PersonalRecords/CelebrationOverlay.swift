@@ -112,7 +112,7 @@ struct CelebrationOverlay: View {
         // Both placeholders are Strings by construction (a localized label and a
         // formatted figure), so the catalogue key is `%@ %@` — the same trap
         // `med.inventory.summary` documents.
-        return String(localized: "New personal record: \(metric), \(value)")
+        return AppLocale.string("New personal record: \(metric), \(value)")
     }
 
     /// Longest particle lifespan in the current burst (≤1.6 s by seeding).

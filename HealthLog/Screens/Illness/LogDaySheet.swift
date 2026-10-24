@@ -203,7 +203,7 @@ struct LogDaySheet: View {
             onSaved?()
             dismiss()
         } else {
-            saveError = store.lastError ?? String(localized: "illness.save.failed")
+            saveError = store.lastError ?? AppLocale.string("illness.save.failed")
         }
     }
 
@@ -224,7 +224,7 @@ struct LogDaySheet: View {
     }
 
     private func severityLabel(_ level: Int) -> String {
-        let template = String(localized: "illness.daylog.severity.option")
+        let template = AppLocale.string("illness.daylog.severity.option")
         return String(format: template, level)
     }
 }

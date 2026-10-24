@@ -54,9 +54,7 @@ struct AIConsentSheet: View {
                     VStack(alignment: .leading, spacing: HLSpace.md) {
                         bulletRow(
                             symbol: "lock.shield",
-                            text: String(
-                                localized: "Your name, email, and device ID are never sent."
-                            )
+                            text: AppLocale.string("Your name, email, and device ID are never sent.")
                         )
                         if showsExternalProcessingDisclosure {
                             bulletRow(
@@ -70,7 +68,7 @@ struct AIConsentSheet: View {
                         }
                         bulletRow(
                             symbol: "arrow.uturn.backward",
-                            text: String(localized: "You can disable transmission at any time in Settings → Assistant.")
+                            text: AppLocale.string("You can disable transmission at any time in Settings → Assistant.")
                         )
                     }
                     .padding(HLSpace.md)
@@ -106,7 +104,7 @@ struct AIConsentSheet: View {
                     // (white-on-white). Pinning fill + clamped label to the
                     // same token guarantees contrast in light AND dark.
                     HLButton(
-                        String(localized: "Accept"),
+                        AppLocale.string("Accept"),
                         variant: .primary,
                         size: .large,
                         action: onAccept
@@ -135,7 +133,7 @@ struct AIConsentSheet: View {
     private var legalDisclosure: some View {
         VStack(alignment: .leading, spacing: HLSpace.sm) {
             Label(
-                String(localized: "consent.legal.leavesDevice"),
+                AppLocale.string("consent.legal.leavesDevice"),
                 systemImage: "iphone.and.arrow.forward"
             )
             .font(.hlFootnote.weight(.semibold))
@@ -146,12 +144,12 @@ struct AIConsentSheet: View {
                 .foregroundStyle(HLText.secondary)
                 .fixedSize(horizontal: false, vertical: true)
 
-            Text(String(localized: "consent.legal.transferRetention"))
+            Text(AppLocale.string("consent.legal.transferRetention"))
                 .font(.hlCaption)
                 .foregroundStyle(HLText.secondary)
                 .fixedSize(horizontal: false, vertical: true)
 
-            Text(String(localized: "consent.legal.article9"))
+            Text(AppLocale.string("consent.legal.article9"))
                 .font(.hlCaption)
                 .foregroundStyle(HLText.tertiary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -177,15 +175,16 @@ struct AIConsentSheet: View {
             let providerName = switch provider {
             case .anthropic: "Anthropic"
             case .openai: "OpenAI"
-            case .local: String(localized: "your local LLM")
+            case .local: AppLocale.string("your local LLM")
             // CU-16 — an OpenAI-compatible endpoint can be anyone's; naming a
             // company here would be an invention. The neutral wording is the
             // honest one.
-            case .unconfigured, .openaiCompatible: String(localized: "your assistant provider")
+            case .unconfigured, .openaiCompatible: AppLocale.string("your assistant provider")
             }
-            return String(
-                localized: "HealthLog sends excerpts of your health data — recent measurements, medications, sleep, and mood — to \(providerName) to generate personal insights."
-            )
+            return AppLocale
+                .string(
+                    "HealthLog sends excerpts of your health data — recent measurements, medications, sleep, and mood — to \(providerName) to generate personal insights."
+                )
         }
     }
 
@@ -199,21 +198,21 @@ struct AIConsentSheet: View {
         switch context {
         case .serverMediated:
             if let names = recipientList {
-                return String(format: String(localized: "consent.legal.subProcessor.userChosen"), names)
+                return String(format: AppLocale.string("consent.legal.subProcessor.userChosen"), names)
             }
-            return String(localized: "consent.legal.subProcessor.server")
+            return AppLocale.string("consent.legal.subProcessor.server")
         case .userChosen:
             let providerName = switch provider {
             case .anthropic: "Anthropic, PBC"
             case .openai: "OpenAI, L.L.C."
-            case .local: String(localized: "your local LLM")
+            case .local: AppLocale.string("your local LLM")
             // CU-16 — an OpenAI-compatible endpoint is NOT necessarily OpenAI.
             // Naming a legal entity we cannot identify would be a false
             // sub-processor disclosure; stay generic.
-            case .unconfigured, .openaiCompatible: String(localized: "your assistant provider")
+            case .unconfigured, .openaiCompatible: AppLocale.string("your assistant provider")
             }
             return String(
-                format: String(localized: "consent.legal.subProcessor.userChosen"),
+                format: AppLocale.string("consent.legal.subProcessor.userChosen"),
                 providerName
             )
         }
@@ -225,13 +224,14 @@ struct AIConsentSheet: View {
     /// which forwards it onward — never a hardcoded third-party name.
     private var serverConsentCopy: String {
         let sent =
-            String(
-                localized: "HealthLog sends excerpts of your health data — recent measurements, medications, sleep, and mood — to your server."
-            )
+            AppLocale
+                .string(
+                    "HealthLog sends excerpts of your health data — recent measurements, medications, sleep, and mood — to your server."
+                )
         let forwarded = if let names = recipientList {
-            String(format: String(localized: "consent.recipients.forwarded"), names)
+            String(format: AppLocale.string("consent.recipients.forwarded"), names)
         } else {
-            String(localized: "Your server forwards them to its configured AI provider to generate personal insights.")
+            AppLocale.string("Your server forwards them to its configured AI provider to generate personal insights.")
         }
         return sent + " " + forwarded
     }
@@ -241,7 +241,7 @@ struct AIConsentSheet: View {
     private var recipientList: String? {
         let names = recipients.filter { !$0.isEmpty }
         guard !names.isEmpty else { return nil }
-        return names.formatted(.list(type: .and))
+        return names.formatted(.list(type: .and).locale(AppLocale.shared.current))
     }
 
     /// Bug 5 (v0.14.8) — the "who receives this data" bullet. Server-mediated
@@ -251,12 +251,12 @@ struct AIConsentSheet: View {
         switch context {
         case .serverMediated:
             if let names = recipientList {
-                String(format: String(localized: "consent.recipients.bullet"), names)
+                String(format: AppLocale.string("consent.recipients.bullet"), names)
             } else {
-                String(localized: "Your server receives this data and forwards it to its AI provider under that provider's privacy policy.")
+                AppLocale.string("Your server receives this data and forwards it to its AI provider under that provider's privacy policy.")
             }
         case .userChosen:
-            String(localized: "Your provider receives this data and handles it under their own privacy policy.")
+            AppLocale.string("Your provider receives this data and handles it under their own privacy policy.")
         }
     }
 
@@ -266,9 +266,9 @@ struct AIConsentSheet: View {
     private var documentProcessingDisclosure: String {
         switch context {
         case .serverMediated:
-            String(localized: "consent.documentProcessing.server")
+            AppLocale.string("consent.documentProcessing.server")
         case .userChosen:
-            String(localized: "consent.documentProcessing.userChosen")
+            AppLocale.string("consent.documentProcessing.userChosen")
         }
     }
 

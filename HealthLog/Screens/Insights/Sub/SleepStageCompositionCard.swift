@@ -138,14 +138,14 @@ struct SleepStageCompositionCard: View {
             )
         }
         return HLChartAX.singleSeries(
-            title: String(localized: "sleep.composition.a11y"),
+            title: AppLocale.string("sleep.composition.a11y"),
             summary: accessibilitySummary,
-            xAxisTitle: String(localized: "sleep.composition.a11y.xAxis"),
-            yAxisTitle: String(localized: "sleep.composition.a11y.yAxis"),
-            seriesName: String(localized: "sleep.composition.a11y.series"),
+            xAxisTitle: AppLocale.string("sleep.composition.a11y.xAxis"),
+            yAxisTitle: AppLocale.string("sleep.composition.a11y.yAxis"),
+            seriesName: AppLocale.string("sleep.composition.a11y.series"),
             points: points,
             yValueLabel: { minutes in
-                String(format: String(localized: "sleep.composition.a11y.minutes"), Int(minutes))
+                String(format: AppLocale.string("sleep.composition.a11y.minutes"), Int(minutes))
             }
         )
     }
@@ -189,7 +189,7 @@ struct SleepStageCompositionCard: View {
     /// VoiceOver hears the composition rather than "chart".
     private var accessibilitySummary: String {
         shares
-            .map { "\(String(localized: $0.stage.displayKey)) \(HLNumberFormat.percent($0.percent))" }
+            .map { "\(AppLocale.string(AppLocale.shared.resource($0.stage.displayKey))) \(HLNumberFormat.percent($0.percent))" }
             .joined(separator: ", ")
     }
 
@@ -231,13 +231,13 @@ enum SleepStageWindow: CaseIterable, Hashable, HLRangeOption {
 
     var label: String {
         switch self {
-        case .week: String(localized: "sleep.composition.window.7")
-        case .fortnight: String(localized: "sleep.composition.window.14")
-        case .month: String(localized: "sleep.composition.window.30")
+        case .week: AppLocale.string("sleep.composition.window.7")
+        case .fortnight: AppLocale.string("sleep.composition.window.14")
+        case .month: AppLocale.string("sleep.composition.window.30")
         }
     }
 
     var rangeAccessibilityLabel: String {
-        String(localized: "sleep.composition.window.a11y \(days)")
+        AppLocale.string("sleep.composition.window.a11y \(days)")
     }
 }

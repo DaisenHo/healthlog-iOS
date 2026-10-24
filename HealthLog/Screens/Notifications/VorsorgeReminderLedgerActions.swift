@@ -75,7 +75,7 @@ struct VorsorgeReminderLedgerActions: View {
             .disabled(isBusy)
             .accessibilityIdentifier("vorsorge.card.action.skip")
         case .sheet:
-            HLButton(String(localized: "vorsorge.action.skip"), icon: "forward.end", variant: .secondary) {
+            HLButton(AppLocale.string("vorsorge.action.skip"), icon: "forward.end", variant: .secondary) {
                 Task { await store.skip(id: row.id) }
             }
             .disabled(isBusy)
@@ -93,7 +93,7 @@ struct VorsorgeReminderLedgerActions: View {
             .disabled(isBusy)
             .accessibilityIdentifier("vorsorge.card.action.snooze")
         case .sheet:
-            HLButton(String(localized: "vorsorge.action.snooze"), icon: "clock.badge", variant: .secondary) {
+            HLButton(AppLocale.string("vorsorge.action.snooze"), icon: "clock.badge", variant: .secondary) {
                 isPickingSnoozeDay.toggle()
             }
             .disabled(isBusy)
@@ -137,7 +137,7 @@ struct VorsorgeReminderLedgerActions: View {
                 .disabled(isBusy)
                 .accessibilityIdentifier("vorsorge.card.action.snooze.confirm")
         case .sheet:
-            HLButton(String(localized: "vorsorge.action.snooze.confirm"), variant: .secondary, action: action)
+            HLButton(AppLocale.string("vorsorge.action.snooze.confirm"), variant: .secondary, action: action)
                 .disabled(isBusy)
                 .accessibilityIdentifier("vorsorge.detail.snooze.confirm")
         }

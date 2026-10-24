@@ -52,7 +52,7 @@ struct HLRangePicker<Option: HLRangeOption>: View where Option.AllCases: RandomA
     }
 
     private var picker: some View {
-        Picker(String(localized: "Time range"), selection: $selection) {
+        Picker(AppLocale.string("Time range"), selection: $selection) {
             ForEach(Array(Option.allCases)) { option in
                 Text(option.label)
                     .accessibilityLabel(Text(option.rangeAccessibilityLabel))

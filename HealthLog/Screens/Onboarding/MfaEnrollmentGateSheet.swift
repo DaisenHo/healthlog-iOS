@@ -105,7 +105,7 @@ struct MfaEnrollmentGateSheet: View {
     private var actions: some View {
         VStack(spacing: HLSpace.sm) {
             HLButton(
-                String(localized: "mfaEnroll.enrollButton"),
+                AppLocale.string("mfaEnroll.enrollButton"),
                 icon: enrollButtonIcon,
                 variant: .primary,
                 size: .compact
@@ -128,7 +128,7 @@ struct MfaEnrollmentGateSheet: View {
             }
 
             HLButton(
-                String(localized: "mfaEnroll.signOutButton"),
+                AppLocale.string("mfaEnroll.signOutButton"),
                 variant: .ghost,
                 size: .regular,
                 isLoading: logoutConfirmation.isSigningOut

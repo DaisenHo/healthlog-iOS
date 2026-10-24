@@ -212,7 +212,7 @@ private struct AISourceCard: View {
         if let reasonInfo {
             return Text(reasonInfo.reason)
         }
-        return Text(String(localized: "Tap to choose this option"))
+        return Text(AppLocale.string("Tap to choose this option"))
     }
 }
 
@@ -223,15 +223,15 @@ extension AISourceRecovery {
     var actionTitle: String {
         switch self {
         case .openAppleIntelligenceSettings:
-            String(
-                localized: "Open Settings",
+            AppLocale.string(LocalizedStringResource(
+                "Open Settings",
                 comment: "AI source picker — recovery action to open system Settings (Apple Intelligence)"
-            )
+            ))
         case .openAssistantSettings:
-            String(
-                localized: "Set up a provider",
+            AppLocale.string(LocalizedStringResource(
+                "Set up a provider",
                 comment: "AI source picker — recovery action to open in-app Settings → Assistant to add a server AI provider"
-            )
+            ))
         }
     }
 }
@@ -252,10 +252,16 @@ extension AIMode {
     /// One-line title for the choice card.
     var choiceTitle: String {
         switch self {
-        case .none: String(localized: "No assistant", comment: "AI source choice — title for the none option")
-        case .onDevice: String(localized: "On-device", comment: "AI source choice — title for the on-device option")
-        case .byoKey: String(localized: "Own key", comment: "AI source choice — title for the bring-your-own-key option")
-        case .online: String(localized: "External AI", comment: "AI source choice — title for the external/server-AI option")
+        case .none: AppLocale.string(LocalizedStringResource("No assistant", comment: "AI source choice — title for the none option"))
+        case .onDevice: AppLocale.string(LocalizedStringResource("On-device", comment: "AI source choice — title for the on-device option"))
+        case .byoKey: AppLocale.string(LocalizedStringResource(
+                "Own key",
+                comment: "AI source choice — title for the bring-your-own-key option"
+            ))
+        case .online: AppLocale.string(LocalizedStringResource(
+                "External AI",
+                comment: "AI source choice — title for the external/server-AI option"
+            ))
         }
     }
 
@@ -263,25 +269,25 @@ extension AIMode {
     var choiceSubtitle: String {
         switch self {
         case .none:
-            String(
-                localized: "No AI surfaces. Your data stays as numbers and charts.",
+            AppLocale.string(LocalizedStringResource(
+                "No AI surfaces. Your data stays as numbers and charts.",
                 comment: "AI source choice — subtitle for the none option"
-            )
+            ))
         case .onDevice:
-            String(
-                localized: "Generated privately on your iPhone. Works offline, nothing is transmitted.",
+            AppLocale.string(LocalizedStringResource(
+                "Generated privately on your iPhone. Works offline, nothing is transmitted.",
                 comment: "AI source choice — subtitle for the on-device option"
-            )
+            ))
         case .byoKey:
-            String(
-                localized: "Use your own AI provider key. Requests go straight from this device to your provider.",
+            AppLocale.string(LocalizedStringResource(
+                "Use your own AI provider key. Requests go straight from this device to your provider.",
                 comment: "AI source choice — subtitle for the bring-your-own-key option"
-            )
+            ))
         case .online:
-            String(
-                localized: "Richer findings and Coach from your server's AI provider. Needs a server connection.",
+            AppLocale.string(LocalizedStringResource(
+                "Richer findings and Coach from your server's AI provider. Needs a server connection.",
                 comment: "AI source choice — subtitle for the external/server-AI option"
-            )
+            ))
         }
     }
 }

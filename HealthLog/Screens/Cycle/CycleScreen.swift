@@ -180,7 +180,7 @@ struct CycleScreen: View {
                     model: model,
                     motion: .breathe,
                     glow: .standard,
-                    accessibilityLabel: String(localized: "cycle.home.title"),
+                    accessibilityLabel: AppLocale.string("cycle.home.title"),
                     accessibilityValue: "\(model.centerTitle), \(model.centerSubtitle)"
                 )
                 // The ring reserves an 18% halo margin on every side (see
@@ -398,24 +398,26 @@ struct CycleScreen: View {
     /// "Stand: Gestern, 14:20". Relative where the system offers it, so a
     /// yesterday-old verdict reads as yesterday rather than as a bare date.
     static func asOfText(_ date: Date) -> String {
-        String(format: String(localized: "cycle.home.verdict.asOf"), asOfFormatter.string(from: date))
+        String(format: AppLocale.string("cycle.home.verdict.asOf"), asOfFormatter.string(from: date))
     }
 
-    private static let asOfFormatter: DateFormatter = {
+    private static var asOfFormatter: DateFormatter {
         let f = DateFormatter()
         f.calendar = Calendar(identifier: .gregorian)
         f.timeZone = .current
         f.dateStyle = .medium
         f.timeStyle = .short
         f.doesRelativeDateFormatting = true
+        f.locale = AppLocale.shared.current
         return f
-    }()
+    }
 
-    private static let monthFormatter: DateFormatter = {
+    private static var monthFormatter: DateFormatter {
         let f = DateFormatter()
         f.calendar = Calendar(identifier: .gregorian)
         f.timeZone = .current
         f.setLocalizedDateFormatFromTemplate("yMMMM")
+        f.locale = AppLocale.shared.current
         return f
-    }()
+    }
 }

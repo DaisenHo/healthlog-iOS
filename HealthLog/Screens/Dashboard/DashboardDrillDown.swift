@@ -52,10 +52,10 @@ struct DrillDownErrorState: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: HLSpace.md) {
-            Text(String(localized: "Detail view could not be loaded"))
+            Text(AppLocale.string("Detail view could not be loaded"))
                 .font(.hlTitle3)
                 .foregroundStyle(HLText.primary)
-            Text(String(localized: "Please go back and tap again."))
+            Text(AppLocale.string("Please go back and tap again."))
                 .font(.hlBody)
                 .foregroundStyle(HLText.secondary)
         }

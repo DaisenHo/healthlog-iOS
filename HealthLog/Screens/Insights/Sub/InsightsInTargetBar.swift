@@ -79,7 +79,7 @@ struct InsightsInTargetBar: View {
     /// when a `windowLabel` is set. U5 (1.1.1): the window sits in parentheses,
     /// no middle dot.
     private var inRangeLabel: String {
-        let base = String(localized: "In range")
+        let base = AppLocale.string("In range")
         guard let windowLabel else { return base }
         return "\(base) (\(windowLabel))"
     }
@@ -89,9 +89,9 @@ struct InsightsInTargetBar: View {
     /// window the sighted user now sees.
     private var accessibilityText: String {
         guard let windowLabel else {
-            return String(localized: "\(pct) percent of measurements in range")
+            return AppLocale.string("\(pct) percent of measurements in range")
         }
-        return String(localized: "\(pct) percent of measurements in range over \(windowLabel)")
+        return AppLocale.string("\(pct) percent of measurements in range over \(windowLabel)")
     }
 
     /// Status tone for the fill + percentage label. ≥80 OK · 50–79 warn · <50 bad

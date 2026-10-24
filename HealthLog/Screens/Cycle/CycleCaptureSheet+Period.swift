@@ -25,7 +25,7 @@ struct CycleCapturePeriodSection: View {
         Section {
             DatePicker("cycle.capture.date", selection: $date, displayedComponents: [.date])
             if let cycleDay = context.cycleDay {
-                Text(String(format: String(localized: "cycle.home.center.cycleDay"), cycleDay))
+                Text(String(format: AppLocale.string("cycle.home.center.cycleDay"), cycleDay))
                     .font(.hlSubhead)
                     .foregroundStyle(HLText.secondary)
             }

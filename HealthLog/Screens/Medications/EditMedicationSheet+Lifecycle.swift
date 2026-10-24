@@ -53,8 +53,8 @@ extension EditMedicationSheet {
             Text("med.lifecycle.end.confirm.title"),
             isPresented: $showEndConfirm,
             message: Text("med.lifecycle.end.confirm.message"),
-            confirm: Text(String(localized: "med.lifecycle.end.confirm.cta")),
-            cancel: Text(String(localized: "med.lifecycle.end.confirm.cancel")),
+            confirm: Text(AppLocale.string("med.lifecycle.end.confirm.cta")),
+            cancel: Text(AppLocale.string("med.lifecycle.end.confirm.cancel")),
             action: {
                 Task { await runLifecycle { await store.endMedication(id: medication.id) } }
             }

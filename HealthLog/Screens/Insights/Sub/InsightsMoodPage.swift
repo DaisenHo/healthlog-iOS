@@ -50,9 +50,9 @@ struct InsightsMoodPage: View {
 
     private var windowLabel: String {
         switch period {
-        case .days30: String(localized: "in 30 days")
-        case .days90: String(localized: "in 90 days")
-        case .year: String(localized: "in 1 year")
+        case .days30: AppLocale.string("in 30 days")
+        case .days90: AppLocale.string("in 90 days")
+        case .year: AppLocale.string("in 1 year")
         }
     }
 
@@ -151,7 +151,7 @@ struct InsightsMoodPage: View {
     private var headerActions: some View {
         InsightsHeaderActionCircle(
             systemImage: "slider.horizontal.3",
-            accessibilityLabelText: String(localized: "Customise insights"),
+            accessibilityLabelText: AppLocale.string("Customise insights"),
             accessibilityIdentifier: "insights.mood.settings"
         ) {
             presentSettings = true
@@ -159,7 +159,7 @@ struct InsightsMoodPage: View {
         if aiSurfacesVisible {
             InsightsHeaderActionCircle(
                 systemImage: "sparkles",
-                accessibilityLabelText: String(localized: "Ask the coach"),
+                accessibilityLabelText: AppLocale.string("Ask the coach"),
                 accessibilityIdentifier: "insights.mood.explainer"
             ) {
                 presentCoach = true
@@ -393,7 +393,7 @@ struct InsightsMoodPage: View {
             // QoL-4 — a next-step CTA so the empty page isn't a dead-end: open
             // the mood quick-entry sheet (the same path the mood reminder uses).
             HLButton(
-                String(localized: "Log mood"),
+                AppLocale.string("Log mood"),
                 icon: "face.smiling",
                 variant: .restrained
             ) {

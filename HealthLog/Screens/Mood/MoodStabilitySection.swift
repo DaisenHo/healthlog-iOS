@@ -94,7 +94,7 @@ struct MoodStabilitySection: View {
                     .foregroundStyle(HLText.secondary)
                     .fixedSize(horizontal: false, vertical: true)
                 // #115 · 1.3 — the server's own window, not the period control.
-                Text(String(format: String(localized: "mood.stability.days"), stability.days))
+                Text(String(format: AppLocale.string("mood.stability.days"), stability.days))
                     .font(.hlCaption2)
                     .foregroundStyle(HLText.tertiary)
             }
@@ -179,21 +179,21 @@ struct MoodStabilitySection: View {
 
     nonisolated static func bandLabel(for band: MoodStability.Band) -> String {
         switch band {
-        case .verySteady: String(localized: "Very steady")
-        case .steady: String(localized: "Steady")
-        case .variable: String(localized: "Variable")
-        case .veryVariable: String(localized: "mood.stability.band.veryVariable")
-        case .unknown: String(localized: "mood.stability.band.unknown")
+        case .verySteady: AppLocale.string("Very steady")
+        case .steady: AppLocale.string("Steady")
+        case .variable: AppLocale.string("Variable")
+        case .veryVariable: AppLocale.string("mood.stability.band.veryVariable")
+        case .unknown: AppLocale.string("mood.stability.band.unknown")
         }
     }
 
     nonisolated static func sentence(for band: MoodStability.Band) -> String {
         switch band {
-        case .verySteady: String(localized: "Your mood is very steady.")
-        case .steady: String(localized: "Your mood is mostly steady.")
-        case .variable: String(localized: "Your mood varies noticeably.")
-        case .veryVariable: String(localized: "Your mood swings a lot.")
-        case .unknown: String(localized: "mood.stability.sentence.unknown")
+        case .verySteady: AppLocale.string("Your mood is very steady.")
+        case .steady: AppLocale.string("Your mood is mostly steady.")
+        case .variable: AppLocale.string("Your mood varies noticeably.")
+        case .veryVariable: AppLocale.string("Your mood swings a lot.")
+        case .unknown: AppLocale.string("mood.stability.sentence.unknown")
         }
     }
 }

@@ -235,7 +235,7 @@ struct CycleCaptureSheet: View {
                 .foregroundStyle(HLText.secondary)
             symptomRow(
                 key: symptom.key,
-                label: Text(verbatim: symptom.displayLabel ?? String(localized: "cycle.custom.unnamed"))
+                label: Text(verbatim: symptom.displayLabel ?? AppLocale.string("cycle.custom.unnamed"))
             )
             Menu {
                 Button("Edit") { customEditor = .edit(symptom) }
@@ -482,7 +482,7 @@ struct CycleCaptureSheet: View {
             store.clearSaveConfirmation()
             onDismiss()
         } else {
-            error = store.lastError ?? String(localized: "cycle.capture.error.generic")
+            error = store.lastError ?? AppLocale.string("cycle.capture.error.generic")
             saveErrorTick &+= 1
         }
     }

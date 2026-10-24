@@ -40,7 +40,7 @@ struct DashboardCustomizationScreen: View {
         // the navigation Liquid Glass instead of clipping cleanly.
         // iOS 18-25: no-op (system stays flat-translucent).
         .hlScrollEdgeSoft()
-        .navigationTitle(String(localized: "Customize dashboard"))
+        .navigationTitle(AppLocale.string("Customize dashboard"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             // v0.14 b147 — explicit EditButton so the visible section shows
@@ -59,7 +59,7 @@ struct DashboardCustomizationScreen: View {
                     Task { await layoutStore.refresh() }
                 } label: {
                     Image(systemName: "arrow.clockwise")
-                        .accessibilityLabel(Text(String(localized: "Refresh")))
+                        .accessibilityLabel(Text(AppLocale.string("Refresh")))
                 }
                 .tint(HLText.primary)
             }
@@ -109,7 +109,7 @@ struct DashboardCustomizationScreen: View {
         let visible = layoutStore.layout.visibleTiles.filter { Self.hasHomeSurface($0.id) }
         Section {
             if visible.isEmpty {
-                Text(String(localized: "No tiles active. Enable tiles below to see them on the dashboard."))
+                Text(AppLocale.string("No tiles active. Enable tiles below to see them on the dashboard."))
                     .font(.hlSubhead)
                     .foregroundStyle(HLText.secondary)
             } else {
@@ -119,7 +119,7 @@ struct DashboardCustomizationScreen: View {
                 .onMove(perform: moveVisible)
             }
         } header: {
-            Text(String(localized: "Pinned"))
+            Text(AppLocale.string("Pinned"))
         }
         // UI-Standard R2 — der Abschnitts-Footer („Auf ‚Bearbeiten' tippen und
         // eine Zeile am Griff ziehen …") war eine Bedien-Nacherzählung und
@@ -136,7 +136,7 @@ struct DashboardCustomizationScreen: View {
             .sorted { $0.order < $1.order }
         Section {
             if hidden.isEmpty {
-                Text(String(localized: "All tiles are active. You haven't hidden anything."))
+                Text(AppLocale.string("All tiles are active. You haven't hidden anything."))
                     .font(.hlSubhead)
                     .foregroundStyle(HLText.secondary)
             } else {
@@ -145,7 +145,7 @@ struct DashboardCustomizationScreen: View {
                 }
             }
         } header: {
-            Text(String(localized: "Hidden"))
+            Text(AppLocale.string("Hidden"))
         }
     }
 
@@ -157,7 +157,7 @@ struct DashboardCustomizationScreen: View {
                 Task { await layoutStore.resetToDefaults() }
             } label: {
                 Label(
-                    String(localized: "Reset to default"),
+                    AppLocale.string("Reset to default"),
                     systemImage: "arrow.uturn.backward"
                 )
             }
@@ -204,10 +204,10 @@ struct DashboardCustomizationScreen: View {
         .accessibilityLabel(Text("\(displayName(for: row.id))"))
         .accessibilityValue(
             Text(isVisible
-                ? String(localized: "dashboard.customize.visible.value")
-                : String(localized: "Hidden"))
+                ? AppLocale.string("dashboard.customize.visible.value")
+                : AppLocale.string("Hidden"))
         )
-        .accessibilityHint(Text(String(localized: "Toggle the switch to change visibility")))
+        .accessibilityHint(Text(AppLocale.string("Toggle the switch to change visibility")))
     }
 
     // MARK: - Reorder
@@ -269,15 +269,15 @@ struct DashboardCustomizationScreen: View {
     /// SwiftUI render pass.
     nonisolated static func displayName(for id: String) -> String {
         if let kind = DashboardWidgetId.metricKind(forId: id) {
-            return String(localized: kind.descriptor.title)
+            return AppLocale.string(AppLocale.shared.resource(kind.descriptor.title))
         }
         switch id {
-        case DashboardWidgetId.mood: return String(localized: "Mood")
-        case DashboardWidgetId.medications: return String(localized: "Medications")
-        case DashboardWidgetId.bpInTarget: return String(localized: "Blood pressure in range")
-        case DashboardWidgetId.achievements: return String(localized: "dashboard.widget.achievements.title")
-        case DashboardWidgetId.vo2Max: return String(localized: "dashboard.widget.vo2Max.title")
-        default: return String(localized: "home.widget.unknown.title")
+        case DashboardWidgetId.mood: return AppLocale.string("Mood")
+        case DashboardWidgetId.medications: return AppLocale.string("Medications")
+        case DashboardWidgetId.bpInTarget: return AppLocale.string("Blood pressure in range")
+        case DashboardWidgetId.achievements: return AppLocale.string("dashboard.widget.achievements.title")
+        case DashboardWidgetId.vo2Max: return AppLocale.string("dashboard.widget.vo2Max.title")
+        default: return AppLocale.string("home.widget.unknown.title")
         }
     }
 
@@ -296,9 +296,9 @@ struct DashboardCustomizationScreen: View {
     private func secondaryHint(for id: String) -> String? {
         switch id {
         case DashboardWidgetId.vo2Max:
-            String(localized: "dashboard.widget.vo2Max.subtitle")
+            AppLocale.string("dashboard.widget.vo2Max.subtitle")
         case DashboardWidgetId.medications:
-            String(localized: "Today's intake compliance")
+            AppLocale.string("Today's intake compliance")
         default:
             nil
         }

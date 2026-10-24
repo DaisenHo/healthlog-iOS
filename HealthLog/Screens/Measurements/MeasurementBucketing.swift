@@ -141,16 +141,16 @@ enum MeasurementBucketing {
     // MARK: - Labels
 
     static func dayLabel(date: Date, now: Date = .now, calendar: Calendar = .current) -> String {
-        if calendar.isDateInToday(date) { return String(localized: "Today") }
-        if calendar.isDateInYesterday(date) { return String(localized: "Yesterday") }
+        if calendar.isDateInToday(date) { return AppLocale.string("Today") }
+        if calendar.isDateInYesterday(date) { return AppLocale.string("Yesterday") }
         if let days = calendar.dateComponents([.day], from: date, to: now).day, days < 7 {
-            return date.formatted(.dateTime.weekday(.wide))
+            return date.formatted(.dateTime.weekday(.wide).locale(AppLocale.shared.current))
         }
         // b215 — older buckets add the year when it isn't the current one so a
         // day header from a prior year ("Mo, 14. Juni") is never ambiguous.
         return HLDateFormat.appendingYearIfNeeded(
             date,
-            base: .dateTime.weekday(.abbreviated).day().month(),
+            base: .dateTime.weekday(.abbreviated).day().month().locale(AppLocale.shared.current),
             relativeTo: now,
             calendar: calendar
         )
@@ -167,31 +167,31 @@ enum MeasurementBucketing {
     /// Label inside the summary card — humane "Diese Woche" / explicit week.
     static func weekLabel(start: Date, now: Date = .now, calendar: Calendar = .current) -> String {
         if let interval = calendar.dateInterval(of: .weekOfYear, for: now), interval.start == start {
-            return String(localized: "This week")
+            return AppLocale.string("This week")
         }
         if let lastWeek = calendar.date(byAdding: .weekOfYear, value: -1, to: now),
            let interval = calendar.dateInterval(of: .weekOfYear, for: lastWeek), interval.start == start
         {
-            return String(localized: "Last week")
+            return AppLocale.string("Last week")
         }
         let endDate = calendar.date(byAdding: .day, value: 6, to: start) ?? start
         return rangeLabel(start: start, end: endDate)
     }
 
     static func monthHeader(start: Date, calendar _: Calendar = .current) -> String {
-        start.formatted(.dateTime.month(.wide).year())
+        start.formatted(.dateTime.month(.wide).year().locale(AppLocale.shared.current))
     }
 
     static func monthLabel(start: Date, now: Date = .now, calendar: Calendar = .current) -> String {
         if let interval = calendar.dateInterval(of: .month, for: now), interval.start == start {
-            return String(localized: "This month")
+            return AppLocale.string("This month")
         }
         if let lastMonth = calendar.date(byAdding: .month, value: -1, to: now),
            let interval = calendar.dateInterval(of: .month, for: lastMonth), interval.start == start
         {
-            return String(localized: "Last month")
+            return AppLocale.string("Last month")
         }
-        return start.formatted(.dateTime.month(.wide).year())
+        return start.formatted(.dateTime.month(.wide).year().locale(AppLocale.shared.current))
     }
 
     private static func rangeLabel(start: Date, end: Date) -> String {
@@ -200,11 +200,11 @@ enum MeasurementBucketing {
         let startDay = calendar.component(.day, from: start)
         let endDay = calendar.component(.day, from: end)
         let sameMonth = calendar.component(.month, from: start) == calendar.component(.month, from: end)
-        let monthLabel = end.formatted(.dateTime.month(.abbreviated))
+        let monthLabel = end.formatted(.dateTime.month(.abbreviated).locale(AppLocale.shared.current))
         if sameMonth {
             return "\(HLNumberFormat.range("\(startDay)", "\(endDay)")) \(monthLabel)"
         }
-        let startMonthLabel = start.formatted(.dateTime.month(.abbreviated))
+        let startMonthLabel = start.formatted(.dateTime.month(.abbreviated).locale(AppLocale.shared.current))
         return HLNumberFormat.range("\(startDay) \(startMonthLabel)", "\(endDay) \(monthLabel)")
     }
 }

@@ -226,8 +226,8 @@ public enum LowStockRunwayPrefStore {
             calendar: Calendar = .current
         ) -> UNNotificationRequest {
             let content = UNMutableNotificationContent()
-            content.title = String(localized: "How are you feeling?")
-            content.body = String(localized: "Take a moment to log your mood for today.")
+            content.title = AppLocale.string("How are you feeling?")
+            content.body = AppLocale.string("Take a moment to log your mood for today.")
             content.sound = .default
             // v0.10.0 W10 M-3 — a daily wellness nudge is NOT urgent: keep it
             // at `.active` (the default) and explicitly so. The app holds the

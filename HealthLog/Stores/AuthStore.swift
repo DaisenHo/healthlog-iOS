@@ -431,7 +431,7 @@ public final class AuthStore {
     /// never authenticated — so RootView keeps showing the onboarding auth step.
     private func failMfaTicketExpired() {
         clearMfaState()
-        lastError = .unknown(String(localized: "onboarding.mfa.expired"))
+        lastError = .unknown(AppLocale.string("onboarding.mfa.expired"))
         HLLog.auth.warning("MFA ticket expired/invalid — returning to password form.")
     }
 
@@ -532,7 +532,7 @@ public final class AuthStore {
         /// benign (no banner), mirroring the passkey-cancel handling.
         public func loginWithSSO(anchor: ASPresentationAnchorProvider) async {
             guard let authenticator = oidcAuthenticator else {
-                lastError = .unknown(String(localized: "onboarding.sso.unavailable"))
+                lastError = .unknown(AppLocale.string("onboarding.sso.unavailable"))
                 HLLog.auth.error("SSO login requested but no OIDC authenticator is wired.")
                 return
             }
@@ -554,7 +554,7 @@ public final class AuthStore {
                 return
             }
             guard let loginURL = OidcNativeFlow.loginURL(baseURL: baseURL, codeChallenge: pkce.codeChallenge) else {
-                failAttempt(.unknown(String(localized: "onboarding.sso.error.generic")), for: attempt)
+                failAttempt(.unknown(AppLocale.string("onboarding.sso.error.generic")), for: attempt)
                 HLLog.auth.error("SSO login could not build the authorize URL.")
                 return
             }
@@ -569,7 +569,7 @@ public final class AuthStore {
                 // Benign user dismissal — no banner (mirrors the passkey cancel).
                 acceptBenignCancellation(for: attempt)
             case .failed:
-                failAttempt(.unknown(String(localized: "onboarding.sso.error.generic")), for: attempt)
+                failAttempt(.unknown(AppLocale.string("onboarding.sso.error.generic")), for: attempt)
                 HLLog.auth.warning("SSO web-auth session failed to complete.")
             case let .callback(url):
                 await handleSSOCallback(url, codeVerifier: pkce.codeVerifier, attempt: attempt)
@@ -603,7 +603,7 @@ public final class AuthStore {
                     // A consumed/expired/mismatched code (single generic 401) is a
                     // login failure — surface it, never a web page. The
                     // code/verifier/token never appear in any log line.
-                    failAttempt(.unknown(String(localized: "onboarding.sso.exchangeFailed")), for: leg)
+                    failAttempt(.unknown(AppLocale.string("onboarding.sso.exchangeFailed")), for: leg)
                     HLLog.auth.error(
                         "SSO token exchange failed: \(LogSanitizer.redact(String(describing: error)), privacy: .public)"
                     )
@@ -622,7 +622,7 @@ public final class AuthStore {
                 // swiftlint:disable:next hllog_public_privacy_interpolation
                 HLLog.auth.warning("SSO callback error: \(reason.logLabel, privacy: .public)")
             case .unrecognized:
-                failAttempt(.unknown(String(localized: "onboarding.sso.error.generic")), for: leg)
+                failAttempt(.unknown(AppLocale.string("onboarding.sso.error.generic")), for: leg)
                 HLLog.auth.warning("SSO callback carried no recognised parameters.")
             }
         }
@@ -889,7 +889,7 @@ public final class AuthStore {
             // `lastError` wird Richtung UI ausgeliefert (L1: `signInFacingDescription`
             // zeigt `.unknown` wörtlich) — dort steht nur der Katalogsatz, nie die
             // Fehlerbeschreibung. Die Diagnose geht redigiert ins Log darunter.
-            lastError = .unknown(String(localized: "Something went wrong. Please try again."))
+            lastError = .unknown(AppLocale.string("Something went wrong. Please try again."))
             HLLog.auth.error("Unbekannter Auth-Fehler: \(String(describing: error), privacy: .private)")
         }
     }

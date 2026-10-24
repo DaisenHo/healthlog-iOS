@@ -120,14 +120,14 @@ struct CyclePredictionSummary: View {
         let lo = formatted(p.nextPeriodStartLow)
         let hi = formatted(p.nextPeriodStartHigh)
         if let lo, let hi, lo != hi {
-            return String(format: String(localized: "cycle.prediction.rangeFormat"), lo, hi)
+            return String(format: AppLocale.string("cycle.prediction.rangeFormat"), lo, hi)
         }
         return formatted(p.nextPeriodStart) ?? "—"
     }
 
     static func fertile(_ p: CyclePredictionDTO) -> String? {
         guard let lo = formatted(p.fertileWindowStart), let hi = formatted(p.fertileWindowEnd) else { return nil }
-        return String(format: String(localized: "cycle.prediction.rangeFormat"), lo, hi)
+        return String(format: AppLocale.string("cycle.prediction.rangeFormat"), lo, hi)
     }
 
     static func formatted(_ key: String?) -> String? {
@@ -144,13 +144,14 @@ struct CyclePredictionSummary: View {
         return f
     }()
 
-    private static let mediumFormatter: DateFormatter = {
+    private static var mediumFormatter: DateFormatter {
         let f = DateFormatter()
         f.calendar = Calendar(identifier: .gregorian)
         f.timeZone = .current
         f.setLocalizedDateFormatFromTemplate("dMMM")
+        f.locale = AppLocale.shared.current
         return f
-    }()
+    }
 }
 
 // MARK: - Cycle stats
@@ -202,7 +203,7 @@ struct CycleStatsCard: View {
     }
 
     private func daysValue(_ days: Int) -> String {
-        String(format: String(localized: "cycle.stats.daysFormat"), days)
+        String(format: AppLocale.string("cycle.stats.daysFormat"), days)
     }
 
     static func regularityLabel(_ regularity: CycleRegularity) -> LocalizedStringKey {

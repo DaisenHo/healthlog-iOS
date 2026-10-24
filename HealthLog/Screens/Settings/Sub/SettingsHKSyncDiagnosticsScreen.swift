@@ -341,9 +341,9 @@ struct SettingsHKSyncDiagnosticsScreen: View {
 
     private var lastActivityLabel: String {
         guard let date = diagnostics.lastActivityAt else {
-            return String(localized: "settings.hkdiag.never")
+            return AppLocale.string("settings.hkdiag.never")
         }
-        return date.formatted(.relative(presentation: .named))
+        return date.formatted(.relative(presentation: .named).locale(AppLocale.shared.current))
     }
 
     /// #66 P0.1 — a relative-time label for a wake timestamp, or the localized
@@ -351,18 +351,18 @@ struct SettingsHKSyncDiagnosticsScreen: View {
     /// CU-21 so the `+ServerHealth` extension file shares the one formatter.
     func relativeOrNever(_ date: Date?) -> String {
         guard let date else {
-            return String(localized: "settings.hkdiag.never")
+            return AppLocale.string("settings.hkdiag.never")
         }
-        return date.formatted(.relative(presentation: .named))
+        return date.formatted(.relative(presentation: .named).locale(AppLocale.shared.current))
     }
 
     /// W-B182 — "<relative time> · <source>" for the last manual-collector pull,
     /// or "Nie" when no trigger has ever run (the "never armed" tell).
     private var lastTriggerLabel: String {
         guard let date = diagnostics.lastCollectionTriggerAt else {
-            return String(localized: "settings.hkdiag.never")
+            return AppLocale.string("settings.hkdiag.never")
         }
-        let when = date.formatted(.relative(presentation: .named))
+        let when = date.formatted(.relative(presentation: .named).locale(AppLocale.shared.current))
         guard let source = diagnostics.lastCollectionTriggerSource else { return when }
         return "\(when), \(HKSyncDiagnosticsVocabulary.collectionTrigger(source))"
     }
@@ -435,7 +435,7 @@ struct KindRow: Equatable {
     /// for the freshness-based stuck heuristic.
     private var lastActivityAt: Date? {
         [stats.lastAnchorAdvancedAt, stats.lastStatsActionAt, stats.lastObservationAt]
-            .compactMap { $0 }
+            .compactMap(\.self)
             .max()
     }
 
@@ -499,10 +499,10 @@ struct KindRow: Equatable {
 
     var statusLabel: String {
         switch status() {
-        case .warning: String(localized: "settings.hkdiag.status_warn")
-        case .healthy: String(localized: "settings.hkdiag.status_ok")
-        case .idle: String(localized: "settings.hkdiag.status_idle")
-        case .stalled: String(localized: "settings.hkdiag.status_stuck")
+        case .warning: AppLocale.string("settings.hkdiag.status_warn")
+        case .healthy: AppLocale.string("settings.hkdiag.status_ok")
+        case .idle: AppLocale.string("settings.hkdiag.status_idle")
+        case .stalled: AppLocale.string("settings.hkdiag.status_stuck")
         }
     }
 
@@ -527,16 +527,12 @@ struct KindRow: Equatable {
         let statsActions = stats.statsPostedTotal + stats.statsRepostedTotal
         let skipped = max(stats.samplesSkippedTotal, registeredSkipCount)
         if skipped > 0 || stats.samplesParkedTotal > 0 {
-            return String(
-                localized: "settings.hkdiag.detail_problems \(read) \(uploaded) \(skipped) \(stats.samplesParkedTotal)"
-            )
+            return AppLocale.string("settings.hkdiag.detail_problems \(read) \(uploaded) \(skipped) \(stats.samplesParkedTotal)")
         }
         if statsActions > 0 {
-            return String(
-                localized: "settings.hkdiag.detail_stats \(read) \(uploaded) \(statsActions)"
-            )
+            return AppLocale.string("settings.hkdiag.detail_stats \(read) \(uploaded) \(statsActions)")
         }
-        return String(localized: "settings.hkdiag.detail_simple \(read) \(uploaded)")
+        return AppLocale.string("settings.hkdiag.detail_simple \(read) \(uploaded)")
     }
 }
 

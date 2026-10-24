@@ -41,7 +41,7 @@ struct MiniCoachOnboardingSheet: View {
                 .padding(.bottom, HLSpace.xxxl)
             }
             .hlScreenBackground()
-            .navigationTitle(String(localized: "Coach"))
+            .navigationTitle(AppLocale.string("Coach"))
             .navigationBarTitleDisplayMode(.inline)
             // v0.6.1 Y2 — Home-Compliance pattern: drop the 'Abbrechen'
             // cancellationAction (drag-down dismisses without enabling).
@@ -63,7 +63,7 @@ struct MiniCoachOnboardingSheet: View {
                 .font(.hlIcon(HLIconSize.hero, weight: .regular))
                 .foregroundStyle(.tint)
                 .padding(.bottom, HLSpace.xs)
-            Text(String(localized: "coach.onboarding.title"))
+            Text(AppLocale.string("coach.onboarding.title"))
                 .font(.hlTitle3)
                 .foregroundStyle(HLText.primary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -94,7 +94,7 @@ struct MiniCoachOnboardingSheet: View {
         HLCard {
             VStack(alignment: .leading, spacing: HLSpace.md) {
                 Toggle(isOn: $didAcknowledge) {
-                    Text(String(localized: "I understand: no medical recommendations, no diagnoses, no therapy suggestions."))
+                    Text(AppLocale.string("I understand: no medical recommendations, no diagnoses, no therapy suggestions."))
                         .font(.hlBody)
                         .foregroundStyle(HLText.primary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -107,7 +107,7 @@ struct MiniCoachOnboardingSheet: View {
                 .accessibilityIdentifier("MiniCoachOnboarding.ack")
 
                 Text(
-                    String(localized: "On device — no cloud, no recording of the conversation beyond the current session.")
+                    AppLocale.string("On device — no cloud, no recording of the conversation beyond the current session.")
                 )
                 .font(.hlCaption)
                 .foregroundStyle(HLText.tertiary)
@@ -126,7 +126,7 @@ struct MiniCoachOnboardingSheet: View {
             // clamp (white-on-white risk for `.weiss`/`.schwarz` accent picks)
             // and gets press-shrink + selection haptic + disabled opacity for
             // free; `.disabled(!didAcknowledge)` keeps the acknowledge gate.
-            HLButton(String(localized: "Enable"), variant: .primary) {
+            HLButton(AppLocale.string("Enable"), variant: .primary) {
                 store.markOnboarded()
                 onEnabled()
                 dismiss()
@@ -154,26 +154,26 @@ struct ScopeCardModel: Identifiable {
     static let allDefault: [ScopeCardModel] = [
         .init(
             id: "data-lookup",
-            title: String(localized: "Look up values"),
-            example: String(localized: "“My latest weight?”"),
+            title: AppLocale.string("Look up values"),
+            example: AppLocale.string("“My latest weight?”"),
             iconSystemName: "magnifyingglass"
         ),
         .init(
             id: "period-summary",
-            title: String(localized: "coach.scope.periodSummary.title"),
-            example: String(localized: "“How was my week?”"),
+            title: AppLocale.string("coach.scope.periodSummary.title"),
+            example: AppLocale.string("“How was my week?”"),
             iconSystemName: "calendar"
         ),
         .init(
             id: "historic-lookup",
-            title: String(localized: "Past values"),
-            example: String(localized: "“My heart rate on March 1?”"),
+            title: AppLocale.string("Past values"),
+            example: AppLocale.string("“My heart rate on March 1?”"),
             iconSystemName: "clock.arrow.circlepath"
         ),
         .init(
             id: "comparison",
-            title: String(localized: "coach.scope.compare.title"),
-            example: String(localized: "“This week vs. last week?”"),
+            title: AppLocale.string("coach.scope.compare.title"),
+            example: AppLocale.string("“This week vs. last week?”"),
             iconSystemName: "chart.bar.xaxis"
         )
     ]

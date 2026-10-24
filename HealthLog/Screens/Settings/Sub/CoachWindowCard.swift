@@ -20,7 +20,7 @@ struct CoachWindowCard: View {
                             .accessibilityHidden(true)
                     }
                     Picker(
-                        String(localized: "settings.coach.window.pickerLabel"),
+                        AppLocale.string("settings.coach.window.pickerLabel"),
                         selection: Binding(
                             get: { store.coachDefaultWindow ?? .allTime },
                             set: { newValue in Task { await store.setCoachDefaultWindow(newValue) } }

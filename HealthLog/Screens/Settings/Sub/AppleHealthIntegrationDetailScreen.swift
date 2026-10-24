@@ -121,7 +121,7 @@ struct AppleHealthIntegrationDetailScreen: View {
             serverHealthLine
             if !hkReadiness.state.isFullyGranted {
                 HLButton(
-                    String(localized: "Connect to Apple Health"),
+                    AppLocale.string("Connect to Apple Health"),
                     icon: "heart.fill",
                     variant: .primary,
                     isLoading: hkReadiness.isRequestingAuthorization
@@ -148,7 +148,7 @@ struct AppleHealthIntegrationDetailScreen: View {
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     HLButton(
-                        String(localized: "Open in Apple Health"),
+                        AppLocale.string("Open in Apple Health"),
                         icon: "arrow.up.right.square",
                         variant: .secondary,
                         size: .regular
@@ -161,7 +161,7 @@ struct AppleHealthIntegrationDetailScreen: View {
                 }
             }
             HLButton(
-                String(localized: "Sync now"),
+                AppLocale.string("Sync now"),
                 icon: "arrow.triangle.2.circlepath",
                 variant: .secondary,
                 size: .regular,
@@ -213,11 +213,9 @@ struct AppleHealthIntegrationDetailScreen: View {
     /// fallback (see `HKReadinessStore.displayedLastSyncedAt`).
     private var syncStateCaption: String {
         if let date = hkReadiness.displayedLastSyncedAt(serverLastSyncedAt: store.hkConfig?.lastSyncedAt) {
-            return String(
-                localized: "Last synced: \(date.formatted(.relative(presentation: .named)))"
-            )
+            return AppLocale.string("Last synced: \(date.formatted(.relative(presentation: .named).locale(AppLocale.shared.current)))")
         }
-        return String(localized: "Not synced yet")
+        return AppLocale.string("Not synced yet")
     }
 
     // MARK: - Data types (moved from SettingsSourcesScreen v0.11)
@@ -277,11 +275,11 @@ struct AppleHealthIntegrationDetailScreen: View {
 
     private func directionLabel(_ d: SyncDirection) -> String {
         switch d {
-        case .readOnly: String(localized: "Read only")
-        case .writeOnly: String(localized: "Write only")
-        case .bidirectional: String(localized: "sources.mode.bidirectional")
-        case .disabled: String(localized: "Disabled")
-        case .unknown: String(localized: "Unknown")
+        case .readOnly: AppLocale.string("Read only")
+        case .writeOnly: AppLocale.string("Write only")
+        case .bidirectional: AppLocale.string("sources.mode.bidirectional")
+        case .disabled: AppLocale.string("Disabled")
+        case .unknown: AppLocale.string("Unknown")
         }
     }
 

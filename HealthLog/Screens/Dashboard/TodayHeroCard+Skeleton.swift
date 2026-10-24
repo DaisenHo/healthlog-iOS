@@ -97,11 +97,11 @@ enum TodayHeroCopy {
     // MARK: Resolution
 
     private static func local(_ key: String) -> String {
-        String(localized: String.LocalizationValue(key))
+        AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(key)))
     }
 
     private static func localFormat(_ key: String, _ argument: String) -> String {
-        let template = String(localized: String.LocalizationValue(key))
+        let template = AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(key)))
         return String(format: template, argument)
     }
 }

@@ -81,7 +81,7 @@ struct InsightsTargetBandEditorSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "Done")) {
+                    Button(AppLocale.string("Done")) {
                         if isDirty { showDiscardConfirm = true } else { dismiss() }
                     }
                 }
@@ -173,7 +173,7 @@ struct InsightsTargetBandEditorSheet: View {
                     text: bindingFor(metric, keyPath: \.min),
                     accessibilityID: "target-editor.\(metric.rawValue).min"
                 )
-                Text(String(localized: "range.separator.to"))
+                Text(AppLocale.string("range.separator.to"))
                     .foregroundStyle(HLText.tertiary)
                     .accessibilityHidden(true)
                 fieldColumn(
@@ -212,7 +212,7 @@ struct InsightsTargetBandEditorSheet: View {
         guard let value = currentValues[metric.rawValue] else { return nil }
         let adapter = metric.unitAdapter(unitPreferences)
         return String(
-            format: String(localized: "Currently: %@ %@"),
+            format: AppLocale.string("Currently: %@ %@"),
             Self.format(adapter.toDisplay(value)),
             adapter.unit
         )
@@ -270,7 +270,7 @@ struct InsightsTargetBandEditorSheet: View {
             // QoL-4 — a next-step CTA: dismiss + open the capture picker so the
             // user can log the first value the target band needs.
             HLButton(
-                String(localized: "Log a measurement"),
+                AppLocale.string("Log a measurement"),
                 icon: "plus",
                 variant: .restrained
             ) {
@@ -337,7 +337,7 @@ struct InsightsTargetBandEditorSheet: View {
         let adapter = metric.unitAdapter(unitPreferences)
         let window = adapter.bounds(metric.bounds)
         return String(
-            format: String(localized: "Allowed range: %@ – %@ %@"),
+            format: AppLocale.string("Allowed range: %@ – %@ %@"),
             Self.format(window.min),
             Self.format(window.max),
             adapter.unit

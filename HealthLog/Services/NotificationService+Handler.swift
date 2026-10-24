@@ -493,11 +493,11 @@ import Foundation
             // the medication name. `userInfo` below still carries the
             // medicationId so the 3 intake actions keep working.
             if hideMedicationName {
-                content.title = String(localized: "Medication reminder")
+                content.title = AppLocale.string("Medication reminder")
                 content.body = ""
             } else {
-                content.title = payload?.title ?? String(localized: "Medication")
-                content.body = payload?.body ?? String(localized: "Reminder")
+                content.title = payload?.title ?? AppLocale.string("Medication")
+                content.body = payload?.body ?? AppLocale.string("Reminder")
             }
             content.sound = .default
             content.categoryIdentifier = Self.categoryMedication

@@ -17,7 +17,7 @@ public enum NutrientDisplay {
 
     /// The localized display name for a nutrient (resolves the `nameKey`).
     public static func name(for code: NutrientCode) -> String {
-        String(localized: String.LocalizationValue(nameKey(for: code)))
+        AppLocale.string(AppLocale.shared.resource(String.LocalizationValue(nameKey(for: code))))
     }
 
     /// **Audit B-4 — the display name for a row whose code may be unnameable.**

@@ -17,18 +17,18 @@ enum EcgPresentation {
     /// The device's result, as a display string. Never a HealthLog assessment.
     static func resultLabel(for classification: EcgClassification) -> String {
         switch classification {
-        case .irregular: String(localized: "insights.ecg.result.irregular")
-        case .notDetected: String(localized: "insights.ecg.result.notDetected")
-        case .inconclusive: String(localized: "insights.ecg.result.inconclusive")
-        case .none: String(localized: "insights.ecg.result.none")
+        case .irregular: AppLocale.string("insights.ecg.result.irregular")
+        case .notDetected: AppLocale.string("insights.ecg.result.notDetected")
+        case .inconclusive: AppLocale.string("insights.ecg.result.inconclusive")
+        case .none: AppLocale.string("insights.ecg.result.none")
         // CU-16 — the three EVENT verdicts of the shared `RhythmClassification`
         // enum. They describe the notification the device raised, not a rhythm
         // finding, so the copy states exactly that and stops. Rendering them as
         // a cardiac result would be an invention; rendering the raw token
         // ("VERY_LOW") would be an untranslated wire artefact.
-        case .low: String(localized: "insights.ecg.result.low")
-        case .veryLow: String(localized: "insights.ecg.result.veryLow")
-        case .fired: String(localized: "insights.ecg.result.fired")
+        case .low: AppLocale.string("insights.ecg.result.low")
+        case .veryLow: AppLocale.string("insights.ecg.result.veryLow")
+        case .fired: AppLocale.string("insights.ecg.result.fired")
         // Verbatim: an unknown device literal is data, not something to
         // reinterpret.
         case let .unknown(raw): raw
@@ -37,7 +37,7 @@ enum EcgPresentation {
 
     /// The result line, explicitly attributed to the recording device.
     static func attribution(for classification: EcgClassification) -> String {
-        String(localized: "insights.ecg.resultAttribution \(resultLabel(for: classification))")
+        AppLocale.string("insights.ecg.resultAttribution \(resultLabel(for: classification))")
     }
 
     /// Whether the "discuss this with a clinician" note belongs on this
@@ -57,27 +57,27 @@ enum EcgPresentation {
 
     /// `"30 s"`, or the honest unknown dash.
     static func durationValue(_ seconds: Double?) -> String {
-        guard let seconds else { return String(localized: "insights.ecg.meta.unknown") }
-        return String(localized: "insights.ecg.meta.durationValue \(Int(seconds.rounded()))")
+        guard let seconds else { return AppLocale.string("insights.ecg.meta.unknown") }
+        return AppLocale.string("insights.ecg.meta.durationValue \(Int(seconds.rounded()))")
     }
 
     /// `"62 bpm"`, or the honest unknown dash.
     static func bpmValue(_ bpm: Double?) -> String {
-        guard let bpm else { return String(localized: "insights.ecg.meta.unknown") }
-        return String(localized: "insights.ecg.meta.bpmValue \(Int(bpm.rounded()))")
+        guard let bpm else { return AppLocale.string("insights.ecg.meta.unknown") }
+        return AppLocale.string("insights.ecg.meta.bpmValue \(Int(bpm.rounded()))")
     }
 
     /// `"300 Hz"`, or the honest unknown dash.
     static func hzValue(_ hz: Double?) -> String {
-        guard let hz else { return String(localized: "insights.ecg.meta.unknown") }
-        return String(localized: "insights.ecg.meta.hzValue \(Int(hz.rounded()))")
+        guard let hz else { return AppLocale.string("insights.ecg.meta.unknown") }
+        return AppLocale.string("insights.ecg.meta.hzValue \(Int(hz.rounded()))")
     }
 
     /// The lead label. A single-lead strip reads as the web's "Single lead
     /// (Lead I)"; anything else is shown verbatim.
     static func leadValue(_ lead: String?) -> String {
-        guard let lead, !lead.isEmpty else { return String(localized: "insights.ecg.meta.unknown") }
-        if lead.uppercased() == "I" { return String(localized: "insights.ecg.meta.leadSingle") }
+        guard let lead, !lead.isEmpty else { return AppLocale.string("insights.ecg.meta.unknown") }
+        if lead.uppercased() == "I" { return AppLocale.string("insights.ecg.meta.leadSingle") }
         return lead
     }
 }

@@ -25,8 +25,8 @@ public struct CriticalAlarmFailureBanner: View {
     }
 
     private var bodyText: String {
-        let joined = medicationNames.formatted(.list(type: .and))
-        return String(format: String(localized: "med.criticalAlarm.failed.body"), joined)
+        let joined = medicationNames.formatted(.list(type: .and).locale(AppLocale.shared.current))
+        return String(format: AppLocale.string("med.criticalAlarm.failed.body"), joined)
     }
 
     public var body: some View {

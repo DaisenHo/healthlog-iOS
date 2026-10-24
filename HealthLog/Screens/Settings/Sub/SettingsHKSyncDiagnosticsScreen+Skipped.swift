@@ -81,9 +81,9 @@ extension SettingsHKSyncDiagnosticsScreen {
 
     static func resendResultText(_ summary: HealthKitSkippedRowReoffer.Summary) -> String {
         if summary.transportFailed {
-            return String(localized: "settings.hkdiag.skipped_resend_failed")
+            return AppLocale.string("settings.hkdiag.skipped_resend_failed")
         }
-        return String(localized: "settings.hkdiag.skipped_resend_result \(summary.stored) \(summary.stillRefused)")
+        return AppLocale.string("settings.hkdiag.skipped_resend_result \(summary.stored) \(summary.stillRefused)")
     }
 }
 
@@ -152,13 +152,13 @@ struct SettingsHKSkippedRowsScreen: View {
         if let nutrient = row.nutrient {
             return NutrientDisplay.name(for: nutrient.nutrient, rawCode: nutrient.nutrient.rawValue)
         }
-        if row.mood != nil { return String(localized: "health.permissions.type.stateOfMind") }
+        if row.mood != nil { return AppLocale.string("health.permissions.type.stateOfMind") }
         return kindTitle(row.hkIdentifier)
     }
 
     static func kindTitle(_ identifier: String) -> String {
         if let kind = HKSyncDiagnostics.metricKind(for: identifier) {
-            return String(localized: kind.descriptor.title)
+            return AppLocale.string(AppLocale.shared.resource(kind.descriptor.title))
         }
         // A type the diagnostics table does not name yet: the HealthKit name
         // without its prefix is still better than hiding the row.
@@ -170,8 +170,12 @@ struct SettingsHKSkippedRowsScreen: View {
     /// A measurement with its time; a nutrient day total with its server day
     /// (noon UTC names that day, shown in UTC so it never shifts).
     static func dateText(_ row: HealthKitSkippedRow) -> String {
-        guard row.nutrient != nil else { return row.measuredAt.formatted(date: .abbreviated, time: .shortened) }
-        var style = Date.FormatStyle(date: .abbreviated, time: .omitted)
+        guard row.nutrient != nil else { return row.measuredAt.formatted(Date.FormatStyle(
+            date: .abbreviated,
+            time: .shortened,
+            locale: AppLocale.shared.current
+        )) }
+        var style = Date.FormatStyle(date: .abbreviated, time: .omitted, locale: AppLocale.shared.current)
         style.timeZone = TimeZone(identifier: "UTC") ?? .gmt
         return row.measuredAt.formatted(style)
     }
@@ -200,19 +204,19 @@ struct SettingsHKSkippedRowsScreen: View {
     static func reasonText(_ reason: String) -> String {
         switch reason {
         case MeasurementBatchAcceptance.Reason.valueOutOfRange:
-            String(localized: "settings.hkdiag.skipped_reason_out_of_range")
+            AppLocale.string("settings.hkdiag.skipped_reason_out_of_range")
         case MeasurementBatchAcceptance.Reason.unstableExternalId:
-            String(localized: "settings.hkdiag.skipped_reason_unstable_id")
+            AppLocale.string("settings.hkdiag.skipped_reason_unstable_id")
         case OutboxReplayService.notConfirmedReason:
-            String(localized: "settings.hkdiag.skipped_reason_not_confirmed")
+            AppLocale.string("settings.hkdiag.skipped_reason_not_confirmed")
         case _ where reason.hasPrefix("unclassified_4xx:"):
-            String(localized: "settings.hkdiag.skipped_reason_unclassified")
+            AppLocale.string("settings.hkdiag.skipped_reason_unclassified")
         case _ where reason.hasSuffix(":" + MeasurementBatchInvalid.code):
-            String(localized: "settings.hkdiag.skipped_reason_invalid")
+            AppLocale.string("settings.hkdiag.skipped_reason_invalid")
         case MoodStateOfMindUnreadable.reason:
-            String(localized: "settings.hkdiag.skipped_reason_unreadable")
+            AppLocale.string("settings.hkdiag.skipped_reason_unreadable")
         default:
-            String(localized: "settings.hkdiag.skipped_reason_other \(reason)")
+            AppLocale.string("settings.hkdiag.skipped_reason_other \(reason)")
         }
     }
 }

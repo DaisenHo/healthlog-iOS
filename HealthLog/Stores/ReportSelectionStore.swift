@@ -281,6 +281,6 @@ public final class ReportSelectionStore {
 
     private static func message(for error: Error) -> String {
         (error as? HLError)?.userFacingDescription
-            ?? String(localized: "Couldn't load the selection. Please try again.")
+            ?? AppLocale.string("Couldn't load the selection. Please try again.")
     }
 }
