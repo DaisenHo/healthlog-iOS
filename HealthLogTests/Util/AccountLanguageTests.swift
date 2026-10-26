@@ -4,11 +4,19 @@ import Testing
 
 @Suite("Account language presentation")
 struct AccountLanguageTests {
-    @Test("Explicit language overrides retain the English fallback for an incomplete catalog")
+    @Test("Health-module labels follow the account language and unvalidated items stay English")
     func explicitLocaleAndFallback() {
-        #expect(MetricTypeLocalisation.label(forType: "BODY_TEMPERATURE", locale: Locale(identifier: "zh-Hans")) == "Body temperature")
+        #expect(MetricTypeLocalisation.label(forType: "BODY_TEMPERATURE", locale: Locale(identifier: "zh-Hans")) == "体温")
+        #expect(MetricTypeLocalisation.label(forType: "WEIGHT", locale: Locale(identifier: "zh-Hans")) == "体重")
+        #expect(MetricTypeLocalisation.label(forType: "BLOOD_PRESSURE", locale: Locale(identifier: "zh-Hans")) == "血压")
         #expect(MetricTypeLocalisation.label(forType: "WEIGHT", locale: Locale(identifier: "en")) == "Weight")
         #expect(MetricTypeLocalisation.label(forType: "WEIGHT", locale: Locale(identifier: "de")) == "Gewicht")
+        let locale = AppLocale()
+        locale.apply(.simplifiedChinese)
+        let item = locale.resource(LocalizedStringResource("mentalHealth.items.phq9.1"))
+        #expect(String(localized: item) == "Little interest or pleasure in doing things")
+        let note = locale.resource(LocalizedStringResource("mentalHealth.validatedInEnglishNote"))
+        #expect(String(localized: note) == "此问卷的英文版本已受验证；题目使用英文原文显示。")
     }
 
     @Test("Foundation lookup follows the account instead of the process language")

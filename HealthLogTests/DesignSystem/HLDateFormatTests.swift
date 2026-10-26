@@ -9,7 +9,7 @@ import Testing
 /// the numeric field order its server counterpart pins (DMY → dd.MM.yyyy,
 /// MDY → MM/dd/yyyy, YMD → yyyy-MM-dd) and that the raw values round-trip the
 /// server enum.
-@Suite("HLDateFormat")
+@Suite("HLDateFormat", .serialized)
 struct HLDateFormatTests {
     /// A fixed instant: 2026-06-17 (June = month 06, day 17, year 2026) at
     /// midday UTC so no timezone shift crosses a day boundary in the test host.
@@ -96,6 +96,46 @@ struct HLDateFormatTests {
         let defaults = try #require(UserDefaults(suiteName: suite))
         defer { defaults.removePersistentDomain(forName: suite) }
         #expect(HLDateFormat.current(defaults: defaults) == .auto)
+    }
+
+    @Test("Chinese AUTO numeric dates lead with the year")
+    func chineseAutoLeadsWithYear() throws {
+        let locale = AppLocale.shared
+        locale.apply(.simplifiedChinese)
+        defer { locale.apply(nil) }
+        let rendered = HLDateFormat.auto.formatDate(sample, style: .numeric)
+        let year = try #require(rendered.range(of: "2026")?.lowerBound)
+        let day = try #require(rendered.range(of: "17")?.lowerBound)
+        #expect(year < day, "year must precede day for Chinese AUTO (\(rendered))")
+    }
+
+    @Test("Chinese DMY keeps day-month-year and Chinese month words")
+    func chineseExplicitOrderKeepsChineseWords() throws {
+        let locale = AppLocale.shared
+        locale.apply(.simplifiedChinese)
+        defer { locale.apply(nil) }
+        let numeric = HLDateFormat.dayMonthYear.formatDate(sample, style: .numeric)
+        let day = try #require(numeric.range(of: "17")?.lowerBound)
+        let year = try #require(numeric.range(of: "2026")?.lowerBound)
+        #expect(day < year, "DMY numeric still leads with the day (\(numeric))")
+
+        let named = HLDateFormat.dayMonthYear.formatDate(sample, style: .abbreviated)
+        #expect(named.contains("6月"), "month name stays Chinese (\(named))")
+        #expect(!named.contains("Juni") && !named.contains("Jun"), "pinned order must not borrow another language (\(named))")
+        let namedDay = try #require(named.range(of: "17")?.lowerBound)
+        let namedYear = try #require(named.range(of: "2026")?.lowerBound)
+        #expect(namedDay < namedYear)
+        let yearFirst = HLDateFormat.yearMonthDay.formatDate(sample, style: .abbreviated)
+        #expect(yearFirst.contains("2026年6月17日"), "year-month-day names stay Chinese (\(yearFirst))")
+
+        let suite = "HLDateFormatTests.\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        defaults.set(HLTimeFormat.twelveHour.rawValue, forKey: HLTimeFormat.defaultsKey)
+        let clock = HLDateFormat.dayMonthYear.formatDateTime(sample, style: .numeric, defaults: defaults)
+        let dayPeriod = ["早上", "上午", "中午", "下午", "晚上"].contains { clock.contains($0) }
+        #expect(dayPeriod, "12-hour Chinese clock (\(clock))")
+        #expect(!clock.contains("AM") && !clock.contains("PM"))
     }
 }
 

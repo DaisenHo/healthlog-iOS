@@ -108,6 +108,9 @@ jobs:
           # permission prompts and the Swift-composed strings. Self-test first.
           python3 scripts/check-visible-punctuation.py --self-test
           python3 scripts/check-visible-punctuation.py
+          # T07: in-scope health-module keys keep Simplified Chinese, and
+          # validated questionnaire items stay in their licensed wording.
+          python3 scripts/t07_zh.py --check
 
       - name: Generate Xcode project
         run: xcodegen

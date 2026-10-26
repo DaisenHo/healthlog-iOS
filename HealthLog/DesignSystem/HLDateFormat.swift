@@ -93,8 +93,14 @@ public enum HLDateFormat: String, CaseIterable, Sendable {
     /// through `Date.FormatStyle` with the resolved ``formattingLocale`` so the
     /// field order follows the server pick while the device timezone governs
     /// the calendar day.
+    ///
+    /// 账户语言为中文且日期顺序不是自动时，纯数字日期仍用原来的顺序。
+    /// 带月份或星期的样式用固定中文格式，避免月份和星期变成德文或英文。
     public func formatDate(_ date: Date, style: Style = .abbreviated) -> String {
-        date.formatted(Self.formatStyle(for: style).locale(formattingLocale))
+        if let patterned = Self.chineseNamedDate(date, order: self, style: style) {
+            return patterned
+        }
+        return date.formatted(Self.formatStyle(for: style).locale(formattingLocale))
     }
 
     /// Format `date` honouring BOTH the date-order preference AND the
@@ -112,18 +118,75 @@ public enum HLDateFormat: String, CaseIterable, Sendable {
         style: Style = .abbreviated,
         defaults: UserDefaults = .standard
     ) -> String {
+        let timeFormat = HLTimeFormat.current(defaults: defaults)
+        if Self.pinsChineseWording(order: self) {
+            let day = formatDate(date, style: style)
+            let clock = Self.chineseTime(date, timeFormat: timeFormat)
+            return "\(day) \(clock)"
+        }
         let locale = Self.dateTimeLocale(
             dateOrder: formattingLocale,
-            timeFormat: HLTimeFormat.current(defaults: defaults)
+            timeFormat: timeFormat
         )
         return date.formatted(
             Self.formatStyle(for: style, includeTime: true).locale(locale)
         )
     }
 
-    /// Compose the date-order locale with the time pref's hour cycle. `AUTO`
-    /// time keeps the date-order locale's own hour cycle (the prior behaviour);
-    /// a forced H12/H24 pins the cycle while leaving day/month order untouched.
+    /// 显式日期顺序下仍使用中文月份和星期。纯数字样式继续走原来的顺序语言。
+    private static func pinsChineseWording(order: HLDateFormat) -> Bool {
+        guard order != .auto else { return false }
+        return AppLocale.shared.current.language.languageCode?.identifier == "zh"
+    }
+
+    private static let chineseLocale = Locale(identifier: "zh-Hans")
+
+    private static let chineseDatePatterns: [HLDateFormat: [Style: String]] = [
+        .dayMonthYear: [
+            .abbreviated: "d MMM y",
+            .long: "d MMMM y",
+            .complete: "EEE, d MMM y",
+        ],
+        .monthDayYear: [
+            .abbreviated: "MMM d, y",
+            .long: "MMMM d, y",
+            .complete: "EEE, MMM d, y",
+        ],
+        .yearMonthDay: [
+            .abbreviated: "y年M月d日",
+            .long: "y年MMMMd日",
+            .complete: "y年M月d日EEE",
+        ],
+    ]
+
+    private static func chineseNamedDate(_ date: Date, order: HLDateFormat, style: Style) -> String? {
+        guard pinsChineseWording(order: order), let pattern = chineseDatePatterns[order]?[style] else { return nil }
+        let formatter = DateFormatter()
+        formatter.locale = chineseLocale
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.timeZone = .current
+        formatter.dateFormat = pattern
+        return formatter.string(from: date)
+    }
+
+    /// 中文时间。自动沿用中文区域的小时制；12 小时或 24 小时只固定小时制，上午和下午仍是中文。
+    private static func chineseTime(_ date: Date, timeFormat: HLTimeFormat) -> String {
+        var components = Locale.Components(locale: chineseLocale)
+        switch timeFormat {
+        case .auto:
+            break
+        case .twelveHour:
+            components.hourCycle = .oneToTwelve
+        case .twentyFourHour:
+            components.hourCycle = .zeroToTwentyThree
+        }
+        return date.formatted(
+            Date.FormatStyle(date: .omitted, time: .shortened).locale(Locale(components: components))
+        )
+    }
+
+    /// `AUTO` keeps the date-order locale's hour cycle. H12/H24 pin the cycle
+    /// and leave the day and month order untouched.
     private static func dateTimeLocale(dateOrder: Locale, timeFormat: HLTimeFormat) -> Locale {
         let cycle: Locale.HourCycle? = switch timeFormat {
         case .auto: nil
