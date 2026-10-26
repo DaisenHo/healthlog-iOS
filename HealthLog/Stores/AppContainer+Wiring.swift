@@ -256,7 +256,14 @@ extension AppContainer {
         Self.wireSharedAccountPrefs(
             settingsStore: settingsStore,
             profileTimeZoneBox: profileTimeZoneBox,
-            onGlucoseUnitChange: { [weak watchSession] in watchSession?.pushCurrentCoalesced() }
+            onGlucoseUnitChange: { [weak watchSession] in watchSession?.pushCurrentCoalesced() },
+            onAccountLanguageChange: { [weak watchSession, weak measurementsStore, widgetSnapshotWriter, settingsStore] in
+                let latest = Measurement.latestNamedReading(in: measurementsStore?.recent ?? [])
+                widgetSnapshotWriter.refreshLatestMeasurement(
+                    WidgetSnapshot.LatestMeasurement.make(from: latest, units: settingsStore.unitPreferences)
+                )
+                watchSession?.pushCurrentCoalesced()
+            }
         )
         // v0.14 DATA + v0.14.8 dashboard-summary day-anchor
         Self.wireMedicationDueTimeZone(

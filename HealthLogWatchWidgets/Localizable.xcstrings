@@ -14,6 +14,12 @@
             "state": "translated",
             "value": "All done"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全部完成"
+          }
         }
       }
     },
@@ -29,6 +35,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Health score"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "健康评分"
           }
         }
       }
@@ -46,6 +58,12 @@
             "state": "translated",
             "value": "Latest measurement"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最近测量"
+          }
         }
       }
     },
@@ -61,6 +79,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Next dose"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下次服药"
           }
         }
       }
@@ -78,6 +102,12 @@
             "state": "translated",
             "value": "No measurements yet"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂无测量记录"
+          }
         }
       }
     },
@@ -93,6 +123,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Open iPhone app"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开 iPhone 应用"
           }
         }
       }
@@ -110,6 +146,12 @@
             "state": "translated",
             "value": "Your latest Personal Health Score."
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你最新的个人健康评分。"
+          }
         }
       }
     },
@@ -126,6 +168,12 @@
             "state": "translated",
             "value": "Your most recent measurement reading."
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你最近一次记录的测量结果。"
+          }
         }
       }
     },
@@ -141,6 +189,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Your next medication dose and today's adherence."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你的下次服药剂量与今日依从性。"
           }
         }
       }

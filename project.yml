@@ -739,6 +739,7 @@ targets:
         CFBundleLocalizations:
           - de
           - en
+          - zh-Hans
         # The extension follows the same operator-neutral system-trust posture
         # as the host app and carries no compiled server identity.
         # WidgetKit extension point — without this the extension never
@@ -806,6 +807,7 @@ targets:
         CFBundleLocalizations:
           - de
           - en
+          - zh-Hans
         NSExtension:
           NSExtensionPointIdentifier: com.apple.usernotifications.service
           NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).NotificationService
@@ -873,6 +875,7 @@ targets:
         CFBundleLocalizations:
           - de
           - en
+          - zh-Hans
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: dev.healthlog.app.watchkitapp
@@ -933,6 +936,7 @@ targets:
         CFBundleLocalizations:
           - de
           - en
+          - zh-Hans
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     entitlements:

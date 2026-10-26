@@ -59,7 +59,12 @@ public actor DoctorReportRenderer {
             // Pre-render chart bitmaps on @MainActor.
             let chartImages: [ChartImage] = if let chartsBlock = spec.charts {
                 await MainActor.run {
-                    DoctorReportChartRenderer.renderImages(chartsBlock, glucoseUnit: spec.glucoseUnit, units: spec.printUnits)
+                    DoctorReportChartRenderer.renderImages(
+                        chartsBlock,
+                        glucoseUnit: spec.glucoseUnit,
+                        units: spec.printUnits,
+                        locale: spec.cover.locale
+                    )
                 }
             } else {
                 []
@@ -161,9 +166,6 @@ public enum PDFMeta {
     public static let author = "HealthLog"
 
     public static func title(for locale: ReportLocale) -> String {
-        switch locale {
-        case .de: "Arztbericht"
-        case .en: "Doctor Report"
-        }
+        LocaleText.coverTitle(for: locale)
     }
 }

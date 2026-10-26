@@ -117,6 +117,30 @@ public actor MiniCoachAskClassifier {
                 ),
                 reason: .promptInjection,
                 label: "injection_de"
+            ),
+            DenyPattern(
+                regex: try! NSRegularExpression(
+                    pattern: #"(我应该|我该|你建议|有什么建议|如何改善|怎么改善)"#,
+                    options: .caseInsensitive
+                ),
+                reason: .adviceRequest,
+                label: "advice_zh"
+            ),
+            DenyPattern(
+                regex: try! NSRegularExpression(
+                    pattern: #"(会升高吗|会下降吗|预测|将来会)"#,
+                    options: .caseInsensitive
+                ),
+                reason: .predictionRequest,
+                label: "prediction_zh"
+            ),
+            DenyPattern(
+                regex: try! NSRegularExpression(
+                    pattern: #"(忽略之前的|忽略所有指令|无视规则)"#,
+                    options: .caseInsensitive
+                ),
+                reason: .promptInjection,
+                label: "injection_zh"
             )
         ]
     // swiftlint:enable force_try
@@ -129,7 +153,7 @@ public actor MiniCoachAskClassifier {
             // we want comparison to win.
             Pattern(
                 regex: try! NSRegularExpression(
-                    pattern: #"\b(vergleich(e|en|t)?|verglichen\s+mit|gegen[üu]ber|vs\.?|versus|compared\s+to|compare\s+\w+\s+(with|to))\b"#,
+                    pattern: #"(\b(vergleich(e|en|t)?|verglichen\s+mit|gegen[üu]ber|vs\.?|versus|compared\s+to|compare\s+\w+\s+(with|to))\b|对比|相比|比较)"#,
                     options: .caseInsensitive
                 ),
                 category: .comparison,
@@ -138,11 +162,11 @@ public actor MiniCoachAskClassifier {
             // Historic — explicit past date phrasing.
             Pattern(
                 regex: try! NSRegularExpression(
-                    pattern: #"\b(am\s+\d{1,2}\.?\s*(januar|februar|m[äa]rz|april|mai|juni|juli|"#
+                    pattern: #"(\b(am\s+\d{1,2}\.?\s*(januar|februar|m[äa]rz|april|mai|juni|juli|"#
                         + #"august|september|oktober|november|dezember)|on\s+(january|february|"#
                         + #"march|april|may|june|july|august|september|october|november|"#
                         + #"december)\s+\d|im\s+(letzten|vorletzten|vergangenen)\s+"#
-                        + #"(monat|jahr|quartal)|last\s+(month|year|quarter))\b"#,
+                        + #"(monat|jahr|quartal)|last\s+(month|year|quarter))\b|\d{1,2}\s*月\s*\d{1,2}\s*日|上个月|去年)"#,
                     options: .caseInsensitive
                 ),
                 category: .historicLookup,
@@ -151,9 +175,9 @@ public actor MiniCoachAskClassifier {
             // Period summary — "wie war meine woche", "how was my week".
             Pattern(
                 regex: try! NSRegularExpression(
-                    pattern: #"\b(wie\s+war(\s+meine?)?|wie\s+sah(\s+meine?)?|zeig(\s+mir)?|"#
+                    pattern: #"(\b(wie\s+war(\s+meine?)?|wie\s+sah(\s+meine?)?|zeig(\s+mir)?|"#
                         + #"summary\s+of|how\s+was|how\s+did|show\s+me)\s+\w*\s*"#
-                        + #"(woche|monat|tag|week|month|day|period|zeitraum)"#,
+                        + #"(woche|monat|tag|week|month|day|period|zeitraum)|这周|本周|上周|最近一周)"#,
                     options: .caseInsensitive
                 ),
                 category: .periodSummary,
@@ -164,9 +188,9 @@ public actor MiniCoachAskClassifier {
             // fallthrough — anything that mentions a metric.
             Pattern(
                 regex: try! NSRegularExpression(
-                    pattern: #"\b(was\s+ist\s+mein|was\s+war\s+mein|mein\s+"#
+                    pattern: #"(\b(was\s+ist\s+mein|was\s+war\s+mein|mein\s+"#
                         + #"(letzter|höchster|niedrigster)|aktuell|current|latest|"#
-                        + #"last\s+(weight|pulse|reading)|highest|lowest|h[öo]chster|niedrigster)\b"#,
+                        + #"last\s+(weight|pulse|reading)|highest|lowest|h[öo]chster|niedrigster)\b|最近一次|最新|最高|最低)"#,
                     options: .caseInsensitive
                 ),
                 category: .dataLookup,
@@ -175,10 +199,12 @@ public actor MiniCoachAskClassifier {
             // Metric-name fallback. If the user just mentions a metric
             // ("blutdruck?", "weight?"), treat as data-lookup.
             Pattern(
-                regex: try! NSRegularExpression(
-                    pattern: #"\b(blutdruck|puls|gewicht|schlaf|schritte|blutzucker|temperatur|sauerstoff|blood\s+pressure|pulse|weight|sleep|steps|glucose|temperature|oxygen|spo2|heart\s+rate)\b"#,
-                    options: .caseInsensitive
-                ),
+                    regex: try! NSRegularExpression(
+                        pattern: #"(\b(blutdruck|puls|gewicht|schlaf|schritte|blutzucker|temperatur|sauerstoff|"#
+                            + #"blood\s+pressure|pulse|weight|sleep|steps|glucose|temperature|oxygen|spo2|heart\s+rate)\b|"#
+                            + #"血压|脉搏|心率|体重|睡眠|步数|血糖|体温|血氧)"#,
+                        options: .caseInsensitive
+                    ),
                 category: .dataLookup,
                 label: "metric_name"
             )

@@ -1,0 +1,9 @@
+"NSHealthShareUsageDescription" = "HealthLog 会读取你在 Apple 健康中授权共享的健康数据（包括生命体征、活动、营养、睡眠、心情、生理周期数据、心电图、锻炼和心率数据以及用药），用于展示、同步并计算趋势。";
+"NSHealthUpdateUsageDescription" = "当你允许 HealthLog 写入时，HealthLog 会将你记录的测量、心情和生理周期记录，以及来自你已连接设备或导入的数据保存到 Apple 健康。";
+"NSFaceIDUsageDescription" = "HealthLog 使用面容 ID 保护你的数据。";
+"NSUserNotificationsUsageDescription" = "HealthLog 会提醒你按时服药和进行测量。";
+"NSAlarmKitUsageDescription" = "HealthLog 会为你明确开启的时效性关键药物提供响亮闹钟，可突破静音模式和专注模式，避免错过重要剂量。";
+"NSSpeechRecognitionUsageDescription" = "HealthLog 使用语音识别将你口述给助手的问题转换为文字，在支持时直接在设备上处理。发送前你会先核对文字。";
+"NSMicrophoneUsageDescription" = "HealthLog 使用麦克风以便你向助手口述问题。录音会在设备上转换为文字，不会保存。";
+"NSCameraUsageDescription" = "HealthLog 使用相机在设备上识别药盒和检验报告，或将你选择的扫描件上传到已配置 HealthLog 服务器上的文档保险库。";
+"NSBluetoothAlwaysUsageDescription" = "HealthLog 通过蓝牙连接血压计（目前支持 Omron 血压袖带），以便自动同步你的测量结果。";

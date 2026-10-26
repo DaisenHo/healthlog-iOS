@@ -15,6 +15,12 @@
             "state": "translated",
             "value": "%lld of %lld taken"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已服用 %lld / %lld"
+          }
         }
       }
     },
@@ -31,6 +37,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld today"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今日 %lld 次"
           }
         }
       }
@@ -49,6 +61,12 @@
             "state": "translated",
             "value": "All done"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全部完成"
+          }
         }
       }
     },
@@ -65,6 +83,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bad"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "较差"
           }
         }
       }
@@ -83,6 +107,12 @@
             "state": "translated",
             "value": "Blood pressure"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "血压"
+          }
         }
       }
     },
@@ -99,6 +129,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Change"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "更改"
           }
         }
       }
@@ -117,6 +153,12 @@
             "state": "translated",
             "value": "Couldn't reach iPhone"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法连接 iPhone"
+          }
         }
       }
     },
@@ -133,6 +175,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Diastolic"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "舒张压"
           }
         }
       }
@@ -151,6 +199,12 @@
             "state": "translated",
             "value": "Glucose"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "血糖"
+          }
         }
       }
     },
@@ -167,6 +221,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Good"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "较好"
           }
         }
       }
@@ -185,6 +245,12 @@
             "state": "translated",
             "value": "Great"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "很好"
+          }
         }
       }
     },
@@ -201,6 +267,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "How are you?"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你感觉怎么样？"
           }
         }
       }
@@ -219,6 +291,12 @@
             "state": "translated",
             "value": "Last one not saved, tap to retry"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上次未保存，轻点重试"
+          }
         }
       }
     },
@@ -235,6 +313,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Last: will sync"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上次：即将同步"
           }
         }
       }
@@ -253,6 +337,12 @@
             "state": "translated",
             "value": "Later"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "稍后"
+          }
         }
       }
     },
@@ -269,6 +359,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Log"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "记录"
           }
         }
       }
@@ -287,6 +383,12 @@
             "state": "translated",
             "value": "Logged"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已记录"
+          }
         }
       }
     },
@@ -303,6 +405,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Logs this mood"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "记录此心情"
           }
         }
       }
@@ -321,6 +429,12 @@
             "state": "translated",
             "value": "Lousy"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "很差"
+          }
         }
       }
     },
@@ -337,6 +451,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Medications"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "用药"
           }
         }
       }
@@ -355,6 +475,12 @@
             "state": "translated",
             "value": "Mood"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "心情"
+          }
         }
       }
     },
@@ -371,6 +497,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Next"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下一步"
           }
         }
       }
@@ -389,6 +521,12 @@
             "state": "translated",
             "value": "Okay"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一般"
+          }
         }
       }
     },
@@ -405,6 +543,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pulse"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "脉搏"
           }
         }
       }
@@ -423,6 +567,12 @@
             "state": "translated",
             "value": "Retry"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重试"
+          }
         }
       }
     },
@@ -439,6 +589,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Saved, will sync to iPhone"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已保存，将同步至 iPhone"
           }
         }
       }
@@ -457,6 +613,12 @@
             "state": "translated",
             "value": "Sending…"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在发送…"
+          }
         }
       }
     },
@@ -473,6 +635,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sign in on your iPhone"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请在 iPhone 上登录"
           }
         }
       }
@@ -491,6 +659,12 @@
             "state": "translated",
             "value": "Skipped"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已跳过"
+          }
         }
       }
     },
@@ -507,6 +681,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Syncing…"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在同步…"
           }
         }
       }
@@ -525,6 +705,12 @@
             "state": "translated",
             "value": "Systolic"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "收缩压"
+          }
         }
       }
     },
@@ -541,6 +727,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Taken"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已服用"
           }
         }
       }
@@ -559,6 +751,12 @@
             "state": "translated",
             "value": "Today"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今日"
+          }
         }
       }
     },
@@ -576,6 +774,12 @@
             "state": "translated",
             "value": "Weight"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "体重"
+          }
         }
       }
     },
@@ -589,6 +793,12 @@
           }
         },
         "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "bpm"
+          }
+        },
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
             "value": "bpm"
@@ -610,6 +820,12 @@
             "state": "translated",
             "value": "kg"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "kg"
+          }
         }
       }
     },
@@ -623,6 +839,12 @@
           }
         },
         "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mg/dL"
+          }
+        },
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
             "value": "mg/dL"
@@ -644,6 +866,12 @@
             "state": "translated",
             "value": "mmHg"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mmHg"
+          }
         }
       }
     },
@@ -660,6 +888,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "(not saved)"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "（未保存）"
           }
         }
       }
@@ -678,6 +912,12 @@
             "state": "translated",
             "value": "(will sync)"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "（待同步）"
+          }
         }
       }
     },
@@ -691,6 +931,12 @@
           }
         },
         "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mmol/L"
+          }
+        },
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
             "value": "mmol/L"

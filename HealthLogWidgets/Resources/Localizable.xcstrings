@@ -15,6 +15,12 @@
             "state": "translated",
             "value": "Opens HealthLog straight to logging an entry."
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "直接打开 HealthLog 记录一条新数据。"
+          }
         }
       }
     },
@@ -31,6 +37,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Capture"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "记录"
           }
         }
       }
@@ -49,6 +61,12 @@
             "state": "translated",
             "value": "Capture"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "记录"
+          }
         }
       }
     },
@@ -65,6 +83,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "HealthLogs Stimmungs-Auswahl öffnen."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开 HealthLog 的心情选择器。"
           }
         }
       },
@@ -84,6 +108,12 @@
             "state": "translated",
             "value": "Stimmung erfassen"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "记录心情"
+          }
         }
       },
       "comment": "Log-mood control — name shown in the controls gallery"
@@ -101,6 +131,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Stimmung erfassen"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "记录心情"
           }
         }
       },
@@ -120,6 +156,12 @@
             "state": "translated",
             "value": "Marks your next due dose as taken."
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "将你的下次应服药物标记为已服用。"
+          }
         }
       }
     },
@@ -136,6 +178,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Next dose: taken"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下次服药：已服用"
           }
         }
       }
@@ -154,6 +202,12 @@
             "state": "translated",
             "value": "Taken"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已服用"
+          }
         }
       }
     },
@@ -169,6 +223,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Due in %@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "距离应服还有 %@"
           }
         }
       }
@@ -186,6 +246,12 @@
             "state": "translated",
             "value": "Overdue by %@"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已逾时 %@"
+          }
         }
       }
     },
@@ -201,6 +267,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Taken"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已服用"
           }
         }
       }
@@ -219,6 +291,12 @@
             "state": "translated",
             "value": "Taken"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已服用"
+          }
         }
       }
     },
@@ -235,6 +313,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tap again to confirm"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "再次轻点以确认"
           }
         }
       }
@@ -253,6 +337,12 @@
             "state": "translated",
             "value": "Tap again to confirm the intake"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "再次轻点以确认已服药"
+          }
         }
       }
     },
@@ -268,6 +358,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Records %@ as taken"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "将 %@ 记录为已服用"
           }
         }
       }
@@ -286,6 +382,12 @@
             "state": "translated",
             "value": "due at %@"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "应服时间 %@"
+          }
         }
       }
     },
@@ -302,6 +404,12 @@
             "state": "translated",
             "value": "overdue"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已逾时"
+          }
         }
       }
     },
@@ -317,6 +425,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "remaining"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "剩余"
           }
         }
       }
@@ -335,6 +449,12 @@
             "state": "translated",
             "value": "Reminder snoozed"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已延后提醒"
+          }
         }
       }
     },
@@ -352,6 +472,12 @@
             "state": "translated",
             "value": "Taken"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已服用"
+          }
         }
       }
     },
@@ -367,6 +493,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Taken at %@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已于 %@ 服用"
           }
         }
       }
@@ -385,6 +517,12 @@
             "state": "translated",
             "value": "Today’s medication adherence as a ring."
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "以圆环展示今日服药依从情况。"
+          }
         }
       }
     },
@@ -401,6 +539,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$lld of %2$lld doses"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld / %2$lld 次剂量"
           }
         }
       }
@@ -419,6 +563,12 @@
             "state": "translated",
             "value": "Adherence"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "依从性"
+          }
         }
       }
     },
@@ -435,6 +585,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Today’s adherence"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今日依从性"
           }
         }
       }
@@ -453,6 +609,12 @@
             "state": "translated",
             "value": "today"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今日"
+          }
         }
       }
     },
@@ -469,6 +631,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fair"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "中等"
           }
         }
       }
@@ -487,6 +655,12 @@
             "state": "translated",
             "value": "Low"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "较低"
+          }
         }
       }
     },
@@ -503,6 +677,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Strong"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "良好"
           }
         }
       }
@@ -522,6 +702,12 @@
             "state": "translated",
             "value": "Your selection"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自选指标"
+          }
         }
       }
     },
@@ -538,6 +724,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Shows your current health score as a ring."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "以圆环显示你当前的健康评分。"
           }
         }
       }
@@ -556,6 +748,12 @@
             "state": "translated",
             "value": "No data"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂无数据"
+          }
         }
       }
     },
@@ -572,6 +770,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Score"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "评分"
           }
         }
       }
@@ -590,6 +794,12 @@
             "state": "translated",
             "value": "Health score"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "健康评分"
+          }
         }
       }
     },
@@ -606,6 +816,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Shows your most recent reading."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "显示你最近一次的测量读数。"
           }
         }
       }
@@ -624,6 +840,12 @@
             "state": "translated",
             "value": "No reading yet"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂无测量记录"
+          }
         }
       }
     },
@@ -640,6 +862,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Measurement"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "测量"
           }
         }
       }
@@ -658,6 +886,12 @@
             "state": "translated",
             "value": "Latest measurement"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最近测量"
+          }
         }
       }
     },
@@ -674,6 +908,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Stimmung erfassen: %@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "记录心情：%@"
           }
         }
       },
@@ -693,6 +933,12 @@
             "state": "translated",
             "value": "Sieh deine letzte Stimmung und erfasse mit einem Tipp eine neue."
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "查看最近一次心情，并一键记录新心情。"
+          }
         }
       },
       "comment": "Mood widget — configuration description"
@@ -710,6 +956,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Heute noch nicht erfasst"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今日尚未记录"
           }
         }
       },
@@ -729,6 +981,12 @@
             "state": "translated",
             "value": "Stimmung"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "心情"
+          }
         }
       },
       "comment": "Mood widget — header label"
@@ -746,6 +1004,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Erfasst %@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "记录于 %@"
           }
         }
       },
@@ -765,6 +1029,12 @@
             "state": "translated",
             "value": "Wie geht's dir?"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你感觉怎么样？"
+          }
         }
       },
       "comment": "Mood widget — quick-log prompt above the face row"
@@ -782,6 +1052,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zum Erfassen tippen"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "轻点记录"
           }
         }
       },
@@ -801,6 +1077,12 @@
             "state": "translated",
             "value": "Stimmung"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "心情"
+          }
         }
       },
       "comment": "Mood widget — configuration display name"
@@ -819,6 +1101,12 @@
             "state": "translated",
             "value": "Your next scheduled medication with a one-tap “Taken” button."
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "显示下次计划服用的药物，并提供一键“已服用”按钮。"
+          }
         }
       }
     },
@@ -835,6 +1123,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "due at %@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "应服时间 %@"
           }
         }
       }
@@ -853,6 +1147,12 @@
             "state": "translated",
             "value": "Nothing due"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂无待服药物"
+          }
         }
       }
     },
@@ -869,6 +1169,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Next dose"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下次服药"
           }
         }
       }
@@ -887,6 +1193,12 @@
             "state": "translated",
             "value": "Taken"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已服用"
+          }
         }
       }
     },
@@ -904,6 +1216,12 @@
             "state": "translated",
             "value": "Next dose"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下次服药"
+          }
         }
       }
     },
@@ -920,6 +1238,127 @@
           "stringUnit": {
             "state": "translated",
             "value": "Out of date, open app"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "数据待更新，请打开应用"
+          }
+        }
+      }
+    },
+    "Lousy": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lausig"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lousy"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "很差"
+          }
+        }
+      }
+    },
+    "Bad": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schlecht"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bad"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "较差"
+          }
+        }
+      }
+    },
+    "Okay": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Okay"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Okay"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一般"
+          }
+        }
+      }
+    },
+    "Good": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gut"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Good"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "较好"
+          }
+        }
+      }
+    },
+    "Great": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Super"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Great"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "很好"
           }
         }
       }

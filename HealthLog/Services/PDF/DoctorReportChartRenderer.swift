@@ -32,7 +32,7 @@ import SwiftUI
         static func renderImages(
             _ block: DoctorReportSpec.ChartsBlock,
             glucoseUnit: GlucoseUnit = .mgdL,
-            units: UnitPreferences? = nil,
+            units: UnitPreferences? = nil, locale: ReportLocale = .de,
             tileSize: CGSize = CGSize(width: 540, height: 120)
         ) -> [ChartImage] {
             let units = units ?? UnitPreferences(glucose: glucoseUnit)
@@ -41,7 +41,7 @@ import SwiftUI
                     kind: series.kind,
                     image: renderSeriesImage(
                         series: DoctorReportGlucoseDisplay.series(series, units: units),
-                        units: units,
+                        units: units, locale: locale,
                         size: tileSize
                     )
                 )
@@ -50,12 +50,12 @@ import SwiftUI
 
         private static func renderSeriesImage(
             series: DoctorReportSpec.ChartsBlock.Series,
-            units: UnitPreferences,
+            units: UnitPreferences, locale: ReportLocale,
             size: CGSize
         ) -> UIImage? {
-            let view = ChartTile(series: series, glucoseUnit: units.glucose, units: units)
+            let view = ChartTile(series: series, glucoseUnit: units.glucose, units: units, locale: locale)
                 .frame(width: size.width, height: size.height)
-                .padding(.horizontal, 0)
+                .environment(\.locale, Locale(identifier: locale.foundationIdentifier)).padding(.horizontal, 0)
             let renderer = ImageRenderer(content: view)
             renderer.scale = 2.0
             return renderer.uiImage
@@ -102,16 +102,16 @@ import SwiftUI
         var glucoseUnit: GlucoseUnit = .mgdL
         /// #115 P2 — the units the tile's points are in (glucose from
         /// ``glucoseUnit`` when not given).
-        var units: UnitPreferences?
+        var units: UnitPreferences?; var locale: ReportLocale = .de
 
         /// The tile title; a converted kind carries its unit, which is the
         /// account's and not self-evident from the axis.
         var title: String {
             let units = units ?? UnitPreferences(glucose: glucoseUnit)
             guard let unit = DoctorReportGlucoseDisplay.titleUnit(for: series.kind, units: units) else {
-                return series.kind.displayName
+                return locale.displayName(for: series.kind)
             }
-            return "\(series.kind.displayName) (\(unit))"
+            return "\(locale.displayName(for: series.kind)) (\(unit))"
         }
 
         // v0.14 light-mode walk: the doctor PDF always prints on white
@@ -177,11 +177,11 @@ import SwiftUI
                 AXPoint(x: Double(offset), y: point.value, xLabel: formatter.string(from: point.at))
             }
             return HLChartAX.singleSeries(
-                title: series.kind.displayName,
-                summary: series.kind.displayName,
-                xAxisTitle: "Datum",
-                yAxisTitle: series.kind.displayName,
-                seriesName: series.kind.displayName,
+                title: locale.displayName(for: series.kind),
+                summary: locale.displayName(for: series.kind),
+                xAxisTitle: locale.text(de: "Datum", en: "Date", zh: "日期"),
+                yAxisTitle: locale.displayName(for: series.kind),
+                seriesName: locale.displayName(for: series.kind),
                 points: points.map { ($0.x, $0.y, $0.xLabel) }
             )
         }

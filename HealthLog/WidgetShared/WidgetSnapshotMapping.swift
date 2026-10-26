@@ -91,15 +91,16 @@ public extension WidgetSnapshot.LatestMeasurement {
     /// into the widget target via `HealthLog/Models`). `nil` in → `nil` glance.
     static func make(
         from measurement: Measurement?,
-        units: UnitPreferences = .standard
+        units: UnitPreferences = .standard,
+        locale: Locale? = nil
     ) -> WidgetSnapshot.LatestMeasurement? {
         guard let measurement else { return nil }
         let descriptor = measurement.kind.descriptor
         return WidgetSnapshot.LatestMeasurement(
             kindRaw: measurement.kind.rawValue,
-            title: AppLocale.string(AppLocale.shared.resource(descriptor.title)),
+            title: AppLocale.string(descriptor.title, locale: locale),
             formattedValue: formattedValue(for: measurement, units: units),
-            unit: unitSuffix(for: measurement.kind, units: units),
+            unit: unitSuffix(for: measurement.kind, units: units, locale: locale),
             symbol: descriptor.sfSymbol,
             recordedAt: measurement.recordedAt
         )
@@ -108,8 +109,8 @@ public extension WidgetSnapshot.LatestMeasurement {
     /// The unit-aware suffix for a kind (mirrors `DashboardMetric.unitSuffix`):
     /// the account's display unit for a converted family (#115 P2), else the
     /// descriptor's canonical unit label.
-    private static func unitSuffix(for kind: MetricKind, units: UnitPreferences) -> String {
-        units.transform(for: kind).suffix ?? AppLocale.string(AppLocale.shared.resource(kind.descriptor.unitLabel))
+    private static func unitSuffix(for kind: MetricKind, units: UnitPreferences, locale: Locale? = nil) -> String {
+        units.transform(for: kind).suffix ?? AppLocale.string(kind.descriptor.unitLabel, locale: locale)
     }
 
     /// Unit-aware primary value string, mirroring `DashboardMetric.formatted

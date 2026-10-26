@@ -139,7 +139,7 @@ import Foundation
                     : primaryMean
                 drawTableRow(
                     [
-                        row.kind.displayName,
+                        spec.cover.locale.displayName(for: row.kind),
                         String(row.count),
                         displayMean,
                         ValueFormatter.format(row.median, kind: row.kind, units: units),
@@ -181,7 +181,7 @@ import Foundation
                     // main run-loop). Lays down a text caption so the
                     // doctor still sees the series exists.
                     let labelFont = UIFont.systemFont(ofSize: 11, weight: .regular)
-                    let caption = "\(series.kind.displayName): \(series.points.count) " +
+                    let caption = "\(spec.cover.locale.displayName(for: series.kind)): \(series.points.count) " +
                         LocaleText.dataPoints(for: spec.cover.locale)
                     draw(
                         text: caption,
@@ -328,168 +328,168 @@ import Foundation
 
 #endif
 
-// MARK: - Locale text (DE/EN)
+// MARK: - Locale text (DE/EN/ZH)
 
 enum LocaleText {
     static func coverTitle(for locale: ReportLocale) -> String {
-        switch locale {
-        case .de: "Arztbericht"
-        case .en: "Doctor Report"
-        }
+        locale.text(
+            de: "Arztbericht", en: "Doctor Report",
+            zh: "医生报告"
+        )
     }
 
     static func coverPatientLabel(for locale: ReportLocale) -> String {
-        switch locale {
-        case .de: "Patient"
-        case .en: "Patient"
-        }
+        locale.text(
+            de: "Patient", en: "Patient",
+            zh: "患者"
+        )
     }
 
     static func coverFullNameLabel(for locale: ReportLocale) -> String {
-        switch locale {
-        case .de: "Voller Name"
-        case .en: "Full name"
-        }
+        locale.text(
+            de: "Voller Name", en: "Full name",
+            zh: "姓名"
+        )
     }
 
     static func coverInsurerLabel(for locale: ReportLocale) -> String {
-        switch locale {
-        case .de: "Krankenkasse"
-        case .en: "Health insurer"
-        }
+        locale.text(
+            de: "Krankenkasse", en: "Health insurer",
+            zh: "医疗保险机构"
+        )
     }
 
     static func coverInsuranceNumberLabel(for locale: ReportLocale) -> String {
-        switch locale {
-        case .de: "Versicherungsnummer"
-        case .en: "Insurance number"
-        }
+        locale.text(
+            de: "Versicherungsnummer", en: "Insurance number",
+            zh: "保险编号"
+        )
     }
 
     static func coverPeriodLabel(for locale: ReportLocale) -> String {
-        switch locale {
-        case .de: "Berichtszeitraum"
-        case .en: "Report period"
-        }
+        locale.text(
+            de: "Berichtszeitraum", en: "Report period",
+            zh: "报告时段"
+        )
     }
 
     static func coverGeneratedLabel(for locale: ReportLocale) -> String {
-        switch locale {
-        case .de: "Erstellt am"
-        case .en: "Generated"
-        }
+        locale.text(
+            de: "Erstellt am", en: "Generated",
+            zh: "生成时间"
+        )
     }
 
     static func coverVersionLabel(for locale: ReportLocale) -> String {
-        switch locale {
-        case .de: "App-Version"
-        case .en: "App version"
-        }
+        locale.text(
+            de: "App-Version", en: "App version",
+            zh: "应用版本"
+        )
     }
 
     static func vitalsTitle(for locale: ReportLocale) -> String {
-        switch locale {
-        case .de: "Vitalwerte"
-        case .en: "Vital signs"
-        }
+        locale.text(
+            de: "Vitalwerte", en: "Vital signs",
+            zh: "生命体征"
+        )
     }
 
     static func colKind(for locale: ReportLocale) -> String {
-        switch locale {
-        case .de: "Metrik"
-        case .en: "Metric"
-        }
+        locale.text(
+            de: "Metrik", en: "Metric",
+            zh: "指标"
+        )
     }
 
     static func colCount(for locale: ReportLocale) -> String {
-        switch locale {
-        case .de: "Anzahl"
-        case .en: "Count"
-        }
+        locale.text(
+            de: "Anzahl", en: "Count",
+            zh: "次数"
+        )
     }
 
     static func colMean(for locale: ReportLocale) -> String {
-        switch locale {
-        case .de: "Mittelwert"
-        case .en: "Mean"
-        }
+        locale.text(
+            de: "Mittelwert", en: "Mean",
+            zh: "平均值"
+        )
     }
 
     static func colMedian(for locale: ReportLocale) -> String {
-        switch locale {
-        case .de: "Median"
-        case .en: "Median"
-        }
+        locale.text(
+            de: "Median", en: "Median",
+            zh: "中位数"
+        )
     }
 
     static func colMin(for locale: ReportLocale) -> String {
-        switch locale {
-        case .de: "Min"
-        case .en: "Min"
-        }
+        locale.text(
+            de: "Min", en: "Min",
+            zh: "最小值"
+        )
     }
 
     static func colMax(for locale: ReportLocale) -> String {
-        switch locale {
-        case .de: "Max"
-        case .en: "Max"
-        }
+        locale.text(
+            de: "Max", en: "Max",
+            zh: "最大值"
+        )
     }
 
     static func chartsTitle(for locale: ReportLocale) -> String {
-        switch locale {
-        case .de: "Verlauf"
-        case .en: "Charts"
-        }
+        locale.text(
+            de: "Verlauf", en: "Charts",
+            zh: "趋势图"
+        )
     }
 
     static func dataPoints(for locale: ReportLocale) -> String {
-        switch locale {
-        case .de: "Datenpunkte"
-        case .en: "data points"
-        }
+        locale.text(
+            de: "Datenpunkte", en: "data points",
+            zh: "个数据点"
+        )
     }
 
     static func medicationsTitle(for locale: ReportLocale) -> String {
-        switch locale {
-        case .de: "Medikamente"
-        case .en: "Medications"
-        }
+        locale.text(
+            de: "Medikamente", en: "Medications",
+            zh: "用药"
+        )
     }
 
     static func medicationsArchived(for locale: ReportLocale) -> String {
-        switch locale {
-        case .de: "Frueher genommen"
-        case .en: "Previously taken"
-        }
+        locale.text(
+            de: "Frueher genommen", en: "Previously taken",
+            zh: "曾用药物"
+        )
     }
 
     static func adherenceTitle(for locale: ReportLocale) -> String {
-        switch locale {
-        case .de: "Einnahmetreue"
-        case .en: "Adherence"
-        }
+        locale.text(
+            de: "Einnahmetreue", en: "Adherence",
+            zh: "服药依从性"
+        )
     }
 
     static func moodTitle(for locale: ReportLocale) -> String {
-        switch locale {
-        case .de: "Stimmung"
-        case .en: "Mood"
-        }
+        locale.text(
+            de: "Stimmung", en: "Mood",
+            zh: "心情"
+        )
     }
 
     static func moodSummaryFormat(for locale: ReportLocale) -> String {
-        switch locale {
-        case .de: "%d Eintraege, Durchschnitt %.1f / 5"
-        case .en: "%d entries, average %.1f / 5"
-        }
+        locale.text(
+            de: "%d Eintraege, Durchschnitt %.1f / 5", en: "%d entries, average %.1f / 5",
+            zh: "%d 条记录，平均 %.1f / 5"
+        )
     }
 
     static func moodTagsLabel(for locale: ReportLocale) -> String {
-        switch locale {
-        case .de: "Haeufigste Tags"
-        case .en: "Dominant tags"
-        }
+        locale.text(
+            de: "Haeufigste Tags", en: "Dominant tags",
+            zh: "常见标签"
+        )
     }
 }
 
@@ -582,6 +582,7 @@ enum DateRangeFormatter {
         let joiner = switch locale {
         case .de: "bis"
         case .en: "to"
+        case .zh: "至"
         }
         return "\(formatter.string(from: start)) \(joiner) \(formatter.string(from: end))"
     }

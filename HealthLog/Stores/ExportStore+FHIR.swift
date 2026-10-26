@@ -27,7 +27,7 @@ extension ExportStore {
             periodEnd: end,
             generatedAt: end,
             selection: .all,
-            locale: .de,
+            locale: ReportLocale(serverCode: AppLocale.shared.serverCode),
             calendar: calendar
         )
         // Re-init the spec with the additive clinical blocks — the builder owns

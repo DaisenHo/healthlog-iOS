@@ -35,7 +35,8 @@ struct PermissionDeclarationTests {
         let project = try text("project.yml")
         let german = try text("HealthLog/Resources/de.lproj/InfoPlist.strings")
         let english = try text("HealthLog/Resources/en.lproj/InfoPlist.strings")
-        for file in [project, german, english] {
+        let chinese = try text("HealthLog/Resources/zh-Hans.lproj/InfoPlist.strings")
+        for file in [project, german, english, chinese] {
             #expect(!file.contains("NSPhotoLibraryUsageDescription: ") && !file.contains("\"NSPhotoLibraryUsageDescription\" ="))
         }
 
@@ -68,9 +69,12 @@ struct PermissionDeclarationTests {
 
         let german = try text("HealthLog/Resources/de.lproj/InfoPlist.strings")
         let english = try text("HealthLog/Resources/en.lproj/InfoPlist.strings")
+        let chinese = try text("HealthLog/Resources/zh-Hans.lproj/InfoPlist.strings")
         #expect(german.contains("Omron"))
         #expect(english.contains("Omron"))
+        #expect(chinese.contains("Omron"))
         #expect(!german.contains("Glukose-Sensoren und Waagen"))
         #expect(!english.contains("glucose sensors, and scales"))
+        #expect(!chinese.contains("血糖") && !chinese.contains("体脂秤") && !chinese.contains("体重秤"))
     }
 }

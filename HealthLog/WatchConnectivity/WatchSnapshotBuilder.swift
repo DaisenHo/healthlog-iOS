@@ -117,9 +117,10 @@ extension WatchSnapshot.LatestMeasurement {
     /// its fields across — one formatting path, no drift. `nil` in → `nil` glance.
     static func make(
         from measurement: Measurement?,
-        units: UnitPreferences = .standard
+        units: UnitPreferences = .standard,
+        locale: Locale? = nil
     ) -> WatchSnapshot.LatestMeasurement? {
-        guard let widgetGlance = WidgetSnapshot.LatestMeasurement.make(from: measurement, units: units) else {
+        guard let widgetGlance = WidgetSnapshot.LatestMeasurement.make(from: measurement, units: units, locale: locale) else {
             return nil
         }
         return WatchSnapshot.LatestMeasurement(

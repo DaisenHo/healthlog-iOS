@@ -21,10 +21,15 @@ extension AppContainer {
         settingsStore: SettingsStore,
         profileTimeZoneBox: ProfileTimeZoneBox,
         sharedPrefs: SharedAccountPrefs = .live,
-        onGlucoseUnitChange: @escaping @MainActor () -> Void
+        appLocale: AppLocale = .shared,
+        onGlucoseUnitChange: @escaping @MainActor () -> Void,
+        onAccountLanguageChange: @escaping @MainActor () -> Void = {}
     ) {
-        settingsStore.onAccountLanguageChange = { AppLocale.shared.apply($0) }
-        AppLocale.shared.apply(settingsStore.accountLanguage)
+        settingsStore.onAccountLanguageChange = {
+            appLocale.apply($0)
+            onAccountLanguageChange()
+        }
+        appLocale.apply(settingsStore.accountLanguage)
         settingsStore.onGlucoseUnitChange = { unit in
             sharedPrefs.setGlucoseUnit(unit)
             onGlucoseUnitChange()

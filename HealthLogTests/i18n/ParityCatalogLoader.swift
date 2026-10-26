@@ -83,4 +83,28 @@ enum ParityCatalog {
         if loc.variations != nil { return true }
         return false
     }
+
+    // MARK: - Tree & Parity Helpers
+
+    nonisolated static func repoRoot(file: String = #filePath) -> URL {
+        URL(fileURLWithPath: file)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+    }
+
+    nonisolated static func stringValues(_ node: [String: Any]) -> [String: String] {
+        var values: [String: String] = [:]
+        for (key, value) in node {
+            guard let child = value as? [String: Any] else { continue }
+            if key == "stringUnit", let text = child["value"] as? String {
+                values[key] = text
+            } else {
+                for (path, text) in stringValues(child) {
+                    values["\(key)/\(path)"] = text
+                }
+            }
+        }
+        return values
+    }
 }

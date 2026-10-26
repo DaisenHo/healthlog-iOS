@@ -137,7 +137,7 @@ public extension UnifiedSharingStore {
 
     private func produceLocalPDF(_ context: OutputContext) async {
         context.localReportStore.periodDays = periodDays
-        await context.localReportStore.generate(locale: context.locale == "en" ? .en : .de)
+        await context.localReportStore.generate(locale: ReportLocale(serverCode: context.locale))
         guard context.localReportStore.pdfURL != nil, context.localReportStore.error == nil else {
             outcome = .failed(
                 context.localReportStore.error?.userFacingDescription

@@ -426,6 +426,19 @@ public struct DoctorReportSpec: Sendable, Equatable {
 public enum ReportLocale: String, Sendable, Equatable, CaseIterable {
     case de
     case en
+    case zh = "zh-CN"
+
+    /// 根据账户或请求语言标识解析本地报告语言，未知标识默认回退英文。
+    public init(serverCode: String) {
+        let normalized = serverCode.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        if normalized == "zh" || normalized.hasPrefix("zh-") || normalized.hasPrefix("zh_") {
+            self = .zh
+        } else if normalized == "de" || normalized.hasPrefix("de-") || normalized.hasPrefix("de_") {
+            self = .de
+        } else {
+            self = .en
+        }
+    }
 
     public var bcp47: String {
         rawValue
@@ -435,7 +448,20 @@ public enum ReportLocale: String, Sendable, Equatable, CaseIterable {
         switch self {
         case .de: "de_DE"
         case .en: "en_US"
+        case .zh: "zh-Hans"
         }
+    }
+
+    func text(de: String, en: String, zh: String) -> String {
+        switch self {
+        case .de: de
+        case .en: en
+        case .zh: zh
+        }
+    }
+
+    func displayName(for kind: MetricKind) -> String {
+        AppLocale.string(kind.descriptor.title, locale: Locale(identifier: foundationIdentifier))
     }
 }
 
@@ -483,11 +509,9 @@ public struct DoctorReportSectionSelection: Sendable, Equatable {
 public enum DoctorReportDisclaimer {
     public static let de = "Lokaler Export, kein Server beteiligt, auf-Geraet erzeugt, kein medizinisches Dokument"
     public static let en = "Local export, no server involved, generated on-device, not a medical document"
+    public static let zh = "本地导出，不经过服务器，在设备上生成，非医疗文件"
 
     public static func text(for locale: ReportLocale) -> String {
-        switch locale {
-        case .de: de
-        case .en: en
-        }
+        locale.text(de: de, en: en, zh: zh)
     }
 }

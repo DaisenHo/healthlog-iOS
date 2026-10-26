@@ -10,4 +10,4 @@
 
 本仓库领域词汇位于根目录 `CONTEXT.md`，本仓库特有决策位于 `docs/adr/`。
 
-本仓库的交付记录：[T02：iOS 账户语言](t02-ios-account-language.md)、[T07：iOS 健康记录、图表与档案](t07-ios-health-modules.md)、[T08：iOS 用药、目标与通知](t08-ios-medication-notifications.md)。
+本仓库的交付记录：[T02：iOS 账户语言](t02-ios-account-language.md)、[T07：iOS 健康记录、图表与档案](t07-ios-health-modules.md)、[T08：iOS 用药、目标与通知](t08-ios-medication-notifications.md)、[T09：iOS 报告、权限与配套扩展](t09-ios-reports-permissions-extensions.md)。

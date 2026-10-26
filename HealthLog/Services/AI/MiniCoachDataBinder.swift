@@ -44,8 +44,8 @@ struct MiniCoachDataBinder {
     ) -> String {
         let language = locale.language.languageCode?.identifier ?? "de"
         if measurements.isEmpty, moods.isEmpty {
-            return language == "en"
-                ? "(no measurements or mood entries available in the window)"
+            return language == "zh" ? "（当前时间范围内无测量或心情记录）"
+                : language == "en" ? "(no measurements or mood entries available in the window)"
                 : "(keine Messungen oder Stimmungseinträge im Zeitfenster verfügbar)"
         }
 
@@ -309,7 +309,7 @@ struct MiniCoachDataBinder {
             case .unknown: return "unknown metric"
             }
         }
-        return kind.displayName
+        return AppLocale.string(kind.descriptor.title, locale: locale)
     }
 
     private func formatNumber(_ value: Double) -> String {
